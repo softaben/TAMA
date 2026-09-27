@@ -8,7 +8,6 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',Tahoma,sans-serif;background:#eef2ee;color:#1a2a1a;min-height:100vh;position:relative}
 
-/* ==================== MOTIF FILET EN ARRIÈRE-PLAN ==================== */
 body::before{
   content:'';
   position:fixed;
@@ -23,7 +22,59 @@ body::before{
   z-index:0;
 }
 
-/* ==================== HEADER PRINCIPAL ==================== */
+/* ==================== LOADER INITIAL ==================== */
+#firebaseLoader{
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background:linear-gradient(135deg,#1a3a1a,#2d4a2d);
+  z-index:9999;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:20px;
+  color:#e8c547;
+  transition:opacity .5s;
+}
+#firebaseLoader.hidden{opacity:0;pointer-events:none}
+#firebaseLoader .logo-big{font-size:80px;animation:bounce 1.5s infinite}
+#firebaseLoader h1{font-size:32px;letter-spacing:3px;font-weight:800}
+#firebaseLoader p{color:#a8c4a8;font-size:14px;letter-spacing:1px}
+#firebaseLoader .spinner{
+  width:50px;height:50px;
+  border:4px solid rgba(201,162,39,.2);
+  border-top-color:#c9a227;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+
+/* ==================== STATUS FIREBASE ==================== */
+.fb-status{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 12px;
+  background:rgba(255,255,255,.1);
+  border-radius:20px;
+  font-size:11px;
+  font-weight:600;
+  border:1px solid rgba(201,162,39,.3);
+}
+.fb-status .dot{
+  width:8px;height:8px;
+  border-radius:50%;
+  background:#7cb342;
+  box-shadow:0 0 8px #7cb342;
+  animation:pulse-dot 2s infinite;
+}
+.fb-status.offline .dot{background:#dc2626;box-shadow:0 0 8px #dc2626;animation:none}
+.fb-status.syncing .dot{background:#e07c24;box-shadow:0 0 8px #e07c24}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.5}}
+.fb-status span{color:#c8dcc8}
+
+/* ==================== HEADER ==================== */
 .header{
   background:linear-gradient(135deg,#1a3a1a,#2d4a2d);
   color:#fff;
@@ -46,7 +97,6 @@ body::before{
 }
 .header-left{display:flex;align-items:center;gap:20px;position:relative;z-index:1}
 
-/* ==================== LOGO ZONE ==================== */
 .logo-zone{
   display:flex;
   align-items:center;
@@ -93,13 +143,12 @@ body::before{
 .logo-text h1{font-size:22px;color:#e8c547;letter-spacing:1px;font-weight:800;text-shadow:0 2px 10px rgba(201,162,39,.3)}
 .logo-text small{font-size:11px;color:#a8c4a8;letter-spacing:1.5px;text-transform:uppercase}
 
-/* ==================== HEADER ACTIONS ==================== */
-.header-right{display:flex;align-items:center;gap:20px;position:relative;z-index:1}
+.header-right{display:flex;align-items:center;gap:15px;position:relative;z-index:1;flex-wrap:wrap}
 .header-search input{
   padding:11px 18px;
   border:none;
   border-radius:25px;
-  width:260px;
+  width:220px;
   outline:none;
   background:rgba(255,255,255,.1);
   color:#fff;
@@ -108,7 +157,7 @@ body::before{
   transition:.3s;
 }
 .header-search input::placeholder{color:rgba(255,255,255,.5)}
-.header-search input:focus{background:rgba(255,255,255,.2);border-color:#c9a227;width:300px}
+.header-search input:focus{background:rgba(255,255,255,.2);border-color:#c9a227;width:260px}
 .header-bell{
   position:relative;
   font-size:22px;
@@ -156,7 +205,7 @@ body::before{
 }
 .header-user span{color:#fff;font-size:13px;font-weight:600}
 
-/* ==================== NAVIGATION TABS (EN HAUT) ==================== */
+/* ==================== NAV TABS ==================== */
 .nav-tabs{
   background:#fff;
   padding:0 30px;
@@ -240,7 +289,6 @@ body::before{
 }
 .page-header p{color:#5a6b5a;font-size:13px;margin-top:5px}
 
-/* ==================== BANNIÈRE ALERTE ==================== */
 .alert-banner{display:none;background:linear-gradient(135deg,#fef3c7,#fde68a);border-left:5px solid #e07c24;padding:18px 25px;border-radius:12px;margin-bottom:25px;align-items:center;gap:15px;box-shadow:0 4px 15px rgba(224,124,36,.15)}
 .alert-banner.show{display:flex;animation:slideIn .4s}
 .alert-banner.danger{background:linear-gradient(135deg,#fee2e2,#fecaca);border-left-color:#dc2626;box-shadow:0 4px 15px rgba(220,38,38,.2)}
@@ -253,17 +301,9 @@ body::before{
 .alert-banner.danger .content p{color:#7f1d1d}
 .alert-banner .close-alert{background:rgba(0,0,0,.08);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;color:#78350f}
 
-/* ==================== STATS ==================== */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-bottom:25px}
 .stat{background:#fff;padding:22px;border-radius:14px;box-shadow:0 2px 15px rgba(26,58,26,.06);border-left:4px solid #7cb342;transition:.3s;cursor:pointer;position:relative;overflow:hidden}
-.stat::before{
-  content:'';
-  position:absolute;
-  top:0;right:0;
-  width:70px;height:70px;
-  background:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(201,162,39,.05) 4px,rgba(201,162,39,.05) 5px);
-  opacity:.7;
-}
+.stat::before{content:'';position:absolute;top:0;right:0;width:70px;height:70px;background:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(201,162,39,.05) 4px,rgba(201,162,39,.05) 5px);opacity:.7}
 .stat::after{content:'';position:absolute;top:-20px;right:-20px;width:90px;height:90px;background:radial-gradient(circle,#e8f5dc,transparent 70%);border-radius:50%}
 .stat:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(26,58,26,.15)}
 .stat.green{border-left-color:#7cb342}
@@ -275,21 +315,8 @@ body::before{
 .stat h3{font-size:28px;color:#1a3a1a;position:relative;z-index:1;font-weight:800}
 .stat p{font-size:13px;color:#4a5a4a;margin-top:6px;position:relative;z-index:1;font-weight:600}
 
-/* ==================== CARD ==================== */
 .card{background:#fff;border-radius:14px;box-shadow:0 2px 15px rgba(26,58,26,.06);padding:22px;margin-bottom:25px;position:relative;overflow:hidden}
-.card::before{
-  content:'';
-  position:absolute;
-  top:0;left:0;right:0;
-  height:3px;
-  background:repeating-linear-gradient(90deg,
-    #c9a227 0px, #c9a227 15px,
-    transparent 15px, transparent 20px,
-    #7cb342 20px, #7cb342 35px,
-    transparent 35px, transparent 40px,
-    #1a3a1a 40px, #1a3a1a 55px,
-    transparent 55px, transparent 60px);
-}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:repeating-linear-gradient(90deg,#c9a227 0px,#c9a227 15px,transparent 15px,transparent 20px,#7cb342 20px,#7cb342 35px,transparent 35px,transparent 40px,#1a3a1a 40px,#1a3a1a 55px,transparent 55px,transparent 60px)}
 .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:15px;padding-top:5px}
 .card-header h2{font-size:17px;color:#1a3a1a;display:flex;align-items:center;gap:10px;font-weight:700}
 .card-header h2::before{content:'';display:inline-block;width:6px;height:22px;background:linear-gradient(180deg,#c9a227,#7cb342);border-radius:3px}
@@ -298,7 +325,6 @@ body::before{
 .btn-new:hover::before{left:100%}
 .btn-new:hover{background:linear-gradient(135deg,#3d5a3d,#2d4a2d);transform:translateY(-2px);box-shadow:0 8px 20px rgba(26,58,26,.35)}
 
-/* ==================== FILTRES ==================== */
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
 .filter-tab{padding:9px 18px;border-radius:8px;background:#f0f5e8;color:#2d4a2d;font-size:13px;font-weight:600;cursor:pointer;border:1px solid #d4e0c8;transition:.3s;display:flex;align-items:center;gap:8px}
 .filter-tab:hover{background:#e8f0dc;border-color:#c9a227}
@@ -306,7 +332,6 @@ body::before{
 .filter-tab .count{background:rgba(255,255,255,.3);padding:2px 8px;border-radius:10px;font-size:11px}
 .filter-tab:not(.active) .count{background:#c8dcc8;color:#2d4a2d}
 
-/* ==================== TABLE ==================== */
 table{width:100%;border-collapse:collapse;font-size:14px}
 th{text-align:left;padding:14px 12px;background:linear-gradient(180deg,#f0f5e8,#e8f0dc);color:#1a3a1a;font-weight:700;font-size:11px;text-transform:uppercase;white-space:nowrap;border-bottom:2px solid #c9a227;letter-spacing:.5px}
 td{padding:14px 12px;border-bottom:1px solid #e8f0dc;vertical-align:middle}
@@ -353,7 +378,6 @@ tr.row-late:hover{background:#ffe5e5}
 .btn-delete{background:#fee2e2;color:#b91c1c}
 .btn-delete:hover{background:#fecaca}
 
-/* ==================== FORM ==================== */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .form-group{display:flex;flex-direction:column}
 .form-group.full{grid-column:1/-1}
@@ -397,16 +421,16 @@ tr.row-late:hover{background:#ffe5e5}
 
 .form-actions{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-top:30px;padding-top:25px;border-top:2px solid #e8f0dc;grid-column:1/-1}
 .btn{padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:.2s}
+.btn:disabled{opacity:.5;cursor:not-allowed}
 .btn-secondary{background:#e8f0dc;color:#2d4a2d}
-.btn-secondary:hover{background:#d4e0c8}
+.btn-secondary:hover:not(:disabled){background:#d4e0c8}
 .btn-primary{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border:1px solid #c9a227}
-.btn-primary:hover{background:linear-gradient(135deg,#3d5a3d,#2d4a2d);transform:translateY(-2px)}
+.btn-primary:hover:not(:disabled){background:linear-gradient(135deg,#3d5a3d,#2d4a2d);transform:translateY(-2px)}
 .btn-success{background:linear-gradient(135deg,#7cb342,#558b2f);color:#fff;box-shadow:0 4px 12px rgba(124,179,66,.3)}
-.btn-success:hover{background:linear-gradient(135deg,#8bc34a,#689f38);transform:translateY(-2px);box-shadow:0 8px 20px rgba(124,179,66,.4)}
+.btn-success:hover:not(:disabled){background:linear-gradient(135deg,#8bc34a,#689f38);transform:translateY(-2px);box-shadow:0 8px 20px rgba(124,179,66,.4)}
 .btn-danger{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
-.btn-danger:hover{background:#991b1b}
+.btn-danger:hover:not(:disabled){background:#991b1b}
 
-/* ==================== CLIENT INFO BOX ==================== */
 .client-info{background:linear-gradient(135deg,#f9fbf6,#f0f5e8);border:2px solid #c9a227;border-radius:12px;padding:18px;margin-bottom:20px;position:relative;overflow:hidden}
 .client-info::before{content:'';position:absolute;top:0;right:0;width:80px;height:80px;background:repeating-linear-gradient(45deg,transparent,transparent 5px,rgba(201,162,39,.08) 5px,rgba(201,162,39,.08) 6px);pointer-events:none}
 .client-info h4{font-size:14px;color:#1a3a1a;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}
@@ -424,7 +448,6 @@ tr.row-late:hover{background:#ffe5e5}
 .progress-bar::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(0,0,0,.05) 3px,rgba(0,0,0,.05) 6px);z-index:1}
 .progress-bar div{height:100%;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:#fff;font-size:10px;font-weight:700;transition:width .4s;position:relative;z-index:0}
 
-/* ==================== ALERT ==================== */
 .alert{padding:15px 18px;border-radius:10px;margin:15px 0;display:flex;gap:12px;align-items:flex-start;font-size:13px}
 .alert-danger{background:#fee2e2;border-left:4px solid #dc2626;color:#991b1b}
 .alert-warning{background:#fef3c7;border-left:4px solid #e07c24;color:#92400e}
@@ -439,7 +462,6 @@ tr.row-late:hover{background:#ffe5e5}
 .echeance-warning{background:#fef9e8;border:1px solid #e8c547;border-radius:8px;padding:12px;margin-top:8px;font-size:12px;color:#78350f;display:none}
 .echeance-warning.show{display:block}
 
-/* ==================== MODAL ==================== */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(26,58,26,.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;backdrop-filter:blur(4px)}
 .modal-overlay.show{display:flex}
 .modal{background:#fff;border-radius:16px;max-width:900px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 25px 50px rgba(26,58,26,.4);animation:slideUp .3s;position:relative}
@@ -452,7 +474,6 @@ tr.row-late:hover{background:#ffe5e5}
 .modal-body{padding:25px 28px}
 .modal-footer{padding:18px 28px;border-top:2px solid #e8f0dc;display:flex;justify-content:flex-end;gap:12px;position:sticky;bottom:0;background:#fff;border-radius:0 0 16px 16px}
 
-/* ==================== DETAIL BLOCKS ==================== */
 .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
 .detail-block{background:#f9fbf6;border-radius:10px;padding:16px;border-left:3px solid #c9a227;position:relative;overflow:hidden}
 .detail-block::after{content:'';position:absolute;bottom:-5px;right:-5px;width:40px;height:40px;background:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(201,162,39,.1) 3px,rgba(201,162,39,.1) 4px);border-radius:50%;opacity:.6}
@@ -462,7 +483,6 @@ tr.row-late:hover{background:#ffe5e5}
 .detail-block ul li:last-child{border:none}
 .detail-block ul li span:first-child{color:#5a6b5a;font-weight:600}
 
-/* ==================== WORKFLOW ==================== */
 .workflow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:15px 0;padding:15px;background:#f9fbf6;border-radius:10px;border:1px dashed #d4e0c8}
 .wf-step{display:flex;align-items:center;gap:6px;padding:8px 14px;background:#fff;border:2px solid #d4e0c8;border-radius:8px;font-size:12px;font-weight:600;color:#5a6b5a;transition:.2s}
 .wf-step.done{background:#dcf5c4;border-color:#7cb342;color:#3d6b3d}
@@ -470,7 +490,6 @@ tr.row-late:hover{background:#ffe5e5}
 .wf-step.rejected{background:#fee2e2;border-color:#dc2626;color:#b91c1c}
 .wf-arrow{color:#c9a227;font-size:14px;font-weight:700}
 
-/* ==================== NOTIF PANEL ==================== */
 .notif-panel{position:fixed;top:90px;right:30px;width:380px;max-height:500px;background:#fff;border-radius:14px;box-shadow:0 20px 50px rgba(26,58,26,.35);z-index:1500;display:none;overflow:hidden;border-top:5px solid transparent;border-image:repeating-linear-gradient(90deg,#c9a227 0,#c9a227 15px,transparent 15px,transparent 20px,#7cb342 20px,#7cb342 35px,transparent 35px,transparent 40px) 1}
 .notif-panel.show{display:block;animation:slideIn .3s}
 .notif-panel-header{padding:18px 22px;background:linear-gradient(135deg,#1a3a1a,#2d4a2d);color:#fff;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden}
@@ -489,7 +508,6 @@ tr.row-late:hover{background:#ffe5e5}
 .notif-empty{text-align:center;padding:40px 20px;color:#7a8a7a}
 .notif-empty .icon{font-size:40px;margin-bottom:10px}
 
-/* ==================== TOAST ==================== */
 .toast{position:fixed;bottom:30px;right:30px;background:#1a3a1a;color:#fff;padding:15px 25px;border-radius:10px;box-shadow:0 10px 30px rgba(26,58,26,.3);display:flex;align-items:center;gap:12px;transform:translateY(100px);opacity:0;transition:.3s;z-index:2000;max-width:450px;border-left:4px solid #c9a227}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.success{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);border-left-color:#7cb342}
@@ -501,38 +519,13 @@ tr.row-late:hover{background:#ffe5e5}
 .empty h3{color:#2d4a2d;margin-bottom:8px}
 .empty a{color:#c9a227;text-decoration:none;font-weight:700;cursor:pointer}
 
-/* ==================== LOGO UPLOAD MODAL ==================== */
-.logo-upload-area{
-  border:3px dashed #c9a227;
-  border-radius:12px;
-  padding:40px 20px;
-  text-align:center;
-  cursor:pointer;
-  transition:.3s;
-  background:#fef9e8;
-  margin-bottom:20px;
-}
+.logo-upload-area{border:3px dashed #c9a227;border-radius:12px;padding:40px 20px;text-align:center;cursor:pointer;transition:.3s;background:#fef9e8;margin-bottom:20px}
 .logo-upload-area:hover{background:#fde68a;border-color:#92400e}
 .logo-upload-area .icon{font-size:48px;margin-bottom:10px;display:block}
 .logo-upload-area .title{font-size:15px;font-weight:700;color:#1a3a1a;margin-bottom:5px}
 .logo-upload-area .hint{font-size:12px;color:#5a6b5a}
-.logo-preview{
-  display:flex;
-  justify-content:center;
-  margin-bottom:20px;
-}
-.logo-preview-box{
-  width:120px;height:120px;
-  border-radius:16px;
-  background:linear-gradient(135deg,#c9a227,#e8c547);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:60px;
-  border:3px solid #1a3a1a;
-  box-shadow:0 8px 25px rgba(201,162,39,.3);
-  overflow:hidden;
-}
+.logo-preview{display:flex;justify-content:center;margin-bottom:20px}
+.logo-preview-box{width:120px;height:120px;border-radius:16px;background:linear-gradient(135deg,#c9a227,#e8c547);display:flex;align-items:center;justify-content:center;font-size:60px;border:3px solid #1a3a1a;box-shadow:0 8px 25px rgba(201,162,39,.3);overflow:hidden}
 .logo-preview-box img{width:100%;height:100%;object-fit:cover}
 
 @media(max-width:900px){
@@ -551,10 +544,17 @@ tr.row-late:hover{background:#ffe5e5}
 </head>
 <body>
 
+<!-- ==================== LOADER ==================== -->
+<div id="firebaseLoader">
+  <div class="logo-big">🌾</div>
+  <h1>TAMA</h1>
+  <p>Connexion à Firebase...</p>
+  <div class="spinner"></div>
+</div>
+
 <!-- ==================== HEADER ==================== -->
 <header class="header">
   <div class="header-left">
-    <!-- LOGO ZONE (cliquable pour changer) -->
     <div class="logo-zone" onclick="openLogoModal()" title="Cliquez pour changer le logo">
       <div class="logo-display" id="logoDisplay">
         <span id="logoIcon">🌾</span>
@@ -569,6 +569,10 @@ tr.row-late:hover{background:#ffe5e5}
   </div>
 
   <div class="header-right">
+    <div class="fb-status" id="fbStatus">
+      <div class="dot"></div>
+      <span id="fbStatusText">Connexion...</span>
+    </div>
     <div class="header-search">
       <input id="globalSearch" placeholder="🔍 Rechercher..." onkeyup="handleSearch()">
     </div>
@@ -582,7 +586,7 @@ tr.row-late:hover{background:#ffe5e5}
   </div>
 </header>
 
-<!-- ==================== NAV TABS (EN HAUT) ==================== -->
+<!-- ==================== NAV TABS ==================== -->
 <nav class="nav-tabs">
   <button class="nav-tab active" data-page="dashboard" onclick="navigate('dashboard')">
     <span class="icon">📊</span> Tableau de bord
@@ -603,7 +607,6 @@ tr.row-late:hover{background:#ffe5e5}
 <!-- ==================== MAIN ==================== -->
 <main class="main">
 
-  <!-- ==================== PAGE DASHBOARD ==================== -->
   <div class="page active" id="page-dashboard">
     <div class="page-header">
       <div>
@@ -642,7 +645,6 @@ tr.row-late:hover{background:#ffe5e5}
     </div>
   </div>
 
-  <!-- ==================== PAGE NOUVEAU CLIENT ==================== -->
   <div class="page" id="page-nouveau">
     <div class="page-header">
       <div>
@@ -815,14 +817,13 @@ tr.row-late:hover{background:#ffe5e5}
 
         <div class="form-actions">
           <button type="button" class="btn btn-secondary" onclick="resetClientForm()">🗑 Réinitialiser</button>
-          <button type="button" class="btn btn-success" onclick="submitClientForm()">✅ Enregistrer le client</button>
+          <button type="button" class="btn btn-success" id="btnSubmitClient" onclick="submitClientForm()">✅ Enregistrer le client</button>
         </div>
 
       </form>
     </div>
   </div>
 
-  <!-- ==================== PAGE DEMANDES ==================== -->
   <div class="page" id="page-demandes">
     <div class="page-header">
       <div>
@@ -859,7 +860,6 @@ tr.row-late:hover{background:#ffe5e5}
     </div>
   </div>
 
-  <!-- ==================== PAGE FACTURES ==================== -->
   <div class="page" id="page-factures">
     <div class="page-header">
       <div>
@@ -917,7 +917,6 @@ tr.row-late:hover{background:#ffe5e5}
   </div>
 </main>
 
-<!-- ==================== NOTIFICATION PANEL ==================== -->
 <div class="notif-panel" id="notifPanel">
   <div class="notif-panel-header">
     <h3>🔔 Notifications</h3>
@@ -926,7 +925,6 @@ tr.row-late:hover{background:#ffe5e5}
   <div class="notif-panel-body" id="notifBody"></div>
 </div>
 
-<!-- ==================== MODAL GÉNÉRAL ==================== -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <div class="modal-header">
@@ -938,7 +936,6 @@ tr.row-late:hover{background:#ffe5e5}
   </div>
 </div>
 
-<!-- ==================== MODAL LOGO ==================== -->
 <div class="modal-overlay" id="logoModal">
   <div class="modal" style="max-width:500px">
     <div class="modal-header">
@@ -956,12 +953,12 @@ tr.row-late:hover{background:#ffe5e5}
       <label class="logo-upload-area" for="logoFileInput">
         <span class="icon">📁</span>
         <div class="title">Cliquez pour choisir une image</div>
-        <div class="hint">Formats acceptés : PNG, JPG, SVG · Taille max 2 Mo</div>
+        <div class="hint">Formats acceptés : PNG, JPG, SVG · Taille max 500 Ko</div>
         <input type="file" id="logoFileInput" accept="image/*" style="display:none" onchange="handleLogoUpload(event)">
       </label>
 
       <div style="padding:15px;background:#f0f9e8;border-left:4px solid #7cb342;border-radius:8px;font-size:13px;color:#3d6b3d">
-        💡 <strong>Astuce :</strong> Utilisez une image carrée (ex: 200×200 px) pour un meilleur rendu.
+        💡 <strong>Astuce :</strong> Le logo est synchronisé sur tous les appareils via Firebase.
       </div>
     </div>
     <div class="modal-footer">
@@ -971,8 +968,40 @@ tr.row-late:hover{background:#ffe5e5}
   </div>
 </div>
 
-<!-- ==================== TOAST ==================== -->
 <div class="toast" id="toast"><span id="toastIcon">✅</span><span id="toastMsg"></span></div>
+
+<!-- ==================== FIREBASE SDK ==================== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, onValue, set, update, remove, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAzetUtAuLilj2OzAfEdMo7zFvFUFu7EQE",
+  authDomain: "tama-b4f63.firebaseapp.com",
+  databaseURL: "https://tama-b4f63-default-rtdb.firebaseio.com",
+  projectId: "tama-b4f63",
+  storageBucket: "tama-b4f63.firebasestorage.app",
+  messagingSenderId: "14758669505",
+  appId: "1:14758669505:web:10e6338fedcf61c0f1b840",
+  measurementId: "G-R90Y08QBR1"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// Exposer globalement
+window.db = db;
+window.fbRef = ref;
+window.fbOnValue = onValue;
+window.fbSet = set;
+window.fbUpdate = update;
+window.fbRemove = remove;
+window.fbPush = push;
+window.fbServerTimestamp = serverTimestamp;
+
+// Signaler que Firebase est prêt
+window.dispatchEvent(new Event('firebase-ready'));
+</script>
 
 <script>
 // ============================================================
@@ -985,42 +1014,125 @@ let factureFilter = 'all';
 let currentClientId = null;
 let currentPage = 'dashboard';
 let logoData = null;
+let fbReady = false;
+let fbConnected = false;
+
+// ============================================================
+// ==================== NOTIFICATIONS FB STATUS ===============
+// ============================================================
+function setFbStatus(status, text){
+  const el = document.getElementById('fbStatus');
+  const txt = document.getElementById('fbStatusText');
+  el.className = 'fb-status ' + status;
+  txt.textContent = text;
+}
+
+// ============================================================
+// ==================== INITIALISATION FIREBASE ===============
+// ============================================================
+window.addEventListener('firebase-ready', () => {
+  fbReady = true;
+  console.log('🔥 Firebase ready');
+  initFirebaseListeners();
+});
+
+function initFirebaseListeners(){
+  setFbStatus('syncing', 'Synchronisation...');
+  
+  // Écouter les clients
+  const clientsRef = window.fbRef(window.db, 'clients');
+  window.fbOnValue(clientsRef, (snapshot) => {
+    const data = snapshot.val();
+    clients = data ? Object.values(data) : [];
+    clients.forEach(c => {
+      if(c.soldeUtilise === undefined) c.soldeUtilise = 0;
+      if(c.disponible === undefined) c.disponible = c.plafond;
+    });
+    fbConnected = true;
+    setFbStatus('', 'En ligne');
+    hideLoader();
+    refreshAll();
+  }, (error) => {
+    console.error('Erreur Firebase:', error);
+    setFbStatus('offline', 'Hors ligne');
+    showToast('⚠️ Erreur de connexion Firebase', 'error');
+  });
+  
+  // Écouter les factures
+  const facturesRef = window.fbRef(window.db, 'factures');
+  window.fbOnValue(facturesRef, (snapshot) => {
+    const data = snapshot.val();
+    factures = data ? Object.values(data) : [];
+    refreshAll();
+  });
+  
+  // Écouter le logo
+  const logoRef = window.fbRef(window.db, 'settings/logo');
+  window.fbOnValue(logoRef, (snapshot) => {
+    const data = snapshot.val();
+    if(data){
+      logoData = data;
+      applyLogo(data);
+    } else {
+      resetLogoUI();
+    }
+  });
+  
+  // Timeout fallback
+  setTimeout(() => {
+    if(!fbConnected){
+      hideLoader();
+      setFbStatus('offline', 'Hors ligne');
+      showToast('⚠️ Firebase ne répond pas. Mode local activé.', 'warning');
+    }
+  }, 5000);
+}
+
+function hideLoader(){
+  const loader = document.getElementById('firebaseLoader');
+  if(loader && !loader.classList.contains('hidden')){
+    loader.classList.add('hidden');
+    setTimeout(() => loader.remove(), 500);
+  }
+}
 
 // ============================================================
 // ==================== GESTION DU LOGO =======================
 // ============================================================
-function loadLogo(){
-  const saved = localStorage.getItem('tama_logo');
-  if(saved){
-    logoData = saved;
-    applyLogo(saved);
-  }
-}
-
 function applyLogo(dataUrl){
   const img = document.getElementById('logoImg');
   const icon = document.getElementById('logoIcon');
   const previewImg = document.getElementById('logoPreviewImg');
   const previewIcon = document.getElementById('logoPreviewIcon');
   
-  img.src = dataUrl;
-  img.style.display = 'block';
-  icon.style.display = 'none';
-  
-  if(previewImg){
-    previewImg.src = dataUrl;
-    previewImg.style.display = 'block';
-    previewIcon.style.display = 'none';
+  if(dataUrl){
+    img.src = dataUrl;
+    img.style.display = 'block';
+    icon.style.display = 'none';
+    
+    if(previewImg){
+      previewImg.src = dataUrl;
+      previewImg.style.display = 'block';
+      previewIcon.style.display = 'none';
+    }
   }
 }
 
 function resetLogoUI(){
   const img = document.getElementById('logoImg');
   const icon = document.getElementById('logoIcon');
-  img.src = '';
-  img.style.display = 'none';
-  icon.style.display = 'block';
-  document.getElementById('logoFileInput').value = '';
+  if(img){
+    img.src = '';
+    img.style.display = 'none';
+  }
+  if(icon) icon.style.display = 'block';
+  const previewImg = document.getElementById('logoPreviewImg');
+  const previewIcon = document.getElementById('logoPreviewIcon');
+  if(previewImg){
+    previewImg.src = '';
+    previewImg.style.display = 'none';
+  }
+  if(previewIcon) previewIcon.style.display = 'block';
 }
 
 function openLogoModal(){
@@ -1035,8 +1147,8 @@ function handleLogoUpload(event){
   const file = event.target.files[0];
   if(!file) return;
   
-  if(file.size > 2 * 1024 * 1024){
-    showToast('Image trop volumineuse (max 2 Mo)', 'error');
+  if(file.size > 500 * 1024){
+    showToast('Image trop volumineuse (max 500 Ko)', 'error');
     return;
   }
   
@@ -1044,9 +1156,13 @@ function handleLogoUpload(event){
   reader.onload = (e) => {
     const dataUrl = e.target.result;
     logoData = dataUrl;
-    localStorage.setItem('tama_logo', dataUrl);
     applyLogo(dataUrl);
-    showToast('🖼️ Logo mis à jour !', 'success');
+    
+    if(fbReady){
+      window.fbSet(window.fbRef(window.db, 'settings/logo'), dataUrl)
+        .then(() => showToast('🖼️ Logo synchronisé sur Firebase !', 'success'))
+        .catch(err => showToast('Erreur: ' + err.message, 'error'));
+    }
     closeLogoModal();
   };
   reader.readAsDataURL(file);
@@ -1054,12 +1170,14 @@ function handleLogoUpload(event){
 
 function resetLogo(){
   if(!confirm('Réinitialiser le logo par défaut ?')) return;
-  localStorage.removeItem('tama_logo');
   logoData = null;
   resetLogoUI();
-  document.getElementById('logoPreviewImg').style.display = 'none';
-  document.getElementById('logoPreviewIcon').style.display = 'block';
-  showToast('Logo réinitialisé', 'success');
+  
+  if(fbReady){
+    window.fbRemove(window.fbRef(window.db, 'settings/logo'))
+      .then(() => showToast('Logo réinitialisé', 'success'))
+      .catch(err => showToast('Erreur: ' + err.message, 'error'));
+  }
   closeLogoModal();
 }
 
@@ -1082,20 +1200,55 @@ function navigate(page){
 }
 
 // ============================================================
-// ==================== STORAGE ===============================
+// ==================== FIREBASE HELPERS ======================
 // ============================================================
-function loadData(){
-  clients = JSON.parse(localStorage.getItem('tama_clients') || '[]');
-  factures = JSON.parse(localStorage.getItem('tama_factures') || '[]');
-  clients.forEach(c => {
-    if(c.soldeUtilise === undefined) c.soldeUtilise = 0;
-    if(c.disponible === undefined) c.disponible = c.plafond;
-  });
+async function fbSaveClient(client){
+  if(!fbReady) return;
+  try {
+    await window.fbSet(window.fbRef(window.db, 'clients/' + client.id), client);
+  } catch(err){
+    console.error('Erreur sauvegarde client:', err);
+    showToast('Erreur Firebase: ' + err.message, 'error');
+  }
 }
 
-function saveClients(){ localStorage.setItem('tama_clients', JSON.stringify(clients)); }
-function saveFactures(){ localStorage.setItem('tama_factures', JSON.stringify(factures)); }
-function saveAll(){ saveClients(); saveFactures(); }
+async function fbUpdateClient(id, updates){
+  if(!fbReady) return;
+  try {
+    await window.fbUpdate(window.fbRef(window.db, 'clients/' + id), updates);
+  } catch(err){
+    console.error('Erreur update client:', err);
+    showToast('Erreur Firebase: ' + err.message, 'error');
+  }
+}
+
+async function fbDeleteClient(id){
+  if(!fbReady) return;
+  try {
+    await window.fbRemove(window.fbRef(window.db, 'clients/' + id));
+  } catch(err){
+    console.error('Erreur delete client:', err);
+  }
+}
+
+async function fbSaveFacture(facture){
+  if(!fbReady) return;
+  try {
+    await window.fbSet(window.fbRef(window.db, 'factures/' + facture.id), facture);
+  } catch(err){
+    console.error('Erreur sauvegarde facture:', err);
+    showToast('Erreur Firebase: ' + err.message, 'error');
+  }
+}
+
+async function fbDeleteFacture(id){
+  if(!fbReady) return;
+  try {
+    await window.fbRemove(window.fbRef(window.db, 'factures/' + id));
+  } catch(err){
+    console.error('Erreur delete facture:', err);
+  }
+}
 
 // ============================================================
 // ==================== ÉCHÉANCE ==============================
@@ -1247,7 +1400,7 @@ function removeBanque(btn){
   else showToast('Au moins une banque', 'error');
 }
 
-function submitClientForm(){
+async function submitClientForm(){
   const nom = document.getElementById('nomClient').value.trim();
   const ice = document.getElementById('ice').value.trim();
   const adresse = document.getElementById('adresse').value.trim();
@@ -1260,6 +1413,10 @@ function submitClientForm(){
   if(!adresse){ showToast('Adresse obligatoire', 'error'); return; }
   if(!plafond || plafond <= 0){ showToast('Plafond > 0 requis', 'error'); return; }
   if(typeClient === 'physique' && !cin){ showToast('CIN obligatoire', 'error'); return; }
+  
+  const btn = document.getElementById('btnSubmitClient');
+  btn.disabled = true;
+  btn.textContent = '⏳ Enregistrement...';
   
   const client = {
     id: 'CLI-' + Date.now(),
@@ -1299,14 +1456,17 @@ function submitClientForm(){
     createdAt: new Date().toISOString()
   };
   
-  clients.push(client);
-  saveClients();
-  showToast('✅ Client "' + nom + '" enregistré !', 'success');
+  // Sauvegarder sur Firebase
+  await fbSaveClient(client);
+  
+  btn.disabled = false;
+  btn.textContent = '✅ Enregistrer le client';
+  
+  showToast('✅ Client "' + nom + '" enregistré sur Firebase !', 'success');
   
   setTimeout(() => {
     resetClientForm();
     navigate('demandes');
-    refreshAll();
   }, 800);
 }
 
@@ -1527,29 +1687,33 @@ function editDemande(id){
   openModal('✏️ Modifier — ' + d.nom, body, footer);
 }
 
-function saveEdit(){
+async function saveEdit(){
   const d = clients.find(x => x.id === currentClientId);
   if(!d) return;
-  d.nom = document.getElementById('editNom').value.trim();
-  d.ice = document.getElementById('editIce').value.trim();
-  d.rc = document.getElementById('editRc').value.trim();
-  d.cin = document.getElementById('editCin').value.trim();
-  d.adresse = document.getElementById('editAdresse').value.trim();
-  d.paiement = {
-    modeReglement: document.getElementById('editMode').value,
-    modalite: document.getElementById('editModalite').value,
-    delai: document.getElementById('editDelai').value
-  };
   const np = parseFloat(document.getElementById('editPlafond').value);
+  
+  const updates = {
+    nom: document.getElementById('editNom').value.trim(),
+    ice: document.getElementById('editIce').value.trim(),
+    rc: document.getElementById('editRc').value.trim(),
+    cin: document.getElementById('editCin').value.trim(),
+    adresse: document.getElementById('editAdresse').value.trim(),
+    paiement: {
+      modeReglement: document.getElementById('editMode').value,
+      modalite: document.getElementById('editModalite').value,
+      delai: document.getElementById('editDelai').value
+    },
+    updatedAt: new Date().toISOString()
+  };
+  
   if(np > 0){
-    d.plafond = np;
-    d.disponible = np - (d.soldeUtilise || 0);
+    updates.plafond = np;
+    updates.disponible = np - (d.soldeUtilise || 0);
   }
-  d.updatedAt = new Date().toISOString();
-  saveClients();
+  
+  await fbUpdateClient(currentClientId, updates);
   closeModal();
-  refreshAll();
-  showToast('✅ Modifications enregistrées', 'success');
+  showToast('✅ Modifications synchronisées', 'success');
 }
 
 function openApprove(id){
@@ -1583,22 +1747,24 @@ function openApprove(id){
   openModal('✅ Approuver — ' + d.nom, body, footer);
 }
 
-function confirmApprove(){
+async function confirmApprove(){
   const d = clients.find(x => x.id === currentClientId);
   if(!d) return;
   const plafond = parseFloat(document.getElementById('approvePlafond').value);
   if(!plafond || plafond <= 0){ showToast('Plafond invalide', 'error'); return; }
-  d.plafond = plafond;
-  d.disponible = plafond - (d.soldeUtilise || 0);
-  d.numeroCompte = document.getElementById('approveCompte').value.trim();
-  d.commentaireApprobation = document.getElementById('approveComment').value.trim();
-  d.statut = 'Acceptée';
-  d.approbations = {finance:'✅', commercial:'✅', direction:'✅'};
-  d.dateApprobation = new Date().toISOString();
-  saveClients();
+  
+  await fbUpdateClient(currentClientId, {
+    plafond: plafond,
+    disponible: plafond - (d.soldeUtilise || 0),
+    numeroCompte: document.getElementById('approveCompte').value.trim(),
+    commentaireApprobation: document.getElementById('approveComment').value.trim(),
+    statut: 'Acceptée',
+    approbations: {finance:'✅', commercial:'✅', direction:'✅'},
+    dateApprobation: new Date().toISOString()
+  });
+  
   closeModal();
-  refreshAll();
-  showToast('✅ Demande approuvée !', 'success');
+  showToast('✅ Demande approuvée et synchronisée !', 'success');
 }
 
 function openReject(id){
@@ -1632,18 +1798,20 @@ function openReject(id){
   openModal('❌ Rejeter — ' + d.nom, body, footer);
 }
 
-function confirmReject(){
+async function confirmReject(){
   const d = clients.find(x => x.id === currentClientId);
   if(!d) return;
   const motif = document.querySelector('input[name="motifRejet"]:checked').value;
   const details = document.getElementById('rejectDetails').value.trim();
-  d.statut = 'Rejetée';
-  d.motifRejet = motif + (details ? ' — ' + details : '');
-  d.dateRejet = new Date().toISOString();
-  saveClients();
+  
+  await fbUpdateClient(currentClientId, {
+    statut: 'Rejetée',
+    motifRejet: motif + (details ? ' — ' + details : ''),
+    dateRejet: new Date().toISOString()
+  });
+  
   closeModal();
-  refreshAll();
-  showToast('❌ Demande rejetée', 'error');
+  showToast('❌ Demande rejetée et synchronisée', 'error');
 }
 
 // ============================================================
@@ -1662,9 +1830,10 @@ function recalcClient(clientId){
   const utilise = factures
     .filter(f => f.clientId === clientId && f.statut !== 'Payée')
     .reduce((sum, f) => sum + f.montant, 0);
-  c.soldeUtilise = utilise;
-  c.disponible = c.plafond - utilise;
-  saveClients();
+  fbUpdateClient(clientId, {
+    soldeUtilise: utilise,
+    disponible: c.plafond - utilise
+  });
 }
 
 function renderFacturesPage(){
@@ -1869,9 +2038,6 @@ function refreshEcheance(){
   } else {
     warning.classList.remove('show');
   }
-  
-  echeanceInput.style.background = '#fef9e8';
-  setTimeout(() => echeanceInput.style.background = '#f0f9e8', 300);
 }
 
 function checkMontantFacture(){
@@ -1913,7 +2079,7 @@ function checkMontantFacture(){
   }
 }
 
-function saveFacture(){
+async function saveFacture(){
   const clientId = document.getElementById('factClient').value;
   const numero = document.getElementById('factNumero').value.trim();
   const montant = parseFloat(document.getElementById('factMontant').value);
@@ -1933,6 +2099,10 @@ function saveFacture(){
     return;
   }
   
+  const btn = document.getElementById('btnSaveFacture');
+  btn.disabled = true;
+  btn.textContent = '⏳...';
+  
   const facture = {
     id: 'FACT-' + Date.now(),
     clientId, numero, montant, dateEmission, echeance,
@@ -1942,11 +2112,9 @@ function saveFacture(){
     createdAt: new Date().toISOString()
   };
   
-  factures.push(facture);
+  await fbSaveFacture(facture);
   recalcClient(clientId);
-  saveAll();
   closeModal();
-  refreshAll();
   
   const st = getFactureStatut(facture);
   if(st.type === 'late' || st.type === 'today'){
@@ -1954,19 +2122,22 @@ function saveFacture(){
   } else if((c.disponible || 0) <= 0){
     showToast(`⚠️ Facture créée. CLIENT BLOQUÉ !`, 'warning');
   } else {
-    showToast(`✅ Facture ${numero} créée. Échéance : ${new Date(echeance).toLocaleDateString('fr-FR')}`, 'success');
+    showToast(`✅ Facture ${numero} synchronisée sur Firebase !`, 'success');
   }
 }
 
-function marquerPayee(factureId){
+async function marquerPayee(factureId){
   const f = factures.find(x => x.id === factureId);
   if(!f) return;
   if(!confirm(`Marquer la facture ${f.numero} (${f.montant.toLocaleString()} DH) comme PAYÉE ?`)) return;
-  f.statut = 'Payée';
-  f.datePaiement = new Date().toISOString();
+  
+  if(fbReady){
+    await window.fbUpdate(window.fbRef(window.db, 'factures/' + factureId), {
+      statut: 'Payée',
+      datePaiement: new Date().toISOString()
+    });
+  }
   recalcClient(f.clientId);
-  saveAll();
-  refreshAll();
   showToast(`✅ Facture ${f.numero} payée. Plafond libéré !`, 'success');
 }
 
@@ -2016,16 +2187,14 @@ function viewFacture(id){
   openModal('👁 Détails facture', body, footer);
 }
 
-function deleteFacture(id){
+async function deleteFacture(id){
   const f = factures.find(x => x.id === id);
   if(!f) return;
   if(!confirm(`Supprimer la facture ${f.numero} ?`)) return;
   const clientId = f.clientId;
-  factures = factures.filter(x => x.id !== id);
+  await fbDeleteFacture(id);
   recalcClient(clientId);
-  saveAll();
-  refreshAll();
-  showToast('🗑 Facture supprimée', 'success');
+  showToast('🗑 Facture supprimée et synchronisée', 'success');
 }
 
 // ============================================================
@@ -2085,7 +2254,6 @@ function updateNotifBadge(){
     badge.style.display = 'none';
   }
   
-  // Tab badges
   const tabDemandes = document.getElementById('tabBadgeDemandes');
   const tabFactures = document.getElementById('tabBadgeFactures');
   
@@ -2184,17 +2352,11 @@ function showToast(msg, type='success'){
   setTimeout(() => toast.classList.remove('show'), 4000);
 }
 
-// ============================================================
-// ==================== SEARCH ================================
-// ============================================================
 function handleSearch(){
   if(currentPage === 'demandes') renderDemandes();
   if(currentPage === 'factures') renderFactures();
 }
 
-// ============================================================
-// ==================== REFRESH ALL ===========================
-// ============================================================
 function refreshAll(){
   if(currentPage === 'dashboard') renderDashboard();
   if(currentPage === 'demandes') renderDemandes();
@@ -2214,29 +2376,13 @@ function startEcheanceChecker(){
       renderFactureStats();
       renderFactures();
     }
-    
-    factures.forEach(f => {
-      if(f.statut === 'Payée') return;
-      const currentType = getFactureStatut(f).type;
-      if(f._lastStatut === undefined) f._lastStatut = currentType;
-      else if(currentType !== f._lastStatut){
-        if(currentType === 'late' || currentType === 'today'){
-          const client = clients.find(c => c.id === f.clientId);
-          showToast(`🚨 Facture ${f.numero} (${client?.nom || '?'}) est EN RETARD !`, 'error');
-        }
-        f._lastStatut = currentType;
-      }
-    });
   }, 60000);
 }
 
 // ============================================================
 // ==================== INIT ==================================
 // ============================================================
-loadData();
-loadLogo();
 navigate('dashboard');
-refreshAll();
 startEcheanceChecker();
 
 document.getElementById('modalOverlay').addEventListener('click', e => {
@@ -2254,6 +2400,11 @@ document.addEventListener('click', e => {
     panel.classList.remove('show');
   }
 });
+
+// Fallback: si Firebase ne charge pas en 6 secondes, cacher le loader
+setTimeout(() => {
+  if(!fbConnected) hideLoader();
+}, 6000);
 </script>
 </body>
 </html>
