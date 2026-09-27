@@ -9,8 +9,7 @@
 body{font-family:'Segoe UI',Tahoma,sans-serif;background:#eef2ee;color:#1a2a1a;min-height:100vh;position:relative}
 
 body::before{
-  content:'';
-  position:fixed;top:0;left:0;right:0;bottom:0;
+  content:'';position:fixed;top:0;left:0;right:0;bottom:0;
   background-image:
     linear-gradient(rgba(26,58,26,.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(26,58,26,.025) 1px, transparent 1px),
@@ -20,7 +19,7 @@ body::before{
   pointer-events:none;z-index:0;
 }
 
-/* ==================== LOADER ==================== */
+/* LOADER */
 #firebaseLoader{
   position:fixed;top:0;left:0;right:0;bottom:0;
   background:linear-gradient(135deg,#1a3a1a,#2d4a2d);
@@ -41,7 +40,7 @@ body::before{
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
 
-/* ==================== LOGIN ==================== */
+/* LOGIN */
 #loginScreen{
   position:fixed;top:0;left:0;right:0;bottom:0;
   background:linear-gradient(135deg,#1a3a1a,#2d4a2d);
@@ -124,20 +123,8 @@ body::before{
   transform:translateY(-2px);box-shadow:0 8px 20px rgba(26,58,26,.35);
 }
 .login-btn:disabled{opacity:.6;cursor:not-allowed}
-.login-footer{text-align:center;margin-top:20px;font-size:12px;color:#5a6b5a}
-.login-footer code{
-  background:#f0f5e8;padding:2px 8px;border-radius:4px;
-  font-size:11px;color:#92400e;font-weight:600;
-}
-.test-btns{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
-.test-btns button{
-  padding:6px 14px;border-radius:6px;font-size:11px;font-weight:600;
-  cursor:pointer;transition:.2s;border:1px solid #d4e0c8;background:#f9fbf6;color:#2d4a2d;
-}
-.test-btns button:hover{background:#e8f0dc;border-color:#c9a227}
-.test-btns button.fin{background:#fef9e8;border-color:#c9a227;color:#92400e}
 
-/* ==================== FB STATUS ==================== */
+/* FB STATUS */
 .fb-status{
   display:flex;align-items:center;gap:6px;padding:6px 12px;
   background:rgba(255,255,255,.1);border-radius:20px;font-size:11px;
@@ -152,7 +139,7 @@ body::before{
 @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.5}}
 .fb-status span{color:#c8dcc8}
 
-/* ==================== HEADER ==================== */
+/* HEADER */
 .header{
   background:linear-gradient(135deg,#1a3a1a,#2d4a2d);color:#fff;
   padding:18px 30px;display:flex;justify-content:space-between;align-items:center;
@@ -165,7 +152,6 @@ body::before{
   pointer-events:none;
 }
 .header-left{display:flex;align-items:center;gap:20px;position:relative;z-index:1}
-
 .logo-zone{
   display:flex;align-items:center;gap:15px;padding:8px 16px;
   background:rgba(255,255,255,.08);border-radius:12px;
@@ -174,6 +160,8 @@ body::before{
 }
 .logo-zone:hover{background:rgba(255,255,255,.15);border-color:#c9a227}
 .logo-zone:hover .logo-edit{opacity:1;transform:scale(1)}
+.logo-zone.readonly{cursor:default}
+.logo-zone.readonly:hover{background:rgba(255,255,255,.08);border-color:rgba(201,162,39,.3)}
 .logo-display{
   width:48px;height:48px;border-radius:10px;
   background:linear-gradient(135deg,#c9a227,#e8c547);
@@ -267,7 +255,7 @@ body::before{
 .user-menu-item.danger:hover{background:#fee2e2}
 .user-menu-item .icon{font-size:18px}
 
-/* ==================== NAV TABS ==================== */
+/* NAV TABS */
 .nav-tabs{
   background:#fff;padding:0 30px;display:flex;gap:5px;
   position:sticky;top:84px;z-index:99;
@@ -283,8 +271,7 @@ body::before{
   transition:.3s;white-space:nowrap;border-bottom:3px solid transparent;
   margin-bottom:-1px;
 }
-.nav-tab:hover:not(:disabled){color:#1a3a1a;background:#f9fbf6}
-.nav-tab:disabled{opacity:.4;cursor:not-allowed}
+.nav-tab:hover{color:#1a3a1a;background:#f9fbf6}
 .nav-tab.active{color:#1a3a1a;border-bottom-color:#c9a227;font-weight:700}
 .nav-tab.active::before{
   content:'';position:absolute;top:0;left:20%;right:20%;height:3px;
@@ -295,14 +282,12 @@ body::before{
   background:#e07c24;color:#fff;font-size:10px;padding:2px 7px;
   border-radius:10px;font-weight:700;margin-left:5px;
 }
-.nav-tab .lock{font-size:11px;margin-left:5px;opacity:.6}
 
-/* ==================== MAIN ==================== */
+/* MAIN */
 .main{padding:30px;position:relative;z-index:1;max-width:1600px;margin:0 auto}
 .page{display:none}
 .page.active{display:block;animation:fadeIn .4s}
 @keyframes fadeIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
-
 .page-header{
   display:flex;justify-content:space-between;align-items:center;
   margin-bottom:25px;flex-wrap:wrap;gap:15px;
@@ -316,6 +301,15 @@ body::before{
   background:linear-gradient(180deg,#c9a227,#7cb342);border-radius:4px;
 }
 .page-header p{color:#5a6b5a;font-size:13px;margin-top:5px}
+
+/* Mode badge */
+.mode-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;
+  margin-left:10px;
+}
+.mode-badge.commercial{background:#e0f2fe;color:#0369a1}
+.mode-badge.financier{background:#fef9e8;color:#92400e}
 
 .alert-banner{
   display:none;background:linear-gradient(135deg,#fef3c7,#fde68a);
@@ -341,12 +335,7 @@ body::before{
 .stat{
   background:#fff;padding:22px;border-radius:14px;
   box-shadow:0 2px 15px rgba(26,58,26,.06);border-left:4px solid #7cb342;
-  transition:.3s;cursor:pointer;position:relative;overflow:hidden;
-}
-.stat::before{
-  content:'';position:absolute;top:0;right:0;width:70px;height:70px;
-  background:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(201,162,39,.05) 4px,rgba(201,162,39,.05) 5px);
-  opacity:.7;
+  transition:.3s;position:relative;overflow:hidden;
 }
 .stat::after{
   content:'';position:absolute;top:-20px;right:-20px;width:90px;height:90px;
@@ -358,7 +347,6 @@ body::before{
 .stat.yellow{border-left-color:#e07c24}
 .stat.orange{border-left-color:#ea580c}
 .stat.red{border-left-color:#dc2626}
-.stat.brown{border-left-color:#8b4513}
 .stat h3{font-size:28px;color:#1a3a1a;position:relative;z-index:1;font-weight:800}
 .stat p{font-size:13px;color:#4a5a4a;margin-top:6px;position:relative;z-index:1;font-weight:600}
 
@@ -387,7 +375,7 @@ body::before{
   border:1px solid #c9a227;padding:11px 22px;border-radius:8px;
   font-size:14px;font-weight:600;cursor:pointer;transition:.3s;
   display:inline-flex;align-items:center;gap:8px;
-  box-shadow:0 4px 12px rgba(26,58,26,.25);position:relative;overflow:hidden;
+  box-shadow:0 4px 12px rgba(26,58,26,.25);
 }
 .btn-new:hover{
   background:linear-gradient(135deg,#3d5a3d,#2d4a2d);
@@ -451,11 +439,6 @@ tr.row-late:hover{background:#ffe5e5}
   width:100%;height:8px;background:#e8f0dc;border-radius:4px;
   overflow:hidden;margin-top:4px;position:relative;
 }
-.progress::before{
-  content:'';position:absolute;top:0;left:0;right:0;bottom:0;
-  background:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(0,0,0,.03) 3px,rgba(0,0,0,.03) 6px);
-  z-index:1;
-}
 .progress div{height:100%;border-radius:4px;transition:width .3s;position:relative;z-index:0}
 
 .actions-cell{display:flex;gap:6px;flex-wrap:wrap}
@@ -504,7 +487,7 @@ tr.row-late:hover{background:#ffe5e5}
   background:linear-gradient(135deg,#c9a227,#7cb342);color:#fff;
   width:28px;height:28px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:800;box-shadow:0 2px 8px rgba(201,162,39,.3);
+  font-size:13px;font-weight:800;
 }
 
 .radio-group{display:flex;gap:25px;margin-top:5px;flex-wrap:wrap}
@@ -517,7 +500,7 @@ tr.row-late:hover{background:#ffe5e5}
 .radio-group input[type=radio]{width:18px;height:18px;accent-color:#c9a227}
 .radio-group label.checked{border-color:#c9a227;background:#fef9e8;color:#92400e;font-weight:600}
 
-.interlocuteurs-table{grid-column:1/-1;width:100%;border-collapse:collapse;margin-top:10px;border-radius:8px;overflow:hidden}
+.interlocuteurs-table{grid-column:1/-1;width:100%;border-collapse:collapse;margin-top:10px}
 .interlocuteurs-table th{
   background:linear-gradient(180deg,#f0f5e8,#e8f0dc);
   padding:12px;font-size:12px;color:#1a3a1a;
@@ -529,14 +512,12 @@ tr.row-late:hover{background:#ffe5e5}
   padding:9px 12px;border:1px solid #d4e0c8;border-radius:6px;
   font-size:13px;outline:none;width:100%;background:#f9fbf6;
 }
-.interlocuteurs-table input:focus{border-color:#c9a227;background:#fff}
 
 .banque-row{display:grid;grid-template-columns:1fr 1fr 2fr auto;gap:10px;margin-bottom:10px;align-items:center}
 .banque-row input{
   padding:11px 14px;border:1px solid #d4e0c8;border-radius:8px;
   font-size:14px;outline:none;background:#f9fbf6;
 }
-.banque-row input:focus{border-color:#c9a227;background:#fff}
 .banque-row button{
   background:#fee2e2;color:#b91c1c;border:none;
   padding:11px 15px;border-radius:8px;cursor:pointer;font-weight:600;
@@ -546,7 +527,6 @@ tr.row-late:hover{background:#ffe5e5}
   padding:12px;border-radius:8px;font-weight:600;cursor:pointer;
   width:100%;transition:.2s;margin-top:5px;
 }
-.btn-add-bank:hover{background:#fde68a}
 
 .paiement-options{display:flex;gap:12px;flex-wrap:wrap;margin-top:5px}
 .pay-opt{
@@ -554,7 +534,6 @@ tr.row-late:hover{background:#ffe5e5}
   border:2px solid #d4e0c8;border-radius:10px;cursor:pointer;
   font-size:14px;transition:.2s;background:#f9fbf6;
 }
-.pay-opt:hover{border-color:#c9a227;background:#fef9e8}
 .pay-opt input{width:18px;height:18px;accent-color:#c9a227}
 .pay-opt.checked{border-color:#c9a227;background:#fef9e8;color:#92400e;font-weight:600}
 
@@ -566,30 +545,17 @@ tr.row-late:hover{background:#ffe5e5}
 .btn{padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:.2s}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .btn-secondary{background:#e8f0dc;color:#2d4a2d}
-.btn-secondary:hover:not(:disabled){background:#d4e0c8}
-.btn-primary{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border:1px solid #c9a227}
-.btn-primary:hover:not(:disabled){background:linear-gradient(135deg,#3d5a3d,#2d4a2d);transform:translateY(-2px)}
-.btn-success{background:linear-gradient(135deg,#7cb342,#558b2f);color:#fff;box-shadow:0 4px 12px rgba(124,179,66,.3)}
-.btn-success:hover:not(:disabled){background:linear-gradient(135deg,#8bc34a,#689f38);transform:translateY(-2px)}
+.btn-success{background:linear-gradient(135deg,#7cb342,#558b2f);color:#fff}
 .btn-danger{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
-.btn-danger:hover:not(:disabled){background:#991b1b}
+.btn-primary{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border:1px solid #c9a227}
 
 .client-info{
   background:linear-gradient(135deg,#f9fbf6,#f0f5e8);
   border:2px solid #c9a227;border-radius:12px;
-  padding:18px;margin-bottom:20px;position:relative;overflow:hidden;
+  padding:18px;margin-bottom:20px;
 }
-.client-info::before{
-  content:'';position:absolute;top:0;right:0;width:80px;height:80px;
-  background:repeating-linear-gradient(45deg,transparent,transparent 5px,rgba(201,162,39,.08) 5px,rgba(201,162,39,.08) 6px);
-  pointer-events:none;
-}
-.client-info h4{
-  font-size:14px;color:#1a3a1a;margin-bottom:12px;
-  display:flex;justify-content:space-between;align-items:center;
-  position:relative;z-index:1;
-}
-.client-info .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;position:relative;z-index:1}
+.client-info h4{font-size:14px;color:#1a3a1a;margin-bottom:12px}
+.client-info .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .client-info .item{text-align:center;padding:10px;background:#fff;border-radius:8px;border:1px solid #e8f0dc}
 .client-info .item small{font-size:11px;color:#5a6b5a;display:block;margin-bottom:4px;font-weight:600}
 .client-info .item strong{font-size:16px;font-weight:800}
@@ -597,19 +563,18 @@ tr.row-late:hover{background:#ffe5e5}
 .client-info .item.utilise strong{color:#b91c1c}
 .client-info .item.dispo strong{color:#558b2f}
 
-.progress-wrap{margin-top:15px;position:relative;z-index:1}
+.progress-wrap{margin-top:15px}
 .progress-wrap .lbl{display:flex;justify-content:space-between;font-size:12px;color:#2d4a2d;margin-bottom:6px;font-weight:600}
-.progress-bar{height:14px;background:#e8f0dc;border-radius:7px;overflow:hidden;position:relative}
+.progress-bar{height:14px;background:#e8f0dc;border-radius:7px;overflow:hidden}
 .progress-bar div{
   height:100%;display:flex;align-items:center;justify-content:flex-end;
   padding-right:8px;color:#fff;font-size:10px;font-weight:700;
-  transition:width .4s;position:relative;z-index:0;
+  transition:width .4s;
 }
 
 .alert{padding:15px 18px;border-radius:10px;margin:15px 0;display:flex;gap:12px;align-items:flex-start;font-size:13px}
 .alert-danger{background:#fee2e2;border-left:4px solid #dc2626;color:#991b1b}
 .alert-warning{background:#fef3c7;border-left:4px solid #e07c24;color:#92400e}
-.alert-success{background:#dcf5c4;border-left:4px solid #7cb342;color:#3d6b3d}
 .alert .icon{font-size:20px;flex-shrink:0}
 
 .amount-preview{background:#f9fbf6;padding:15px;border-radius:10px;margin-top:10px;display:none}
@@ -643,7 +608,7 @@ tr.row-late:hover{background:#ffe5e5}
 }
 .modal::before{
   content:'';position:absolute;top:0;left:0;right:0;height:5px;
-  background:repeating-linear-gradient(90deg,#c9a227 0px,#c9a227 20px,transparent 20px,transparent 25px,#7cb342 25px,#7cb342 45px,transparent 45px,transparent 50px,#1a3a1a 50px,#1a3a1a 70px,transparent 70px,transparent 75px);
+  background:repeating-linear-gradient(90deg,#c9a227 0px,#c9a227 20px,transparent 20px,transparent 25px,#7cb342 25px,#7cb342 45px,transparent 45px,transparent 50px);
   border-radius:16px 16px 0 0;
 }
 .modal-header{
@@ -656,7 +621,6 @@ tr.row-late:hover{background:#ffe5e5}
   background:#e8f0dc;border:none;width:36px;height:36px;
   border-radius:50%;font-size:18px;cursor:pointer;color:#2d4a2d;transition:.2s;
 }
-.modal-header .close:hover{background:#c9a227;color:#fff;transform:rotate(90deg)}
 .modal-body{padding:25px 28px}
 .modal-footer{
   padding:18px 28px;border-top:2px solid #e8f0dc;
@@ -686,7 +650,7 @@ tr.row-late:hover{background:#ffe5e5}
   font-size:12px;font-weight:600;color:#5a6b5a;
 }
 .wf-step.done{background:#dcf5c4;border-color:#7cb342;color:#3d6b3d}
-.wf-step.current{background:#fef9e8;border-color:#c9a227;color:#92400e;box-shadow:0 0 0 3px rgba(201,162,39,.2)}
+.wf-step.current{background:#fef9e8;border-color:#c9a227;color:#92400e}
 .wf-step.rejected{background:#fee2e2;border-color:#dc2626;color:#b91c1c}
 .wf-arrow{color:#c9a227;font-size:14px;font-weight:700}
 
@@ -743,7 +707,6 @@ tr.row-late:hover{background:#ffe5e5}
   padding:40px 20px;text-align:center;cursor:pointer;
   transition:.3s;background:#fef9e8;margin-bottom:20px;
 }
-.logo-upload-area:hover{background:#fde68a}
 .logo-upload-area .icon{font-size:48px;margin-bottom:10px;display:block}
 .logo-upload-area .title{font-size:15px;font-weight:700;color:#1a3a1a;margin-bottom:5px}
 .logo-upload-area .hint{font-size:12px;color:#5a6b5a}
@@ -755,19 +718,6 @@ tr.row-late:hover{background:#ffe5e5}
   font-size:60px;border:3px solid #1a3a1a;overflow:hidden;
 }
 .logo-preview-box img{width:100%;height:100%;object-fit:cover}
-
-.permission-denied{
-  text-align:center;padding:60px 30px;background:#fff;
-  border-radius:14px;box-shadow:0 4px 20px rgba(26,58,26,.1);
-  max-width:600px;margin:40px auto;
-}
-.permission-denied .icon{font-size:80px;margin-bottom:20px}
-.permission-denied h2{font-size:22px;color:#dc2626;margin-bottom:12px;font-weight:800}
-.permission-denied p{color:#5a6b5a;font-size:14px;margin-bottom:8px;line-height:1.6}
-.permission-denied .role-badge{
-  display:inline-block;padding:8px 18px;background:#e0f2fe;
-  color:#0369a1;border-radius:20px;font-size:13px;font-weight:700;margin-top:15px;
-}
 
 @media(max-width:900px){
   .header{padding:15px 20px;flex-wrap:wrap;gap:15px}
@@ -788,7 +738,7 @@ tr.row-late:hover{background:#ffe5e5}
 </head>
 <body>
 
-<!-- ==================== LOADER ==================== -->
+<!-- LOADER -->
 <div id="firebaseLoader">
   <div class="logo-big">🌾</div>
   <h1>TAMA</h1>
@@ -796,7 +746,7 @@ tr.row-late:hover{background:#ffe5e5}
   <div class="spinner"></div>
 </div>
 
-<!-- ==================== LOGIN ==================== -->
+<!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-box">
     <div class="login-logo">
@@ -814,7 +764,7 @@ tr.row-late:hover{background:#ffe5e5}
       <button type="button" class="login-tab commercial active" data-role="commercial" onclick="selectLoginRole('commercial')">
         <span class="icon">👤</span>
         Commercial
-        <small>Accès limité</small>
+        <small>Lecture + Factures</small>
       </button>
       <button type="button" class="login-tab financier" data-role="financier" onclick="selectLoginRole('financier')">
         <span class="icon">💰</span>
@@ -841,26 +791,15 @@ tr.row-late:hover{background:#ffe5e5}
         <span id="loginBtnText">Se connecter</span>
       </button>
     </form>
-
-    <div class="login-footer">
-      💡 Comptes de démonstration :<br>
-      <code>commercial@tama.ma</code> · <code>financier@tama.ma</code><br>
-      <small style="color:#94a3b8">Mot de passe : demo1234</small>
-    </div>
-
-    <div class="test-btns">
-      <button type="button" onclick="quickFill('commercial')">👤 Test Commercial</button>
-      <button type="button" class="fin" onclick="quickFill('financier')">💰 Test Financier</button>
-    </div>
   </div>
 </div>
 
-<!-- ==================== APP ==================== -->
+<!-- APP -->
 <div id="app" style="display:none">
 
 <header class="header">
   <div class="header-left">
-    <div class="logo-zone" onclick="openLogoModal()" title="Cliquez pour changer le logo">
+    <div class="logo-zone" id="logoZone" onclick="openLogoModal()" title="Changer le logo">
       <div class="logo-display">
         <span id="logoIcon">🌾</span>
         <img id="logoImg" src="" style="display:none" alt="Logo">
@@ -869,7 +808,7 @@ tr.row-late:hover{background:#ffe5e5}
         <h1>TAMA</h1>
         <small>Credit Management</small>
       </div>
-      <div class="logo-edit">✏️</div>
+      <div class="logo-edit" id="logoEditBtn">✏️</div>
     </div>
   </div>
 
@@ -906,18 +845,15 @@ tr.row-late:hover{background:#ffe5e5}
 </header>
 
 <nav class="nav-tabs">
-  <button class="nav-tab active" data-page="dashboard" onclick="navigate('dashboard')" data-requires="financier">
+  <button class="nav-tab active" data-page="dashboard" onclick="navigate('dashboard')">
     <span class="icon">📊</span> Tableau de bord
-    <span class="lock" data-lock="financier">🔒</span>
   </button>
-  <button class="nav-tab" data-page="nouveau" onclick="navigate('nouveau')" data-requires="financier">
+  <button class="nav-tab" data-page="nouveau" onclick="navigate('nouveau')">
     <span class="icon">➕</span> Nouveau client
-    <span class="lock" data-lock="financier">🔒</span>
   </button>
-  <button class="nav-tab" data-page="demandes" onclick="navigate('demandes')" data-requires="financier">
+  <button class="nav-tab" data-page="demandes" onclick="navigate('demandes')">
     <span class="icon">📋</span> Demandes
     <span class="badge-tab" id="tabBadgeDemandes" style="display:none">0</span>
-    <span class="lock" data-lock="financier">🔒</span>
   </button>
   <button class="nav-tab" data-page="factures" onclick="navigate('factures')">
     <span class="icon">🧾</span> Factures
@@ -927,10 +863,11 @@ tr.row-late:hover{background:#ffe5e5}
 
 <main class="main">
 
+  <!-- DASHBOARD -->
   <div class="page active" id="page-dashboard">
     <div class="page-header">
       <div>
-        <h2>📊 Tableau de bord</h2>
+        <h2>📊 Tableau de bord <span class="mode-badge" id="dashMode"></span></h2>
         <p>Vue d'ensemble des clients et des plafonds</p>
       </div>
     </div>
@@ -946,7 +883,7 @@ tr.row-late:hover{background:#ffe5e5}
     <div class="card">
       <div class="card-header">
         <h2>Suivi des plafonds clients</h2>
-        <button class="btn-new" onclick="navigate('nouveau')">➕ Nouveau client</button>
+        <button class="btn-new" id="btnNewClient" onclick="navigate('nouveau')">➕ Nouveau client</button>
       </div>
       <table>
         <thead>
@@ -960,10 +897,11 @@ tr.row-late:hover{background:#ffe5e5}
     </div>
   </div>
 
+  <!-- NOUVEAU -->
   <div class="page" id="page-nouveau">
     <div class="page-header">
       <div>
-        <h2>➕ Nouveau client</h2>
+        <h2>➕ Nouveau client <span class="mode-badge" id="newMode"></span></h2>
         <p>Demande d'ouverture de compte — Traitement ≤ 48h</p>
       </div>
     </div>
@@ -1003,10 +941,7 @@ tr.row-late:hover{background:#ffe5e5}
           <input type="text" id="adresse" placeholder="Ex: Doukkala, Casablanca">
         </div>
 
-        <div class="form-group">
-          <label>Portefeuille</label>
-          <input type="text" id="portefeuille" value="Principal">
-        </div>
+        <div class="form-group"><label>Portefeuille</label><input type="text" id="portefeuille" value="Principal"></div>
 
         <div class="form-group">
           <label>Comptes existants ?</label>
@@ -1136,11 +1071,12 @@ tr.row-late:hover{background:#ffe5e5}
     </div>
   </div>
 
+  <!-- DEMANDES -->
   <div class="page" id="page-demandes">
     <div class="page-header">
       <div>
-        <h2>📋 Gestion des demandes</h2>
-        <p>Approuvez, rejetez ou modifiez les demandes d'ouverture de compte</p>
+        <h2>📋 Gestion des demandes <span class="mode-badge" id="demMode"></span></h2>
+        <p>Suivi des demandes d'ouverture de compte</p>
       </div>
     </div>
 
@@ -1166,10 +1102,11 @@ tr.row-late:hover{background:#ffe5e5}
     </div>
   </div>
 
+  <!-- FACTURES -->
   <div class="page" id="page-factures">
     <div class="page-header">
       <div>
-        <h2>🧾 Gestion des factures</h2>
+        <h2>🧾 Gestion des factures <span class="mode-badge" id="factMode"></span></h2>
         <p id="facturesSubtitle">Suivi des échéances et contrôle automatique des plafonds</p>
       </div>
     </div>
@@ -1213,16 +1150,6 @@ tr.row-late:hover{background:#ffe5e5}
         </thead>
         <tbody id="facturesTable"></tbody>
       </table>
-    </div>
-  </div>
-
-  <div class="page" id="page-denied">
-    <div class="permission-denied">
-      <div class="icon">🔒</div>
-      <h2>Accès refusé</h2>
-      <p>Votre rôle ne vous permet pas d'accéder à cette section.</p>
-      <p>Seul le <strong>Service Financier</strong> peut consulter cette page.</p>
-      <div class="role-badge" id="deniedRoleBadge">👤 Commercial</div>
     </div>
   </div>
 
@@ -1276,9 +1203,9 @@ tr.row-late:hover{background:#ffe5e5}
 
 <div class="toast" id="toast"><span id="toastIcon">✅</span><span id="toastMsg"></span></div>
 
-</div><!-- /app -->
+</div>
 
-<!-- ==================== FIREBASE SDK ==================== -->
+<!-- FIREBASE SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, onValue, set, update, remove, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -1319,20 +1246,32 @@ window.dispatchEvent(new Event('firebase-ready'));
 // ============================================================
 // ==================== RÔLES =================================
 // ============================================================
+// Les DEUX rôles voient TOUTES les pages.
+// Seul le financier peut modifier/créer/supprimer/approuver.
 const ROLES = {
   commercial: {
     label: 'Commercial',
     icon: '👤',
     avatar: 'C',
     color: 'commercial',
-    permissions: ['factures']
+    pages: ['dashboard', 'nouveau', 'demandes', 'factures'], // voit tout
+    canEdit: false,   // ❌ ne peut PAS créer/modifier/approuver/supprimer
+    canAddFacture: true, // ✅ peut ajouter des factures
+    canPayFacture: false,
+    canDeleteFacture: false,
+    canChangeLogo: false
   },
   financier: {
     label: 'Financier',
     icon: '💰',
     avatar: 'F',
     color: 'financier',
-    permissions: ['dashboard', 'nouveau', 'demandes', 'factures']
+    pages: ['dashboard', 'nouveau', 'demandes', 'factures'],
+    canEdit: true,    // ✅ peut tout faire
+    canAddFacture: true,
+    canPayFacture: true,
+    canDeleteFacture: true,
+    canChangeLogo: true
   }
 };
 
@@ -1342,16 +1281,6 @@ let selectedLoginRole = 'commercial';
 // ============================================================
 // ==================== HELPERS LOGIN =========================
 // ============================================================
-function quickFill(role){
-  if(role === 'commercial'){
-    document.getElementById('loginEmail').value = 'commercial@tama.ma';
-  } else {
-    document.getElementById('loginEmail').value = 'financier@tama.ma';
-  }
-  document.getElementById('loginPassword').value = 'demo1234';
-  selectLoginRole(role);
-}
-
 function selectLoginRole(role){
   selectedLoginRole = role;
   document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
@@ -1385,11 +1314,9 @@ async function doLogin(){
   hideLoginError();
   
   try {
-    // 1. Authentifier
     const userCredential = await window.fbSignIn(window.auth, email, password);
     const firebaseUser = userCredential.user;
     
-    // 2. Lire le rôle depuis DB
     const userRef = window.fbRef(window.db, 'users/' + firebaseUser.uid);
     const snapshot = await new Promise((resolve) => {
       const unsub = window.fbOnValue(userRef, (snap) => {
@@ -1400,10 +1327,8 @@ async function doLogin(){
     
     let userData = snapshot.val();
     
-    // 3. AUTO-CREATE role si absent
+    // AUTO-CREATE si absent
     if(!userData || !userData.role){
-      console.log('🔧 Role absent, création automatique...');
-      
       let role = 'commercial';
       let name = 'Service Commercial';
       
@@ -1417,20 +1342,18 @@ async function doLogin(){
       
       userData = { email, name, role };
       await window.fbSet(userRef, userData);
-      console.log('✅ Role créé:', role);
     }
     
-    // 4. Vérifier cohérence onglet/rôle
+    // Vérifier cohérence onglet/rôle
     if(userData.role !== selectedLoginRole){
       await window.fbSignOut(window.auth);
       const expected = ROLES[userData.role]?.label || userData.role;
-      showLoginError(`❌ Vous êtes "${expected}". Sélectionnez l'onglet "${expected}".`);
+      showLoginError(`❌ Votre compte est "${expected}". Sélectionnez l'onglet "${expected}".`);
       btn.disabled = false;
       btnText.textContent = 'Se connecter';
       return;
     }
     
-    // 5. Connexion réussie
     currentUser = {
       uid: firebaseUser.uid,
       email: firebaseUser.email,
@@ -1494,9 +1417,10 @@ function applyUserRole(){
   if(!currentUser) return;
   const role = ROLES[currentUser.role];
   
-  console.log('=== APPLY USER ROLE ===');
-  console.log('Role:', currentUser.role);
-  console.log('Permissions:', role.permissions);
+  console.log('=== RÔLE APPLIQUÉ ===');
+  console.log('Rôle:', currentUser.role);
+  console.log('Peut modifier:', role.canEdit);
+  console.log('Peut ajouter facture:', role.canAddFacture);
   
   // Header
   document.getElementById('userName').textContent = currentUser.name;
@@ -1511,39 +1435,75 @@ function applyUserRole(){
   menuRole.textContent = role.icon + ' ' + role.label;
   menuRole.className = 'user-menu-role ' + role.color;
   
-  // Onglets
-  document.querySelectorAll('.nav-tab').forEach(tab => {
-    const requires = tab.dataset.requires;
-    const lock = tab.querySelector('.lock');
-    
-    if(!requires){
-      tab.disabled = false;
-      if(lock) lock.style.display = 'none';
-      return;
-    }
-    
-    if(role.permissions.includes(requires)){
-      tab.disabled = false;
-      if(lock) lock.style.display = 'none';
-    } else {
-      tab.disabled = true;
-      if(lock) lock.style.display = 'inline';
+  // Mode badges
+  const modeClass = role.color;
+  const modeText = currentUser.role === 'commercial' ? '👤 Lecture seule' : '💰 Accès complet';
+  ['dashMode','newMode','demMode','factMode'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el){
+      el.textContent = modeText;
+      el.className = 'mode-badge ' + modeClass;
     }
   });
   
+  // Logo cliquable seulement pour financier
+  const logoZone = document.getElementById('logoZone');
+  const logoEdit = document.getElementById('logoEditBtn');
+  if(role.canChangeLogo){
+    logoZone.classList.remove('readonly');
+    logoZone.title = 'Changer le logo';
+    if(logoEdit) logoEdit.style.display = 'flex';
+  } else {
+    logoZone.classList.add('readonly');
+    logoZone.title = '🔒 Seul le Financier peut changer le logo';
+    if(logoEdit) logoEdit.style.display = 'none';
+  }
+  
+  // Bouton "Nouveau client" masqué pour commercial
+  const btnNew = document.getElementById('btnNewClient');
+  if(btnNew) btnNew.style.display = role.canEdit ? 'inline-flex' : 'none';
+  
   // Sous-titre factures
   document.getElementById('facturesSubtitle').textContent = 
-    currentUser.role === 'commercial' 
-      ? '👤 Vue Commerciale — Ajout de factures uniquement'
-      : '💰 Vue Financière — Accès complet';
+    role.canEdit 
+      ? '💰 Vue Financière — Accès complet'
+      : '👤 Vue Commerciale — Ajout de factures uniquement';
   
   // Navigation initiale
-  navigate(role.permissions[0]);
+  navigate('dashboard');
 }
 
-function hasPermission(page){
+// ============================================================
+// ==================== PERMISSIONS ===========================
+// ============================================================
+function canViewPage(page){
   if(!currentUser) return false;
-  return ROLES[currentUser.role].permissions.includes(page);
+  return ROLES[currentUser.role].pages.includes(page);
+}
+
+function canEdit(){
+  if(!currentUser) return false;
+  return ROLES[currentUser.role].canEdit;
+}
+
+function canAddFacture(){
+  if(!currentUser) return false;
+  return ROLES[currentUser.role].canAddFacture;
+}
+
+function canPayFacture(){
+  if(!currentUser) return false;
+  return ROLES[currentUser.role].canPayFacture;
+}
+
+function canDeleteFacture(){
+  if(!currentUser) return false;
+  return ROLES[currentUser.role].canDeleteFacture;
+}
+
+function canChangeLogo(){
+  if(!currentUser) return false;
+  return ROLES[currentUser.role].canChangeLogo;
 }
 
 // ============================================================
@@ -1592,7 +1552,6 @@ function initFirebaseListeners(){
   
   setFbStatus('syncing', 'Synchronisation...');
   
-  // CLIENTS
   const clientsRef = window.fbRef(window.db, 'clients');
   window.fbOnValue(clientsRef, (snapshot) => {
     const data = snapshot.val();
@@ -1609,7 +1568,6 @@ function initFirebaseListeners(){
     setFbStatus('offline', 'Erreur');
   });
   
-  // FACTURES
   const facturesRef = window.fbRef(window.db, 'factures');
   window.fbOnValue(facturesRef, (snapshot) => {
     const data = snapshot.val();
@@ -1617,7 +1575,6 @@ function initFirebaseListeners(){
     refreshAll();
   }, (err) => console.error('❌ factures:', err));
   
-  // LOGO
   const logoRef = window.fbRef(window.db, 'settings/logo');
   window.fbOnValue(logoRef, (snapshot) => {
     const data = snapshot.val();
@@ -1632,7 +1589,6 @@ function initFirebaseListeners(){
 function applyLogo(dataUrl){
   const imgs = ['logoImg', 'loginLogoImg', 'logoPreviewImg'];
   const icons = ['logoIcon', 'loginLogoIcon', 'logoPreviewIcon'];
-  
   imgs.forEach(id => {
     const el = document.getElementById(id);
     if(el){ el.src = dataUrl; el.style.display = 'block'; }
@@ -1646,7 +1602,6 @@ function applyLogo(dataUrl){
 function resetLogoUI(){
   const imgs = ['logoImg', 'loginLogoImg', 'logoPreviewImg'];
   const icons = ['logoIcon', 'loginLogoIcon', 'logoPreviewIcon'];
-  
   imgs.forEach(id => {
     const el = document.getElementById(id);
     if(el){ el.src = ''; el.style.display = 'none'; }
@@ -1658,7 +1613,7 @@ function resetLogoUI(){
 }
 
 function openLogoModal(){
-  if(!hasPermission('dashboard')){
+  if(!canChangeLogo()){
     showToast('🔒 Seul le Financier peut changer le logo', 'error');
     return;
   }
@@ -1692,6 +1647,10 @@ function handleLogoUpload(event){
 }
 
 function resetLogo(){
+  if(!canChangeLogo()){
+    showToast('🔒 Seul le Financier peut modifier le logo', 'error');
+    return;
+  }
   if(!confirm('Réinitialiser le logo ?')) return;
   logoData = null;
   resetLogoUI();
@@ -1707,13 +1666,7 @@ function resetLogo(){
 // ============================================================
 function navigate(page){
   if(!currentUser) return;
-  if(!hasPermission(page)){
-    document.getElementById('deniedRoleBadge').textContent = 
-      ROLES[currentUser.role].icon + ' ' + ROLES[currentUser.role].label;
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-denied').classList.add('active');
-    return;
-  }
+  if(!canViewPage(page)) return;
   
   currentPage = page;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1824,7 +1777,6 @@ function getStatutBadge(statut){
 // ==================== DASHBOARD =============================
 // ============================================================
 function renderDashboard(){
-  if(!hasPermission('dashboard')) return;
   const tbody = document.getElementById('clientsTable');
   document.getElementById('statClients').textContent = clients.length;
   document.getElementById('statAcceptes').textContent = clients.filter(c => c.statut === 'Acceptée').length;
@@ -1836,7 +1788,7 @@ function renderDashboard(){
   document.getElementById('statUtilise').textContent = utiliseTotal.toLocaleString() + ' DH';
   
   if(clients.length === 0){
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty"><div class="icon">📭</div><h3>Aucun client</h3><p><a onclick="navigate('nouveau')">Créer le premier client →</a></p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty"><div class="icon">📭</div><h3>Aucun client</h3></div></td></tr>`;
     return;
   }
   
@@ -1913,7 +1865,7 @@ function removeBanque(btn){
 }
 
 async function submitClientForm(){
-  if(!hasPermission('nouveau')){
+  if(!canEdit()){
     showToast('🔒 Seul le Financier peut créer des clients', 'error');
     return;
   }
@@ -2008,7 +1960,6 @@ function setDemandeFilter(btn, filter){
 }
 
 function renderDemandes(){
-  if(!hasPermission('demandes')) return;
   const total = clients.length;
   const pending = clients.filter(d => d.statut === 'En attente' || d.statut === 'En cours').length;
   const accepted = clients.filter(d => d.statut === 'Acceptée').length;
@@ -2053,9 +2004,24 @@ function renderDemandes(){
   tbody.innerHTML = '';
   filtered.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
   
+  const editable = canEdit();
+  
   filtered.forEach(d => {
     const sla = getSLAClient(d);
     const date = new Date(d.createdAt).toLocaleDateString('fr-FR');
+    
+    // Commercial: voit seulement 👁
+    // Financier: voit 👁 ✏️ ✅ ❌
+    const actions = editable 
+      ? `
+        <button class="btn-action btn-view" onclick="viewDemande('${d.id}')">👁</button>
+        <button class="btn-action btn-edit" onclick="editDemande('${d.id}')">✏️</button>
+        ${d.statut === 'En attente' || d.statut === 'En cours' ? `
+          <button class="btn-action btn-approve" onclick="openApprove('${d.id}')">✅</button>
+          <button class="btn-action btn-reject" onclick="openReject('${d.id}')">❌</button>
+        ` : ''}
+      `
+      : `<button class="btn-action btn-view" onclick="viewDemande('${d.id}')" title="Voir les détails">👁 Voir</button>`;
     
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -2066,16 +2032,7 @@ function renderDemandes(){
       <td>${getStatutBadge(d.statut)}</td>
       <td><span class="sla-badge ${sla.cls}">${sla.txt}</span></td>
       <td><small>${date}</small></td>
-      <td>
-        <div class="actions-cell">
-          <button class="btn-action btn-view" onclick="viewDemande('${d.id}')">👁</button>
-          <button class="btn-action btn-edit" onclick="editDemande('${d.id}')">✏️</button>
-          ${d.statut === 'En attente' || d.statut === 'En cours' ? `
-            <button class="btn-action btn-approve" onclick="openApprove('${d.id}')">✅</button>
-            <button class="btn-action btn-reject" onclick="openReject('${d.id}')">❌</button>
-          ` : ''}
-        </div>
-      </td>
+      <td><div class="actions-cell">${actions}</div></td>
     `;
     tbody.appendChild(tr);
   });
@@ -2137,18 +2094,25 @@ function viewDemande(id){
     ${d.motifRejet ? `<div style="margin-top:20px;padding:15px;background:#fee2e2;border-left:4px solid #dc2626;border-radius:8px"><strong style="color:#991b1b">❌ Motif rejet :</strong><p style="margin-top:5px;color:#7f1d1d">${d.motifRejet}</p></div>` : ''}
   `;
   
-  const footer = `
-    <button class="btn btn-secondary" onclick="closeModal()">Fermer</button>
-    ${d.statut === 'En attente' || d.statut === 'En cours' ? `
-      <button class="btn btn-danger" onclick="closeModal();openReject('${d.id}')">❌ Rejeter</button>
-      <button class="btn btn-success" onclick="closeModal();openApprove('${d.id}')">✅ Approuver</button>
-    ` : ''}
-  `;
+  // Boutons d'action dans le footer: seulement pour Financier
+  const footer = canEdit()
+    ? `
+      <button class="btn btn-secondary" onclick="closeModal()">Fermer</button>
+      ${d.statut === 'En attente' || d.statut === 'En cours' ? `
+        <button class="btn btn-danger" onclick="closeModal();openReject('${d.id}')">❌ Rejeter</button>
+        <button class="btn btn-success" onclick="closeModal();openApprove('${d.id}')">✅ Approuver</button>
+      ` : ''}
+    `
+    : `<button class="btn btn-secondary" onclick="closeModal()">Fermer</button>`;
   
   openModal('👁 ' + d.nom, body, footer);
 }
 
 function editDemande(id){
+  if(!canEdit()){
+    showToast('🔒 Seul le Financier peut modifier', 'error');
+    return;
+  }
   const d = clients.find(x => x.id === id);
   if(!d) return;
   currentClientId = id;
@@ -2201,6 +2165,7 @@ function editDemande(id){
 }
 
 async function saveEdit(){
+  if(!canEdit()) return;
   const d = clients.find(x => x.id === currentClientId);
   if(!d) return;
   const np = parseFloat(document.getElementById('editPlafond').value);
@@ -2231,6 +2196,10 @@ async function saveEdit(){
 }
 
 function openApprove(id){
+  if(!canEdit()){
+    showToast('🔒 Seul le Financier peut approuver', 'error');
+    return;
+  }
   const d = clients.find(x => x.id === id);
   if(!d) return;
   currentClientId = id;
@@ -2262,6 +2231,7 @@ function openApprove(id){
 }
 
 async function confirmApprove(){
+  if(!canEdit()) return;
   const d = clients.find(x => x.id === currentClientId);
   if(!d) return;
   const plafond = parseFloat(document.getElementById('approvePlafond').value);
@@ -2283,6 +2253,10 @@ async function confirmApprove(){
 }
 
 function openReject(id){
+  if(!canEdit()){
+    showToast('🔒 Seul le Financier peut rejeter', 'error');
+    return;
+  }
   const d = clients.find(x => x.id === id);
   if(!d) return;
   currentClientId = id;
@@ -2314,6 +2288,7 @@ function openReject(id){
 }
 
 async function confirmReject(){
+  if(!canEdit()) return;
   const d = clients.find(x => x.id === currentClientId);
   if(!d) return;
   const motif = document.querySelector('input[name="motifRejet"]:checked').value;
@@ -2382,7 +2357,9 @@ function renderFactureStats(){
 function renderFactures(){
   const search = document.getElementById('globalSearch').value.toLowerCase();
   const tbody = document.getElementById('facturesTable');
-  const isFinancier = currentUser && currentUser.role === 'financier';
+  const editable = canEdit();
+  const canPay = canPayFacture();
+  const canDel = canDeleteFacture();
   
   let filtered = factures.filter(f => {
     const st = getFactureStatut(f);
@@ -2402,7 +2379,7 @@ function renderFactures(){
   });
   
   if(filtered.length === 0){
-    tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><div class="icon">📭</div><h3>Aucune facture</h3><p>Cliquez sur "Nouvelle facture"</p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><div class="icon">📭</div><h3>Aucune facture</h3></div></td></tr>`;
     return;
   }
   
@@ -2419,6 +2396,17 @@ function renderFactures(){
     const jours = getJoursDelai(delaiClient);
     const delaiAffiche = jours ? `${jours}j` : 'Comptant';
     
+    // Actions:
+    // - Commercial: 👁 uniquement
+    // - Financier: 💰 👁 🗑
+    let actions = `<button class="btn-action btn-view" onclick="viewFacture('${f.id}')">👁</button>`;
+    if(canPay && f.statut !== 'Payée'){
+      actions = `<button class="btn-action btn-pay" onclick="marquerPayee('${f.id}')" title="Marquer payée">💰</button>` + actions;
+    }
+    if(canDel){
+      actions += `<button class="btn-action btn-delete" onclick="deleteFacture('${f.id}')" title="Supprimer">🗑</button>`;
+    }
+    
     const tr = document.createElement('tr');
     if(isLate) tr.className = 'row-late';
     tr.innerHTML = `
@@ -2429,20 +2417,20 @@ function renderFactures(){
       <td><small style="${isLate ? 'color:#b91c1c;font-weight:700' : ''}">${dateEc}</small>${st.type === 'today' ? '<br><small style="color:#b91c1c;font-weight:700">⚠️ AUJOURD\'HUI</small>' : ''}</td>
       <td><small style="color:#2d4a2d;font-weight:600">⏱ ${delaiAffiche}</small></td>
       <td><span class="badge-status ${st.cls}">${st.txt}</span></td>
-      <td>
-        ${isFinancier && f.statut !== 'Payée' ? `<button class="btn-action btn-pay" onclick="marquerPayee('${f.id}')" title="Marquer payée">💰</button>` : ''}
-        <button class="btn-action btn-view" onclick="viewFacture('${f.id}')">👁</button>
-        ${isFinancier ? `<button class="btn-action btn-delete" onclick="deleteFacture('${f.id}')" title="Supprimer">🗑</button>` : ''}
-      </td>
+      <td><div class="actions-cell">${actions}</div></td>
     `;
     tbody.appendChild(tr);
   });
 }
 
 function openAddFacture(){
+  if(!canAddFacture()){
+    showToast('🔒 Vous n\'avez pas la permission', 'error');
+    return;
+  }
   if(clients.length === 0){
     showToast('Aucun client. Créez d\'abord un client.', 'error');
-    if(hasPermission('nouveau')) navigate('nouveau');
+    navigate('nouveau');
     return;
   }
   
@@ -2596,6 +2584,8 @@ function checkMontantFacture(){
 }
 
 async function saveFacture(){
+  if(!canAddFacture()) return;
+  
   const clientId = document.getElementById('factClient').value;
   const numero = document.getElementById('factNumero').value.trim();
   const montant = parseFloat(document.getElementById('factMontant').value);
@@ -2645,7 +2635,7 @@ async function saveFacture(){
 }
 
 async function marquerPayee(factureId){
-  if(!hasPermission('dashboard')){
+  if(!canPayFacture()){
     showToast('🔒 Seul le Financier peut marquer comme payée', 'error');
     return;
   }
@@ -2699,19 +2689,19 @@ function viewFacture(id){
     </div>
     
     ${f.description ? `<div style="margin-top:15px;padding:15px;background:#fef9e8;border-radius:10px;border-left:3px solid #e8c547"><small style="color:#92400e;font-size:11px;font-weight:600">DESCRIPTION</small><div style="margin-top:5px;font-size:13px">${f.description}</div></div>` : ''}
-    ${f.createdBy ? `<div style="margin-top:10px;font-size:11px;color:#7a8a7a;text-align:center">Créée par ${f.createdBy} (${f.createdByRole || '?'})</div>` : ''}
+    ${f.createdBy ? `<div style="margin-top:10px;font-size:11px;color:#7a8a7a;text-align:center">Créée par ${f.createdBy}</div>` : ''}
   `;
   
-  const footer = `
-    <button class="btn btn-secondary" onclick="closeModal()">Fermer</button>
-    ${f.statut !== 'Payée' && hasPermission('dashboard') ? `<button class="btn btn-success" onclick="closeModal();marquerPayee('${f.id}')">💰 Marquer payée</button>` : ''}
-  `;
+  const footer = canPayFacture() && f.statut !== 'Payée'
+    ? `<button class="btn btn-secondary" onclick="closeModal()">Fermer</button>
+       <button class="btn btn-success" onclick="closeModal();marquerPayee('${f.id}')">💰 Marquer payée</button>`
+    : `<button class="btn btn-secondary" onclick="closeModal()">Fermer</button>`;
   
   openModal('👁 Détails facture', body, footer);
 }
 
 async function deleteFacture(id){
-  if(!hasPermission('dashboard')){
+  if(!canDeleteFacture()){
     showToast('🔒 Seul le Financier peut supprimer', 'error');
     return;
   }
@@ -2771,9 +2761,7 @@ function closeAlert(){
 
 function updateNotifBadge(){
   const {aujourdhui, bientot, retard} = detecterAlertes();
-  const pendingClients = hasPermission('dashboard') 
-    ? clients.filter(c => c.statut === 'En attente' || c.statut === 'En cours').length 
-    : 0;
+  const pendingClients = clients.filter(c => c.statut === 'En attente' || c.statut === 'En cours').length;
   const total = aujourdhui.length + bientot.length + retard.length + pendingClients;
   const badge = document.getElementById('notifBadge');
   if(total > 0){
@@ -2814,9 +2802,7 @@ function toggleNotifPanel(){
 
 function renderNotifPanel(){
   const {aujourdhui, bientot, retard} = detecterAlertes();
-  const pendingClients = hasPermission('dashboard')
-    ? clients.filter(c => c.statut === 'En attente' || c.statut === 'En cours')
-    : [];
+  const pendingClients = clients.filter(c => c.statut === 'En attente' || c.statut === 'En cours');
   const body = document.getElementById('notifBody');
   
   if(aujourdhui.length + bientot.length + retard.length + pendingClients.length === 0){
@@ -2894,9 +2880,9 @@ function handleSearch(){
 
 function refreshAll(){
   if(!currentUser) return;
-  if(currentPage === 'dashboard' && hasPermission('dashboard')) renderDashboard();
-  if(currentPage === 'demandes' && hasPermission('demandes')) renderDemandes();
-  if(currentPage === 'factures' && hasPermission('factures')) renderFacturesPage();
+  if(currentPage === 'dashboard') renderDashboard();
+  if(currentPage === 'demandes') renderDemandes();
+  if(currentPage === 'factures') renderFacturesPage();
   updateNotifBadge();
   if(document.getElementById('notifPanel').classList.contains('show')) renderNotifPanel();
 }
