@@ -1,0 +1,2259 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAMA — Credit Management</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:#eef2ee;color:#1a2a1a;min-height:100vh;position:relative}
+
+/* ==================== MOTIF FILET EN ARRIÈRE-PLAN ==================== */
+body::before{
+  content:'';
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background-image:
+    linear-gradient(rgba(26,58,26,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26,58,26,.025) 1px, transparent 1px),
+    linear-gradient(rgba(201,162,39,.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,162,39,.015) 1px, transparent 1px);
+  background-size: 50px 50px, 50px 50px, 10px 10px, 10px 10px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ==================== HEADER PRINCIPAL ==================== */
+.header{
+  background:linear-gradient(135deg,#1a3a1a,#2d4a2d);
+  color:#fff;
+  padding:18px 30px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:100;
+  box-shadow:0 4px 20px rgba(26,58,26,.25);
+  border-bottom:3px solid #c9a227;
+}
+.header::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  background:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(201,162,39,.04) 8px,rgba(201,162,39,.04) 9px);
+  pointer-events:none;
+}
+.header-left{display:flex;align-items:center;gap:20px;position:relative;z-index:1}
+
+/* ==================== LOGO ZONE ==================== */
+.logo-zone{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  padding:8px 16px;
+  background:rgba(255,255,255,.08);
+  border-radius:12px;
+  border:1px solid rgba(201,162,39,.3);
+  cursor:pointer;
+  transition:.3s;
+  position:relative;
+}
+.logo-zone:hover{background:rgba(255,255,255,.15);border-color:#c9a227}
+.logo-zone:hover .logo-edit{opacity:1;transform:scale(1)}
+.logo-display{
+  width:48px;height:48px;
+  border-radius:10px;
+  background:linear-gradient(135deg,#c9a227,#e8c547);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  overflow:hidden;
+  border:2px solid #c9a227;
+  box-shadow:0 4px 12px rgba(201,162,39,.3);
+  flex-shrink:0;
+}
+.logo-display img{width:100%;height:100%;object-fit:cover}
+.logo-edit{
+  position:absolute;
+  top:-6px;right:-6px;
+  width:24px;height:24px;
+  background:#c9a227;
+  color:#1a3a1a;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  opacity:0;
+  transition:.3s;
+  box-shadow:0 2px 8px rgba(201,162,39,.5);
+}
+.logo-text h1{font-size:22px;color:#e8c547;letter-spacing:1px;font-weight:800;text-shadow:0 2px 10px rgba(201,162,39,.3)}
+.logo-text small{font-size:11px;color:#a8c4a8;letter-spacing:1.5px;text-transform:uppercase}
+
+/* ==================== HEADER ACTIONS ==================== */
+.header-right{display:flex;align-items:center;gap:20px;position:relative;z-index:1}
+.header-search input{
+  padding:11px 18px;
+  border:none;
+  border-radius:25px;
+  width:260px;
+  outline:none;
+  background:rgba(255,255,255,.1);
+  color:#fff;
+  font-size:14px;
+  border:1px solid rgba(201,162,39,.3);
+  transition:.3s;
+}
+.header-search input::placeholder{color:rgba(255,255,255,.5)}
+.header-search input:focus{background:rgba(255,255,255,.2);border-color:#c9a227;width:300px}
+.header-bell{
+  position:relative;
+  font-size:22px;
+  cursor:pointer;
+  transition:.2s;
+  width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.08);
+  border-radius:50%;
+  border:1px solid rgba(201,162,39,.2);
+}
+.header-bell:hover{background:rgba(255,255,255,.2);transform:scale(1.05);border-color:#c9a227}
+.header-bell .badge{
+  position:absolute;
+  top:-4px;right:-4px;
+  background:linear-gradient(135deg,#e07c24,#c2410c);
+  color:#fff;
+  font-size:10px;
+  padding:3px 8px;
+  border-radius:10px;
+  font-weight:700;
+  animation:pulse 1.5s infinite;
+  box-shadow:0 2px 8px rgba(224,124,36,.5);
+  border:2px solid #1a3a1a;
+}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.header-user{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 16px;
+  background:rgba(255,255,255,.08);
+  border-radius:25px;
+  border:1px solid rgba(201,162,39,.2);
+  cursor:pointer;
+  transition:.3s;
+}
+.header-user:hover{background:rgba(255,255,255,.15);border-color:#c9a227}
+.header-user .avatar{
+  width:32px;height:32px;
+  background:linear-gradient(135deg,#c9a227,#e8c547);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#1a3a1a;font-weight:bold;font-size:14px;
+}
+.header-user span{color:#fff;font-size:13px;font-weight:600}
+
+/* ==================== NAVIGATION TABS (EN HAUT) ==================== */
+.nav-tabs{
+  background:#fff;
+  padding:0 30px;
+  display:flex;
+  gap:5px;
+  position:sticky;
+  top:84px;
+  z-index:99;
+  box-shadow:0 2px 15px rgba(26,58,26,.08);
+  border-bottom:1px solid #e0e8e0;
+  overflow-x:auto;
+}
+.nav-tabs::-webkit-scrollbar{height:3px}
+.nav-tabs::-webkit-scrollbar-thumb{background:#c9a227;border-radius:2px}
+.nav-tab{
+  padding:18px 24px;
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  font-size:14px;
+  font-weight:600;
+  color:#4a5a4a;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  position:relative;
+  transition:.3s;
+  white-space:nowrap;
+  border-bottom:3px solid transparent;
+  margin-bottom:-1px;
+}
+.nav-tab:hover{color:#1a3a1a;background:#f9fbf6}
+.nav-tab.active{color:#1a3a1a;border-bottom-color:#c9a227;font-weight:700}
+.nav-tab.active::before{
+  content:'';
+  position:absolute;
+  top:0;left:20%;right:20%;
+  height:3px;
+  background:linear-gradient(90deg,transparent,#c9a227,transparent);
+  border-radius:2px;
+}
+.nav-tab .icon{font-size:18px}
+.nav-tab .badge-tab{
+  background:#e07c24;
+  color:#fff;
+  font-size:10px;
+  padding:2px 7px;
+  border-radius:10px;
+  font-weight:700;
+  margin-left:5px;
+}
+
+/* ==================== MAIN ==================== */
+.main{padding:30px;position:relative;z-index:1;max-width:1600px;margin:0 auto}
+.page{display:none}
+.page.active{display:block;animation:fadeIn .4s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+
+.page-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+  flex-wrap:wrap;
+  gap:15px;
+}
+.page-header h2{
+  font-size:24px;
+  color:#1a3a1a;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-weight:800;
+}
+.page-header h2::before{
+  content:'';
+  display:inline-block;
+  width:8px;height:28px;
+  background:linear-gradient(180deg,#c9a227,#7cb342);
+  border-radius:4px;
+}
+.page-header p{color:#5a6b5a;font-size:13px;margin-top:5px}
+
+/* ==================== BANNIÈRE ALERTE ==================== */
+.alert-banner{display:none;background:linear-gradient(135deg,#fef3c7,#fde68a);border-left:5px solid #e07c24;padding:18px 25px;border-radius:12px;margin-bottom:25px;align-items:center;gap:15px;box-shadow:0 4px 15px rgba(224,124,36,.15)}
+.alert-banner.show{display:flex;animation:slideIn .4s}
+.alert-banner.danger{background:linear-gradient(135deg,#fee2e2,#fecaca);border-left-color:#dc2626;box-shadow:0 4px 15px rgba(220,38,38,.2)}
+@keyframes slideIn{from{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.alert-banner .icon{font-size:28px}
+.alert-banner .content{flex:1}
+.alert-banner .content h4{font-size:15px;margin-bottom:4px;color:#78350f}
+.alert-banner.danger .content h4{color:#991b1b}
+.alert-banner .content p{font-size:13px;color:#92400e}
+.alert-banner.danger .content p{color:#7f1d1d}
+.alert-banner .close-alert{background:rgba(0,0,0,.08);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;color:#78350f}
+
+/* ==================== STATS ==================== */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-bottom:25px}
+.stat{background:#fff;padding:22px;border-radius:14px;box-shadow:0 2px 15px rgba(26,58,26,.06);border-left:4px solid #7cb342;transition:.3s;cursor:pointer;position:relative;overflow:hidden}
+.stat::before{
+  content:'';
+  position:absolute;
+  top:0;right:0;
+  width:70px;height:70px;
+  background:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(201,162,39,.05) 4px,rgba(201,162,39,.05) 5px);
+  opacity:.7;
+}
+.stat::after{content:'';position:absolute;top:-20px;right:-20px;width:90px;height:90px;background:radial-gradient(circle,#e8f5dc,transparent 70%);border-radius:50%}
+.stat:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(26,58,26,.15)}
+.stat.green{border-left-color:#7cb342}
+.stat.gold{border-left-color:#c9a227}
+.stat.yellow{border-left-color:#e07c24}
+.stat.orange{border-left-color:#ea580c}
+.stat.red{border-left-color:#dc2626}
+.stat.brown{border-left-color:#8b4513}
+.stat h3{font-size:28px;color:#1a3a1a;position:relative;z-index:1;font-weight:800}
+.stat p{font-size:13px;color:#4a5a4a;margin-top:6px;position:relative;z-index:1;font-weight:600}
+
+/* ==================== CARD ==================== */
+.card{background:#fff;border-radius:14px;box-shadow:0 2px 15px rgba(26,58,26,.06);padding:22px;margin-bottom:25px;position:relative;overflow:hidden}
+.card::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:3px;
+  background:repeating-linear-gradient(90deg,
+    #c9a227 0px, #c9a227 15px,
+    transparent 15px, transparent 20px,
+    #7cb342 20px, #7cb342 35px,
+    transparent 35px, transparent 40px,
+    #1a3a1a 40px, #1a3a1a 55px,
+    transparent 55px, transparent 60px);
+}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:15px;padding-top:5px}
+.card-header h2{font-size:17px;color:#1a3a1a;display:flex;align-items:center;gap:10px;font-weight:700}
+.card-header h2::before{content:'';display:inline-block;width:6px;height:22px;background:linear-gradient(180deg,#c9a227,#7cb342);border-radius:3px}
+.btn-new{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border:1px solid #c9a227;padding:11px 22px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:.3s;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(26,58,26,.25);position:relative;overflow:hidden}
+.btn-new::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(201,162,39,.3),transparent);transition:.5s}
+.btn-new:hover::before{left:100%}
+.btn-new:hover{background:linear-gradient(135deg,#3d5a3d,#2d4a2d);transform:translateY(-2px);box-shadow:0 8px 20px rgba(26,58,26,.35)}
+
+/* ==================== FILTRES ==================== */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.filter-tab{padding:9px 18px;border-radius:8px;background:#f0f5e8;color:#2d4a2d;font-size:13px;font-weight:600;cursor:pointer;border:1px solid #d4e0c8;transition:.3s;display:flex;align-items:center;gap:8px}
+.filter-tab:hover{background:#e8f0dc;border-color:#c9a227}
+.filter-tab.active{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border-color:#c9a227;box-shadow:0 4px 12px rgba(26,58,26,.2)}
+.filter-tab .count{background:rgba(255,255,255,.3);padding:2px 8px;border-radius:10px;font-size:11px}
+.filter-tab:not(.active) .count{background:#c8dcc8;color:#2d4a2d}
+
+/* ==================== TABLE ==================== */
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;padding:14px 12px;background:linear-gradient(180deg,#f0f5e8,#e8f0dc);color:#1a3a1a;font-weight:700;font-size:11px;text-transform:uppercase;white-space:nowrap;border-bottom:2px solid #c9a227;letter-spacing:.5px}
+td{padding:14px 12px;border-bottom:1px solid #e8f0dc;vertical-align:middle}
+tr:hover{background:#f9fbf6}
+tr.row-late{background:#fff5f5}
+tr.row-late:hover{background:#ffe5e5}
+
+.badge{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block}
+.b-actif{background:#dcf5c4;color:#3d6b3d}
+.b-attention{background:#fef3c7;color:#92400e}
+.b-critique{background:#ffedd5;color:#c2410c}
+.b-bloque{background:#fee2e2;color:#b91c1c}
+
+.badge-status{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;display:inline-block;white-space:nowrap}
+.s-new{background:#e0f2fe;color:#0369a1}
+.s-pending{background:#fef3c7;color:#92400e}
+.s-accepted{background:#dcf5c4;color:#3d6b3d}
+.s-rejected{background:#fee2e2;color:#b91c1c}
+.s-paid{background:#dcf5c4;color:#3d6b3d}
+.s-late{background:#fee2e2;color:#b91c1c;animation:pulse-badge 2s infinite}
+@keyframes pulse-badge{0%,100%{opacity:1}50%{opacity:.7}}
+
+.sla-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;display:inline-block}
+.sla-ok{background:#dcf5c4;color:#3d6b3d}
+.sla-warn{background:#fef3c7;color:#92400e}
+.sla-late{background:#fee2e2;color:#b91c1c}
+
+.progress{width:100%;height:8px;background:#e8f0dc;border-radius:4px;overflow:hidden;margin-top:4px;position:relative}
+.progress::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(0,0,0,.03) 3px,rgba(0,0,0,.03) 6px);z-index:1}
+.progress div{height:100%;border-radius:4px;transition:width .3s;position:relative;z-index:0}
+
+.actions-cell{display:flex;gap:6px;flex-wrap:wrap}
+.btn-action{padding:7px 12px;border-radius:6px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:5px}
+.btn-view{background:#e0f2fe;color:#0369a1}
+.btn-view:hover{background:#bae6fd}
+.btn-edit{background:#fef3c7;color:#92400e}
+.btn-edit:hover{background:#fde68a}
+.btn-approve{background:#dcf5c4;color:#3d6b3d}
+.btn-approve:hover{background:#c4e8a3}
+.btn-reject{background:#fee2e2;color:#b91c1c}
+.btn-reject:hover{background:#fecaca}
+.btn-pay{background:#dcf5c4;color:#3d6b3d}
+.btn-pay:hover{background:#c4e8a3}
+.btn-delete{background:#fee2e2;color:#b91c1c}
+.btn-delete:hover{background:#fecaca}
+
+/* ==================== FORM ==================== */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.form-group{display:flex;flex-direction:column}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:13px;color:#2d4a2d;margin-bottom:7px;font-weight:700}
+.form-group label .req{color:#dc2626}
+.form-group label small{font-weight:400;color:#7a8a7a;text-transform:none;font-size:11px}
+.form-group input,.form-group select,.form-group textarea{padding:11px 14px;border:1px solid #d4e0c8;border-radius:8px;font-size:14px;outline:none;font-family:inherit;background:#f9fbf6;transition:.3s}
+.form-group input:focus,.form-group select:focus{border-color:#c9a227;box-shadow:0 0 0 3px rgba(201,162,39,.15);background:#fff}
+.form-group input:disabled{background:#f0f5e8;color:#5a6b5a;cursor:not-allowed}
+.form-group input.calculated{background:#f0f9e8;color:#3d6b3d;font-weight:700;font-size:15px;border-color:#7cb342}
+.form-group input.herited{background:#fef9e8;color:#92400e;font-weight:600;border-color:#e8c547}
+
+.section-title{grid-column:1/-1;font-size:15px;color:#1a3a1a;font-weight:700;margin-top:20px;padding:12px 0 10px;border-bottom:2px solid #e8f0dc;display:flex;align-items:center;gap:10px}
+.section-title .num{background:linear-gradient(135deg,#c9a227,#7cb342);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;box-shadow:0 2px 8px rgba(201,162,39,.3)}
+
+.radio-group{display:flex;gap:25px;margin-top:5px;flex-wrap:wrap}
+.radio-group label{display:flex;align-items:center;gap:8px;font-weight:normal;font-size:14px;cursor:pointer;padding:10px 16px;border:2px solid #d4e0c8;border-radius:8px;transition:.2s;background:#f9fbf6}
+.radio-group label:hover{border-color:#c9a227;background:#fef9e8}
+.radio-group input[type=radio]{width:18px;height:18px;accent-color:#c9a227}
+.radio-group label.checked{border-color:#c9a227;background:#fef9e8;color:#92400e;font-weight:600}
+
+.interlocuteurs-table{grid-column:1/-1;width:100%;border-collapse:collapse;margin-top:10px;border-radius:8px;overflow:hidden}
+.interlocuteurs-table th{background:linear-gradient(180deg,#f0f5e8,#e8f0dc);padding:12px;font-size:12px;color:#1a3a1a;text-transform:uppercase;text-align:left;border-bottom:2px solid #c9a227}
+.interlocuteurs-table td{padding:8px;border-bottom:1px solid #e8f0dc}
+.interlocuteurs-table td:first-child{font-weight:700;font-size:13px;color:#1a3a1a;width:160px}
+.interlocuteurs-table input{padding:9px 12px;border:1px solid #d4e0c8;border-radius:6px;font-size:13px;outline:none;width:100%;background:#f9fbf6}
+.interlocuteurs-table input:focus{border-color:#c9a227;background:#fff}
+
+.banque-row{display:grid;grid-template-columns:1fr 1fr 2fr auto;gap:10px;margin-bottom:10px;align-items:center}
+.banque-row input{padding:11px 14px;border:1px solid #d4e0c8;border-radius:8px;font-size:14px;outline:none;background:#f9fbf6}
+.banque-row input:focus{border-color:#c9a227;background:#fff}
+.banque-row button{background:#fee2e2;color:#b91c1c;border:none;padding:11px 15px;border-radius:8px;cursor:pointer;font-weight:600}
+.btn-add-bank{background:#fef9e8;color:#92400e;border:2px dashed #e8c547;padding:12px;border-radius:8px;font-weight:600;cursor:pointer;width:100%;transition:.2s;margin-top:5px}
+.btn-add-bank:hover{background:#fde68a}
+
+.paiement-options{display:flex;gap:12px;flex-wrap:wrap;margin-top:5px}
+.pay-opt{display:flex;align-items:center;gap:8px;padding:12px 18px;border:2px solid #d4e0c8;border-radius:10px;cursor:pointer;font-size:14px;transition:.2s;background:#f9fbf6}
+.pay-opt:hover{border-color:#c9a227;background:#fef9e8}
+.pay-opt input{width:18px;height:18px;accent-color:#c9a227}
+.pay-opt.checked{border-color:#c9a227;background:#fef9e8;color:#92400e;font-weight:600}
+
+.form-actions{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-top:30px;padding-top:25px;border-top:2px solid #e8f0dc;grid-column:1/-1}
+.btn{padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:.2s}
+.btn-secondary{background:#e8f0dc;color:#2d4a2d}
+.btn-secondary:hover{background:#d4e0c8}
+.btn-primary{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border:1px solid #c9a227}
+.btn-primary:hover{background:linear-gradient(135deg,#3d5a3d,#2d4a2d);transform:translateY(-2px)}
+.btn-success{background:linear-gradient(135deg,#7cb342,#558b2f);color:#fff;box-shadow:0 4px 12px rgba(124,179,66,.3)}
+.btn-success:hover{background:linear-gradient(135deg,#8bc34a,#689f38);transform:translateY(-2px);box-shadow:0 8px 20px rgba(124,179,66,.4)}
+.btn-danger{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
+.btn-danger:hover{background:#991b1b}
+
+/* ==================== CLIENT INFO BOX ==================== */
+.client-info{background:linear-gradient(135deg,#f9fbf6,#f0f5e8);border:2px solid #c9a227;border-radius:12px;padding:18px;margin-bottom:20px;position:relative;overflow:hidden}
+.client-info::before{content:'';position:absolute;top:0;right:0;width:80px;height:80px;background:repeating-linear-gradient(45deg,transparent,transparent 5px,rgba(201,162,39,.08) 5px,rgba(201,162,39,.08) 6px);pointer-events:none}
+.client-info h4{font-size:14px;color:#1a3a1a;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}
+.client-info .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;position:relative;z-index:1}
+.client-info .item{text-align:center;padding:10px;background:#fff;border-radius:8px;border:1px solid #e8f0dc}
+.client-info .item small{font-size:11px;color:#5a6b5a;display:block;margin-bottom:4px;font-weight:600}
+.client-info .item strong{font-size:16px;font-weight:800}
+.client-info .item.plafond strong{color:#92400e}
+.client-info .item.utilise strong{color:#b91c1c}
+.client-info .item.dispo strong{color:#558b2f}
+
+.progress-wrap{margin-top:15px;position:relative;z-index:1}
+.progress-wrap .lbl{display:flex;justify-content:space-between;font-size:12px;color:#2d4a2d;margin-bottom:6px;font-weight:600}
+.progress-bar{height:14px;background:#e8f0dc;border-radius:7px;overflow:hidden;position:relative}
+.progress-bar::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(0,0,0,.05) 3px,rgba(0,0,0,.05) 6px);z-index:1}
+.progress-bar div{height:100%;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:#fff;font-size:10px;font-weight:700;transition:width .4s;position:relative;z-index:0}
+
+/* ==================== ALERT ==================== */
+.alert{padding:15px 18px;border-radius:10px;margin:15px 0;display:flex;gap:12px;align-items:flex-start;font-size:13px}
+.alert-danger{background:#fee2e2;border-left:4px solid #dc2626;color:#991b1b}
+.alert-warning{background:#fef3c7;border-left:4px solid #e07c24;color:#92400e}
+.alert-success{background:#dcf5c4;border-left:4px solid #7cb342;color:#3d6b3d}
+.alert .icon{font-size:20px;flex-shrink:0}
+
+.amount-preview{background:#f9fbf6;padding:15px;border-radius:10px;margin-top:10px;display:none}
+.amount-preview.show{display:block}
+.amount-preview .row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid #e8f0dc}
+.amount-preview .row:last-child{border:none;font-weight:700;font-size:15px;padding-top:10px;margin-top:5px;border-top:2px solid #c8dcc8}
+
+.echeance-warning{background:#fef9e8;border:1px solid #e8c547;border-radius:8px;padding:12px;margin-top:8px;font-size:12px;color:#78350f;display:none}
+.echeance-warning.show{display:block}
+
+/* ==================== MODAL ==================== */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(26,58,26,.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;backdrop-filter:blur(4px)}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:16px;max-width:900px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 25px 50px rgba(26,58,26,.4);animation:slideUp .3s;position:relative}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:repeating-linear-gradient(90deg,#c9a227 0px,#c9a227 20px,transparent 20px,transparent 25px,#7cb342 25px,#7cb342 45px,transparent 45px,transparent 50px,#1a3a1a 50px,#1a3a1a 70px,transparent 70px,transparent 75px);border-radius:16px 16px 0 0}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-header{padding:25px 28px 22px;border-bottom:2px solid #e8f0dc;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;z-index:10;border-radius:16px 16px 0 0}
+.modal-header h2{font-size:18px;color:#1a3a1a}
+.modal-header .close{background:#e8f0dc;border:none;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;color:#2d4a2d;transition:.2s}
+.modal-header .close:hover{background:#c9a227;color:#fff;transform:rotate(90deg)}
+.modal-body{padding:25px 28px}
+.modal-footer{padding:18px 28px;border-top:2px solid #e8f0dc;display:flex;justify-content:flex-end;gap:12px;position:sticky;bottom:0;background:#fff;border-radius:0 0 16px 16px}
+
+/* ==================== DETAIL BLOCKS ==================== */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.detail-block{background:#f9fbf6;border-radius:10px;padding:16px;border-left:3px solid #c9a227;position:relative;overflow:hidden}
+.detail-block::after{content:'';position:absolute;bottom:-5px;right:-5px;width:40px;height:40px;background:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(201,162,39,.1) 3px,rgba(201,162,39,.1) 4px);border-radius:50%;opacity:.6}
+.detail-block h4{font-size:12px;color:#1a3a1a;text-transform:uppercase;margin-bottom:10px;font-weight:700;position:relative;z-index:1}
+.detail-block ul{list-style:none;position:relative;z-index:1}
+.detail-block ul li{padding:5px 0;font-size:13px;display:flex;justify-content:space-between;border-bottom:1px solid #e8f0dc}
+.detail-block ul li:last-child{border:none}
+.detail-block ul li span:first-child{color:#5a6b5a;font-weight:600}
+
+/* ==================== WORKFLOW ==================== */
+.workflow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:15px 0;padding:15px;background:#f9fbf6;border-radius:10px;border:1px dashed #d4e0c8}
+.wf-step{display:flex;align-items:center;gap:6px;padding:8px 14px;background:#fff;border:2px solid #d4e0c8;border-radius:8px;font-size:12px;font-weight:600;color:#5a6b5a;transition:.2s}
+.wf-step.done{background:#dcf5c4;border-color:#7cb342;color:#3d6b3d}
+.wf-step.current{background:#fef9e8;border-color:#c9a227;color:#92400e;box-shadow:0 0 0 3px rgba(201,162,39,.2)}
+.wf-step.rejected{background:#fee2e2;border-color:#dc2626;color:#b91c1c}
+.wf-arrow{color:#c9a227;font-size:14px;font-weight:700}
+
+/* ==================== NOTIF PANEL ==================== */
+.notif-panel{position:fixed;top:90px;right:30px;width:380px;max-height:500px;background:#fff;border-radius:14px;box-shadow:0 20px 50px rgba(26,58,26,.35);z-index:1500;display:none;overflow:hidden;border-top:5px solid transparent;border-image:repeating-linear-gradient(90deg,#c9a227 0,#c9a227 15px,transparent 15px,transparent 20px,#7cb342 20px,#7cb342 35px,transparent 35px,transparent 40px) 1}
+.notif-panel.show{display:block;animation:slideIn .3s}
+.notif-panel-header{padding:18px 22px;background:linear-gradient(135deg,#1a3a1a,#2d4a2d);color:#fff;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden}
+.notif-panel-header::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(45deg,transparent,transparent 5px,rgba(201,162,39,.08) 5px,rgba(201,162,39,.08) 6px);pointer-events:none}
+.notif-panel-header h3{font-size:15px;color:#c9a227;position:relative;z-index:1}
+.notif-panel-header button{background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;position:relative;z-index:1}
+.notif-panel-body{max-height:420px;overflow-y:auto;padding:10px}
+.notif-item{padding:14px;border-radius:10px;margin-bottom:8px;display:flex;gap:12px;cursor:pointer;transition:.2s;border:1px solid transparent}
+.notif-item:hover{background:#f9fbf6;border-color:#c9a227}
+.notif-item.danger{background:#fef2f2;border-color:#fecaca}
+.notif-item.warning{background:#fef9e8;border-color:#fde68a}
+.notif-item .ico{font-size:22px;flex-shrink:0}
+.notif-item .txt{flex:1}
+.notif-item .txt strong{display:block;font-size:13px;margin-bottom:3px;color:#1a3a1a}
+.notif-item .txt small{font-size:11px;color:#5a6b5a}
+.notif-empty{text-align:center;padding:40px 20px;color:#7a8a7a}
+.notif-empty .icon{font-size:40px;margin-bottom:10px}
+
+/* ==================== TOAST ==================== */
+.toast{position:fixed;bottom:30px;right:30px;background:#1a3a1a;color:#fff;padding:15px 25px;border-radius:10px;box-shadow:0 10px 30px rgba(26,58,26,.3);display:flex;align-items:center;gap:12px;transform:translateY(100px);opacity:0;transition:.3s;z-index:2000;max-width:450px;border-left:4px solid #c9a227}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);border-left-color:#7cb342}
+.toast.error{background:linear-gradient(135deg,#991b1b,#7f1d1d);border-left-color:#fecaca}
+.toast.warning{background:linear-gradient(135deg,#92400e,#78350f);border-left-color:#fde68a}
+
+.empty{text-align:center;padding:60px 20px;color:#7a8a7a}
+.empty .icon{font-size:60px;margin-bottom:15px;opacity:.6}
+.empty h3{color:#2d4a2d;margin-bottom:8px}
+.empty a{color:#c9a227;text-decoration:none;font-weight:700;cursor:pointer}
+
+/* ==================== LOGO UPLOAD MODAL ==================== */
+.logo-upload-area{
+  border:3px dashed #c9a227;
+  border-radius:12px;
+  padding:40px 20px;
+  text-align:center;
+  cursor:pointer;
+  transition:.3s;
+  background:#fef9e8;
+  margin-bottom:20px;
+}
+.logo-upload-area:hover{background:#fde68a;border-color:#92400e}
+.logo-upload-area .icon{font-size:48px;margin-bottom:10px;display:block}
+.logo-upload-area .title{font-size:15px;font-weight:700;color:#1a3a1a;margin-bottom:5px}
+.logo-upload-area .hint{font-size:12px;color:#5a6b5a}
+.logo-preview{
+  display:flex;
+  justify-content:center;
+  margin-bottom:20px;
+}
+.logo-preview-box{
+  width:120px;height:120px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#c9a227,#e8c547);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:60px;
+  border:3px solid #1a3a1a;
+  box-shadow:0 8px 25px rgba(201,162,39,.3);
+  overflow:hidden;
+}
+.logo-preview-box img{width:100%;height:100%;object-fit:cover}
+
+@media(max-width:900px){
+  .header{padding:15px 20px;flex-wrap:wrap;gap:15px}
+  .header-search{display:none}
+  .logo-text h1{font-size:18px}
+  .nav-tabs{padding:0 15px;top:auto;position:sticky;top:80px}
+  .nav-tab{padding:14px 16px;font-size:13px}
+  .main{padding:15px}
+  .form-grid,.detail-grid{grid-template-columns:1fr}
+  .client-info .grid{grid-template-columns:1fr}
+  .banque-row{grid-template-columns:1fr}
+  .notif-panel{width:calc(100% - 30px);right:15px}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== HEADER ==================== -->
+<header class="header">
+  <div class="header-left">
+    <!-- LOGO ZONE (cliquable pour changer) -->
+    <div class="logo-zone" onclick="openLogoModal()" title="Cliquez pour changer le logo">
+      <div class="logo-display" id="logoDisplay">
+        <span id="logoIcon">🌾</span>
+        <img id="logoImg" src="" style="display:none" alt="Logo">
+      </div>
+      <div class="logo-text">
+        <h1>TAMA</h1>
+        <small>Credit Management</small>
+      </div>
+      <div class="logo-edit">✏️</div>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <div class="header-search">
+      <input id="globalSearch" placeholder="🔍 Rechercher..." onkeyup="handleSearch()">
+    </div>
+    <div class="header-bell" onclick="toggleNotifPanel()">
+      🔔<span class="badge" id="notifBadge" style="display:none">0</span>
+    </div>
+    <div class="header-user">
+      <div class="avatar">A</div>
+      <span>Admin</span>
+    </div>
+  </div>
+</header>
+
+<!-- ==================== NAV TABS (EN HAUT) ==================== -->
+<nav class="nav-tabs">
+  <button class="nav-tab active" data-page="dashboard" onclick="navigate('dashboard')">
+    <span class="icon">📊</span> Tableau de bord
+  </button>
+  <button class="nav-tab" data-page="nouveau" onclick="navigate('nouveau')">
+    <span class="icon">➕</span> Nouveau client
+  </button>
+  <button class="nav-tab" data-page="demandes" onclick="navigate('demandes')">
+    <span class="icon">📋</span> Demandes
+    <span class="badge-tab" id="tabBadgeDemandes" style="display:none">0</span>
+  </button>
+  <button class="nav-tab" data-page="factures" onclick="navigate('factures')">
+    <span class="icon">🧾</span> Factures
+    <span class="badge-tab" id="tabBadgeFactures" style="display:none">0</span>
+  </button>
+</nav>
+
+<!-- ==================== MAIN ==================== -->
+<main class="main">
+
+  <!-- ==================== PAGE DASHBOARD ==================== -->
+  <div class="page active" id="page-dashboard">
+    <div class="page-header">
+      <div>
+        <h2>📊 Tableau de bord</h2>
+        <p>Vue d'ensemble des clients et des plafonds</p>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat green"><h3 id="statClients">0</h3><p>🏭 Total clients</p></div>
+      <div class="stat green"><h3 id="statAcceptes">0</h3><p>✅ Acceptés</p></div>
+      <div class="stat yellow"><h3 id="statAttente">0</h3><p>⏳ En attente</p></div>
+      <div class="stat gold"><h3 id="statPlafond">0 DH</h3><p>💰 Plafond total</p></div>
+      <div class="stat red"><h3 id="statUtilise">0 DH</h3><p>📊 Utilisé</p></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>Suivi des plafonds clients</h2>
+        <button class="btn-new" onclick="navigate('nouveau')">➕ Nouveau client</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Plafond</th>
+            <th>Utilisé</th>
+            <th>Disponible</th>
+            <th>Utilisation</th>
+            <th>Statut</th>
+            <th>Commande</th>
+          </tr>
+        </thead>
+        <tbody id="clientsTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE NOUVEAU CLIENT ==================== -->
+  <div class="page" id="page-nouveau">
+    <div class="page-header">
+      <div>
+        <h2>➕ Nouveau client</h2>
+        <p>Demande d'ouverture de compte — Traitement ≤ 48h</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <form id="clientForm" class="form-grid" onsubmit="return false">
+
+        <div class="section-title"><span class="num">1</span> Identification du client</div>
+
+        <div class="form-group full">
+          <label>Type de client <span class="req">*</span></label>
+          <div class="radio-group" id="typeClientGroup">
+            <label class="checked"><input type="radio" name="typeClient" value="morale" checked onchange="updateTypeClient(this)"> 🏭 Société</label>
+            <label><input type="radio" name="typeClient" value="physique" onchange="updateTypeClient(this)"> 👤 Personne physique</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Nom de la société / client <span class="req">*</span></label>
+          <input type="text" id="nomClient" placeholder="Ex: Ferme Al Baraka">
+        </div>
+
+        <div class="form-group">
+          <label>Raison Sociale / ICE <span class="req">*</span></label>
+          <input type="text" id="ice" placeholder="001234567000012" maxlength="15">
+        </div>
+
+        <div class="form-group">
+          <label>N° RC</label>
+          <input type="text" id="rc" placeholder="RC-12345">
+        </div>
+
+        <div class="form-group" id="cinGroup" style="display:none">
+          <label>N° de la CIN <span class="req">*</span></label>
+          <input type="text" id="cin" placeholder="AB123456">
+        </div>
+
+        <div class="form-group full">
+          <label>Adresse / Siège <span class="req">*</span></label>
+          <input type="text" id="adresse" placeholder="Ex: Doukkala, Casablanca">
+        </div>
+
+        <div class="form-group">
+          <label>Portefeuille</label>
+          <input type="text" id="portefeuille" value="Principal">
+        </div>
+
+        <div class="form-group">
+          <label>Comptes existants ?</label>
+          <div class="radio-group" id="compteExistantGroup">
+            <label><input type="radio" name="compteExistant" value="oui" onchange="toggleComptes(this)"> Oui</label>
+            <label class="checked"><input type="radio" name="compteExistant" value="non" checked onchange="toggleComptes(this)"> Non</label>
+          </div>
+        </div>
+
+        <div class="form-group full" id="comptesExistantsGroup" style="display:none">
+          <label>Si oui, lesquels ?</label>
+          <input type="text" id="comptesExistants" placeholder="Ex: Compte n°12345">
+        </div>
+
+        <div class="form-group">
+          <label>Appartient à un groupe ?</label>
+          <div class="radio-group" id="groupeGroup">
+            <label><input type="radio" name="groupe" value="oui" onchange="toggleGroupe(this)"> Oui</label>
+            <label class="checked"><input type="radio" name="groupe" value="non" checked onchange="toggleGroupe(this)"> Non</label>
+          </div>
+        </div>
+
+        <div class="form-group full" id="groupeNomGroup" style="display:none">
+          <label>Nom du groupe</label>
+          <input type="text" id="groupeNom" placeholder="Ex: Coopérative Alpha">
+        </div>
+
+        <div class="section-title"><span class="num">2</span> Interlocuteurs</div>
+
+        <table class="interlocuteurs-table">
+          <thead>
+            <tr><th>Responsable</th><th>Nom et Prénom</th><th>N° de téléphone</th><th>Adresse mail</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Gérant / Directeur</td>
+              <td><input type="text" id="int_gerant_nom" placeholder="Nom"></td>
+              <td><input type="tel" id="int_gerant_tel" placeholder="06 XX"></td>
+              <td><input type="email" id="int_gerant_mail" placeholder="email@exemple.ma"></td>
+            </tr>
+            <tr><td>Financier</td>
+              <td><input type="text" id="int_financier_nom"></td>
+              <td><input type="tel" id="int_financier_tel"></td>
+              <td><input type="email" id="int_financier_mail"></td>
+            </tr>
+            <tr><td>Technique</td>
+              <td><input type="text" id="int_technique_nom"></td>
+              <td><input type="tel" id="int_technique_tel"></td>
+              <td><input type="email" id="int_technique_mail"></td>
+            </tr>
+            <tr><td>Achats</td>
+              <td><input type="text" id="int_achats_nom"></td>
+              <td><input type="tel" id="int_achats_tel"></td>
+              <td><input type="email" id="int_achats_mail"></td>
+            </tr>
+            <tr><td>Comptable</td>
+              <td><input type="text" id="int_comptable_nom"></td>
+              <td><input type="tel" id="int_comptable_tel"></td>
+              <td><input type="email" id="int_comptable_mail"></td>
+            </tr>
+            <tr><td>Autre</td>
+              <td><input type="text" id="int_autre_nom"></td>
+              <td><input type="tel" id="int_autre_tel"></td>
+              <td><input type="email" id="int_autre_mail"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-title"><span class="num">3</span> Principales banques</div>
+
+        <div class="form-group full">
+          <div id="banquesContainer">
+            <div class="banque-row">
+              <input type="text" class="bank-nom" placeholder="Nom de banque">
+              <input type="text" class="bank-ville" placeholder="Ville">
+              <input type="text" class="bank-compte" placeholder="N° de compte (24 chiffres)" maxlength="24">
+              <button type="button" onclick="removeBanque(this)">✕</button>
+            </div>
+          </div>
+          <button type="button" class="btn-add-bank" onclick="addBanque()">➕ Ajouter une banque</button>
+        </div>
+
+        <div class="section-title"><span class="num">4</span> Modalité de paiement</div>
+
+        <div class="form-group full">
+          <label>Mode de règlement <span class="req">*</span></label>
+          <div class="paiement-options" id="modeReglementGroup">
+            <label class="pay-opt checked"><input type="radio" name="modeReglement" value="Chèque (Q)" checked> 📝 Chèque (Q)</label>
+            <label class="pay-opt"><input type="radio" name="modeReglement" value="Effet (T)"> 📄 Effet (T)</label>
+            <label class="pay-opt"><input type="radio" name="modeReglement" value="Espèce (E)"> 💵 Espèce (E)</label>
+            <label class="pay-opt"><input type="radio" name="modeReglement" value="Virement (V)"> 🏦 Virement (V)</label>
+          </div>
+        </div>
+
+        <div class="form-group full">
+          <label>Modalité <span class="req">*</span></label>
+          <div class="paiement-options" id="modaliteGroup">
+            <label class="pay-opt checked"><input type="radio" name="modalite" value="À la facturation (F)" checked> 🧾 À la facturation (F)</label>
+            <label class="pay-opt"><input type="radio" name="modalite" value="À la commande (C)"> 📦 À la commande (C)</label>
+            <label class="pay-opt"><input type="radio" name="modalite" value="À la livraison (L)"> 🚚 À la livraison (L)</label>
+            <label class="pay-opt"><input type="radio" name="modalite" value="À échéance"> ⏰ À échéance</label>
+          </div>
+        </div>
+
+        <div class="form-group full">
+          <label>Délai <span class="req">*</span> <small>(sert à calculer l'échéance des factures)</small></label>
+          <div class="paiement-options" id="delaiGroup">
+            <label class="pay-opt checked"><input type="radio" name="delai" value="Comptant (0)" checked> 💰 Comptant (0)</label>
+            <label class="pay-opt"><input type="radio" name="delai" value="30 jrs (1)"> 📅 30 jrs (1)</label>
+            <label class="pay-opt"><input type="radio" name="delai" value="60 jrs (2)"> 📅 60 jrs (2)</label>
+            <label class="pay-opt"><input type="radio" name="delai" value="90 jrs (3)"> 📅 90 jrs (3)</label>
+            <label class="pay-opt"><input type="radio" name="delai" value="120 jrs (4)"> 📅 120 jrs (4)</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Plafond demandé (DH) <span class="req">*</span></label>
+          <input type="number" id="plafond" placeholder="100000" min="0" step="1000">
+          <span style="font-size:11px;color:#7a8a7a;margin-top:5px">💡 Le client ne pourra pas commander au-delà</span>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="resetClientForm()">🗑 Réinitialiser</button>
+          <button type="button" class="btn btn-success" onclick="submitClientForm()">✅ Enregistrer le client</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE DEMANDES ==================== -->
+  <div class="page" id="page-demandes">
+    <div class="page-header">
+      <div>
+        <h2>📋 Gestion des demandes</h2>
+        <p>Approuvez, rejetez ou modifiez les demandes d'ouverture de compte</p>
+      </div>
+    </div>
+
+    <div class="stats" id="demandesStats"></div>
+
+    <div class="filters">
+      <button class="filter-tab active" data-filter="all" onclick="setDemandeFilter(this,'all')">📋 Toutes <span class="count" id="c-all">0</span></button>
+      <button class="filter-tab" data-filter="En attente" onclick="setDemandeFilter(this,'En attente')">⏳ En attente <span class="count" id="c-pending">0</span></button>
+      <button class="filter-tab" data-filter="Acceptée" onclick="setDemandeFilter(this,'Acceptée')">✅ Acceptées <span class="count" id="c-accepted">0</span></button>
+      <button class="filter-tab" data-filter="Rejetée" onclick="setDemandeFilter(this,'Rejetée')">❌ Rejetées <span class="count" id="c-rejected">0</span></button>
+    </div>
+
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Type</th>
+            <th>Plafond</th>
+            <th>Paiement</th>
+            <th>Statut</th>
+            <th>SLA (48h)</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="demandesTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE FACTURES ==================== -->
+  <div class="page" id="page-factures">
+    <div class="page-header">
+      <div>
+        <h2>🧾 Gestion des factures</h2>
+        <p>Suivi des échéances et contrôle automatique des plafonds</p>
+      </div>
+    </div>
+
+    <div class="alert-banner" id="alertBanner">
+      <span class="icon">⚠️</span>
+      <div class="content">
+        <h4 id="alertTitle">Attention</h4>
+        <p id="alertMsg"></p>
+      </div>
+      <button class="close-alert" onclick="closeAlert()">✕</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat green"><h3 id="statFactTotal">0</h3><p>🧾 Total factures</p></div>
+      <div class="stat gold"><h3 id="statFactMontant">0 DH</h3><p>💰 Montant total</p></div>
+      <div class="stat green"><h3 id="statFactPayees">0</h3><p>✅ Payées</p></div>
+      <div class="stat yellow"><h3 id="statFactAttente">0</h3><p>⏳ En attente</p></div>
+      <div class="stat red"><h3 id="statFactRetard">0</h3><p>🚨 En retard</p></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>Liste des factures</h2>
+        <button class="btn-new" onclick="openAddFacture()">➕ Nouvelle facture</button>
+      </div>
+
+      <div class="filters">
+        <button class="filter-tab active" data-ffilter="all" onclick="setFactureFilter(this,'all')">📋 Toutes <span class="count" id="fc-all">0</span></button>
+        <button class="filter-tab" data-ffilter="En attente" onclick="setFactureFilter(this,'En attente')">⏳ En attente <span class="count" id="fc-pending">0</span></button>
+        <button class="filter-tab" data-ffilter="En retard" onclick="setFactureFilter(this,'En retard')">🚨 En retard <span class="count" id="fc-late">0</span></button>
+        <button class="filter-tab" data-ffilter="Payée" onclick="setFactureFilter(this,'Payée')">✅ Payées <span class="count" id="fc-paid">0</span></button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>N° Facture</th>
+            <th>Client</th>
+            <th>Montant</th>
+            <th>Date émission</th>
+            <th>Échéance</th>
+            <th>Délai client</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="facturesTable"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- ==================== NOTIFICATION PANEL ==================== -->
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-panel-header">
+    <h3>🔔 Notifications</h3>
+    <button onclick="toggleNotifPanel()">✕</button>
+  </div>
+  <div class="notif-panel-body" id="notifBody"></div>
+</div>
+
+<!-- ==================== MODAL GÉNÉRAL ==================== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modalTitle">Détails</h2>
+      <button class="close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer" id="modalFooter"></div>
+  </div>
+</div>
+
+<!-- ==================== MODAL LOGO ==================== -->
+<div class="modal-overlay" id="logoModal">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-header">
+      <h2>🖼️ Changer le logo</h2>
+      <button class="close" onclick="closeLogoModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="logo-preview">
+        <div class="logo-preview-box" id="logoPreviewBox">
+          <span id="logoPreviewIcon">🌾</span>
+          <img id="logoPreviewImg" src="" style="display:none" alt="Preview">
+        </div>
+      </div>
+
+      <label class="logo-upload-area" for="logoFileInput">
+        <span class="icon">📁</span>
+        <div class="title">Cliquez pour choisir une image</div>
+        <div class="hint">Formats acceptés : PNG, JPG, SVG · Taille max 2 Mo</div>
+        <input type="file" id="logoFileInput" accept="image/*" style="display:none" onchange="handleLogoUpload(event)">
+      </label>
+
+      <div style="padding:15px;background:#f0f9e8;border-left:4px solid #7cb342;border-radius:8px;font-size:13px;color:#3d6b3d">
+        💡 <strong>Astuce :</strong> Utilisez une image carrée (ex: 200×200 px) pour un meilleur rendu.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="resetLogo()">🔄 Réinitialiser</button>
+      <button class="btn btn-primary" onclick="closeLogoModal()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TOAST ==================== -->
+<div class="toast" id="toast"><span id="toastIcon">✅</span><span id="toastMsg"></span></div>
+
+<script>
+// ============================================================
+// ==================== ÉTAT GLOBAL ===========================
+// ============================================================
+let clients = [];
+let factures = [];
+let demandeFilter = 'all';
+let factureFilter = 'all';
+let currentClientId = null;
+let currentPage = 'dashboard';
+let logoData = null;
+
+// ============================================================
+// ==================== GESTION DU LOGO =======================
+// ============================================================
+function loadLogo(){
+  const saved = localStorage.getItem('tama_logo');
+  if(saved){
+    logoData = saved;
+    applyLogo(saved);
+  }
+}
+
+function applyLogo(dataUrl){
+  const img = document.getElementById('logoImg');
+  const icon = document.getElementById('logoIcon');
+  const previewImg = document.getElementById('logoPreviewImg');
+  const previewIcon = document.getElementById('logoPreviewIcon');
+  
+  img.src = dataUrl;
+  img.style.display = 'block';
+  icon.style.display = 'none';
+  
+  if(previewImg){
+    previewImg.src = dataUrl;
+    previewImg.style.display = 'block';
+    previewIcon.style.display = 'none';
+  }
+}
+
+function resetLogoUI(){
+  const img = document.getElementById('logoImg');
+  const icon = document.getElementById('logoIcon');
+  img.src = '';
+  img.style.display = 'none';
+  icon.style.display = 'block';
+  document.getElementById('logoFileInput').value = '';
+}
+
+function openLogoModal(){
+  document.getElementById('logoModal').classList.add('show');
+}
+
+function closeLogoModal(){
+  document.getElementById('logoModal').classList.remove('show');
+}
+
+function handleLogoUpload(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  
+  if(file.size > 2 * 1024 * 1024){
+    showToast('Image trop volumineuse (max 2 Mo)', 'error');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataUrl = e.target.result;
+    logoData = dataUrl;
+    localStorage.setItem('tama_logo', dataUrl);
+    applyLogo(dataUrl);
+    showToast('🖼️ Logo mis à jour !', 'success');
+    closeLogoModal();
+  };
+  reader.readAsDataURL(file);
+}
+
+function resetLogo(){
+  if(!confirm('Réinitialiser le logo par défaut ?')) return;
+  localStorage.removeItem('tama_logo');
+  logoData = null;
+  resetLogoUI();
+  document.getElementById('logoPreviewImg').style.display = 'none';
+  document.getElementById('logoPreviewIcon').style.display = 'block';
+  showToast('Logo réinitialisé', 'success');
+  closeLogoModal();
+}
+
+// ============================================================
+// ==================== NAVIGATION ============================
+// ============================================================
+function navigate(page){
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  
+  document.querySelectorAll('.nav-tab').forEach(l => l.classList.remove('active'));
+  document.querySelector(`.nav-tab[data-page="${page}"]`).classList.add('active');
+  
+  if(page === 'dashboard') renderDashboard();
+  if(page === 'demandes') renderDemandes();
+  if(page === 'factures') renderFacturesPage();
+  
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ============================================================
+// ==================== STORAGE ===============================
+// ============================================================
+function loadData(){
+  clients = JSON.parse(localStorage.getItem('tama_clients') || '[]');
+  factures = JSON.parse(localStorage.getItem('tama_factures') || '[]');
+  clients.forEach(c => {
+    if(c.soldeUtilise === undefined) c.soldeUtilise = 0;
+    if(c.disponible === undefined) c.disponible = c.plafond;
+  });
+}
+
+function saveClients(){ localStorage.setItem('tama_clients', JSON.stringify(clients)); }
+function saveFactures(){ localStorage.setItem('tama_factures', JSON.stringify(factures)); }
+function saveAll(){ saveClients(); saveFactures(); }
+
+// ============================================================
+// ==================== ÉCHÉANCE ==============================
+// ============================================================
+function getJoursDelai(delai){
+  if(!delai) return 0;
+  if(delai.includes('30')) return 30;
+  if(delai.includes('60')) return 60;
+  if(delai.includes('90')) return 90;
+  if(delai.includes('120')) return 120;
+  return 0;
+}
+
+function calculateEcheance(dateEmission, delai){
+  const date = new Date(dateEmission);
+  date.setDate(date.getDate() + getJoursDelai(delai));
+  return date.toISOString().split('T')[0];
+}
+
+// ============================================================
+// ==================== STATUTS ===============================
+// ============================================================
+function getStatutClient(c){
+  const pct = (c.soldeUtilise / c.plafond) * 100;
+  if(c.soldeUtilise > c.plafond) return {cls:"b-bloque", txt:"⛔ Impayé", color:"#1a3a1a"};
+  if(pct >= 100) return {cls:"b-bloque", txt:"🚫 Bloqué", color:"#dc2626"};
+  if(pct >= 90) return {cls:"b-critique", txt:"🔶 Critique", color:"#ea580c"};
+  if(pct >= 70) return {cls:"b-attention", txt:"⚠️ Attention", color:"#e07c24"};
+  return {cls:"b-actif", txt:"✅ Actif", color:"#7cb342"};
+}
+
+function getFactureStatut(f){
+  if(f.statut === 'Payée') return {txt:'✅ Payée', cls:'s-paid', type:'paid'};
+  const echeance = new Date(f.echeance); echeance.setHours(23,59,59);
+  const diffJours = Math.ceil((echeance - new Date()) / (1000*60*60*24));
+  if(diffJours < 0) return {txt:`🚨 Retard ${Math.abs(diffJours)}j`, cls:'s-late', type:'late', jours:diffJours};
+  if(diffJours === 0) return {txt:`⚠️ AUJOURD'HUI`, cls:'s-late', type:'today', jours:0};
+  if(diffJours <= 3) return {txt:`⏰ ${diffJours}j`, cls:'s-pending', type:'soon', jours:diffJours};
+  return {txt:'⏳ En attente', cls:'s-pending', type:'pending', jours:diffJours};
+}
+
+function getSLAClient(d){
+  if(d.statut === 'Acceptée' || d.statut === 'Rejetée') return {txt:'—', cls:''};
+  const debut = new Date(d.sla?.debut || d.createdAt).getTime();
+  const reste = (debut + 48*60*60*1000) - Date.now();
+  if(reste < 0){
+    const h = Math.floor(Math.abs(reste) / (1000*60*60));
+    return {txt:`⚠️ +${h}h`, cls:'sla-late'};
+  }
+  const h = Math.floor(reste / (1000*60*60));
+  if(h < 12) return {txt:`⏰ ${h}h`, cls:'sla-warn'};
+  return {txt:`✅ ${h}h`, cls:'sla-ok'};
+}
+
+function getStatutBadge(statut){
+  if(statut === 'Acceptée') return '<span class="badge-status s-accepted">✅ Acceptée</span>';
+  if(statut === 'Rejetée') return '<span class="badge-status s-rejected">❌ Rejetée</span>';
+  return '<span class="badge-status s-new">🆕 En attente</span>';
+}
+
+// ============================================================
+// ==================== DASHBOARD =============================
+// ============================================================
+function renderDashboard(){
+  const tbody = document.getElementById('clientsTable');
+  document.getElementById('statClients').textContent = clients.length;
+  document.getElementById('statAcceptes').textContent = clients.filter(c => c.statut === 'Acceptée').length;
+  document.getElementById('statAttente').textContent = clients.filter(c => c.statut === 'En attente' || c.statut === 'En cours').length;
+  
+  const plafondTotal = clients.filter(c => c.statut === 'Acceptée').reduce((s,c) => s + (c.plafond || 0), 0);
+  const utiliseTotal = clients.reduce((s,c) => s + (c.soldeUtilise || 0), 0);
+  document.getElementById('statPlafond').textContent = plafondTotal.toLocaleString() + ' DH';
+  document.getElementById('statUtilise').textContent = utiliseTotal.toLocaleString() + ' DH';
+  
+  if(clients.length === 0){
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty"><div class="icon">📭</div><h3>Aucun client</h3><p><a onclick="navigate('nouveau')">Créer le premier client →</a></p></div></td></tr>`;
+    return;
+  }
+  
+  tbody.innerHTML = '';
+  clients.forEach(c => {
+    const dispo = c.plafond - (c.soldeUtilise || 0);
+    const pct = Math.min(((c.soldeUtilise || 0) / c.plafond) * 100, 100);
+    const statut = getStatutClient({plafond: c.plafond, soldeUtilise: c.soldeUtilise || 0});
+    const peutCommander = dispo > 0 && c.statut === 'Acceptée';
+    
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${c.nom}</strong><br><small style="color:#7a8a7a">${c.ice || ''}</small></td>
+      <td>${(c.plafond||0).toLocaleString()} DH</td>
+      <td style="color:#b91c1c;font-weight:600">${(c.soldeUtilise||0).toLocaleString()} DH</td>
+      <td style="color:${dispo > 0 ? '#558b2f' : '#b91c1c'};font-weight:700">${dispo.toLocaleString()} DH</td>
+      <td style="min-width:150px">
+        <div class="progress"><div style="width:${pct}%;background:${statut.color}"></div></div>
+        <small style="color:#5a6b5a">${pct.toFixed(0)}%</small>
+      </td>
+      <td><span class="badge ${statut.cls}">${statut.txt}</span></td>
+      <td>${peutCommander ? '<span style="color:#558b2f;font-weight:600">✅ Oui</span>' : '<span style="color:#b91c1c;font-weight:600">🚫 Non</span>'}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ============================================================
+// ==================== NOUVEAU CLIENT ========================
+// ============================================================
+function updateTypeClient(radio){
+  document.querySelectorAll('#typeClientGroup label').forEach(l => l.classList.remove('checked'));
+  radio.parentElement.classList.add('checked');
+  document.getElementById('cinGroup').style.display = radio.value === 'physique' ? 'flex' : 'none';
+}
+
+function toggleComptes(radio){
+  document.querySelectorAll('#compteExistantGroup label').forEach(l => l.classList.remove('checked'));
+  radio.parentElement.classList.add('checked');
+  document.getElementById('comptesExistantsGroup').style.display = radio.value === 'oui' ? 'flex' : 'none';
+}
+
+function toggleGroupe(radio){
+  document.querySelectorAll('#groupeGroup label').forEach(l => l.classList.remove('checked'));
+  radio.parentElement.classList.add('checked');
+  document.getElementById('groupeNomGroup').style.display = radio.value === 'oui' ? 'flex' : 'none';
+}
+
+document.querySelectorAll('.paiement-options').forEach(group => {
+  group.querySelectorAll('label').forEach(lbl => {
+    lbl.addEventListener('click', () => {
+      group.querySelectorAll('label').forEach(l => l.classList.remove('checked'));
+      lbl.classList.add('checked');
+    });
+  });
+});
+
+function addBanque(){
+  const row = document.createElement('div');
+  row.className = 'banque-row';
+  row.innerHTML = `
+    <input type="text" class="bank-nom" placeholder="Nom de banque">
+    <input type="text" class="bank-ville" placeholder="Ville">
+    <input type="text" class="bank-compte" placeholder="N° de compte (24 chiffres)" maxlength="24">
+    <button type="button" onclick="removeBanque(this)">✕</button>
+  `;
+  document.getElementById('banquesContainer').appendChild(row);
+}
+
+function removeBanque(btn){
+  const rows = document.querySelectorAll('.banque-row');
+  if(rows.length > 1) btn.parentElement.remove();
+  else showToast('Au moins une banque', 'error');
+}
+
+function submitClientForm(){
+  const nom = document.getElementById('nomClient').value.trim();
+  const ice = document.getElementById('ice').value.trim();
+  const adresse = document.getElementById('adresse').value.trim();
+  const plafond = parseFloat(document.getElementById('plafond').value);
+  const typeClient = document.querySelector('input[name="typeClient"]:checked').value;
+  const cin = document.getElementById('cin').value.trim();
+  
+  if(!nom){ showToast('Nom obligatoire', 'error'); return; }
+  if(!ice){ showToast('ICE obligatoire', 'error'); return; }
+  if(!adresse){ showToast('Adresse obligatoire', 'error'); return; }
+  if(!plafond || plafond <= 0){ showToast('Plafond > 0 requis', 'error'); return; }
+  if(typeClient === 'physique' && !cin){ showToast('CIN obligatoire', 'error'); return; }
+  
+  const client = {
+    id: 'CLI-' + Date.now(),
+    typeClient, nom, ice,
+    rc: document.getElementById('rc').value.trim(),
+    cin,
+    adresse,
+    portefeuille: document.getElementById('portefeuille').value.trim(),
+    compteExistant: document.querySelector('input[name="compteExistant"]:checked').value,
+    comptesExistants: document.getElementById('comptesExistants')?.value || '',
+    groupe: document.querySelector('input[name="groupe"]:checked').value,
+    groupeNom: document.getElementById('groupeNom')?.value || '',
+    interlocuteurs: {
+      gerant: {nom: document.getElementById('int_gerant_nom').value, tel: document.getElementById('int_gerant_tel').value, mail: document.getElementById('int_gerant_mail').value},
+      financier: {nom: document.getElementById('int_financier_nom').value, tel: document.getElementById('int_financier_tel').value, mail: document.getElementById('int_financier_mail').value},
+      technique: {nom: document.getElementById('int_technique_nom').value, tel: document.getElementById('int_technique_tel').value, mail: document.getElementById('int_technique_mail').value},
+      achats: {nom: document.getElementById('int_achats_nom').value, tel: document.getElementById('int_achats_tel').value, mail: document.getElementById('int_achats_mail').value},
+      comptable: {nom: document.getElementById('int_comptable_nom').value, tel: document.getElementById('int_comptable_tel').value, mail: document.getElementById('int_comptable_mail').value},
+      autre: {nom: document.getElementById('int_autre_nom').value, tel: document.getElementById('int_autre_tel').value, mail: document.getElementById('int_autre_mail').value}
+    },
+    banques: Array.from(document.querySelectorAll('.banque-row')).map(r => ({
+      nom: r.querySelector('.bank-nom').value,
+      ville: r.querySelector('.bank-ville').value,
+      compte: r.querySelector('.bank-compte').value
+    })).filter(b => b.nom),
+    paiement: {
+      modeReglement: document.querySelector('input[name="modeReglement"]:checked').value,
+      modalite: document.querySelector('input[name="modalite"]:checked').value,
+      delai: document.querySelector('input[name="delai"]:checked').value
+    },
+    plafond,
+    soldeUtilise: 0,
+    disponible: plafond,
+    statut: 'En attente',
+    sla: {debut: new Date().toISOString(), limite: 48},
+    approbations: {finance:'⏳', commercial:'⏳', direction:'⏳'},
+    createdAt: new Date().toISOString()
+  };
+  
+  clients.push(client);
+  saveClients();
+  showToast('✅ Client "' + nom + '" enregistré !', 'success');
+  
+  setTimeout(() => {
+    resetClientForm();
+    navigate('demandes');
+    refreshAll();
+  }, 800);
+}
+
+function resetClientForm(){
+  document.getElementById('clientForm').reset();
+  document.getElementById('cinGroup').style.display = 'none';
+  document.getElementById('comptesExistantsGroup').style.display = 'none';
+  document.getElementById('groupeNomGroup').style.display = 'none';
+  document.getElementById('banquesContainer').innerHTML = `
+    <div class="banque-row">
+      <input type="text" class="bank-nom" placeholder="Nom de banque">
+      <input type="text" class="bank-ville" placeholder="Ville">
+      <input type="text" class="bank-compte" placeholder="N° de compte (24 chiffres)" maxlength="24">
+      <button type="button" onclick="removeBanque(this)">✕</button>
+    </div>
+  `;
+}
+
+// ============================================================
+// ==================== DEMANDES ==============================
+// ============================================================
+function setDemandeFilter(btn, filter){
+  document.querySelectorAll('#page-demandes .filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  demandeFilter = filter;
+  renderDemandes();
+}
+
+function renderDemandes(){
+  const total = clients.length;
+  const pending = clients.filter(d => d.statut === 'En attente' || d.statut === 'En cours').length;
+  const accepted = clients.filter(d => d.statut === 'Acceptée').length;
+  const rejected = clients.filter(d => d.statut === 'Rejetée').length;
+  const late = clients.filter(d => {
+    if(d.statut === 'Acceptée' || d.statut === 'Rejetée') return false;
+    const debut = new Date(d.sla?.debut || d.createdAt).getTime();
+    return Date.now() > debut + 48*60*60*1000;
+  }).length;
+  
+  document.getElementById('demandesStats').innerHTML = `
+    <div class="stat green"><h3>${total}</h3><p>📋 Total</p></div>
+    <div class="stat yellow"><h3>${pending}</h3><p>⏳ En attente</p></div>
+    <div class="stat green"><h3>${accepted}</h3><p>✅ Acceptées</p></div>
+    <div class="stat red"><h3>${rejected}</h3><p>❌ Rejetées</p></div>
+    <div class="stat orange"><h3>${late}</h3><p>⚠️ SLA dépassé</p></div>
+  `;
+  
+  document.getElementById('c-all').textContent = total;
+  document.getElementById('c-pending').textContent = pending;
+  document.getElementById('c-accepted').textContent = accepted;
+  document.getElementById('c-rejected').textContent = rejected;
+  
+  const tbody = document.getElementById('demandesTable');
+  const search = document.getElementById('globalSearch').value.toLowerCase();
+  
+  let filtered = clients.filter(d => {
+    if(demandeFilter === 'En attente'){
+      if(d.statut !== 'En attente' && d.statut !== 'En cours') return false;
+    } else if(demandeFilter !== 'all'){
+      if(d.statut !== demandeFilter) return false;
+    }
+    if(search && !d.nom.toLowerCase().includes(search)) return false;
+    return true;
+  });
+  
+  if(filtered.length === 0){
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><div class="icon">📭</div><h3>Aucune demande</h3><p><a onclick="navigate('nouveau')">Créer un client →</a></p></div></td></tr>`;
+    return;
+  }
+  
+  tbody.innerHTML = '';
+  filtered.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  
+  filtered.forEach(d => {
+    const sla = getSLAClient(d);
+    const date = new Date(d.createdAt).toLocaleDateString('fr-FR');
+    
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${d.nom}</strong><br><small style="color:#7a8a7a">${d.ice || ''}</small></td>
+      <td>${d.typeClient === 'morale' ? '🏭' : '👤'}</td>
+      <td><strong style="color:#558b2f">${(d.plafond||0).toLocaleString()} DH</strong></td>
+      <td><small>${d.paiement?.modeReglement || '-'}<br>${d.paiement?.delai || '-'}</small></td>
+      <td>${getStatutBadge(d.statut)}</td>
+      <td><span class="sla-badge ${sla.cls}">${sla.txt}</span></td>
+      <td><small>${date}</small></td>
+      <td>
+        <div class="actions-cell">
+          <button class="btn-action btn-view" onclick="viewDemande('${d.id}')">👁</button>
+          <button class="btn-action btn-edit" onclick="editDemande('${d.id}')">✏️</button>
+          ${d.statut === 'En attente' || d.statut === 'En cours' ? `
+            <button class="btn-action btn-approve" onclick="openApprove('${d.id}')">✅</button>
+            <button class="btn-action btn-reject" onclick="openReject('${d.id}')">❌</button>
+          ` : ''}
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function viewDemande(id){
+  const d = clients.find(x => x.id === id);
+  if(!d) return;
+  const sla = getSLAClient(d);
+  
+  const body = `
+    <div class="workflow">
+      <div class="wf-step done">✅ Création</div><span class="wf-arrow">➜</span>
+      <div class="wf-step ${d.approbations?.finance === '✅' ? 'done' : 'current'}">${d.approbations?.finance === '✅' ? '✅' : '⏳'} Finance</div><span class="wf-arrow">➜</span>
+      <div class="wf-step ${d.approbations?.commercial === '✅' ? 'done' : 'current'}">${d.approbations?.commercial === '✅' ? '✅' : '⏳'} Commercial</div><span class="wf-arrow">➜</span>
+      <div class="wf-step ${d.approbations?.direction === '✅' ? 'done' : (d.statut === 'Rejetée' ? 'rejected' : 'current')}">${d.approbations?.direction === '✅' ? '✅' : '⏳'} Direction</div>
+      <span class="wf-arrow">➜</span>
+      <div class="wf-step ${d.statut === 'Acceptée' ? 'done' : (d.statut === 'Rejetée' ? 'rejected' : '')}">${d.statut === 'Acceptée' ? '✅ Accepté' : (d.statut === 'Rejetée' ? '❌ Rejeté' : '⏳')}</div>
+    </div>
+    
+    <div style="display:flex;gap:15px;margin-bottom:15px;flex-wrap:wrap">
+      <div style="flex:1;min-width:150px;padding:15px;background:#f9fbf6;border-radius:10px;border-left:3px solid #c9a227">
+        <small style="color:#5a6b5a;font-weight:600">⏱ SLA</small>
+        <div style="margin-top:5px"><span class="sla-badge ${sla.cls}">${sla.txt}</span></div>
+      </div>
+      <div style="flex:1;min-width:150px;padding:15px;background:#f9fbf6;border-radius:10px;border-left:3px solid #7cb342">
+        <small style="color:#5a6b5a;font-weight:600">💰 Plafond</small>
+        <div style="font-weight:700;margin-top:5px;color:#558b2f">${(d.plafond||0).toLocaleString()} DH</div>
+      </div>
+      <div style="flex:1;min-width:150px;padding:15px;background:#f9fbf6;border-radius:10px;border-left:3px solid #1a3a1a">
+        <small style="color:#5a6b5a;font-weight:600">📊 Statut</small>
+        <div style="margin-top:5px">${getStatutBadge(d.statut)}</div>
+      </div>
+    </div>
+    
+    <div class="detail-grid">
+      <div class="detail-block">
+        <h4>🏭 Identification</h4>
+        <ul>
+          <li><span>Type</span><span>${d.typeClient === 'morale' ? 'Société' : 'Physique'}</span></li>
+          <li><span>Nom</span><span>${d.nom}</span></li>
+          <li><span>ICE</span><span>${d.ice || '-'}</span></li>
+          <li><span>RC</span><span>${d.rc || '-'}</span></li>
+          ${d.cin ? `<li><span>CIN</span><span>${d.cin}</span></li>` : ''}
+          <li><span>Adresse</span><span>${d.adresse || '-'}</span></li>
+        </ul>
+      </div>
+      <div class="detail-block">
+        <h4>💳 Paiement</h4>
+        <ul>
+          <li><span>Mode</span><span>${d.paiement?.modeReglement || '-'}</span></li>
+          <li><span>Modalité</span><span>${d.paiement?.modalite || '-'}</span></li>
+          <li><span>Délai</span><span>${d.paiement?.delai || '-'}</span></li>
+          <li><span>Plafond</span><span style="color:#558b2f;font-weight:700">${(d.plafond||0).toLocaleString()} DH</span></li>
+        </ul>
+      </div>
+    </div>
+    
+    ${d.motifRejet ? `<div style="margin-top:20px;padding:15px;background:#fee2e2;border-left:4px solid #dc2626;border-radius:8px"><strong style="color:#991b1b">❌ Motif rejet :</strong><p style="margin-top:5px;color:#7f1d1d">${d.motifRejet}</p></div>` : ''}
+  `;
+  
+  const footer = `
+    <button class="btn btn-secondary" onclick="closeModal()">Fermer</button>
+    ${d.statut === 'En attente' || d.statut === 'En cours' ? `
+      <button class="btn btn-danger" onclick="closeModal();openReject('${d.id}')">❌ Rejeter</button>
+      <button class="btn btn-success" onclick="closeModal();openApprove('${d.id}')">✅ Approuver</button>
+    ` : ''}
+  `;
+  
+  openModal('👁 ' + d.nom, body, footer);
+}
+
+function editDemande(id){
+  const d = clients.find(x => x.id === id);
+  if(!d) return;
+  currentClientId = id;
+  
+  const body = `
+    <div class="form-grid">
+      <div class="section-title"><span class="num">1</span> Identification</div>
+      <div class="form-group"><label>Nom</label><input type="text" id="editNom" value="${d.nom || ''}"></div>
+      <div class="form-group"><label>ICE</label><input type="text" id="editIce" value="${d.ice || ''}"></div>
+      <div class="form-group"><label>RC</label><input type="text" id="editRc" value="${d.rc || ''}"></div>
+      <div class="form-group"><label>CIN</label><input type="text" id="editCin" value="${d.cin || ''}"></div>
+      <div class="form-group full"><label>Adresse</label><input type="text" id="editAdresse" value="${d.adresse || ''}"></div>
+      
+      <div class="section-title"><span class="num">2</span> Paiement</div>
+      <div class="form-group"><label>Mode</label>
+        <select id="editMode">
+          <option ${d.paiement?.modeReglement === 'Chèque (Q)' ? 'selected' : ''}>Chèque (Q)</option>
+          <option ${d.paiement?.modeReglement === 'Effet (T)' ? 'selected' : ''}>Effet (T)</option>
+          <option ${d.paiement?.modeReglement === 'Espèce (E)' ? 'selected' : ''}>Espèce (E)</option>
+          <option ${d.paiement?.modeReglement === 'Virement (V)' ? 'selected' : ''}>Virement (V)</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Modalité</label>
+        <select id="editModalite">
+          <option ${d.paiement?.modalite === 'À la facturation (F)' ? 'selected' : ''}>À la facturation (F)</option>
+          <option ${d.paiement?.modalite === 'À la commande (C)' ? 'selected' : ''}>À la commande (C)</option>
+          <option ${d.paiement?.modalite === 'À la livraison (L)' ? 'selected' : ''}>À la livraison (L)</option>
+          <option ${d.paiement?.modalite === 'À échéance' ? 'selected' : ''}>À échéance</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Délai</label>
+        <select id="editDelai">
+          <option ${d.paiement?.delai === 'Comptant (0)' ? 'selected' : ''}>Comptant (0)</option>
+          <option ${d.paiement?.delai === '30 jrs (1)' ? 'selected' : ''}>30 jrs (1)</option>
+          <option ${d.paiement?.delai === '60 jrs (2)' ? 'selected' : ''}>60 jrs (2)</option>
+          <option ${d.paiement?.delai === '90 jrs (3)' ? 'selected' : ''}>90 jrs (3)</option>
+          <option ${d.paiement?.delai === '120 jrs (4)' ? 'selected' : ''}>120 jrs (4)</option>
+        </select>
+      </div>
+      <div class="form-group"><label>💰 Plafond (DH)</label><input type="number" id="editPlafond" value="${d.plafond || 0}" min="0" step="1000"></div>
+    </div>
+  `;
+  
+  const footer = `
+    <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+    <button class="btn btn-primary" onclick="saveEdit()">💾 Enregistrer</button>
+  `;
+  
+  openModal('✏️ Modifier — ' + d.nom, body, footer);
+}
+
+function saveEdit(){
+  const d = clients.find(x => x.id === currentClientId);
+  if(!d) return;
+  d.nom = document.getElementById('editNom').value.trim();
+  d.ice = document.getElementById('editIce').value.trim();
+  d.rc = document.getElementById('editRc').value.trim();
+  d.cin = document.getElementById('editCin').value.trim();
+  d.adresse = document.getElementById('editAdresse').value.trim();
+  d.paiement = {
+    modeReglement: document.getElementById('editMode').value,
+    modalite: document.getElementById('editModalite').value,
+    delai: document.getElementById('editDelai').value
+  };
+  const np = parseFloat(document.getElementById('editPlafond').value);
+  if(np > 0){
+    d.plafond = np;
+    d.disponible = np - (d.soldeUtilise || 0);
+  }
+  d.updatedAt = new Date().toISOString();
+  saveClients();
+  closeModal();
+  refreshAll();
+  showToast('✅ Modifications enregistrées', 'success');
+}
+
+function openApprove(id){
+  const d = clients.find(x => x.id === id);
+  if(!d) return;
+  currentClientId = id;
+  
+  const body = `
+    <div style="padding:15px;background:#dcf5c4;border-left:4px solid #7cb342;border-radius:8px;margin-bottom:20px">
+      <strong style="color:#3d6b3d">✅ Vous êtes sur le point d'approuver cette demande</strong>
+    </div>
+    <div class="form-grid">
+      <div class="form-group full"><label>💰 Plafond accordé (DH) *</label>
+        <input type="number" id="approvePlafond" value="${d.plafond || 0}" min="0" step="1000">
+        <small style="color:#7a8a7a;font-size:11px;margin-top:5px">Plafond demandé : ${(d.plafond||0).toLocaleString()} DH</small>
+      </div>
+      <div class="form-group full"><label>🏦 Numéro de compte attribué</label>
+        <input type="text" id="approveCompte" placeholder="24 chiffres" maxlength="24" value="${d.numeroCompte || ''}">
+      </div>
+      <div class="form-group full"><label>📝 Commentaire</label>
+        <textarea id="approveComment" rows="3" style="resize:vertical;padding:11px;border:1px solid #d4e0c8;border-radius:8px;font-family:inherit;background:#f9fbf6"></textarea>
+      </div>
+    </div>
+  `;
+  
+  const footer = `
+    <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+    <button class="btn btn-success" onclick="confirmApprove()">✅ Confirmer</button>
+  `;
+  
+  openModal('✅ Approuver — ' + d.nom, body, footer);
+}
+
+function confirmApprove(){
+  const d = clients.find(x => x.id === currentClientId);
+  if(!d) return;
+  const plafond = parseFloat(document.getElementById('approvePlafond').value);
+  if(!plafond || plafond <= 0){ showToast('Plafond invalide', 'error'); return; }
+  d.plafond = plafond;
+  d.disponible = plafond - (d.soldeUtilise || 0);
+  d.numeroCompte = document.getElementById('approveCompte').value.trim();
+  d.commentaireApprobation = document.getElementById('approveComment').value.trim();
+  d.statut = 'Acceptée';
+  d.approbations = {finance:'✅', commercial:'✅', direction:'✅'};
+  d.dateApprobation = new Date().toISOString();
+  saveClients();
+  closeModal();
+  refreshAll();
+  showToast('✅ Demande approuvée !', 'success');
+}
+
+function openReject(id){
+  const d = clients.find(x => x.id === id);
+  if(!d) return;
+  currentClientId = id;
+  const motifs = ['Documents incomplets', 'ICE / RC invalide', 'Plafond trop élevé', 'Historique négatif', 'Autre'];
+  
+  const body = `
+    <div style="padding:15px;background:#fee2e2;border-left:4px solid #dc2626;border-radius:8px;margin-bottom:20px">
+      <strong style="color:#991b1b">⚠️ Le rejet est définitif</strong>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:15px">
+      ${motifs.map((m,i) => `
+        <label style="display:flex;align-items:center;gap:10px;padding:12px 15px;background:#f9fbf6;border:2px solid #d4e0c8;border-radius:8px;cursor:pointer;font-size:13px">
+          <input type="radio" name="motifRejet" value="${m}" ${i===0?'checked':''} style="accent-color:#dc2626">
+          ${m}
+        </label>
+      `).join('')}
+    </div>
+    <div class="form-group"><label style="display:block;font-size:12px;color:#2d4a2d;margin-bottom:6px;font-weight:600;text-transform:uppercase">Détails</label>
+      <textarea id="rejectDetails" rows="3" style="width:100%;padding:11px;border:1px solid #d4e0c8;border-radius:8px;font-family:inherit;background:#f9fbf6"></textarea>
+    </div>
+  `;
+  
+  const footer = `
+    <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+    <button class="btn btn-danger" onclick="confirmReject()">❌ Confirmer</button>
+  `;
+  
+  openModal('❌ Rejeter — ' + d.nom, body, footer);
+}
+
+function confirmReject(){
+  const d = clients.find(x => x.id === currentClientId);
+  if(!d) return;
+  const motif = document.querySelector('input[name="motifRejet"]:checked').value;
+  const details = document.getElementById('rejectDetails').value.trim();
+  d.statut = 'Rejetée';
+  d.motifRejet = motif + (details ? ' — ' + details : '');
+  d.dateRejet = new Date().toISOString();
+  saveClients();
+  closeModal();
+  refreshAll();
+  showToast('❌ Demande rejetée', 'error');
+}
+
+// ============================================================
+// ==================== FACTURES ==============================
+// ============================================================
+function setFactureFilter(btn, filter){
+  document.querySelectorAll('#page-factures .filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  factureFilter = filter;
+  renderFactures();
+}
+
+function recalcClient(clientId){
+  const c = clients.find(x => x.id === clientId);
+  if(!c) return;
+  const utilise = factures
+    .filter(f => f.clientId === clientId && f.statut !== 'Payée')
+    .reduce((sum, f) => sum + f.montant, 0);
+  c.soldeUtilise = utilise;
+  c.disponible = c.plafond - utilise;
+  saveClients();
+}
+
+function renderFacturesPage(){
+  renderFactureStats();
+  renderFactures();
+  updateAlertBanner();
+}
+
+function renderFactureStats(){
+  const total = factures.length;
+  const montantTotal = factures.reduce((s,f) => s + f.montant, 0);
+  const payees = factures.filter(f => f.statut === 'Payée').length;
+  let enAttente = 0, enRetard = 0;
+  factures.forEach(f => {
+    const st = getFactureStatut(f);
+    if(st.type === 'pending' || st.type === 'soon') enAttente++;
+    if(st.type === 'late' || st.type === 'today') enRetard++;
+  });
+  document.getElementById('statFactTotal').textContent = total;
+  document.getElementById('statFactMontant').textContent = montantTotal.toLocaleString() + ' DH';
+  document.getElementById('statFactPayees').textContent = payees;
+  document.getElementById('statFactAttente').textContent = enAttente;
+  document.getElementById('statFactRetard').textContent = enRetard;
+  document.getElementById('fc-all').textContent = total;
+  document.getElementById('fc-pending').textContent = enAttente;
+  document.getElementById('fc-late').textContent = enRetard;
+  document.getElementById('fc-paid').textContent = payees;
+}
+
+function renderFactures(){
+  const search = document.getElementById('globalSearch').value.toLowerCase();
+  const tbody = document.getElementById('facturesTable');
+  
+  let filtered = factures.filter(f => {
+    const st = getFactureStatut(f);
+    if(factureFilter === 'En retard'){
+      if(st.type !== 'late' && st.type !== 'today') return false;
+    } else if(factureFilter === 'En attente'){
+      if(st.type !== 'pending' && st.type !== 'soon') return false;
+    } else if(factureFilter === 'Payée'){
+      if(f.statut !== 'Payée') return false;
+    }
+    if(search){
+      const client = clients.find(c => c.id === f.clientId);
+      return (f.numero || '').toLowerCase().includes(search) ||
+             (client?.nom || '').toLowerCase().includes(search);
+    }
+    return true;
+  });
+  
+  if(filtered.length === 0){
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><div class="icon">📭</div><h3>Aucune facture</h3><p>Cliquez sur "Nouvelle facture"</p></div></td></tr>`;
+    return;
+  }
+  
+  filtered.sort((a,b) => new Date(b.dateEmission) - new Date(a.dateEmission));
+  tbody.innerHTML = '';
+  
+  filtered.forEach(f => {
+    const client = clients.find(c => c.id === f.clientId);
+    const st = getFactureStatut(f);
+    const dateEm = new Date(f.dateEmission).toLocaleDateString('fr-FR');
+    const dateEc = new Date(f.echeance).toLocaleDateString('fr-FR');
+    const isLate = st.type === 'late' || st.type === 'today';
+    const delaiClient = f.delaiClient || client?.paiement?.delai || '—';
+    const jours = getJoursDelai(delaiClient);
+    const delaiAffiche = jours ? `${jours}j` : 'Comptant';
+    
+    const tr = document.createElement('tr');
+    if(isLate) tr.className = 'row-late';
+    tr.innerHTML = `
+      <td><strong>${f.numero}</strong></td>
+      <td>${client?.nom || '⚠️ Supprimé'}</td>
+      <td><strong style="color:#1a3a1a">${f.montant.toLocaleString()} DH</strong></td>
+      <td><small>${dateEm}</small></td>
+      <td><small style="${isLate ? 'color:#b91c1c;font-weight:700' : ''}">${dateEc}</small>${st.type === 'today' ? '<br><small style="color:#b91c1c;font-weight:700">⚠️ AUJOURD\'HUI</small>' : ''}</td>
+      <td><small style="color:#2d4a2d;font-weight:600">⏱ ${delaiAffiche}</small></td>
+      <td><span class="badge-status ${st.cls}">${st.txt}</span></td>
+      <td>
+        ${f.statut !== 'Payée' ? `<button class="btn-action btn-pay" onclick="marquerPayee('${f.id}')">💰</button>` : ''}
+        <button class="btn-action btn-view" onclick="viewFacture('${f.id}')">👁</button>
+        <button class="btn-action btn-delete" onclick="deleteFacture('${f.id}')">🗑</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function openAddFacture(){
+  if(clients.length === 0){
+    showToast('Aucun client. Créez d\'abord un client.', 'error');
+    navigate('nouveau');
+    return;
+  }
+  
+  const num = 'F-' + new Date().getFullYear() + '-' + String(factures.length + 1).padStart(4, '0');
+  const today = new Date().toISOString().split('T')[0];
+  
+  const body = `
+    <div class="form-group">
+      <label>Client *</label>
+      <select id="factClient" onchange="updateClientInfoFacture()">
+        <option value="">— Sélectionner —</option>
+        ${clients.filter(c => c.statut === 'Acceptée' || c.statut === 'En attente')
+          .map(c => `<option value="${c.id}">${c.nom} — Disponible: ${(c.disponible||0).toLocaleString()} DH</option>`).join('')}
+      </select>
+    </div>
+    <div id="clientInfoBox"></div>
+    <div class="form-group"><label>N° Facture</label><input type="text" id="factNumero" value="${num}"></div>
+    <div class="form-group"><label>Montant (DH) *</label><input type="number" id="factMontant" placeholder="0" min="0" step="100" oninput="checkMontantFacture()"></div>
+    <div class="form-group"><label>Date d'émission *</label><input type="date" id="factDateEmission" value="${today}" onchange="refreshEcheance()"></div>
+    <div class="form-group"><label>⏱ Délai (hérité du client)</label><input type="text" id="factDelai" class="herited" value="—" disabled></div>
+    <div class="form-group"><label>📅 Date d'échéance (calculée)</label><input type="date" id="factEcheance" class="calculated" disabled>
+      <div class="echeance-warning" id="echeanceWarning"></div>
+    </div>
+    <div class="form-group"><label>Description</label><textarea id="factDescription" rows="2" style="padding:11px;border:1px solid #d4e0c8;border-radius:8px;font-family:inherit;width:100%;background:#f9fbf6"></textarea></div>
+    <div id="amountPreview"></div>
+  `;
+  
+  const footer = `
+    <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+    <button class="btn btn-primary" id="btnSaveFacture" onclick="saveFacture()">💾 Enregistrer</button>
+  `;
+  
+  openModal('➕ Nouvelle facture', body, footer);
+}
+
+function updateClientInfoFacture(){
+  const clientId = document.getElementById('factClient').value;
+  const box = document.getElementById('clientInfoBox');
+  const preview = document.getElementById('amountPreview');
+  
+  if(!clientId){
+    box.innerHTML = '';
+    preview.classList.remove('show');
+    document.getElementById('factDelai').value = '—';
+    document.getElementById('factEcheance').value = '';
+    return;
+  }
+  
+  const c = clients.find(x => x.id === clientId);
+  if(!c) return;
+  
+  const delaiClient = c.paiement?.delai || 'Comptant (0)';
+  const jours = getJoursDelai(delaiClient);
+  document.getElementById('factDelai').value = delaiClient + (jours ? ` → +${jours} jours` : ' → Immédiat');
+  refreshEcheance();
+  
+  const pct = Math.min(((c.soldeUtilise||0) / c.plafond) * 100, 100);
+  let color = '#7cb342';
+  if(pct >= 100) color = '#dc2626';
+  else if(pct >= 90) color = '#ea580c';
+  else if(pct >= 70) color = '#e07c24';
+  
+  box.innerHTML = `
+    <div class="client-info">
+      <h4>👤 ${c.nom} <span style="font-size:11px;color:#5a6b5a">${c.ice || ''}</span></h4>
+      <div class="grid">
+        <div class="item plafond"><small>💰 Plafond</small><strong>${c.plafond.toLocaleString()}</strong></div>
+        <div class="item utilise"><small>📊 Utilisé</small><strong>${(c.soldeUtilise||0).toLocaleString()}</strong></div>
+        <div class="item dispo"><small>✅ Disponible</small><strong>${(c.disponible||0).toLocaleString()}</strong></div>
+      </div>
+      <div class="progress-wrap">
+        <div class="lbl"><span>Utilisation</span><span><strong>${pct.toFixed(0)}%</strong></span></div>
+        <div class="progress-bar"><div style="width:${pct}%;background:${color}">${pct>15?pct.toFixed(0)+'%':''}</div></div>
+      </div>
+      ${pct >= 100 ? `<div class="alert alert-danger" style="margin-top:12px"><span class="icon">🚫</span><div><strong>Client bloqué !</strong> Plafond atteint.</div></div>` : pct >= 90 ? `<div class="alert alert-warning" style="margin-top:12px"><span class="icon">⚠️</span><div><strong>Attention :</strong> Client à ${pct.toFixed(0)}% du plafond.</div></div>` : ''}
+    </div>
+  `;
+  
+  checkMontantFacture();
+}
+
+function refreshEcheance(){
+  const clientId = document.getElementById('factClient').value;
+  const dateEmission = document.getElementById('factDateEmission').value;
+  const echeanceInput = document.getElementById('factEcheance');
+  const warning = document.getElementById('echeanceWarning');
+  
+  if(!clientId || !dateEmission){ echeanceInput.value = ''; warning.classList.remove('show'); return; }
+  const c = clients.find(x => x.id === clientId);
+  if(!c) return;
+  
+  const echeance = calculateEcheance(dateEmission, c.paiement?.delai || 'Comptant (0)');
+  echeanceInput.value = echeance;
+  
+  const echDate = new Date(echeance); echDate.setHours(23,59,59);
+  const diffJours = Math.ceil((echDate - new Date()) / (1000*60*60*24));
+  
+  if(diffJours < 0){
+    warning.className = 'echeance-warning show';
+    warning.style.background = '#fee2e2'; warning.style.borderColor = '#fecaca'; warning.style.color = '#991b1b';
+    warning.innerHTML = `🚨 <strong>Attention :</strong> EN RETARD dès création (${Math.abs(diffJours)}j)`;
+  } else if(diffJours === 0){
+    warning.className = 'echeance-warning show';
+    warning.style.background = '#fee2e2'; warning.style.borderColor = '#fecaca'; warning.style.color = '#991b1b';
+    warning.innerHTML = `⚠️ <strong>Échéance AUJOURD'HUI</strong>`;
+  } else if(diffJours <= 7){
+    warning.className = 'echeance-warning show';
+    warning.style.background = '#fef9e8'; warning.style.borderColor = '#e8c547'; warning.style.color = '#78350f';
+    warning.innerHTML = `⏰ Échéance dans <strong>${diffJours} jour(s)</strong>`;
+  } else {
+    warning.classList.remove('show');
+  }
+  
+  echeanceInput.style.background = '#fef9e8';
+  setTimeout(() => echeanceInput.style.background = '#f0f9e8', 300);
+}
+
+function checkMontantFacture(){
+  const clientId = document.getElementById('factClient').value;
+  const montant = parseFloat(document.getElementById('factMontant').value) || 0;
+  const preview = document.getElementById('amountPreview');
+  const btn = document.getElementById('btnSaveFacture');
+  
+  if(!clientId || montant <= 0){
+    preview.classList.remove('show');
+    if(btn) btn.disabled = false;
+    return;
+  }
+  
+  const c = clients.find(x => x.id === clientId);
+  const dispo = c.disponible || 0;
+  const resteApres = dispo - montant;
+  const depassement = montant > dispo;
+  
+  preview.classList.add('show');
+  preview.innerHTML = `
+    <div class="amount-preview show" style="background:${depassement?'#fef2f2':'#f0f9e8'};border:2px solid ${depassement?'#fecaca':'#7cb342'}">
+      <div style="font-size:12px;font-weight:700;color:${depassement?'#b91c1c':'#3d6b3d'};margin-bottom:10px">
+        ${depassement ? '❌ DÉPASSEMENT DE PLAFOND' : '✅ FACTURE AUTORISÉE'}
+      </div>
+      <div class="row"><span>Disponible</span><span>${dispo.toLocaleString()} DH</span></div>
+      <div class="row"><span>Montant</span><span>${montant.toLocaleString()} DH</span></div>
+      <div class="row" style="color:${depassement?'#b91c1c':'#558b2f'}">
+        <span>${depassement ? '⚠️ Dépassement' : '✅ Reste'}</span>
+        <span>${depassement ? '+' + (montant-dispo).toLocaleString() : resteApres.toLocaleString()} DH</span>
+      </div>
+    </div>
+  `;
+  
+  if(btn){
+    btn.disabled = depassement;
+    btn.style.opacity = depassement ? .5 : 1;
+    btn.style.cursor = depassement ? 'not-allowed' : 'pointer';
+  }
+}
+
+function saveFacture(){
+  const clientId = document.getElementById('factClient').value;
+  const numero = document.getElementById('factNumero').value.trim();
+  const montant = parseFloat(document.getElementById('factMontant').value);
+  const dateEmission = document.getElementById('factDateEmission').value;
+  const echeance = document.getElementById('factEcheance').value;
+  const description = document.getElementById('factDescription').value.trim();
+  
+  if(!clientId){ showToast('Sélectionnez un client', 'error'); return; }
+  if(!numero){ showToast('N° facture obligatoire', 'error'); return; }
+  if(!montant || montant <= 0){ showToast('Montant invalide', 'error'); return; }
+  if(!echeance){ showToast('Échéance non calculée', 'error'); return; }
+  
+  const c = clients.find(x => x.id === clientId);
+  const dispo = c.disponible || 0;
+  if(montant > dispo){
+    showToast(`🚫 BLOQUÉ ! Dépassement de ${(montant-dispo).toLocaleString()} DH`, 'error');
+    return;
+  }
+  
+  const facture = {
+    id: 'FACT-' + Date.now(),
+    clientId, numero, montant, dateEmission, echeance,
+    delaiClient: c.paiement?.delai || 'Comptant (0)',
+    description,
+    statut: 'En attente',
+    createdAt: new Date().toISOString()
+  };
+  
+  factures.push(facture);
+  recalcClient(clientId);
+  saveAll();
+  closeModal();
+  refreshAll();
+  
+  const st = getFactureStatut(facture);
+  if(st.type === 'late' || st.type === 'today'){
+    showToast(`⚠️ Facture créée mais EN RETARD ! Échéance : ${new Date(echeance).toLocaleDateString('fr-FR')}`, 'error');
+  } else if((c.disponible || 0) <= 0){
+    showToast(`⚠️ Facture créée. CLIENT BLOQUÉ !`, 'warning');
+  } else {
+    showToast(`✅ Facture ${numero} créée. Échéance : ${new Date(echeance).toLocaleDateString('fr-FR')}`, 'success');
+  }
+}
+
+function marquerPayee(factureId){
+  const f = factures.find(x => x.id === factureId);
+  if(!f) return;
+  if(!confirm(`Marquer la facture ${f.numero} (${f.montant.toLocaleString()} DH) comme PAYÉE ?`)) return;
+  f.statut = 'Payée';
+  f.datePaiement = new Date().toISOString();
+  recalcClient(f.clientId);
+  saveAll();
+  refreshAll();
+  showToast(`✅ Facture ${f.numero} payée. Plafond libéré !`, 'success');
+}
+
+function viewFacture(id){
+  const f = factures.find(x => x.id === id);
+  if(!f) return;
+  const c = clients.find(x => x.id === f.clientId);
+  const st = getFactureStatut(f);
+  const jours = getJoursDelai(f.delaiClient || '');
+  
+  const body = `
+    <div style="padding:20px;background:${st.type==='late'||st.type==='today'?'#fef2f2':'#f9fbf6'};border-radius:12px;margin-bottom:20px;text-align:center;border:2px solid ${st.type==='late'||st.type==='today'?'#fecaca':'#c9a227'}">
+      <div style="font-size:13px;color:#5a6b5a;font-weight:600">Facture</div>
+      <div style="font-size:24px;font-weight:700;color:#1a3a1a;margin:5px 0">${f.numero}</div>
+      <div style="font-size:28px;font-weight:700;color:#92400e">${f.montant.toLocaleString()} DH</div>
+      <div style="margin-top:10px"><span class="badge-status ${st.cls}">${st.txt}</span></div>
+    </div>
+    
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px">
+      <div style="padding:15px;background:#f9fbf6;border-radius:10px;border-left:3px solid #c9a227">
+        <small style="color:#5a6b5a;font-size:11px;font-weight:600">CLIENT</small>
+        <div style="font-weight:700;margin-top:5px">${c?.nom || '—'}</div>
+      </div>
+      <div style="padding:15px;background:#f9fbf6;border-radius:10px;border-left:3px solid #7cb342">
+        <small style="color:#5a6b5a;font-size:11px;font-weight:600">DÉLAI CLIENT</small>
+        <div style="font-weight:700;margin-top:5px;color:#92400e">⏱ ${f.delaiClient || '—'}</div>
+        ${jours ? `<div style="font-size:12px;color:#5a6b5a">+${jours} jours</div>` : ''}
+      </div>
+      <div style="padding:15px;background:#f9fbf6;border-radius:10px;border-left:3px solid #1a3a1a">
+        <small style="color:#5a6b5a;font-size:11px;font-weight:600">DATE ÉMISSION</small>
+        <div style="font-weight:700;margin-top:5px">${new Date(f.dateEmission).toLocaleDateString('fr-FR')}</div>
+      </div>
+      <div style="padding:15px;background:${st.type==='late'||st.type==='today'?'#fee2e2':'#f0f9e8'};border-radius:10px;border-left:3px solid ${st.type==='late'||st.type==='today'?'#dc2626':'#7cb342'}">
+        <small style="color:${st.type==='late'||st.type==='today'?'#991b1b':'#3d6b3d'};font-size:11px;font-weight:600">📅 ÉCHÉANCE</small>
+        <div style="font-weight:700;margin-top:5px;color:${st.type==='late'||st.type==='today'?'#b91c1c':'#558b2f'}">${new Date(f.echeance).toLocaleDateString('fr-FR')}</div>
+      </div>
+    </div>
+    
+    ${f.description ? `<div style="margin-top:15px;padding:15px;background:#fef9e8;border-radius:10px;border-left:3px solid #e8c547"><small style="color:#92400e;font-size:11px;font-weight:600">DESCRIPTION</small><div style="margin-top:5px;font-size:13px">${f.description}</div></div>` : ''}
+  `;
+  
+  const footer = `
+    <button class="btn btn-secondary" onclick="closeModal()">Fermer</button>
+    ${f.statut !== 'Payée' ? `<button class="btn btn-success" onclick="closeModal();marquerPayee('${f.id}')">💰 Marquer payée</button>` : ''}
+  `;
+  
+  openModal('👁 Détails facture', body, footer);
+}
+
+function deleteFacture(id){
+  const f = factures.find(x => x.id === id);
+  if(!f) return;
+  if(!confirm(`Supprimer la facture ${f.numero} ?`)) return;
+  const clientId = f.clientId;
+  factures = factures.filter(x => x.id !== id);
+  recalcClient(clientId);
+  saveAll();
+  refreshAll();
+  showToast('🗑 Facture supprimée', 'success');
+}
+
+// ============================================================
+// ==================== ALERTES ===============================
+// ============================================================
+function detecterAlertes(){
+  const aujourdhui = [], bientot = [], retard = [];
+  factures.forEach(f => {
+    if(f.statut === 'Payée') return;
+    const st = getFactureStatut(f);
+    const client = clients.find(c => c.id === f.clientId);
+    if(st.type === 'late') retard.push({facture:f, client, jours:st.jours});
+    else if(st.type === 'today') aujourdhui.push({facture:f, client});
+    else if(st.type === 'soon') bientot.push({facture:f, client, jours:st.jours});
+  });
+  return {aujourdhui, bientot, retard};
+}
+
+function updateAlertBanner(){
+  const {aujourdhui, bientot, retard} = detecterAlertes();
+  const banner = document.getElementById('alertBanner');
+  if(!banner) return;
+  const title = document.getElementById('alertTitle');
+  const msg = document.getElementById('alertMsg');
+  
+  if(retard.length > 0){
+    banner.className = 'alert-banner danger show';
+    title.textContent = `🚨 ${retard.length} facture(s) EN RETARD !`;
+    const total = retard.reduce((s,r) => s + r.facture.montant, 0);
+    msg.textContent = `Montant total : ${total.toLocaleString()} DH`;
+  } else if(aujourdhui.length > 0){
+    banner.className = 'alert-banner danger show';
+    title.textContent = `⚠️ ${aujourdhui.length} facture(s) à échéance AUJOURD'HUI !`;
+    msg.textContent = aujourdhui.map(a => a.client?.nom || '?').join(', ');
+  } else if(bientot.length > 0){
+    banner.className = 'alert-banner show';
+    title.textContent = `⏰ ${bientot.length} facture(s) bientôt`;
+    msg.textContent = bientot.map(b => `${b.client?.nom || '?'} (${b.jours}j)`).join(', ');
+  } else {
+    banner.classList.remove('show');
+  }
+}
+
+function closeAlert(){
+  document.getElementById('alertBanner').classList.remove('show');
+}
+
+function updateNotifBadge(){
+  const {aujourdhui, bientot, retard} = detecterAlertes();
+  const pendingClients = clients.filter(c => c.statut === 'En attente' || c.statut === 'En cours').length;
+  const total = aujourdhui.length + bientot.length + retard.length + pendingClients;
+  const badge = document.getElementById('notifBadge');
+  if(total > 0){
+    badge.style.display = 'inline-block';
+    badge.textContent = total;
+  } else {
+    badge.style.display = 'none';
+  }
+  
+  // Tab badges
+  const tabDemandes = document.getElementById('tabBadgeDemandes');
+  const tabFactures = document.getElementById('tabBadgeFactures');
+  
+  if(pendingClients > 0){
+    tabDemandes.style.display = 'inline-block';
+    tabDemandes.textContent = pendingClients;
+  } else {
+    tabDemandes.style.display = 'none';
+  }
+  
+  const facturesAlertes = aujourdhui.length + bientot.length + retard.length;
+  if(facturesAlertes > 0){
+    tabFactures.style.display = 'inline-block';
+    tabFactures.textContent = facturesAlertes;
+  } else {
+    tabFactures.style.display = 'none';
+  }
+}
+
+function toggleNotifPanel(){
+  const panel = document.getElementById('notifPanel');
+  panel.classList.toggle('show');
+  if(panel.classList.contains('show')) renderNotifPanel();
+}
+
+function renderNotifPanel(){
+  const {aujourdhui, bientot, retard} = detecterAlertes();
+  const pendingClients = clients.filter(c => c.statut === 'En attente' || c.statut === 'En cours');
+  const body = document.getElementById('notifBody');
+  
+  if(aujourdhui.length + bientot.length + retard.length + pendingClients.length === 0){
+    body.innerHTML = `<div class="notif-empty"><div class="icon">✅</div><strong>Aucune alerte</strong></div>`;
+    return;
+  }
+  
+  let html = '';
+  
+  pendingClients.forEach(c => {
+    html += `
+      <div class="notif-item warning" onclick="toggleNotifPanel();navigate('demandes');setTimeout(()=>viewDemande('${c.id}'),300)">
+        <div class="ico">🆕</div>
+        <div class="txt"><strong>Nouvelle demande</strong><small>${c.nom}</small></div>
+      </div>
+    `;
+  });
+  
+  retard.forEach(({facture, client, jours}) => {
+    html += `
+      <div class="notif-item danger" onclick="toggleNotifPanel();navigate('factures');setTimeout(()=>viewFacture('${facture.id}'),300)">
+        <div class="ico">🚨</div>
+        <div class="txt"><strong>Retard de ${Math.abs(jours)}j</strong><small>${client?.nom || '—'} — ${facture.numero}</small><small style="color:#b91c1c;font-weight:700;display:block;margin-top:3px">${facture.montant.toLocaleString()} DH</small></div>
+      </div>
+    `;
+  });
+  
+  aujourdhui.forEach(({facture, client}) => {
+    html += `
+      <div class="notif-item danger" onclick="toggleNotifPanel();navigate('factures');setTimeout(()=>viewFacture('${facture.id}'),300)">
+        <div class="ico">⚠️</div>
+        <div class="txt"><strong>Échéance AUJOURD'HUI</strong><small>${client?.nom || '—'} — ${facture.numero}</small></div>
+      </div>
+    `;
+  });
+  
+  bientot.forEach(({facture, client, jours}) => {
+    html += `
+      <div class="notif-item warning" onclick="toggleNotifPanel();navigate('factures');setTimeout(()=>viewFacture('${facture.id}'),300)">
+        <div class="ico">⏰</div>
+        <div class="txt"><strong>Échéance dans ${jours}j</strong><small>${client?.nom || '—'} — ${facture.numero}</small></div>
+      </div>
+    `;
+  });
+  
+  body.innerHTML = html;
+}
+
+// ============================================================
+// ==================== MODAL / TOAST =========================
+// ============================================================
+function openModal(title, body, footer){
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = body;
+  document.getElementById('modalFooter').innerHTML = footer || '';
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+function showToast(msg, type='success'){
+  const toast = document.getElementById('toast');
+  toast.className = 'toast show ' + type;
+  document.getElementById('toastIcon').textContent = type === 'error' ? '🚫' : (type === 'warning' ? '⚠️' : '✅');
+  document.getElementById('toastMsg').textContent = msg;
+  setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+// ============================================================
+// ==================== SEARCH ================================
+// ============================================================
+function handleSearch(){
+  if(currentPage === 'demandes') renderDemandes();
+  if(currentPage === 'factures') renderFactures();
+}
+
+// ============================================================
+// ==================== REFRESH ALL ===========================
+// ============================================================
+function refreshAll(){
+  if(currentPage === 'dashboard') renderDashboard();
+  if(currentPage === 'demandes') renderDemandes();
+  if(currentPage === 'factures') renderFacturesPage();
+  updateNotifBadge();
+  if(document.getElementById('notifPanel').classList.contains('show')) renderNotifPanel();
+}
+
+// ============================================================
+// ==================== CHECKER AUTO ==========================
+// ============================================================
+function startEcheanceChecker(){
+  setInterval(() => {
+    updateNotifBadge();
+    if(currentPage === 'factures'){
+      updateAlertBanner();
+      renderFactureStats();
+      renderFactures();
+    }
+    
+    factures.forEach(f => {
+      if(f.statut === 'Payée') return;
+      const currentType = getFactureStatut(f).type;
+      if(f._lastStatut === undefined) f._lastStatut = currentType;
+      else if(currentType !== f._lastStatut){
+        if(currentType === 'late' || currentType === 'today'){
+          const client = clients.find(c => c.id === f.clientId);
+          showToast(`🚨 Facture ${f.numero} (${client?.nom || '?'}) est EN RETARD !`, 'error');
+        }
+        f._lastStatut = currentType;
+      }
+    });
+  }, 60000);
+}
+
+// ============================================================
+// ==================== INIT ==================================
+// ============================================================
+loadData();
+loadLogo();
+navigate('dashboard');
+refreshAll();
+startEcheanceChecker();
+
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if(e.target.id === 'modalOverlay') closeModal();
+});
+
+document.getElementById('logoModal').addEventListener('click', e => {
+  if(e.target.id === 'logoModal') closeLogoModal();
+});
+
+document.addEventListener('click', e => {
+  const panel = document.getElementById('notifPanel');
+  const bell = e.target.closest('.header-bell');
+  if(!panel.contains(e.target) && !bell && panel.classList.contains('show')){
+    panel.classList.remove('show');
+  }
+});
+</script>
+</body>
+</html>
