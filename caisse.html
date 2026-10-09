@@ -11,6 +11,7 @@
 html,body{height:100%;overflow-x:hidden}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#eef2ee;color:#1a2a1a;padding-bottom:80px}
 
+/* HEADER */
 .header{background:linear-gradient(135deg,#1a3a1a,#2d4a2d);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #c9a227;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,.15)}
 .header-left{display:flex;align-items:center;gap:10px}
 .header-icon{width:38px;height:38px;background:linear-gradient(135deg,#c9a227,#e8c547);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;border:2px solid #c9a227}
@@ -18,6 +19,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .header h1{color:#e8c547;font-size:17px;letter-spacing:1px}
 .header small{color:#a8c4a8;font-size:9px;letter-spacing:1px;display:block}
 
+/* LOADER */
 #loader{position:fixed;inset:0;background:linear-gradient(135deg,#1a3a1a,#2d4a2d);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;color:#e8c547;transition:opacity .4s}
 #loader.hidden{opacity:0;pointer-events:none}
 #loader .logo{font-size:60px;animation:bounce 1.5s infinite}
@@ -27,11 +29,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 
-.main{padding:15px;max-width:600px;margin:0 auto}
+/* MAIN */
+.main{padding:15px;max-width:900px;margin:0 auto}
 .page{display:none}
 .page.active{display:block;animation:fadeIn .3s}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
+/* SOLDE CARD */
 .solde-card{background:linear-gradient(135deg,#1a3a1a,#2d4a2d);color:#fff;border-radius:18px;padding:22px;text-align:center;margin-bottom:18px;box-shadow:0 8px 25px rgba(26,58,26,.25);position:relative;overflow:hidden;border:2px solid #c9a227}
 .solde-card::before{content:'';position:absolute;top:-50px;right:-50px;width:150px;height:150px;background:radial-gradient(circle,rgba(201,162,39,.2),transparent 70%);border-radius:50%}
 .solde-card .lbl{font-size:11px;letter-spacing:2px;color:#a8c4a8;text-transform:uppercase;position:relative;z-index:1}
@@ -39,6 +43,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .solde-card .amount small{font-size:18px;font-weight:600}
 .solde-card .date{font-size:12px;color:#a8c4a8;position:relative;z-index:1}
 
+/* MINI STATS */
 .mini-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
 .mini-stat{background:#fff;padding:15px;border-radius:14px;box-shadow:0 2px 10px rgba(26,58,26,.06);border-left:4px solid #7cb342}
 .mini-stat.out{border-left-color:#dc2626}
@@ -47,9 +52,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .mini-stat.in .val{color:#558b2f}
 .mini-stat.out .val{color:#b91c1c}
 
+/* SECTION TITLE */
 .sec-title{font-size:14px;color:#1a3a1a;font-weight:700;margin:20px 0 12px;display:flex;align-items:center;gap:8px}
 .sec-title::before{content:'';width:4px;height:18px;background:linear-gradient(180deg,#c9a227,#7cb342);border-radius:2px}
 
+/* TRANSACTION ITEM (dashboard) */
 .tx-item{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(26,58,26,.06);display:flex;gap:12px;align-items:center;border-left:4px solid #7cb342;cursor:pointer;transition:.2s}
 .tx-item:active{transform:scale(.98);background:#f9fbf6}
 .tx-item.out{border-left-color:#dc2626}
@@ -62,16 +69,60 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .tx-item .amount{font-size:16px;font-weight:800;text-align:right;color:#558b2f;flex-shrink:0}
 .tx-item.out .amount{color:#b91c1c}
 
+/* EMPTY */
 .empty{text-align:center;padding:60px 20px;color:#7a8a7a}
 .empty .icon{font-size:60px;margin-bottom:15px;opacity:.4}
 .empty h3{color:#2d4a2d;margin-bottom:5px;font-size:16px}
 
+/* FILTERS */
 .filters{display:flex;gap:8px;margin-bottom:15px;overflow-x:auto;padding-bottom:5px;-webkit-overflow-scrolling:touch}
 .filters::-webkit-scrollbar{display:none}
 .filter-btn{padding:9px 16px;border-radius:20px;background:#fff;border:1px solid #d4e0c8;font-size:13px;font-weight:600;color:#4a5a4a;white-space:nowrap;cursor:pointer;flex-shrink:0}
 .filter-btn.active{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border-color:#c9a227}
 .filter-btn:active{transform:scale(.95)}
 
+/* ========== TABLEAU HISTORIQUE PRO ========== */
+.hist-container{background:#fff;border-radius:14px;box-shadow:0 2px 15px rgba(26,58,26,.08);overflow:hidden;border:1px solid #e8f0dc}
+.hist-toolbar{padding:14px 16px;background:linear-gradient(135deg,#f9fbf6,#f0f5e8);border-bottom:2px solid #e8f0dc;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.hist-toolbar .title{font-size:13px;font-weight:800;color:#1a3a1a;display:flex;align-items:center;gap:8px}
+.hist-toolbar .title::before{content:'';width:4px;height:16px;background:linear-gradient(180deg,#c9a227,#7cb342);border-radius:2px}
+.hist-toolbar .count{background:#1a3a1a;color:#e8c547;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:.5px}
+.hist-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.hist-table-wrap::-webkit-scrollbar{height:6px}
+.hist-table-wrap::-webkit-scrollbar-track{background:#f0f5e8}
+.hist-table-wrap::-webkit-scrollbar-thumb{background:#c9a227;border-radius:3px}
+.hist-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:720px}
+.hist-table thead th{background:linear-gradient(180deg,#2d4a2d,#1a3a1a);color:#e8c547;padding:11px 10px;text-align:left;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;white-space:nowrap;border-bottom:2px solid #c9a227;position:sticky;top:0;z-index:2}
+.hist-table thead th.num{text-align:right}
+.hist-table thead th.center{text-align:center}
+.hist-table tbody tr{border-bottom:1px solid #eef4e6;transition:background .15s;cursor:pointer}
+.hist-table tbody tr:nth-child(even){background:#fbfdf8}
+.hist-table tbody tr:hover{background:#f0f9e8}
+.hist-table tbody tr:active{background:#dcf5c4}
+.hist-table tbody td{padding:12px 10px;vertical-align:middle;color:#2d3a2d;border-bottom:1px solid #eef4e6}
+.hist-table td.c-num{font-weight:800;color:#1a3a1a;font-size:11.5px;letter-spacing:.3px}
+.hist-table td.c-num small{display:block;font-weight:500;color:#7a8a7a;font-size:10px;margin-top:2px;letter-spacing:0}
+.hist-table td.c-type{text-align:center}
+.hist-table td.c-date{color:#5a6b5a;font-size:11.5px;white-space:nowrap}
+.hist-table td.c-date strong{display:block;color:#1a3a1a;font-size:12px}
+.hist-table td.c-date small{color:#7a8a7a;font-size:10px}
+.hist-table td.c-motif{max-width:180px;color:#2d4a2d;font-weight:600}
+.hist-table td.c-motif .sub{display:block;color:#7a8a7a;font-size:10.5px;font-weight:500;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-table td.c-person{max-width:130px;color:#4a5a4a;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-table td.c-person .icon{display:inline-block;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#c9a227,#e8c547);color:#fff;font-weight:800;font-size:10px;line-height:22px;text-align:center;margin-right:6px;vertical-align:middle}
+.hist-table td.c-amount{text-align:right;font-weight:800;font-size:13.5px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.hist-table td.c-amount.in{color:#558b2f}
+.hist-table td.c-amount.out{color:#b91c1c}
+.hist-table td.c-amount .cur{font-size:10px;font-weight:700;opacity:.7;margin-left:2px}
+.type-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+.type-badge.in{background:#dcf5c4;color:#3d6b3d}
+.type-badge.out{background:#fee2e2;color:#b91c1c}
+.hist-empty{padding:60px 20px;text-align:center;color:#7a8a7a}
+.hist-empty .icon{font-size:50px;opacity:.4;margin-bottom:10px}
+.hist-empty h3{color:#2d4a2d;font-size:15px;margin-bottom:5px}
+.hist-empty p{font-size:12px}
+
+/* BOTTOM NAV */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #e8f0dc;display:grid;grid-template-columns:repeat(5,1fr);z-index:60;box-shadow:0 -4px 20px rgba(26,58,26,.08);padding-bottom:env(safe-area-inset-bottom)}
 .nav-btn{background:none;border:none;padding:12px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#7a8a7a;font-size:10px;font-weight:700;letter-spacing:.3px;position:relative}
 .nav-btn .ic{font-size:20px;line-height:1;transition:.2s}
@@ -81,6 +132,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .nav-btn.center .ic{background:linear-gradient(135deg,#c9a227,#e8c547);color:#1a3a1a;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 15px rgba(201,162,39,.4);margin-top:-15px;border:3px solid #fff}
 .nav-btn.center.active .ic{transform:scale(1.1)}
 
+/* FORM */
 .form-card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(26,58,26,.06)}
 .form-group{margin-bottom:15px}
 .form-group label{display:block;font-size:12px;color:#2d4a2d;margin-bottom:7px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
@@ -90,6 +142,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .form-group textarea{resize:vertical;min-height:70px}
 .form-group small{color:#7a8a7a;font-size:11px;margin-top:4px;display:block}
 
+/* TYPE SELECTOR */
 .type-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
 .type-btn{padding:20px 10px;border-radius:14px;border:3px solid #d4e0c8;background:#f9fbf6;cursor:pointer;text-align:center;transition:.2s}
 .type-btn .ic{font-size:32px;display:block;margin-bottom:5px}
@@ -98,17 +151,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .type-btn.out.selected{border-color:#dc2626;background:#fee2e2;color:#b91c1c}
 .type-btn:active{transform:scale(.97)}
 
+/* QUICK AMOUNTS */
 .quick-amounts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
 .quick-amounts button{padding:10px 5px;border:1px solid #d4e0c8;background:#f9fbf6;border-radius:10px;font-size:13px;font-weight:700;color:#2d4a2d;cursor:pointer}
 .quick-amounts button:active{background:#fef9e8;border-color:#c9a227}
 
+/* PERSON SUGGESTIONS */
 .person-suggestions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .person-suggestions button{padding:7px 12px;border:1px solid #d4e0c8;background:#f9fbf6;border-radius:20px;font-size:12px;font-weight:600;color:#2d4a2d;cursor:pointer}
 .person-suggestions button:active{background:#fef9e8;border-color:#c9a227}
 
+/* INFO BANNER */
 .info-banner{background:linear-gradient(135deg,#f0f9e8,#dcf5c4);border-left:4px solid #7cb342;padding:12px 14px;border-radius:10px;margin-bottom:15px;font-size:13px;color:#3d6b3d;font-weight:600;display:flex;gap:8px;align-items:center}
 .info-banner.danger{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-left-color:#dc2626;color:#991b1b}
 
+/* BUTTONS */
 .btn{padding:14px 20px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:.2s;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn:active{transform:scale(.98)}
 .btn-primary{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border:2px solid #c9a227;box-shadow:0 4px 15px rgba(26,58,26,.2)}
@@ -118,6 +175,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .btn-pdf{background:linear-gradient(135deg,#dc2626,#991b1b);color:#fff;box-shadow:0 4px 15px rgba(220,38,38,.3)}
 .btn:disabled{opacity:.5;transform:none}
 
+/* MODAL */
 .modal{position:fixed;inset:0;background:rgba(26,58,26,.75);display:none;align-items:flex-end;justify-content:center;z-index:200;backdrop-filter:blur(3px)}
 .modal.show{display:flex;animation:fadeIn .2s}
 .modal-box{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:600px;max-height:92vh;overflow-y:auto;border-top:5px solid #c9a227;animation:slideUp .3s}
@@ -129,11 +187,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .modal-foot{padding:15px 20px;border-top:2px solid #e8f0dc;display:flex;gap:10px;position:sticky;bottom:0;background:#fff;padding-bottom:calc(15px + env(safe-area-inset-bottom))}
 .modal-foot .btn{flex:1}
 
+/* DETAIL ROW */
 .detail-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #e8f0dc;font-size:14px;gap:10px}
 .detail-row:last-child{border:none}
 .detail-row .lbl{color:#5a6b5a;font-weight:600;flex-shrink:0}
 .detail-row .val{color:#1a3a1a;font-weight:700;text-align:right;word-break:break-word}
 
+/* TOAST */
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(100px);background:#1a3a1a;color:#fff;padding:14px 22px;border-radius:30px;box-shadow:0 10px 30px rgba(0,0,0,.3);opacity:0;transition:.3s;z-index:300;border-left:4px solid #c9a227;max-width:calc(100% - 30px);font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 .toast.error{background:#991b1b}
@@ -194,6 +254,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   .print-bon .sig-box .name{font-size:11px;color:#000;margin-bottom:25px;font-weight:700;min-height:14px;text-decoration:underline}
   .print-bon .sig-box .line-sig{border-top:1px solid #000;padding-top:3px;font-size:9px;color:#333;font-weight:600}
   .print-bon .foot{text-align:center;font-size:9px;margin-top:10px;border-top:1px dashed #000;padding-top:5px;color:#333}
+}
+
+/* RESPONSIVE */
+@media(max-width:500px){
+  .hist-table{font-size:11.5px;min-width:640px}
+  .hist-table thead th{padding:9px 7px;font-size:9px}
+  .hist-table tbody td{padding:10px 7px}
+  .hist-table td.c-motif{max-width:130px}
+  .hist-table td.c-person{max-width:100px}
 }
 </style>
 </head>
@@ -326,7 +395,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         </div>
       </div>
 
-      <div id="historiqueList"></div>
+      <!-- TABLEAU PRO -->
+      <div class="hist-container">
+        <div class="hist-toolbar">
+          <div class="title">Opérations</div>
+          <span class="count" id="histCount">0</span>
+        </div>
+        <div class="hist-table-wrap">
+          <table class="hist-table">
+            <thead>
+              <tr>
+                <th>N° Bon</th>
+                <th class="center">Type</th>
+                <th>Date</th>
+                <th>Motif</th>
+                <th>Personne</th>
+                <th class="num">Montant</th>
+              </tr>
+            </thead>
+            <tbody id="histTableBody"></tbody>
+          </table>
+        </div>
+        <div id="histEmpty" style="display:none" class="hist-empty">
+          <div class="icon">📭</div>
+          <h3>Aucune opération</h3>
+          <p>Essayez de modifier les filtres</p>
+        </div>
+      </div>
     </div>
 
     <!-- STATS -->
@@ -386,6 +481,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
   </main>
 
+  <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
     <button class="nav-btn active" data-page="dashboard" onclick="navigate('dashboard')"><span class="ic">🏠</span><span>Accueil</span></button>
     <button class="nav-btn" data-page="historique" onclick="navigate('historique')"><span class="ic">📚</span><span>Histo.</span></button>
@@ -428,7 +524,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         📅 Choisissez la période à exporter
       </div>
 
-      <!-- Raccourcis période -->
       <div style="font-size:12px;font-weight:700;color:#2d4a2d;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Raccourcis</div>
       <div class="pdf-options" style="margin-bottom:15px">
         <div class="pdf-opt" onclick="setPdfPeriod('today')">Aujourd'hui</div>
@@ -439,7 +534,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         <div class="pdf-opt" onclick="setPdfPeriod('all')">Tout</div>
       </div>
 
-      <!-- Période personnalisée -->
       <div style="font-size:12px;font-weight:700;color:#2d4a2d;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Période personnalisée</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:15px">
         <div>
@@ -452,7 +546,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         </div>
       </div>
 
-      <!-- Type -->
       <div style="font-size:12px;font-weight:700;color:#2d4a2d;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Type d'opérations</div>
       <div class="pdf-options" style="margin-bottom:10px">
         <div class="pdf-opt selected" id="pdfTypeAll" onclick="selectPdfType('all',this)">Toutes</div>
@@ -474,7 +567,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div class="print-bon" id="printBon"></div>
 <div class="toast" id="toast"><span id="toastMsg"></span></div>
 
-<!-- Firebase -->
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, onValue, set, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -502,7 +595,7 @@ window.fbRemove = remove;
 window.dispatchEvent(new Event('firebase-ready'));
 </script>
 
-<!-- jsPDF + autotable pour export PDF -->
+<!-- jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 
@@ -530,7 +623,6 @@ const currentUser = { uid: 'caissier-local', email: 'caisse@tama.ma' };
 const PERSONNES_SUGGESTIONS = ['Caissier', 'Client', 'Fournisseur', 'Direction'];
 const MOTIFS_SUGGESTIONS_SORTIE = ['Achat fournisseur', 'Carburant', 'Frais transport', 'Salaire', 'Versement banque'];
 
-// PDF state
 let pdfTypeFilter = 'all';
 
 // ============================================================
@@ -599,13 +691,8 @@ function initListeners(){
   const logoRef = window.fbRef(window.db, 'settings/logo');
   window.fbOnValue(logoRef, snap => {
     const data = snap.val();
-    if(data){
-      settings.logo = data;
-      applyLogoUI(data);
-    } else {
-      settings.logo = '';
-      resetLogoUI();
-    }
+    if(data){ settings.logo = data; applyLogoUI(data); }
+    else { settings.logo = ''; resetLogoUI(); }
   });
 
   const settingsRef = window.fbRef(window.db, 'caisse/settings');
@@ -689,9 +776,7 @@ async function saveParametres(){
   const sousTitre = document.getElementById('pSousTitre').value.trim() || 'Gestion de Caisse';
 
   try {
-    await window.fbSet(window.fbRef(window.db, 'caisse/settings'), {
-      caissierNom, societeNom, sousTitre
-    });
+    await window.fbSet(window.fbRef(window.db, 'caisse/settings'), { caissierNom, societeNom, sousTitre });
     toast('✅ Paramètres enregistrés');
   } catch(e){
     toast('Erreur: ' + e.message, 'error');
@@ -774,6 +859,7 @@ function renderTxList(containerId, list){
   }).join('');
 }
 
+// ✅ NOUVEAU : TABLEAU HISTORIQUE PROFESSIONNEL
 function renderHistorique(){
   const from = document.getElementById('hDateFrom').value;
   const to = document.getElementById('hDateTo').value;
@@ -790,8 +876,51 @@ function renderHistorique(){
       (t.numero || '').toLowerCase().includes(search)
     );
   }
-  list.sort((a,b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
-  renderTxList('historiqueList', list);
+  list.sort((a,b) => new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt));
+
+  const tbody = document.getElementById('histTableBody');
+  const emptyEl = document.getElementById('histEmpty');
+  const countEl = document.getElementById('histCount');
+
+  countEl.textContent = list.length + (list.length > 1 ? ' opérations' : ' opération');
+
+  if(!list.length){
+    tbody.innerHTML = '';
+    emptyEl.style.display = 'block';
+    return;
+  }
+  emptyEl.style.display = 'none';
+
+  tbody.innerHTML = list.map(t => {
+    const isIn = t.type === 'entree';
+    const d = new Date(t.date || t.createdAt);
+    const dateStr = d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'numeric'});
+    const timeStr = d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+    const motif = isIn ? 'Dépôt' : (t.motif || '—');
+    const subMotif = !isIn && t.beneficiaire ? '→ ' + t.beneficiaire : (t.reference || '');
+    const initiale = (t.personne || '?').charAt(0).toUpperCase();
+
+    return `<tr onclick="viewTransaction('${t.id}')">
+      <td class="c-num">${escapeHtml(t.numero || '—')}<small>${isIn ? '📥' : '📤'} ${isIn ? 'Dépôt' : 'Retrait'}</small></td>
+      <td class="c-type">
+        <span class="type-badge ${isIn ? 'in' : 'out'}">${isIn ? '📥 Entrée' : '📤 Sortie'}</span>
+      </td>
+      <td class="c-date">
+        <strong>${dateStr}</strong>
+        <small>${timeStr}</small>
+      </td>
+      <td class="c-motif">
+        ${escapeHtml(motif)}
+        ${subMotif ? `<span class="sub">${escapeHtml(subMotif)}</span>` : ''}
+      </td>
+      <td class="c-person">
+        <span class="icon">${initiale}</span>${escapeHtml(t.personne || '—')}
+      </td>
+      <td class="c-amount ${isIn ? 'in' : 'out'}">
+        ${isIn ? '+' : '−'}${Number(t.montant || 0).toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2})}<span class="cur">DH</span>
+      </td>
+    </tr>`;
+  }).join('');
 }
 
 function renderStats(){
@@ -1180,7 +1309,6 @@ function exportCSV(){
 // ==================== PDF EXPORT ============================
 // ============================================================
 function openPdfDialog(){
-  // Pré-remplir avec les filtres actuels de la page
   const from = document.getElementById('hDateFrom').value;
   const to = document.getElementById('hDateTo').value;
   if(from) document.getElementById('pdfDateFrom').value = from;
@@ -1263,7 +1391,6 @@ function updatePdfInfo(){
   }
 }
 
-// ✅ Génère le PDF
 function generatePDF(){
   if(!window.jspdf || !window.jspdf.jsPDF){
     toast('Bibliothèque PDF en cours de chargement...', 'warning');
@@ -1286,21 +1413,16 @@ function generatePDF(){
   const pageW = 210;
   const margin = 12;
 
-  // ======== HEADER ========
-  // Bandeau vert
+  // HEADER
   doc.setFillColor(26, 58, 26);
   doc.rect(0, 0, pageW, 30, 'F');
   doc.setFillColor(201, 162, 39);
   doc.rect(0, 30, pageW, 1.5, 'F');
 
-  // Logo (si présent) — optionnel
   if(settings.logo){
-    try {
-      doc.addImage(settings.logo, 'PNG', margin, 4, 22, 22);
-    } catch(e){ /* ignore si erreur image */ }
+    try { doc.addImage(settings.logo, 'PNG', margin, 4, 22, 22); } catch(e){}
   }
 
-  // Nom société
   doc.setTextColor(232, 197, 71);
   doc.setFontSize(20);
   doc.setFont(undefined, 'bold');
@@ -1311,7 +1433,6 @@ function generatePDF(){
   doc.setFont(undefined, 'normal');
   doc.text(settings.sousTitre || 'Gestion de Caisse', settings.logo ? margin + 26 : margin, 19);
 
-  // Date d'export à droite
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(9);
   doc.text('Édité le ' + new Date().toLocaleString('fr-FR'), pageW - margin, 13, { align: 'right' });
@@ -1320,7 +1441,7 @@ function generatePDF(){
   doc.setFont(undefined, 'bold');
   doc.text('RAPPORT DE CAISSE', pageW - margin, 20, { align: 'right' });
 
-  // ======== PÉRIODE ========
+  // PÉRIODE
   let y = 40;
   doc.setTextColor(26, 58, 26);
   doc.setFontSize(11);
@@ -1332,11 +1453,10 @@ function generatePDF(){
   doc.text('Période : ' + periodeLabel, margin, y);
   y += 8;
 
-  // ======== RÉSUMÉ (3 blocs) ========
+  // RÉSUMÉ
   const boxW = (pageW - margin*2 - 6) / 3;
   const boxH = 22;
 
-  // Entrées
   doc.setFillColor(220, 245, 196);
   doc.roundedRect(margin, y, boxW, boxH, 3, 3, 'F');
   doc.setDrawColor(124, 179, 66);
@@ -1350,7 +1470,6 @@ function generatePDF(){
   doc.setFont(undefined, 'bold');
   doc.text('+ ' + totalIn.toLocaleString('fr-FR') + ' DH', margin + 3, y + 16);
 
-  // Sorties
   doc.setFillColor(254, 226, 226);
   doc.roundedRect(margin + boxW + 3, y, boxW, boxH, 3, 3, 'F');
   doc.setDrawColor(220, 38, 38);
@@ -1363,7 +1482,6 @@ function generatePDF(){
   doc.setFont(undefined, 'bold');
   doc.text('- ' + totalOut.toLocaleString('fr-FR') + ' DH', margin + boxW + 6, y + 16);
 
-  // Solde période
   const soldeColor = soldePeriode >= 0 ? [26, 58, 26] : [185, 28, 28];
   const soldeBg = soldePeriode >= 0 ? [240, 249, 232] : [254, 242, 242];
   doc.setFillColor(soldeBg[0], soldeBg[1], soldeBg[2]);
@@ -1381,84 +1499,99 @@ function generatePDF(){
 
   y += boxH + 8;
 
-  // ======== TABLEAU ========
+  // TABLEAU PRO
   const rows = list.map(t => {
     const isIn = t.type === 'entree';
+    const d = new Date(t.date || t.createdAt);
+    const dateStr = d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'2-digit'});
+    const timeStr = d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
     return [
-      t.numero || '',
-      isIn ? 'Dépôt' : 'Retrait',
-      formatDateShort(t.date || t.createdAt),
+      t.numero || '—',
+      isIn ? 'ENTRÉE' : 'SORTIE',
+      dateStr + '\n' + timeStr,
       t.motif || '—',
       t.personne || '—',
       t.beneficiaire || '—',
-      (isIn ? '+ ' : '- ') + Number(t.montant || 0).toLocaleString('fr-FR')
+      (isIn ? '+' : '-') + ' ' + Number(t.montant || 0).toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' DH'
     ];
   });
 
   doc.autoTable({
     startY: y,
-    head: [['N°', 'Type', 'Date', 'Motif', 'Personne', 'Bénéficiaire', 'Montant']],
+    head: [['N° BON', 'TYPE', 'DATE / HEURE', 'MOTIF', 'PERSONNE', 'BÉNÉFICIAIRE', 'MONTANT']],
     body: rows,
+    theme: 'grid',
     styles: {
       font: 'helvetica',
       fontSize: 8,
-      cellPadding: 2,
-      textColor: [26, 42, 26],
-      lineColor: [212, 224, 200],
-      lineWidth: 0.1
+      cellPadding: { top: 2.8, right: 2, bottom: 2.8, left: 2 },
+      textColor: [40, 50, 40],
+      lineColor: [200, 215, 195],
+      lineWidth: 0.15,
+      valign: 'middle',
+      overflow: 'linebreak'
     },
     headStyles: {
       fillColor: [45, 74, 45],
       textColor: [232, 197, 71],
       fontStyle: 'bold',
       fontSize: 8,
-      halign: 'left'
+      halign: 'left',
+      cellPadding: { top: 3.5, right: 2, bottom: 3.5, left: 2 },
+      lineColor: [26, 58, 26],
+      lineWidth: 0.3
     },
-    alternateRowStyles: { fillColor: [249, 251, 246] },
+    alternateRowStyles: { fillColor: [250, 252, 248] },
     columnStyles: {
-      0: { cellWidth: 22, fontStyle: 'bold' },
-      1: { cellWidth: 16, halign: 'center' },
-      2: { cellWidth: 18 },
-      3: { cellWidth: 38 },
-      4: { cellWidth: 34 },
-      5: { cellWidth: 30 },
-      6: { cellWidth: 28, halign: 'right', fontStyle: 'bold' }
+      0: { cellWidth: 22, fontStyle: 'bold', textColor: [26, 58, 26] },
+      1: { cellWidth: 18, halign: 'center', fontStyle: 'bold' },
+      2: { cellWidth: 20, fontSize: 7, textColor: [90, 107, 90] },
+      3: { cellWidth: 42 },
+      4: { cellWidth: 32 },
+      5: { cellWidth: 30, textColor: [120, 130, 120] },
+      6: { cellWidth: 30, halign: 'right', fontStyle: 'bold', fontSize: 8.5 }
     },
     didParseCell: data => {
-      // Colorer les montants selon type
-      if(data.column.index === 6 && data.section === 'body'){
-        const type = list[data.row.index].type;
-        data.cell.styles.textColor = type === 'entree' ? [85, 139, 47] : [185, 28, 28];
-      }
-      // Colorer le type
-      if(data.column.index === 1 && data.section === 'body'){
-        const type = list[data.row.index].type;
-        data.cell.styles.textColor = type === 'entree' ? [85, 139, 47] : [185, 28, 28];
-        data.cell.styles.fontStyle = 'bold';
+      if(data.section === 'body'){
+        const t = list[data.row.index];
+        const isIn = t.type === 'entree';
+        if(data.column.index === 1){
+          data.cell.styles.textColor = isIn ? [85, 139, 47] : [185, 28, 28];
+        }
+        if(data.column.index === 6){
+          data.cell.styles.textColor = isIn ? [85, 139, 47] : [185, 28, 28];
+        }
+        if(isIn){
+          data.cell.styles.fillColor = data.row.index % 2 === 0 ? [245, 252, 240] : [250, 255, 248];
+        } else {
+          data.cell.styles.fillColor = data.row.index % 2 === 0 ? [255, 248, 248] : [255, 252, 252];
+        }
       }
     },
-    margin: { left: margin, right: margin },
+    margin: { left: margin, right: margin, bottom: 15 },
     didDrawPage: data => {
-      // Pied de page
       const pageCount = doc.internal.getNumberOfPages();
       const pageNum = doc.internal.getCurrentPageInfo().pageNumber;
-      const footerY = doc.internal.pageSize.getHeight() - 8;
+      const footerY = doc.internal.pageSize.getHeight() - 10;
 
       doc.setDrawColor(201, 162, 39);
-      doc.setLineWidth(0.5);
-      doc.line(margin, footerY - 3, pageW - margin, footerY - 3);
+      doc.setLineWidth(0.6);
+      doc.line(margin, footerY - 4, pageW - margin, footerY - 4);
+
+      doc.setFontSize(7.5);
+      doc.setTextColor(140, 150, 140);
+      doc.setFont(undefined, 'italic');
+      doc.text('Document généré automatiquement — ' + (settings.societeNom || 'TAMA'), margin, footerY);
 
       doc.setFontSize(8);
-      doc.setTextColor(122, 138, 122);
-      doc.setFont(undefined, 'normal');
-      doc.text('TAMA — Rapport généré automatiquement', margin, footerY);
-      doc.text(`Page ${pageNum} / ${pageCount}`, pageW - margin, footerY, { align: 'right' });
+      doc.setFont(undefined, 'bold');
+      doc.setTextColor(45, 74, 45);
+      doc.text('Page ' + pageNum + ' / ' + pageCount, pageW - margin, footerY, { align: 'right' });
     }
   });
 
-  // ======== RÉSUMÉ FINAL ========
+  // SOLDE FINAL
   const finalY = doc.lastAutoTable.finalY + 10;
-
   if(finalY < doc.internal.pageSize.getHeight() - 40){
     doc.setFillColor(240, 249, 232);
     doc.roundedRect(margin, finalY, pageW - margin*2, 20, 3, 3, 'F');
@@ -1476,7 +1609,6 @@ function generatePDF(){
     doc.text(soldeStr, pageW - margin - 5, finalY + 13, { align: 'right' });
   }
 
-  // Sauvegarder
   const filename = 'TAMA_Rapport_' +
     (from ? from.replace(/-/g, '') : 'tout') + '_' +
     (to ? to.replace(/-/g, '') : 'fin') + '.pdf';
@@ -1486,7 +1618,6 @@ function generatePDF(){
   toast('📄 PDF généré : ' + list.length + ' opérations');
 }
 
-// Recalculer l'info quand on change la période
 document.getElementById('pdfDateFrom').addEventListener('change', updatePdfInfo);
 document.getElementById('pdfDateTo').addEventListener('change', updatePdfInfo);
 
