@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a3a1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>TAMA Caisse</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow-x:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#eef2ee;color:#1a2a1a;padding-bottom:80px}
+
+/* LOGIN */
+#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#1a3a1a,#2d4a2d);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{background:#fff;border-radius:20px;padding:35px 25px;max-width:400px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.4);border-top:5px solid #c9a227;text-align:center}
+.login-logo{width:80px;height:80px;background:linear-gradient(135deg,#c9a227,#e8c547);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:42px;margin:0 auto 15px;box-shadow:0 8px 25px rgba(201,162,39,.4)}
+.login-box h1{color:#1a3a1a;font-size:26px;margin-bottom:3px}
+.login-box .sub{color:#5a6b5a;font-size:11px;text-transform:uppercase;letter-spacing:2px;margin-bottom:25px}
+.login-box input{width:100%;padding:15px;border:2px solid #d4e0c8;border-radius:12px;margin-bottom:12px;font-size:16px;outline:none;background:#f9fbf6;-webkit-appearance:none}
+.login-box input:focus{border-color:#c9a227;background:#fff}
+.login-box button{width:100%;padding:16px;background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border:2px solid #c9a227;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:5px}
+.login-box button:disabled{opacity:.6}
+.login-error{background:#fee2e2;color:#991b1b;padding:12px;border-radius:10px;font-size:13px;margin-bottom:15px;display:none;text-align:left}
+.login-error.show{display:block}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#1a3a1a,#2d4a2d);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #c9a227;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.header-left{display:flex;align-items:center;gap:10px}
+.header-icon{width:38px;height:38px;background:linear-gradient(135deg,#c9a227,#e8c547);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;border:2px solid #c9a227}
+.header-icon img{width:100%;height:100%;object-fit:cover}
+.header h1{color:#e8c547;font-size:17px;letter-spacing:1px}
+.header small{color:#a8c4a8;font-size:9px;letter-spacing:1px;display:block}
+.header-right button{background:rgba(255,255,255,.1);border:1px solid rgba(201,162,39,.3);color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer;font-size:14px}
+.header-right button:active{background:rgba(255,255,255,.25)}
+
+/* MAIN */
+.main{padding:15px;max-width:600px;margin:0 auto}
+.page{display:none}
+.page.active{display:block;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* SOLDE CARD */
+.solde-card{background:linear-gradient(135deg,#1a3a1a,#2d4a2d);color:#fff;border-radius:18px;padding:22px;text-align:center;margin-bottom:18px;box-shadow:0 8px 25px rgba(26,58,26,.25);position:relative;overflow:hidden;border:2px solid #c9a227}
+.solde-card::before{content:'';position:absolute;top:-50px;right:-50px;width:150px;height:150px;background:radial-gradient(circle,rgba(201,162,39,.2),transparent 70%);border-radius:50%}
+.solde-card .lbl{font-size:11px;letter-spacing:2px;color:#a8c4a8;text-transform:uppercase;position:relative;z-index:1}
+.solde-card .amount{font-size:38px;font-weight:800;color:#e8c547;margin:8px 0;letter-spacing:-1px;position:relative;z-index:1}
+.solde-card .amount small{font-size:18px;font-weight:600}
+.solde-card .date{font-size:12px;color:#a8c4a8;position:relative;z-index:1}
+
+/* MINI STATS */
+.mini-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.mini-stat{background:#fff;padding:15px;border-radius:14px;box-shadow:0 2px 10px rgba(26,58,26,.06);border-left:4px solid #7cb342}
+.mini-stat.out{border-left-color:#dc2626}
+.mini-stat small{font-size:11px;color:#5a6b5a;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.mini-stat .val{font-size:20px;font-weight:800;color:#1a3a1a;margin-top:5px}
+.mini-stat.in .val{color:#558b2f}
+.mini-stat.out .val{color:#b91c1c}
+
+/* SECTION TITLE */
+.sec-title{font-size:14px;color:#1a3a1a;font-weight:700;margin:20px 0 12px;display:flex;align-items:center;gap:8px}
+.sec-title::before{content:'';width:4px;height:18px;background:linear-gradient(180deg,#c9a227,#7cb342);border-radius:2px}
+
+/* TRANSACTION ITEM */
+.tx-item{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(26,58,26,.06);display:flex;gap:12px;align-items:center;border-left:4px solid #7cb342;cursor:pointer;transition:.2s}
+.tx-item:active{transform:scale(.98);background:#f9fbf6}
+.tx-item.out{border-left-color:#dc2626}
+.tx-item .icon{width:44px;height:44px;border-radius:12px;background:#dcf5c4;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.tx-item.out .icon{background:#fee2e2}
+.tx-item .info{flex:1;min-width:0}
+.tx-item .info .motif{font-size:14px;font-weight:700;color:#1a3a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx-item .info .person{font-size:12px;color:#5a6b5a;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx-item .info .date{font-size:11px;color:#7a8a7a;margin-top:2px}
+.tx-item .amount{font-size:16px;font-weight:800;text-align:right;color:#558b2f;flex-shrink:0}
+.tx-item.out .amount{color:#b91c1c}
+
+/* EMPTY */
+.empty{text-align:center;padding:60px 20px;color:#7a8a7a}
+.empty .icon{font-size:60px;margin-bottom:15px;opacity:.4}
+.empty h3{color:#2d4a2d;margin-bottom:5px;font-size:16px}
+
+/* FILTERS */
+.filters{display:flex;gap:8px;margin-bottom:15px;overflow-x:auto;padding-bottom:5px;-webkit-overflow-scrolling:touch}
+.filters::-webkit-scrollbar{display:none}
+.filter-btn{padding:9px 16px;border-radius:20px;background:#fff;border:1px solid #d4e0c8;font-size:13px;font-weight:600;color:#4a5a4a;white-space:nowrap;cursor:pointer;flex-shrink:0}
+.filter-btn.active{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border-color:#c9a227}
+.filter-btn:active{transform:scale(.95)}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #e8f0dc;display:grid;grid-template-columns:repeat(4,1fr);z-index:60;box-shadow:0 -4px 20px rgba(26,58,26,.08);padding-bottom:env(safe-area-inset-bottom)}
+.nav-btn{background:none;border:none;padding:12px 5px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#7a8a7a;font-size:10px;font-weight:700;letter-spacing:.3px}
+.nav-btn .ic{font-size:22px;line-height:1;transition:.2s}
+.nav-btn.active{color:#1a3a1a}
+.nav-btn.active .ic{transform:scale(1.15)}
+.nav-btn.active::after{content:'';position:absolute;bottom:0;width:30px;height:3px;background:#c9a227;border-radius:2px 2px 0 0}
+.nav-btn{position:relative}
+.nav-btn.center .ic{background:linear-gradient(135deg,#c9a227,#e8c547);color:#1a3a1a;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 4px 15px rgba(201,162,39,.4);margin-top:-15px;border:3px solid #fff}
+.nav-btn.center.active .ic{transform:scale(1.1)}
+
+/* FORM */
+.form-card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(26,58,26,.06)}
+.form-group{margin-bottom:15px}
+.form-group label{display:block;font-size:12px;color:#2d4a2d;margin-bottom:7px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.form-group label .req{color:#dc2626}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:14px;border:2px solid #d4e0c8;border-radius:12px;font-size:16px;outline:none;font-family:inherit;background:#f9fbf6;-webkit-appearance:none;transition:.2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#c9a227;background:#fff}
+.form-group textarea{resize:vertical;min-height:70px}
+
+/* TYPE SELECTOR */
+.type-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.type-btn{padding:20px 10px;border-radius:14px;border:3px solid #d4e0c8;background:#f9fbf6;cursor:pointer;text-align:center;transition:.2s}
+.type-btn .ic{font-size:32px;display:block;margin-bottom:5px}
+.type-btn .lbl{font-size:14px;font-weight:800;letter-spacing:.5px}
+.type-btn.in.selected{border-color:#7cb342;background:#dcf5c4;color:#3d6b3d}
+.type-btn.out.selected{border-color:#dc2626;background:#fee2e2;color:#b91c1c}
+.type-btn:active{transform:scale(.97)}
+
+/* QUICK AMOUNTS */
+.quick-amounts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.quick-amounts button{padding:10px 5px;border:1px solid #d4e0c8;background:#f9fbf6;border-radius:10px;font-size:13px;font-weight:700;color:#2d4a2d;cursor:pointer}
+.quick-amounts button:active{background:#fef9e8;border-color:#c9a227}
+
+/* PERSON SUGGESTIONS */
+.person-suggestions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.person-suggestions button{padding:7px 12px;border:1px solid #d4e0c8;background:#f9fbf6;border-radius:20px;font-size:12px;font-weight:600;color:#2d4a2d;cursor:pointer}
+.person-suggestions button:active{background:#fef9e8;border-color:#c9a227}
+
+/* BUTTONS */
+.btn{padding:14px 20px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:.2s;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border:2px solid #c9a227;box-shadow:0 4px 15px rgba(26,58,26,.2)}
+.btn-success{background:linear-gradient(135deg,#7cb342,#558b2f);color:#fff;box-shadow:0 4px 15px rgba(124,179,66,.3)}
+.btn-danger{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;box-shadow:0 4px 15px rgba(220,38,38,.3)}
+.btn-secondary{background:#e8f0dc;color:#2d4a2d}
+.btn:disabled{opacity:.5;transform:none}
+
+/* MODAL */
+.modal{position:fixed;inset:0;background:rgba(26,58,26,.75);display:none;align-items:flex-end;justify-content:center;z-index:200;backdrop-filter:blur(3px)}
+.modal.show{display:flex;animation:fadeIn .2s}
+.modal-box{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:600px;max-height:92vh;overflow-y:auto;border-top:5px solid #c9a227;animation:slideUp .3s}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-head{padding:18px 20px;border-bottom:2px solid #e8f0dc;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;z-index:10}
+.modal-head h3{font-size:17px;color:#1a3a1a}
+.modal-head button{background:#e8f0dc;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px;font-weight:700;color:#2d4a2d}
+.modal-body{padding:20px}
+.modal-foot{padding:15px 20px;border-top:2px solid #e8f0dc;display:flex;gap:10px;position:sticky;bottom:0;background:#fff;padding-bottom:calc(15px + env(safe-area-inset-bottom))}
+.modal-foot .btn{flex:1}
+
+/* DETAIL ROW */
+.detail-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #e8f0dc;font-size:14px;gap:10px}
+.detail-row:last-child{border:none}
+.detail-row .lbl{color:#5a6b5a;font-weight:600;flex-shrink:0}
+.detail-row .val{color:#1a3a1a;font-weight:700;text-align:right;word-break:break-word}
+
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(100px);background:#1a3a1a;color:#fff;padding:14px 22px;border-radius:30px;box-shadow:0 10px 30px rgba(0,0,0,.3);opacity:0;transition:.3s;z-index:300;border-left:4px solid #c9a227;max-width:calc(100% - 30px);font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.error{background:#991b1b}
+.toast.warning{background:#92400e}
+
+/* PRINT BON */
+.print-bon{display:none}
+@media print{
+  body{background:#fff;padding:0}
+  body>*:not(.print-bon){display:none !important}
+  .print-bon{display:block !important;padding:20px;font-family:'Courier New',monospace;max-width:80mm;margin:0 auto;color:#000}
+  .print-bon h1{text-align:center;font-size:20px;margin-bottom:5px;letter-spacing:2px}
+  .print-bon .sub{text-align:center;font-size:11px;margin-bottom:15px;border-bottom:1px dashed #000;padding-bottom:10px}
+  .print-bon .num{text-align:center;font-size:15px;font-weight:700;margin:15px 0;background:#000;color:#fff;padding:6px}
+  .print-bon .line{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dotted #999;font-size:12px}
+  .print-bon .line strong{font-weight:700}
+  .print-bon .montant{font-size:22px;font-weight:800;text-align:center;margin:15px 0;border:2px solid #000;padding:10px}
+  .print-bon .signature{margin-top:40px;display:flex;justify-content:space-between;font-size:11px}
+  .print-bon .signature div{border-top:1px solid #000;padding-top:5px;width:40%;text-align:center}
+  .print-bon .foot{text-align:center;font-size:10px;margin-top:20px;border-top:1px dashed #000;padding-top:10px}
+}
+
+/* RESPONSIVE */
+@media(max-width:360px){
+  .solde-card .amount{font-size:32px}
+  .nav-btn{font-size:9px}
+  .nav-btn .ic{font-size:20px}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">💰</div>
+    <h1>TAMA</h1>
+    <div class="sub">Gestion de Caisse</div>
+    <div class="login-error" id="loginError"></div>
+    <form onsubmit="event.preventDefault();doLogin()">
+      <input type="email" id="loginEmail" placeholder="Email" required autocomplete="email">
+      <input type="password" id="loginPassword" placeholder="Mot de passe" required autocomplete="current-password">
+      <button type="submit" id="loginBtn">Se connecter</button>
+    </form>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
+  <header class="header">
+    <div class="header-left">
+      <div class="header-icon">
+        <span id="hIcon">💰</span>
+        <img id="hImg" style="display:none" alt="Logo">
+      </div>
+      <div>
+        <h1>TAMA Caisse</h1>
+        <small id="hUser">Service Caisse</small>
+      </div>
+    </div>
+    <div class="header-right">
+      <button onclick="doLogout()">🚪</button>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- PAGE DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="solde-card">
+        <div class="lbl">💰 Solde en caisse</div>
+        <div class="amount" id="soldeCaisse">0 <small>DH</small></div>
+        <div class="date" id="dateAujourdhui">—</div>
+      </div>
+
+      <div class="mini-stats">
+        <div class="mini-stat in">
+          <small>📥 Entrées du jour</small>
+          <div class="val" id="statEntrees">0 DH</div>
+        </div>
+        <div class="mini-stat out">
+          <small>📤 Sorties du jour</small>
+          <div class="val" id="statSorties">0 DH</div>
+        </div>
+      </div>
+
+      <div class="sec-title">📋 Dernières opérations</div>
+      <div class="filters">
+        <button class="filter-btn active" data-f="today" onclick="setFilter(this,'today')">Aujourd'hui</button>
+        <button class="filter-btn" data-f="week" onclick="setFilter(this,'week')">7 jours</button>
+        <button class="filter-btn" data-f="all" onclick="setFilter(this,'all')">Tout</button>
+        <button class="filter-btn" data-f="entree" onclick="setFilter(this,'entree')">📥 Entrées</button>
+        <button class="filter-btn" data-f="sortie" onclick="setFilter(this,'sortie')">📤 Sorties</button>
+      </div>
+
+      <div id="txList"></div>
+    </div>
+
+    <!-- PAGE NOUVELLE OPÉRATION -->
+    <div class="page" id="page-nouvelle">
+      <div class="sec-title">➕ Nouvelle opération</div>
+
+      <div class="form-card">
+        <div class="type-selector">
+          <div class="type-btn in selected" id="typeIn" onclick="selectType('entree')">
+            <span class="ic">📥</span>
+            <div class="lbl">ENTRÉE</div>
+          </div>
+          <div class="type-btn out" id="typeOut" onclick="selectType('sortie')">
+            <span class="ic">📤</span>
+            <div class="lbl">SORTIE</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Montant (DH) <span class="req">*</span></label>
+          <input type="number" id="fMontant" inputmode="decimal" min="0" step="0.01" placeholder="0.00">
+          <div class="quick-amounts">
+            <button type="button" onclick="setMontant(100)">100</button>
+            <button type="button" onclick="setMontant(200)">200</button>
+            <button type="button" onclick="setMontant(500)">500</button>
+            <button type="button" onclick="setMontant(1000)">1000</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Motif / Raison <span class="req">*</span></label>
+          <input id="fMotif" placeholder="Ex: Achat carburant, Vente ciment...">
+          <div class="person-suggestions" id="motifSuggestions"></div>
+        </div>
+
+        <div class="form-group">
+          <label id="lblPersonne">Personne qui remet l'argent <span class="req">*</span></label>
+          <input id="fPersonne" placeholder="Nom de la personne">
+          <div class="person-suggestions" id="personSuggestions"></div>
+        </div>
+
+        <div class="form-group">
+          <label>Bénéficiaire (à qui)</label>
+          <input id="fBeneficiaire" placeholder="Optionnel">
+        </div>
+
+        <div class="form-group">
+          <label>Mode de paiement</label>
+          <select id="fMode">
+            <option value="Espèce">💵 Espèce</option>
+            <option value="Chèque">📝 Chèque</option>
+            <option value="Virement">🏦 Virement</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Référence / N° pièce</label>
+          <input id="fReference" placeholder="Optionnel">
+        </div>
+
+        <div class="form-group">
+          <label>Date & heure</label>
+          <input type="datetime-local" id="fDate">
+        </div>
+
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea id="fNotes" placeholder="Remarques optionnelles"></textarea>
+        </div>
+
+        <button class="btn btn-success" id="btnSave" onclick="saveTransaction()" style="margin-bottom:10px">
+          💾 Enregistrer & Imprimer le bon
+        </button>
+        <button class="btn btn-secondary" onclick="resetForm()">
+          🗑 Réinitialiser
+        </button>
+      </div>
+    </div>
+
+    <!-- PAGE HISTORIQUE -->
+    <div class="page" id="page-historique">
+      <div class="sec-title">📚 Historique complet</div>
+
+      <div class="form-card" style="margin-bottom:15px;padding:14px">
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <input type="date" id="hDateFrom" onchange="renderHistorique()" style="flex:1;padding:10px;border:2px solid #d4e0c8;border-radius:10px;font-size:14px;background:#f9fbf6">
+          <input type="date" id="hDateTo" onchange="renderHistorique()" style="flex:1;padding:10px;border:2px solid #d4e0c8;border-radius:10px;font-size:14px;background:#f9fbf6">
+        </div>
+        <input id="hSearch" placeholder="🔍 Rechercher motif, personne..." oninput="renderHistorique()" style="width:100%;padding:12px;border:2px solid #d4e0c8;border-radius:10px;font-size:14px;background:#f9fbf6;margin-bottom:10px">
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-secondary" onclick="resetHistoriqueFilters()" style="padding:10px;font-size:13px">🔄 Reset</button>
+          <button class="btn btn-primary" onclick="exportCSV()" style="padding:10px;font-size:13px">📥 Export CSV</button>
+        </div>
+      </div>
+
+      <div id="historiqueList"></div>
+    </div>
+
+    <!-- PAGE STATS -->
+    <div class="page" id="page-stats">
+      <div class="sec-title">📊 Statistiques</div>
+
+      <div class="solde-card" style="background:linear-gradient(135deg,#2d4a2d,#1a3a1a)">
+        <div class="lbl">Solde actuel</div>
+        <div class="amount" id="sSolde">0 <small>DH</small></div>
+      </div>
+
+      <div class="mini-stats">
+        <div class="mini-stat in"><small>📥 Total entrées</small><div class="val" id="sTotalIn">0 DH</div></div>
+        <div class="mini-stat out"><small>📤 Total sorties</small><div class="val" id="sTotalOut">0 DH</div></div>
+        <div class="mini-stat"><small>🧾 Nb opérations</small><div class="val" id="sTotalTx">0</div></div>
+        <div class="mini-stat"><small>📅 Aujourd'hui</small><div class="val" id="sToday">0 DH</div></div>
+      </div>
+
+      <div class="sec-title" style="margin-top:25px">🏆 Top motifs de sortie</div>
+      <div id="topMotifs"></div>
+    </div>
+
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-page="dashboard" onclick="navigate('dashboard')">
+      <span class="ic">🏠</span>
+      <span>Accueil</span>
+    </button>
+    <button class="nav-btn" data-page="historique" onclick="navigate('historique')">
+      <span class="ic">📚</span>
+      <span>Historique</span>
+    </button>
+    <button class="nav-btn center" data-page="nouvelle" onclick="navigate('nouvelle')">
+      <span class="ic">➕</span>
+      <span>Nouveau</span>
+    </button>
+    <button class="nav-btn" data-page="stats" onclick="navigate('stats')">
+      <span class="ic">📊</span>
+      <span>Stats</span>
+    </button>
+  </nav>
+</div>
+
+<!-- MODAL DETAIL -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modalTitle">Détails</h3>
+      <button onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<!-- PRINT BON -->
+<div class="print-bon" id="printBon"></div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, onValue, set, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAzetUtAuLilj2OzAfEdMo7zFvFUFu7EQE",
+  authDomain: "tama-b4f63.firebaseapp.com",
+  databaseURL: "https://tama-b4f63-default-rtdb.firebaseio.com",
+  projectId: "tama-b4f63",
+  storageBucket: "tama-b4f63.firebasestorage.app",
+  messagingSenderId: "14758669505",
+  appId: "1:14758669505:web:10e6338fedcf61c0f1b840"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+window.db = db; window.auth = auth;
+window.fbRef = ref; window.fbOnValue = onValue;
+window.fbSet = set; window.fbUpdate = update; window.fbRemove = remove;
+window.fbSignIn = signInWithEmailAndPassword;
+window.fbSignOut = signOut;
+window.fbOnAuthStateChanged = onAuthStateChanged;
+
+window.dispatchEvent(new Event('firebase-ready'));
+</script>
+
+<script>
+// ============================================================
+// ==================== ÉTAT GLOBAL ===========================
+// ============================================================
+let currentUser = null;
+let transactions = [];
+let currentPage = 'dashboard';
+let currentFilter = 'today';
+let currentType = 'entree';
+let fbReady = false;
+let listenersAttached = false;
+
+// Suggestions
+const PERSONNES_SUGGESTIONS = ['Caissier', 'Client', 'Fournisseur', 'Direction'];
+const MOTIFS_SUGGESTIONS_ENTREE = ['Vente comptoir', 'Encaissement client', 'Versement banque'];
+const MOTIFS_SUGGESTIONS_SORTIE = ['Achat fournisseur', 'Carburant', 'Frais transport', 'Salaire', 'Versement banque'];
+
+// ============================================================
+// ==================== HELPERS ===============================
+// ============================================================
+function toast(msg, type='success'){
+  const t = document.getElementById('toast');
+  t.className = 'toast show ' + type;
+  document.getElementById('toastMsg').textContent = msg;
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function openModal(title, body, foot=''){
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = body;
+  document.getElementById('modalFoot').innerHTML = foot;
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('show');
+}
+
+function formatDH(n){
+  return Number(n || 0).toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' DH';
+}
+
+function formatDate(iso){
+  if(!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'numeric'}) + ' ' +
+         d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+}
+
+function todayStr(){
+  return new Date().toISOString().split('T')[0];
+}
+
+// ============================================================
+// ==================== LOGIN =================================
+// ============================================================
+async function doLogin(){
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPassword').value;
+  const btn = document.getElementById('loginBtn');
+  const err = document.getElementById('loginError');
+
+  if(!email || !pass){ err.textContent = 'Email et mot de passe requis'; err.classList.add('show'); return; }
+
+  btn.disabled = true; btn.textContent = 'Connexion...';
+  err.classList.remove('show');
+
+  try {
+    const cred = await window.fbSignIn(window.auth, email, pass);
+    const uid = cred.user.uid;
+    const userRef = window.fbRef(window.db, 'caisse/users/' + uid);
+    const snap = await new Promise(res => {
+      const unsub = window.fbOnValue(userRef, s => { res(s); unsub(); });
+    });
+    let data = snap.val();
+    if(!data){
+      data = { email, name: 'Caissier', role: 'caissier' };
+      await window.fbSet(userRef, data);
+    }
+    currentUser = { uid, email, name: data.name || 'Caissier' };
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('hUser').textContent = currentUser.name;
+    initListeners();
+    toast('✅ Bienvenue ' + currentUser.name);
+  } catch(e){
+    let msg = 'Erreur de connexion';
+    if(e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') msg = 'Mot de passe incorrect';
+    else if(e.code === 'auth/user-not-found') msg = 'Aucun compte trouvé';
+    else if(e.code === 'auth/invalid-email') msg = 'Email invalide';
+    err.textContent = msg; err.classList.add('show');
+    btn.disabled = false; btn.textContent = 'Se connecter';
+  }
+}
+
+async function doLogout(){
+  if(!confirm('Se déconnecter ?')) return;
+  try { await window.fbSignOut(window.auth); } catch(e){}
+  location.reload();
+}
+
+// ============================================================
+// ==================== NAVIGATION ============================
+// ============================================================
+function navigate(page){
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector(`.nav-btn[data-page="${page}"]`);
+  if(btn) btn.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+  refresh();
+}
+
+// ============================================================
+// ==================== LISTENERS FIREBASE ====================
+// ============================================================
+function initListeners(){
+  if(listenersAttached) return;
+  listenersAttached = true;
+
+  // Logo (partagé avec l'autre app)
+  const logoRef = window.fbRef(window.db, 'settings/logo');
+  window.fbOnValue(logoRef, snap => {
+    const data = snap.val();
+    if(data){
+      document.getElementById('hImg').src = data;
+      document.getElementById('hImg').style.display = 'block';
+      document.getElementById('hIcon').style.display = 'none';
+    }
+  });
+
+  // Transactions de caisse
+  const txRef = window.fbRef(window.db, 'caisse/transactions');
+  window.fbOnValue(txRef, snap => {
+    const data = snap.val();
+    transactions = data ? Object.values(data) : [];
+    console.log('📥 Transactions:', transactions.length);
+    refresh();
+  }, err => console.error('❌ tx:', err));
+}
+
+// ============================================================
+// ==================== CALCULS ===============================
+// ============================================================
+function getSolde(){
+  return transactions.reduce((s, t) => {
+    return s + (t.type === 'entree' ? Number(t.montant || 0) : -Number(t.montant || 0));
+  }, 0);
+}
+
+function filterTransactions(list){
+  const now = new Date();
+  const today = todayStr();
+
+  return list.filter(t => {
+    const d = (t.date || t.createdAt || '').substring(0, 10);
+    if(currentFilter === 'today' && d !== today) return false;
+    if(currentFilter === 'week'){
+      const txDate = new Date(d);
+      const diffDays = (now - txDate) / (1000 * 60 * 60 * 24);
+      if(diffDays > 7) return false;
+    }
+    if(currentFilter === 'entree' && t.type !== 'entree') return false;
+    if(currentFilter === 'sortie' && t.type !== 'sortie') return false;
+    return true;
+  });
+}
+
+// ============================================================
+// ==================== RENDER ================================
+// ============================================================
+function refresh(){
+  if(!currentUser) return;
+  if(currentPage === 'dashboard') renderDashboard();
+  if(currentPage === 'historique') renderHistorique();
+  if(currentPage === 'stats') renderStats();
+  if(currentPage === 'nouvelle') updateSuggestions();
+}
+
+function renderDashboard(){
+  const solde = getSolde();
+  document.getElementById('soldeCaisse').innerHTML = Number(solde).toLocaleString('fr-FR', {maximumFractionDigits:0}) + ' <small>DH</small>';
+  document.getElementById('dateAujourdhui').textContent = new Date().toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+
+  const today = todayStr();
+  const todayTx = transactions.filter(t => (t.date || t.createdAt || '').substring(0, 10) === today);
+  const entrees = todayTx.filter(t => t.type === 'entree').reduce((s,t) => s + Number(t.montant || 0), 0);
+  const sorties = todayTx.filter(t => t.type === 'sortie').reduce((s,t) => s + Number(t.montant || 0), 0);
+
+  document.getElementById('statEntrees').textContent = entrees.toLocaleString('fr-FR') + ' DH';
+  document.getElementById('statSorties').textContent = sorties.toLocaleString('fr-FR') + ' DH';
+
+  const list = filterTransactions(transactions)
+    .sort((a,b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+    .slice(0, 30);
+
+  renderTxList('txList', list);
+}
+
+function renderTxList(containerId, list){
+  const el = document.getElementById(containerId);
+  if(!list.length){
+    el.innerHTML = '<div class="empty"><div class="icon">📭</div><h3>Aucune opération</h3></div>';
+    return;
+  }
+
+  el.innerHTML = list.map(t => {
+    const isIn = t.type === 'entree';
+    return `<div class="tx-item ${isIn ? '' : 'out'}" onclick="viewTransaction('${t.id}')">
+      <div class="icon">${isIn ? '📥' : '📤'}</div>
+      <div class="info">
+        <div class="motif">${escapeHtml(t.motif || '—')}</div>
+        <div class="person">👤 ${escapeHtml(t.personne || '—')}</div>
+        <div class="date">${formatDate(t.date || t.createdAt)}</div>
+      </div>
+      <div class="amount">${isIn ? '+' : '−'}${Number(t.montant || 0).toLocaleString('fr-FR')}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderHistorique(){
+  const from = document.getElementById('hDateFrom').value;
+  const to = document.getElementById('hDateTo').value;
+  const search = (document.getElementById('hSearch').value || '').toLowerCase();
+
+  let list = [...transactions];
+
+  if(from) list = list.filter(t => (t.date || t.createdAt || '').substring(0,10) >= from);
+  if(to) list = list.filter(t => (t.date || t.createdAt || '').substring(0,10) <= to);
+  if(search){
+    list = list.filter(t =>
+      (t.motif || '').toLowerCase().includes(search) ||
+      (t.personne || '').toLowerCase().includes(search) ||
+      (t.beneficiaire || '').toLowerCase().includes(search) ||
+      (t.numero || '').toLowerCase().includes(search)
+    );
+  }
+
+  list.sort((a,b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+  renderTxList('historiqueList', list);
+}
+
+function renderStats(){
+  const solde = getSolde();
+  const totalIn = transactions.filter(t => t.type === 'entree').reduce((s,t) => s + Number(t.montant || 0), 0);
+  const totalOut = transactions.filter(t => t.type === 'sortie').reduce((s,t) => s + Number(t.montant || 0), 0);
+
+  document.getElementById('sSolde').innerHTML = Number(solde).toLocaleString('fr-FR', {maximumFractionDigits:0}) + ' <small>DH</small>';
+  document.getElementById('sTotalIn').textContent = totalIn.toLocaleString('fr-FR') + ' DH';
+  document.getElementById('sTotalOut').textContent = totalOut.toLocaleString('fr-FR') + ' DH';
+  document.getElementById('sTotalTx').textContent = transactions.length;
+
+  const today = todayStr();
+  const todayTotal = transactions
+    .filter(t => (t.date || t.createdAt || '').substring(0, 10) === today)
+    .reduce((s,t) => s + (t.type === 'entree' ? Number(t.montant) : -Number(t.montant)), 0);
+  document.getElementById('sToday').textContent = todayTotal.toLocaleString('fr-FR') + ' DH';
+
+  // Top motifs de sortie
+  const motifsMap = {};
+  transactions.filter(t => t.type === 'sortie').forEach(t => {
+    const m = t.motif || 'Autre';
+    motifsMap[m] = (motifsMap[m] || 0) + Number(t.montant || 0);
+  });
+  const top = Object.entries(motifsMap).sort((a,b) => b[1] - a[1]).slice(0, 5);
+  const el = document.getElementById('topMotifs');
+  if(!top.length){
+    el.innerHTML = '<p style="color:#7a8a7a;text-align:center;padding:20px">Aucune sortie enregistrée</p>';
+  } else {
+    const max = top[0][1];
+    el.innerHTML = top.map(([m, v]) => `
+      <div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:8px;box-shadow:0 2px 8px rgba(26,58,26,.06)">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <strong style="font-size:14px;color:#1a3a1a">${escapeHtml(m)}</strong>
+          <strong style="color:#b91c1c">${v.toLocaleString('fr-FR')} DH</strong>
+        </div>
+        <div style="height:6px;background:#e8f0dc;border-radius:3px;overflow:hidden">
+          <div style="width:${(v/max)*100}%;height:100%;background:linear-gradient(90deg,#dc2626,#e07c24);border-radius:3px"></div>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+// ============================================================
+// ==================== FORM ==================================
+// ============================================================
+function selectType(type){
+  currentType = type;
+  document.getElementById('typeIn').classList.toggle('selected', type === 'entree');
+  document.getElementById('typeOut').classList.toggle('selected', type === 'sortie');
+  document.getElementById('lblPersonne').innerHTML = type === 'entree'
+    ? 'Personne qui remet l\'argent <span class="req">*</span>'
+    : 'Personne qui prend l\'argent <span class="req">*</span>';
+  updateSuggestions();
+}
+
+function setMontant(v){
+  document.getElementById('fMontant').value = v;
+}
+
+function updateSuggestions(){
+  const motifs = currentType === 'entree' ? MOTIFS_SUGGESTIONS_ENTREE : MOTIFS_SUGGESTIONS_SORTIE;
+  document.getElementById('motifSuggestions').innerHTML = motifs.map(m =>
+    `<button type="button" onclick="document.getElementById('fMotif').value='${m}'">${m}</button>`
+  ).join('');
+  document.getElementById('personSuggestions').innerHTML = PERSONNES_SUGGESTIONS.map(p =>
+    `<button type="button" onclick="document.getElementById('fPersonne').value='${p}'">${p}</button>`
+  ).join('');
+}
+
+function setFilter(btn, filter){
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = filter;
+  renderDashboard();
+}
+
+function resetForm(){
+  document.getElementById('fMontant').value = '';
+  document.getElementById('fMotif').value = '';
+  document.getElementById('fPersonne').value = '';
+  document.getElementById('fBeneficiaire').value = '';
+  document.getElementById('fMode').value = 'Espèce';
+  document.getElementById('fReference').value = '';
+  document.getElementById('fDate').value = getLocalDateTime();
+  document.getElementById('fNotes').value = '';
+}
+
+function getLocalDateTime(){
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 16);
+}
+
+function resetHistoriqueFilters(){
+  document.getElementById('hDateFrom').value = '';
+  document.getElementById('hDateTo').value = '';
+  document.getElementById('hSearch').value = '';
+  renderHistorique();
+}
+
+// ============================================================
+// ==================== SAVE TRANSACTION ======================
+// ============================================================
+async function saveTransaction(){
+  const montant = parseFloat(document.getElementById('fMontant').value);
+  const motif = document.getElementById('fMotif').value.trim();
+  const personne = document.getElementById('fPersonne').value.trim();
+  const beneficiaire = document.getElementById('fBeneficiaire').value.trim();
+  const mode = document.getElementById('fMode').value;
+  const reference = document.getElementById('fReference').value.trim();
+  const dateVal = document.getElementById('fDate').value;
+  const notes = document.getElementById('fNotes').value.trim();
+
+  if(!montant || montant <= 0){ toast('Montant invalide', 'error'); return; }
+  if(!motif){ toast('Motif obligatoire', 'error'); return; }
+  if(!personne){ toast('Personne obligatoire', 'error'); return; }
+
+  // Vérifier si sortie > solde
+  if(currentType === 'sortie'){
+    const solde = getSolde();
+    if(montant > solde){
+      if(!confirm(`⚠️ Attention : Sortie (${formatDH(montant)}) > Solde (${formatDH(solde)})\n\nContinuer quand même ?`)) return;
+    }
+  }
+
+  const btn = document.getElementById('btnSave');
+  btn.disabled = true; btn.textContent = '⏳ Enregistrement...';
+
+  const id = 'TX-' + Date.now();
+  const numero = 'BON-' + new Date().getFullYear() + '-' + String(transactions.length + 1).padStart(4, '0');
+
+  const tx = {
+    id,
+    numero,
+    type: currentType,
+    montant: Number(montant),
+    motif,
+    personne,
+    beneficiaire,
+    mode,
+    reference,
+    notes,
+    date: dateVal ? new Date(dateVal).toISOString() : new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+    createdBy: currentUser.email,
+    createdByName: currentUser.name
+  };
+
+  try {
+    await window.fbSet(window.fbRef(window.db, 'caisse/transactions/' + id), tx);
+    resetForm();
+    toast('✅ Opération enregistrée');
+    // Imprimer le bon
+    setTimeout(() => printBon(id), 400);
+  } catch(e){
+    toast('Erreur: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💾 Enregistrer & Imprimer le bon';
+  }
+}
+
+// ============================================================
+// ==================== VIEW TRANSACTION ======================
+// ============================================================
+function viewTransaction(id){
+  const t = transactions.find(x => x.id === id);
+  if(!t) return;
+
+  const isIn = t.type === 'entree';
+
+  const body = `
+    <div style="text-align:center;margin-bottom:20px;padding:18px;background:linear-gradient(135deg,${isIn ? '#f0f9e8,#dcf5c4' : '#fef2f2,#fee2e2'});border-radius:14px">
+      <div style="font-size:36px;margin-bottom:5px">${isIn ? '📥' : '📤'}</div>
+      <div style="font-size:26px;font-weight:800;color:${isIn ? '#558b2f' : '#b91c1c'}">
+        ${isIn ? '+' : '−'} ${Number(t.montant || 0).toLocaleString('fr-FR')} DH
+      </div>
+      <div style="font-size:12px;color:#5a6b5a;font-weight:700;margin-top:5px">${t.numero}</div>
+    </div>
+
+    <div class="detail-row"><span class="lbl">Type</span><span class="val">${isIn ? '📥 ENTRÉE' : '📤 SORTIE'}</span></div>
+    <div class="detail-row"><span class="lbl">Motif</span><span class="val">${escapeHtml(t.motif || '—')}</span></div>
+    <div class="detail-row"><span class="lbl">Personne</span><span class="val">${escapeHtml(t.personne || '—')}</span></div>
+    ${t.beneficiaire ? `<div class="detail-row"><span class="lbl">Bénéficiaire</span><span class="val">${escapeHtml(t.beneficiaire)}</span></div>` : ''}
+    <div class="detail-row"><span class="lbl">Mode paiement</span><span class="val">${escapeHtml(t.mode || '—')}</span></div>
+    ${t.reference ? `<div class="detail-row"><span class="lbl">Référence</span><span class="val">${escapeHtml(t.reference)}</span></div>` : ''}
+    <div class="detail-row"><span class="lbl">Date</span><span class="val">${formatDate(t.date)}</span></div>
+    <div class="detail-row"><span class="lbl">Par</span><span class="val">${escapeHtml(t.createdByName || t.createdBy || '—')}</span></div>
+    ${t.notes ? `<div class="detail-row"><span class="lbl">Notes</span><span class="val" style="font-weight:500">${escapeHtml(t.notes)}</span></div>` : ''}
+  `;
+
+  const foot = `
+    <button class="btn btn-secondary" onclick="closeModal()">Fermer</button>
+    <button class="btn btn-primary" onclick="printBon('${t.id}')">🖨 Imprimer</button>
+    <button class="btn btn-danger" onclick="deleteTransaction('${t.id}')">🗑</button>
+  `;
+
+  openModal('Détails opération', body, foot);
+}
+
+// ============================================================
+// ==================== PRINT BON =============================
+// ============================================================
+function printBon(id){
+  const t = transactions.find(x => x.id === id);
+  if(!t){ toast('Opération introuvable', 'error'); return; }
+
+  const isIn = t.type === 'entree';
+  const soldeApres = getSoldeAfter(t);
+
+  const el = document.getElementById('printBon');
+  el.innerHTML = `
+    <h1>🌾 TAMA</h1>
+    <div class="sub">Bon de Caisse<br>${new Date().toLocaleString('fr-FR')}</div>
+
+    <div class="num">${t.numero}</div>
+
+    <div style="text-align:center;font-size:16px;font-weight:800;margin-bottom:10px;color:${isIn ? '#000' : '#000'}">
+      ${isIn ? '📥 ENTRÉE DE CAISSE' : '📤 SORTIE DE CAISSE'}
+    </div>
+
+    <div class="montant">${isIn ? '+' : '−'} ${Number(t.montant || 0).toLocaleString('fr-FR')} DH</div>
+
+    <div class="line"><span>Date :</span><strong>${formatDate(t.date)}</strong></div>
+    <div class="line"><span>Motif :</span><strong>${escapeHtml(t.motif || '—')}</strong></div>
+    <div class="line"><span>${isIn ? 'Remis par :' : 'Pris par :'}</span><strong>${escapeHtml(t.personne || '—')}</strong></div>
+    ${t.beneficiaire ? `<div class="line"><span>Bénéficiaire :</span><strong>${escapeHtml(t.beneficiaire)}</strong></div>` : ''}
+    <div class="line"><span>Mode :</span><strong>${escapeHtml(t.mode || 'Espèce')}</strong></div>
+    ${t.reference ? `<div class="line"><span>Référence :</span><strong>${escapeHtml(t.reference)}</strong></div>` : ''}
+    <div class="line"><span>Caissier :</span><strong>${escapeHtml(t.createdByName || currentUser.name)}</strong></div>
+    <div class="line"><span>Solde après :</span><strong>${soldeApres.toLocaleString('fr-FR')} DH</strong></div>
+
+    ${t.notes ? `<div style="margin-top:10px;padding:8px;border:1px dashed #000;font-size:11px"><strong>Notes :</strong> ${escapeHtml(t.notes)}</div>` : ''}
+
+    <div class="signature">
+      <div>Signature Caissier</div>
+      <div>Signature Client</div>
+    </div>
+
+    <div class="foot">
+      Merci pour votre confiance<br>
+      TAMA — Gestion de Caisse
+    </div>
+  `;
+
+  closeModal();
+  setTimeout(() => window.print(), 200);
+}
+
+function getSoldeAfter(tx){
+  // Solde actuel
+  const all = [...transactions].sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
+  let solde = 0;
+  for(const t of all){
+    solde += (t.type === 'entree' ? Number(t.montant) : -Number(t.montant));
+    if(t.id === tx.id) break;
+  }
+  return solde;
+}
+
+// ============================================================
+// ==================== DELETE ================================
+// ============================================================
+async function deleteTransaction(id){
+  const t = transactions.find(x => x.id === id);
+  if(!t) return;
+  if(!confirm(`Supprimer ${t.numero} ?\n\n${t.motif} — ${formatDH(t.montant)}`)) return;
+
+  try {
+    await window.fbRemove(window.fbRef(window.db, 'caisse/transactions/' + id));
+    closeModal();
+    toast('🗑 Opération supprimée');
+  } catch(e){
+    toast('Erreur: ' + e.message, 'error');
+  }
+}
+
+// ============================================================
+// ==================== EXPORT CSV ============================
+// ============================================================
+function exportCSV(){
+  let list = [...transactions];
+  const from = document.getElementById('hDateFrom').value;
+  const to = document.getElementById('hDateTo').value;
+  if(from) list = list.filter(t => (t.date || t.createdAt || '').substring(0,10) >= from);
+  if(to) list = list.filter(t => (t.date || t.createdAt || '').substring(0,10) <= to);
+  list.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  if(!list.length){ toast('Aucune donnée', 'warning'); return; }
+
+  const rows = [
+    ['N° Bon','Type','Montant (DH)','Motif','Personne','Bénéficiaire','Mode','Référence','Date','Caissier','Notes']
+  ];
+
+  list.forEach(t => {
+    rows.push([
+      t.numero || '',
+      t.type === 'entree' ? 'ENTRÉE' : 'SORTIE',
+      Number(t.montant || 0),
+      t.motif || '',
+      t.personne || '',
+      t.beneficiaire || '',
+      t.mode || '',
+      t.reference || '',
+      formatDate(t.date),
+      t.createdByName || t.createdBy || '',
+      t.notes || ''
+    ]);
+  });
+
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\ufeff' + csv], {type: 'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'TAMA_Caisse_' + todayStr() + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('📥 Export téléchargé');
+}
+
+// ============================================================
+// ==================== UTILS =================================
+// ============================================================
+function escapeHtml(str){
+  if(!str) return '';
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ============================================================
+// ==================== MODAL CLOSE ===========================
+// ============================================================
+document.getElementById('modal').addEventListener('click', e => {
+  if(e.target.id === 'modal') closeModal();
+});
+
+// ============================================================
+// ==================== INIT ==================================
+// ============================================================
+window.addEventListener('firebase-ready', () => {
+  fbReady = true;
+
+  window.fbOnAuthStateChanged(window.auth, user => {
+    if(user){
+      (async () => {
+        const userRef = window.fbRef(window.db, 'caisse/users/' + user.uid);
+        const snap = await new Promise(res => {
+          const unsub = window.fbOnValue(userRef, s => { res(s); unsub(); });
+        });
+        let data = snap.val();
+        if(!data){
+          data = { email: user.email, name: 'Caissier', role: 'caissier' };
+          await window.fbSet(userRef, data);
+        }
+        currentUser = { uid: user.uid, email: user.email, name: data.name || 'Caissier' };
+        document.getElementById('app').style.display = 'block';
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('hUser').textContent = currentUser.name;
+        initListeners();
+      })();
+    } else {
+      document.getElementById('app').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+    }
+  });
+
+  // Init date
+  document.getElementById('fDate').value = getLocalDateTime();
+});
+
+// Init par défaut
+document.getElementById('fDate').value = getLocalDateTime();
+updateSuggestions();
+</script>
+</body>
+</html>
