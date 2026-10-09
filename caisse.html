@@ -12,19 +12,6 @@
 html,body{height:100%;overflow-x:hidden}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#eef2ee;color:#1a2a1a;padding-bottom:80px}
 
-/* LOGIN */
-#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#1a3a1a,#2d4a2d);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
-.login-box{background:#fff;border-radius:20px;padding:35px 25px;max-width:400px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.4);border-top:5px solid #c9a227;text-align:center}
-.login-logo{width:80px;height:80px;background:linear-gradient(135deg,#c9a227,#e8c547);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:42px;margin:0 auto 15px;box-shadow:0 8px 25px rgba(201,162,39,.4)}
-.login-box h1{color:#1a3a1a;font-size:26px;margin-bottom:3px}
-.login-box .sub{color:#5a6b5a;font-size:11px;text-transform:uppercase;letter-spacing:2px;margin-bottom:25px}
-.login-box input{width:100%;padding:15px;border:2px solid #d4e0c8;border-radius:12px;margin-bottom:12px;font-size:16px;outline:none;background:#f9fbf6;-webkit-appearance:none}
-.login-box input:focus{border-color:#c9a227;background:#fff}
-.login-box button{width:100%;padding:16px;background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border:2px solid #c9a227;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:5px}
-.login-box button:disabled{opacity:.6}
-.login-error{background:#fee2e2;color:#991b1b;padding:12px;border-radius:10px;font-size:13px;margin-bottom:15px;display:none;text-align:left}
-.login-error.show{display:block}
-
 /* HEADER */
 .header{background:linear-gradient(135deg,#1a3a1a,#2d4a2d);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #c9a227;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,.15)}
 .header-left{display:flex;align-items:center;gap:10px}
@@ -32,8 +19,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .header-icon img{width:100%;height:100%;object-fit:cover}
 .header h1{color:#e8c547;font-size:17px;letter-spacing:1px}
 .header small{color:#a8c4a8;font-size:9px;letter-spacing:1px;display:block}
-.header-right button{background:rgba(255,255,255,.1);border:1px solid rgba(201,162,39,.3);color:#fff;padding:8px 12px;border-radius:10px;cursor:pointer;font-size:14px}
-.header-right button:active{background:rgba(255,255,255,.25)}
+
+/* LOADER */
+#loader{position:fixed;inset:0;background:linear-gradient(135deg,#1a3a1a,#2d4a2d);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;color:#e8c547;transition:opacity .4s}
+#loader.hidden{opacity:0;pointer-events:none}
+#loader .logo{font-size:60px;animation:bounce 1.5s infinite}
+#loader h1{font-size:24px;letter-spacing:3px}
+#loader p{color:#a8c4a8;font-size:12px}
+#loader .spinner{width:40px;height:40px;border:4px solid rgba(201,162,39,.2);border-top-color:#c9a227;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 
 /* MAIN */
 .main{padding:15px;max-width:600px;margin:0 auto}
@@ -89,12 +84,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 /* BOTTOM NAV */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #e8f0dc;display:grid;grid-template-columns:repeat(4,1fr);z-index:60;box-shadow:0 -4px 20px rgba(26,58,26,.08);padding-bottom:env(safe-area-inset-bottom)}
-.nav-btn{background:none;border:none;padding:12px 5px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#7a8a7a;font-size:10px;font-weight:700;letter-spacing:.3px}
+.nav-btn{background:none;border:none;padding:12px 5px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#7a8a7a;font-size:10px;font-weight:700;letter-spacing:.3px;position:relative}
 .nav-btn .ic{font-size:22px;line-height:1;transition:.2s}
 .nav-btn.active{color:#1a3a1a}
 .nav-btn.active .ic{transform:scale(1.15)}
 .nav-btn.active::after{content:'';position:absolute;bottom:0;width:30px;height:3px;background:#c9a227;border-radius:2px 2px 0 0}
-.nav-btn{position:relative}
 .nav-btn.center .ic{background:linear-gradient(135deg,#c9a227,#e8c547);color:#1a3a1a;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 4px 15px rgba(201,162,39,.4);margin-top:-15px;border:3px solid #fff}
 .nav-btn.center.active .ic{transform:scale(1.1)}
 
@@ -131,7 +125,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .btn:active{transform:scale(.98)}
 .btn-primary{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border:2px solid #c9a227;box-shadow:0 4px 15px rgba(26,58,26,.2)}
 .btn-success{background:linear-gradient(135deg,#7cb342,#558b2f);color:#fff;box-shadow:0 4px 15px rgba(124,179,66,.3)}
-.btn-danger{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;box-shadow:0 4px 15px rgba(220,38,38,.3)}
+.btn-danger{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
 .btn-secondary{background:#e8f0dc;color:#2d4a2d}
 .btn:disabled{opacity:.5;transform:none}
 
@@ -186,19 +180,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo">💰</div>
-    <h1>TAMA</h1>
-    <div class="sub">Gestion de Caisse</div>
-    <div class="login-error" id="loginError"></div>
-    <form onsubmit="event.preventDefault();doLogin()">
-      <input type="email" id="loginEmail" placeholder="Email" required autocomplete="email">
-      <input type="password" id="loginPassword" placeholder="Mot de passe" required autocomplete="current-password">
-      <button type="submit" id="loginBtn">Se connecter</button>
-    </form>
-  </div>
+<!-- LOADER -->
+<div id="loader">
+  <div class="logo">💰</div>
+  <h1>TAMA</h1>
+  <p>Chargement...</p>
+  <div class="spinner"></div>
 </div>
 
 <!-- APP -->
@@ -211,11 +198,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       </div>
       <div>
         <h1>TAMA Caisse</h1>
-        <small id="hUser">Service Caisse</small>
+        <small>Service Caisse</small>
       </div>
-    </div>
-    <div class="header-right">
-      <button onclick="doLogout()">🚪</button>
     </div>
   </header>
 
@@ -413,7 +397,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, onValue, set, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAzetUtAuLilj2OzAfEdMo7zFvFUFu7EQE",
@@ -427,14 +410,13 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const auth = getAuth(app);
 
-window.db = db; window.auth = auth;
-window.fbRef = ref; window.fbOnValue = onValue;
-window.fbSet = set; window.fbUpdate = update; window.fbRemove = remove;
-window.fbSignIn = signInWithEmailAndPassword;
-window.fbSignOut = signOut;
-window.fbOnAuthStateChanged = onAuthStateChanged;
+window.db = db;
+window.fbRef = ref;
+window.fbOnValue = onValue;
+window.fbSet = set;
+window.fbUpdate = update;
+window.fbRemove = remove;
 
 window.dispatchEvent(new Event('firebase-ready'));
 </script>
@@ -443,13 +425,15 @@ window.dispatchEvent(new Event('firebase-ready'));
 // ============================================================
 // ==================== ÉTAT GLOBAL ===========================
 // ============================================================
-let currentUser = null;
 let transactions = [];
 let currentPage = 'dashboard';
 let currentFilter = 'today';
 let currentType = 'entree';
 let fbReady = false;
 let listenersAttached = false;
+
+// Utilisateur fixe (pas d'auth)
+const currentUser = { uid: 'caissier-local', email: 'caisse@tama.ma', name: 'Caissier' };
 
 // Suggestions
 const PERSONNES_SUGGESTIONS = ['Caissier', 'Client', 'Fournisseur', 'Direction'];
@@ -493,52 +477,9 @@ function todayStr(){
   return new Date().toISOString().split('T')[0];
 }
 
-// ============================================================
-// ==================== LOGIN =================================
-// ============================================================
-async function doLogin(){
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass = document.getElementById('loginPassword').value;
-  const btn = document.getElementById('loginBtn');
-  const err = document.getElementById('loginError');
-
-  if(!email || !pass){ err.textContent = 'Email et mot de passe requis'; err.classList.add('show'); return; }
-
-  btn.disabled = true; btn.textContent = 'Connexion...';
-  err.classList.remove('show');
-
-  try {
-    const cred = await window.fbSignIn(window.auth, email, pass);
-    const uid = cred.user.uid;
-    const userRef = window.fbRef(window.db, 'caisse/users/' + uid);
-    const snap = await new Promise(res => {
-      const unsub = window.fbOnValue(userRef, s => { res(s); unsub(); });
-    });
-    let data = snap.val();
-    if(!data){
-      data = { email, name: 'Caissier', role: 'caissier' };
-      await window.fbSet(userRef, data);
-    }
-    currentUser = { uid, email, name: data.name || 'Caissier' };
-    document.getElementById('app').style.display = 'block';
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('hUser').textContent = currentUser.name;
-    initListeners();
-    toast('✅ Bienvenue ' + currentUser.name);
-  } catch(e){
-    let msg = 'Erreur de connexion';
-    if(e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') msg = 'Mot de passe incorrect';
-    else if(e.code === 'auth/user-not-found') msg = 'Aucun compte trouvé';
-    else if(e.code === 'auth/invalid-email') msg = 'Email invalide';
-    err.textContent = msg; err.classList.add('show');
-    btn.disabled = false; btn.textContent = 'Se connecter';
-  }
-}
-
-async function doLogout(){
-  if(!confirm('Se déconnecter ?')) return;
-  try { await window.fbSignOut(window.auth); } catch(e){}
-  location.reload();
+function escapeHtml(str){
+  if(!str) return '';
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 // ============================================================
@@ -562,7 +503,7 @@ function initListeners(){
   if(listenersAttached) return;
   listenersAttached = true;
 
-  // Logo (partagé avec l'autre app)
+  // Logo
   const logoRef = window.fbRef(window.db, 'settings/logo');
   window.fbOnValue(logoRef, snap => {
     const data = snap.val();
@@ -614,7 +555,6 @@ function filterTransactions(list){
 // ==================== RENDER ================================
 // ============================================================
 function refresh(){
-  if(!currentUser) return;
   if(currentPage === 'dashboard') renderDashboard();
   if(currentPage === 'historique') renderHistorique();
   if(currentPage === 'stats') renderStats();
@@ -700,7 +640,6 @@ function renderStats(){
     .reduce((s,t) => s + (t.type === 'entree' ? Number(t.montant) : -Number(t.montant)), 0);
   document.getElementById('sToday').textContent = todayTotal.toLocaleString('fr-FR') + ' DH';
 
-  // Top motifs de sortie
   const motifsMap = {};
   transactions.filter(t => t.type === 'sortie').forEach(t => {
     const m = t.motif || 'Autre';
@@ -801,7 +740,6 @@ async function saveTransaction(){
   if(!motif){ toast('Motif obligatoire', 'error'); return; }
   if(!personne){ toast('Personne obligatoire', 'error'); return; }
 
-  // Vérifier si sortie > solde
   if(currentType === 'sortie'){
     const solde = getSolde();
     if(montant > solde){
@@ -836,7 +774,6 @@ async function saveTransaction(){
     await window.fbSet(window.fbRef(window.db, 'caisse/transactions/' + id), tx);
     resetForm();
     toast('✅ Opération enregistrée');
-    // Imprimer le bon
     setTimeout(() => printBon(id), 400);
   } catch(e){
     toast('Erreur: ' + e.message, 'error');
@@ -901,7 +838,7 @@ function printBon(id){
 
     <div class="num">${t.numero}</div>
 
-    <div style="text-align:center;font-size:16px;font-weight:800;margin-bottom:10px;color:${isIn ? '#000' : '#000'}">
+    <div style="text-align:center;font-size:16px;font-weight:800;margin-bottom:10px">
       ${isIn ? '📥 ENTRÉE DE CAISSE' : '📤 SORTIE DE CAISSE'}
     </div>
 
@@ -934,7 +871,6 @@ function printBon(id){
 }
 
 function getSoldeAfter(tx){
-  // Solde actuel
   const all = [...transactions].sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
   let solde = 0;
   for(const t of all){
@@ -1006,14 +942,6 @@ function exportCSV(){
 }
 
 // ============================================================
-// ==================== UTILS =================================
-// ============================================================
-function escapeHtml(str){
-  if(!str) return '';
-  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-// ============================================================
 // ==================== MODAL CLOSE ===========================
 // ============================================================
 document.getElementById('modal').addEventListener('click', e => {
@@ -1023,38 +951,30 @@ document.getElementById('modal').addEventListener('click', e => {
 // ============================================================
 // ==================== INIT ==================================
 // ============================================================
+function hideLoader(){
+  const l = document.getElementById('loader');
+  if(l && !l.classList.contains('hidden')){
+    l.classList.add('hidden');
+    setTimeout(() => { if(l.parentNode) l.remove(); }, 400);
+  }
+}
+
 window.addEventListener('firebase-ready', () => {
   fbReady = true;
-
-  window.fbOnAuthStateChanged(window.auth, user => {
-    if(user){
-      (async () => {
-        const userRef = window.fbRef(window.db, 'caisse/users/' + user.uid);
-        const snap = await new Promise(res => {
-          const unsub = window.fbOnValue(userRef, s => { res(s); unsub(); });
-        });
-        let data = snap.val();
-        if(!data){
-          data = { email: user.email, name: 'Caissier', role: 'caissier' };
-          await window.fbSet(userRef, data);
-        }
-        currentUser = { uid: user.uid, email: user.email, name: data.name || 'Caissier' };
-        document.getElementById('app').style.display = 'block';
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('hUser').textContent = currentUser.name;
-        initListeners();
-      })();
-    } else {
-      document.getElementById('app').style.display = 'none';
-      document.getElementById('loginScreen').style.display = 'flex';
-    }
-  });
-
-  // Init date
-  document.getElementById('fDate').value = getLocalDateTime();
+  // Attendre un peu pour que Firebase soit prêt
+  setTimeout(() => {
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('fDate').value = getLocalDateTime();
+    initListeners();
+    updateSuggestions();
+    hideLoader();
+  }, 600);
 });
 
-// Init par défaut
+// Sécurité : cacher le loader après 5s max
+setTimeout(hideLoader, 5000);
+
+// Init par défaut (si firebase-ready tarde)
 document.getElementById('fDate').value = getLocalDateTime();
 updateSuggestions();
 </script>
