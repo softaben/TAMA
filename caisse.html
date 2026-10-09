@@ -157,31 +157,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .toast.error{background:#991b1b}
 .toast.warning{background:#92400e}
 
-/* ============================================== */
-/* ===== APERÇU DU BON (PREVIEW) ============== */
-/* ============================================== */
-.preview-container{
-  background:#f5f5f5;
-  padding:15px;
-  border-radius:12px;
-  margin-bottom:15px;
-  max-height:55vh;
-  overflow-y:auto;
-  display:flex;
-  justify-content:center;
-}
-.bon-paper{
-  background:#fff;
-  width:100%;
-  max-width:320px;
-  padding:18px 16px;
-  font-family:'Courier New',monospace;
-  color:#000;
-  box-shadow:0 2px 15px rgba(0,0,0,.15);
-  border:1px solid #ddd;
-  font-size:12px;
-  line-height:1.4;
-}
+/* APERÇU DU BON */
+.preview-container{background:#f5f5f5;padding:15px;border-radius:12px;margin-bottom:15px;max-height:55vh;overflow-y:auto;display:flex;justify-content:center}
+.bon-paper{background:#fff;width:100%;max-width:320px;padding:18px 16px;font-family:'Courier New',monospace;color:#000;box-shadow:0 2px 15px rgba(0,0,0,.15);border:1px solid #ddd;font-size:12px;line-height:1.4}
 .bon-paper h1{text-align:center;font-size:18px;margin-bottom:3px;letter-spacing:2px;font-weight:800}
 .bon-paper .sub{text-align:center;font-size:10px;margin-bottom:12px;border-bottom:1px dashed #000;padding-bottom:8px;color:#333}
 .bon-paper .num{text-align:center;font-size:13px;font-weight:700;margin:12px 0;background:#000;color:#fff;padding:5px;letter-spacing:1px}
@@ -194,7 +172,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .bon-paper .signature{margin-top:28px;display:flex;justify-content:space-between;font-size:10px}
 .bon-paper .signature div{border-top:1px solid #000;padding-top:4px;width:40%;text-align:center}
 .bon-paper .foot{text-align:center;font-size:9px;margin-top:15px;border-top:1px dashed #000;padding-top:8px;color:#555}
-
 .preview-tip{text-align:center;font-size:12px;color:#5a6b5a;margin-bottom:12px;font-weight:600}
 
 /* PRINT BON */
@@ -504,7 +481,10 @@ let currentFilter = 'today';
 let currentType = 'entree';
 let fbReady = false;
 let listenersAttached = false;
-let pendingPrintId = null; // ID du bon à imprimer après confirmation
+
+// ✅ Bugfix : objets mémorisés pour impression immédiate
+let pendingPrintId = null;
+let pendingPrintTx = null;
 
 const currentUser = { uid: 'caissier-local', email: 'caisse@tama.ma', name: 'Caissier' };
 
@@ -888,8 +868,9 @@ async function saveTransaction(){
     await window.fbSet(window.fbRef(window.db, 'caisse/transactions/' + id), tx);
     resetForm();
     toast(currentType === 'entree' ? '✅ Dépôt enregistré' : '✅ Retrait enregistré');
-    // Ouvrir l'aperçu du bon
-    setTimeout(() => previewBon(id), 400);
+
+    // ✅ FIX : passer directement l'objet tx (pas d'attente du listener Firebase)
+    setTimeout(() => previewBon(tx), 300);
   } catch(e){
     toast('Erreur: ' + e.message, 'error');
   } finally {
@@ -900,12 +881,20 @@ async function saveTransaction(){
 
 // ============================================================
 // ==================== APERÇU DU BON =========================
+// ✅ FIX : accepte un OBJET tx ou un ID
 // ============================================================
-function previewBon(id){
-  const t = transactions.find(x => x.id === id);
+function previewBon(txOrId){
+  let t;
+  if(typeof txOrId === 'object' && txOrId !== null){
+    t = txOrId;
+  } else {
+    t = transactions.find(x => x.id === txOrId);
+  }
+
   if(!t){ toast('Opération introuvable', 'error'); return; }
 
-  pendingPrintId = id;
+  pendingPrintId = t.id;
+  pendingPrintTx = t; // ✅ Mémoriser l'objet complet
 
   const isIn = t.type === 'entree';
   const soldeApres = getSoldeAfter(t);
@@ -915,7 +904,7 @@ function previewBon(id){
   document.getElementById('previewModal').classList.add('show');
 }
 
-// Génère le HTML du bon (utilisé pour aperçu ET impression)
+// Génère le HTML du bon
 function buildBonHTML(t, soldeApres, isIn){
   let lignesSupp = '';
   if(!isIn){
@@ -959,18 +948,25 @@ function buildBonHTML(t, soldeApres, isIn){
   `;
 }
 
-// Imprimer le bon depuis l'aperçu
+// Imprimer depuis l'aperçu
 function confirmPrint(){
-  if(!pendingPrintId){ toast('Aucun bon à imprimer', 'error'); return; }
+  if(!pendingPrintTx){ toast('Aucun bon à imprimer', 'error'); return; }
   closeModal('previewModal');
-  setTimeout(() => printBon(pendingPrintId), 200);
+  setTimeout(() => printBon(pendingPrintTx), 200);
 }
 
 // ============================================================
 // ==================== PRINT BON =============================
+// ✅ FIX : accepte un OBJET tx ou un ID
 // ============================================================
-function printBon(id){
-  const t = transactions.find(x => x.id === id);
+function printBon(txOrId){
+  let t;
+  if(typeof txOrId === 'object' && txOrId !== null){
+    t = txOrId;
+  } else {
+    t = transactions.find(x => x.id === txOrId);
+  }
+
   if(!t){ toast('Opération introuvable', 'error'); return; }
 
   const isIn = t.type === 'entree';
@@ -982,8 +978,14 @@ function printBon(id){
   setTimeout(() => window.print(), 200);
 }
 
+// ✅ FIX : inclut la transaction courante si absente de transactions[]
 function getSoldeAfter(tx){
-  const all = [...transactions].sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
+  const exists = transactions.some(t => t.id === tx.id);
+  const all = exists
+    ? [...transactions]
+    : [...transactions, tx];
+
+  all.sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
   let solde = 0;
   for(const t of all){
     solde += (t.type === 'entree' ? Number(t.montant) : -Number(t.montant));
