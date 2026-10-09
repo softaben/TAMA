@@ -159,7 +159,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 /* APERÇU DU BON */
 .preview-container{background:#f5f5f5;padding:15px;border-radius:12px;margin-bottom:15px;max-height:55vh;overflow-y:auto;display:flex;justify-content:center}
-.bon-paper{background:#fff;width:100%;max-width:320px;padding:18px 16px;font-family:'Courier New',monospace;color:#000;box-shadow:0 2px 15px rgba(0,0,0,.15);border:1px solid #ddd;font-size:12px;line-height:1.4}
+.bon-paper{background:#fff;width:100%;max-width:340px;padding:18px 16px;font-family:'Courier New',monospace;color:#000;box-shadow:0 2px 15px rgba(0,0,0,.15);border:1px solid #ddd;font-size:12px;line-height:1.4}
 .bon-paper h1{text-align:center;font-size:18px;margin-bottom:3px;letter-spacing:2px;font-weight:800}
 .bon-paper .sub{text-align:center;font-size:10px;margin-bottom:12px;border-bottom:1px dashed #000;padding-bottom:8px;color:#333}
 .bon-paper .num{text-align:center;font-size:13px;font-weight:700;margin:12px 0;background:#000;color:#fff;padding:5px;letter-spacing:1px}
@@ -169,33 +169,206 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .bon-paper .line strong{font-weight:700;text-align:right;word-break:break-word}
 .bon-paper .line span:first-child{color:#333;flex-shrink:0}
 .bon-paper .notes{margin-top:8px;padding:6px;border:1px dashed #000;font-size:10px}
-.bon-paper .signature{margin-top:28px;display:flex;justify-content:space-between;font-size:10px}
-.bon-paper .signature div{border-top:1px solid #000;padding-top:4px;width:40%;text-align:center}
+.bon-paper .signature{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:10px}
+.bon-paper .signature .sig-box{text-align:center}
+.bon-paper .signature .sig-box .role{font-weight:700;margin-bottom:3px;font-size:10px}
+.bon-paper .signature .sig-box .name{font-size:10px;color:#333;margin-bottom:22px;min-height:14px;font-weight:600}
+.bon-paper .signature .sig-box .line-sig{border-top:1px solid #000;padding-top:3px;font-size:9px;color:#555}
 .bon-paper .foot{text-align:center;font-size:9px;margin-top:15px;border-top:1px dashed #000;padding-top:8px;color:#555}
 .preview-tip{text-align:center;font-size:12px;color:#5a6b5a;margin-bottom:12px;font-weight:600}
 
-/* PRINT BON */
+/* ============================================ */
+/* ===== PRINT — 2 BONS SUR UNE PAGE A4 ===== */
+/* ============================================ */
 .print-bon{display:none}
-@media print{
-  body{background:#fff;padding:0}
-  body>*:not(.print-bon){display:none !important}
-  .print-bon{display:block !important;padding:20px;font-family:'Courier New',monospace;max-width:80mm;margin:0 auto;color:#000}
-  .print-bon h1{text-align:center;font-size:20px;margin-bottom:5px;letter-spacing:2px}
-  .print-bon .sub{text-align:center;font-size:11px;margin-bottom:15px;border-bottom:1px dashed #000;padding-bottom:10px}
-  .print-bon .num{text-align:center;font-size:15px;font-weight:700;margin:15px 0;background:#000;color:#fff;padding:6px}
-  .print-bon .line{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dotted #999;font-size:12px}
-  .print-bon .line strong{font-weight:700}
-  .print-bon .montant{font-size:22px;font-weight:800;text-align:center;margin:15px 0;border:2px solid #000;padding:10px}
-  .print-bon .signature{margin-top:40px;display:flex;justify-content:space-between;font-size:11px}
-  .print-bon .signature div{border-top:1px solid #000;padding-top:5px;width:40%;text-align:center}
-  .print-bon .foot{text-align:center;font-size:10px;margin-top:20px;border-top:1px dashed #000;padding-top:10px}
-}
 
-/* RESPONSIVE */
-@media(max-width:360px){
-  .solde-card .amount{font-size:32px}
-  .nav-btn{font-size:9px}
-  .nav-btn .ic{font-size:20px}
+@media print{
+  @page {
+    size: A4 portrait;
+    margin: 8mm;
+  }
+  
+  html, body {
+    background: #fff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100%;
+    height: auto;
+  }
+  
+  body > *:not(.print-bon) {
+    display: none !important;
+  }
+  
+  .print-bon {
+    display: block !important;
+    width: 100%;
+    color: #000;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+  
+  /* Chaque bon occupe ~ la moitié de la page A4 */
+  .print-bon .bon-copy {
+    border: 2px solid #000;
+    padding: 8mm 10mm;
+    height: 135mm;
+    box-sizing: border-box;
+    page-break-inside: avoid;
+    position: relative;
+    background: #fff;
+  }
+  
+  .print-bon .bon-copy.first {
+    margin-bottom: 4mm;
+  }
+  
+  .print-bon .bon-copy.second {
+    border-top: 3px dashed #000;
+    padding-top: 10mm;
+  }
+  
+  .print-bon .copy-label {
+    position: absolute;
+    top: 3mm;
+    right: 5mm;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border: 2px solid #000;
+    letter-spacing: 1px;
+    background: #f0f0f0;
+  }
+  
+  .print-bon h1 {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 2px;
+    letter-spacing: 3px;
+    font-weight: 800;
+  }
+  
+  .print-bon .sub {
+    text-align: center;
+    font-size: 9px;
+    margin-bottom: 8px;
+    border-bottom: 1px dashed #000;
+    padding-bottom: 6px;
+    color: #333;
+  }
+  
+  .print-bon .num {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    margin: 8px 0;
+    background: #000;
+    color: #fff;
+    padding: 5px;
+    letter-spacing: 2px;
+  }
+  
+  .print-bon .type {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+  
+  .print-bon .montant {
+    font-size: 22px;
+    font-weight: 800;
+    text-align: center;
+    margin: 10px 0;
+    border: 2px solid #000;
+    padding: 8px;
+    letter-spacing: 1px;
+  }
+  
+  .print-bon .line {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px dotted #666;
+    font-size: 11px;
+    gap: 10px;
+  }
+  
+  .print-bon .line strong {
+    font-weight: 700;
+    text-align: right;
+  }
+  
+  .print-bon .line span:first-child {
+    color: #333;
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+  
+  .print-bon .notes {
+    margin-top: 6px;
+    padding: 6px;
+    border: 1px dashed #000;
+    font-size: 10px;
+  }
+  
+  .print-bon .signature {
+    margin-top: 15px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    font-size: 11px;
+  }
+  
+  .print-bon .sig-box {
+    text-align: center;
+    padding-top: 5px;
+  }
+  
+  .print-bon .sig-box .role {
+    font-weight: 800;
+    font-size: 11px;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  
+  .print-bon .sig-box .name {
+    font-size: 11px;
+    color: #000;
+    margin-bottom: 25px;
+    font-weight: 700;
+    min-height: 15px;
+    text-decoration: underline;
+  }
+  
+  .print-bon .sig-box .line-sig {
+    border-top: 1px solid #000;
+    padding-top: 4px;
+    font-size: 9px;
+    color: #333;
+    font-weight: 600;
+  }
+  
+  .print-bon .foot {
+    text-align: center;
+    font-size: 9px;
+    margin-top: 12px;
+    border-top: 1px dashed #000;
+    padding-top: 6px;
+    color: #333;
+  }
+  
+  .print-bon .cut-line {
+    text-align: center;
+    font-size: 14px;
+    color: #000;
+    letter-spacing: 3px;
+    margin: 2mm 0;
+    font-weight: 700;
+  }
 }
 </style>
 </head>
@@ -427,12 +600,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <button onclick="closeModal('previewModal')">✕</button>
     </div>
     <div class="modal-body">
-      <div class="preview-tip">📄 Vérifiez les informations avant impression</div>
+      <div class="preview-tip">📄 Vérifiez avant impression — 2 exemplaires seront imprimés sur A4</div>
       <div class="preview-container" id="previewContainer"></div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-secondary" onclick="closeModal('previewModal')">✏️ Modifier</button>
-      <button class="btn btn-primary" onclick="confirmPrint()">🖨 Imprimer</button>
+      <button class="btn btn-primary" onclick="confirmPrint()">🖨 Imprimer (A4 × 2)</button>
     </div>
   </div>
 </div>
@@ -482,7 +655,6 @@ let currentType = 'entree';
 let fbReady = false;
 let listenersAttached = false;
 
-// ✅ Bugfix : objets mémorisés pour impression immédiate
 let pendingPrintId = null;
 let pendingPrintTx = null;
 
@@ -728,7 +900,7 @@ function selectType(type){
 
   document.getElementById('fPersonne').placeholder = type === 'entree'
     ? 'Nom de la personne qui dépose'
-    : 'Nom de la personne qui retire';
+    : 'Nom de la personne qui prend l\'argent';
 
   document.getElementById('sortieFields').style.display = type === 'sortie' ? 'block' : 'none';
   document.getElementById('entreeFields').style.display = type === 'entree' ? 'block' : 'none';
@@ -739,7 +911,7 @@ function selectType(type){
     banner.innerHTML = '💡 Dépôt : indiquez qui dépose et quand';
   } else {
     banner.className = 'info-banner danger';
-    banner.innerHTML = '⚠️ Retrait : motif obligatoire + bénéficiaire recommandé';
+    banner.innerHTML = '⚠️ Retrait : motif obligatoire + signature du bénéficiaire';
   }
 
   updateSuggestions();
@@ -868,8 +1040,6 @@ async function saveTransaction(){
     await window.fbSet(window.fbRef(window.db, 'caisse/transactions/' + id), tx);
     resetForm();
     toast(currentType === 'entree' ? '✅ Dépôt enregistré' : '✅ Retrait enregistré');
-
-    // ✅ FIX : passer directement l'objet tx (pas d'attente du listener Firebase)
     setTimeout(() => previewBon(tx), 300);
   } catch(e){
     toast('Erreur: ' + e.message, 'error');
@@ -881,7 +1051,6 @@ async function saveTransaction(){
 
 // ============================================================
 // ==================== APERÇU DU BON =========================
-// ✅ FIX : accepte un OBJET tx ou un ID
 // ============================================================
 function previewBon(txOrId){
   let t;
@@ -894,7 +1063,7 @@ function previewBon(txOrId){
   if(!t){ toast('Opération introuvable', 'error'); return; }
 
   pendingPrintId = t.id;
-  pendingPrintTx = t; // ✅ Mémoriser l'objet complet
+  pendingPrintTx = t;
 
   const isIn = t.type === 'entree';
   const soldeApres = getSoldeAfter(t);
@@ -904,8 +1073,11 @@ function previewBon(txOrId){
   document.getElementById('previewModal').classList.add('show');
 }
 
-// Génère le HTML du bon
-function buildBonHTML(t, soldeApres, isIn){
+// ============================================================
+// ==================== HTML DU BON ===========================
+// Génère le HTML d'UN bon (utilisé pour aperçu ET impression)
+// ============================================================
+function buildBonHTML(t, soldeApres, isIn, copyLabel = ''){
   let lignesSupp = '';
   if(!isIn){
     if(t.beneficiaire) lignesSupp += `<div class="line"><span>Bénéficiaire :</span><strong>${escapeHtml(t.beneficiaire)}</strong></div>`;
@@ -913,8 +1085,16 @@ function buildBonHTML(t, soldeApres, isIn){
     if(t.reference) lignesSupp += `<div class="line"><span>Référence :</span><strong>${escapeHtml(t.reference)}</strong></div>`;
   }
 
+  // ✅ Signature : rôle + nom de la personne
+  const personRole = isIn ? 'Déposant' : 'Personne qui prend l\'argent';
+  const personName = t.personne || '—';
+  const caissierName = t.createdByName || currentUser.name || 'Caissier';
+
+  const labelHTML = copyLabel ? `<div class="copy-label">${copyLabel}</div>` : '';
+
   return `
     <div class="bon-paper">
+      ${labelHTML}
       <h1>🌾 TAMA</h1>
       <div class="sub">Bon de Caisse<br>${new Date().toLocaleString('fr-FR')}</div>
 
@@ -927,17 +1107,25 @@ function buildBonHTML(t, soldeApres, isIn){
       <div class="montant">${isIn ? '+' : '−'} ${Number(t.montant || 0).toLocaleString('fr-FR')} DH</div>
 
       <div class="line"><span>Date :</span><strong>${formatDate(t.date)}</strong></div>
-      <div class="line"><span>${isIn ? 'Déposé par :' : 'Personne :'}</span><strong>${escapeHtml(t.personne || '—')}</strong></div>
+      <div class="line"><span>${isIn ? 'Déposé par :' : 'Pris par :'}</span><strong>${escapeHtml(personName)}</strong></div>
       ${!isIn ? `<div class="line"><span>Motif :</span><strong>${escapeHtml(t.motif || '—')}</strong></div>` : ''}
       ${lignesSupp}
-      <div class="line"><span>Caissier :</span><strong>${escapeHtml(t.createdByName || currentUser.name)}</strong></div>
+      <div class="line"><span>Caissier :</span><strong>${escapeHtml(caissierName)}</strong></div>
       <div class="line"><span>Solde après :</span><strong>${soldeApres.toLocaleString('fr-FR')} DH</strong></div>
 
       ${t.notes ? `<div class="notes"><strong>Note :</strong> ${escapeHtml(t.notes)}</div>` : ''}
 
       <div class="signature">
-        <div>Signature Caissier</div>
-        <div>Signature ${isIn ? 'Déposant' : 'Client'}</div>
+        <div class="sig-box">
+          <div class="role">Caissier</div>
+          <div class="name">${escapeHtml(caissierName)}</div>
+          <div class="line-sig">Signature</div>
+        </div>
+        <div class="sig-box">
+          <div class="role">${escapeHtml(personRole)}</div>
+          <div class="name">${escapeHtml(personName)}</div>
+          <div class="line-sig">Signature</div>
+        </div>
       </div>
 
       <div class="foot">
@@ -948,16 +1136,8 @@ function buildBonHTML(t, soldeApres, isIn){
   `;
 }
 
-// Imprimer depuis l'aperçu
-function confirmPrint(){
-  if(!pendingPrintTx){ toast('Aucun bon à imprimer', 'error'); return; }
-  closeModal('previewModal');
-  setTimeout(() => printBon(pendingPrintTx), 200);
-}
-
 // ============================================================
-// ==================== PRINT BON =============================
-// ✅ FIX : accepte un OBJET tx ou un ID
+// ==================== PRINT — 2 BONS SUR A4 =================
 // ============================================================
 function printBon(txOrId){
   let t;
@@ -971,20 +1151,38 @@ function printBon(txOrId){
 
   const isIn = t.type === 'entree';
   const soldeApres = getSoldeAfter(t);
-  const html = buildBonHTML(t, soldeApres, isIn);
 
-  document.getElementById('printBon').innerHTML = html;
+  // ✅ Génère 2 bons avec labels différents
+  const bonSociete = buildBonCopy(t, soldeApres, isIn, 'EXEMPLAIRE SOCIÉTÉ', 'first');
+  const bonClient = buildBonCopy(t, soldeApres, isIn, 'EXEMPLAIRE CLIENT', 'second');
+
+  document.getElementById('printBon').innerHTML = `
+    ${bonSociete}
+    <div class="cut-line">✂ - - - - - - - - - - - - - - - - - - - - - - - - - - - - ✂</div>
+    ${bonClient}
+  `;
 
   setTimeout(() => window.print(), 200);
 }
 
-// ✅ FIX : inclut la transaction courante si absente de transactions[]
+// Génère un "bon-copy" (bloc dans la page A4)
+function buildBonCopy(t, soldeApres, isIn, copyLabel, className){
+  const bonInner = buildBonHTML(t, soldeApres, isIn); // pas de label ici
+  // On enveloppe dans .bon-copy avec sa classe et le label en overlay
+  return `
+    <div class="bon-copy ${className}">
+      <div class="copy-label">${copyLabel}</div>
+      ${bonInner}
+    </div>
+  `;
+}
+
+// ============================================================
+// ==================== SOLDE APRÈS ===========================
+// ============================================================
 function getSoldeAfter(tx){
   const exists = transactions.some(t => t.id === tx.id);
-  const all = exists
-    ? [...transactions]
-    : [...transactions, tx];
-
+  const all = exists ? [...transactions] : [...transactions, tx];
   all.sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
   let solde = 0;
   for(const t of all){
@@ -992,6 +1190,15 @@ function getSoldeAfter(tx){
     if(t.id === tx.id) break;
   }
   return solde;
+}
+
+// ============================================================
+// ==================== IMPRIMER DEPUIS L'APERÇU ==============
+// ============================================================
+function confirmPrint(){
+  if(!pendingPrintTx){ toast('Aucun bon à imprimer', 'error'); return; }
+  closeModal('previewModal');
+  setTimeout(() => printBon(pendingPrintTx), 200);
 }
 
 // ============================================================
@@ -1005,7 +1212,7 @@ function viewTransaction(id){
 
   let details = `
     <div class="detail-row"><span class="lbl">Type</span><span class="val">${isIn ? '📥 DÉPÔT' : '📤 RETRAIT'}</span></div>
-    <div class="detail-row"><span class="lbl">${isIn ? 'Déposé par' : 'Personne'}</span><span class="val">${escapeHtml(t.personne || '—')}</span></div>
+    <div class="detail-row"><span class="lbl">${isIn ? 'Déposé par' : 'Pris par'}</span><span class="val">${escapeHtml(t.personne || '—')}</span></div>
     <div class="detail-row"><span class="lbl">Date</span><span class="val">${formatDate(t.date)}</span></div>
   `;
 
@@ -1022,7 +1229,7 @@ function viewTransaction(id){
     details += `<div class="detail-row"><span class="lbl">Note</span><span class="val" style="font-weight:500">${escapeHtml(t.notes)}</span></div>`;
   }
 
-  details += `<div class="detail-row"><span class="lbl">Par</span><span class="val">${escapeHtml(t.createdByName || t.createdBy || '—')}</span></div>`;
+  details += `<div class="detail-row"><span class="lbl">Caissier</span><span class="val">${escapeHtml(t.createdByName || t.createdBy || '—')}</span></div>`;
 
   const body = `
     <div style="text-align:center;margin-bottom:20px;padding:18px;background:linear-gradient(135deg,${isIn ? '#f0f9e8,#dcf5c4' : '#fef2f2,#fee2e2'});border-radius:14px">
