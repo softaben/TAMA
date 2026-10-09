@@ -11,7 +11,6 @@
 html,body{height:100%;overflow-x:hidden}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#eef2ee;color:#1a2a1a;padding-bottom:80px}
 
-/* HEADER */
 .header{background:linear-gradient(135deg,#1a3a1a,#2d4a2d);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #c9a227;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,.15)}
 .header-left{display:flex;align-items:center;gap:10px}
 .header-icon{width:38px;height:38px;background:linear-gradient(135deg,#c9a227,#e8c547);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;border:2px solid #c9a227}
@@ -19,7 +18,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .header h1{color:#e8c547;font-size:17px;letter-spacing:1px}
 .header small{color:#a8c4a8;font-size:9px;letter-spacing:1px;display:block}
 
-/* LOADER */
 #loader{position:fixed;inset:0;background:linear-gradient(135deg,#1a3a1a,#2d4a2d);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;color:#e8c547;transition:opacity .4s}
 #loader.hidden{opacity:0;pointer-events:none}
 #loader .logo{font-size:60px;animation:bounce 1.5s infinite}
@@ -29,13 +27,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 
-/* MAIN */
 .main{padding:15px;max-width:600px;margin:0 auto}
 .page{display:none}
 .page.active{display:block;animation:fadeIn .3s}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-/* SOLDE CARD */
 .solde-card{background:linear-gradient(135deg,#1a3a1a,#2d4a2d);color:#fff;border-radius:18px;padding:22px;text-align:center;margin-bottom:18px;box-shadow:0 8px 25px rgba(26,58,26,.25);position:relative;overflow:hidden;border:2px solid #c9a227}
 .solde-card::before{content:'';position:absolute;top:-50px;right:-50px;width:150px;height:150px;background:radial-gradient(circle,rgba(201,162,39,.2),transparent 70%);border-radius:50%}
 .solde-card .lbl{font-size:11px;letter-spacing:2px;color:#a8c4a8;text-transform:uppercase;position:relative;z-index:1}
@@ -43,7 +39,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .solde-card .amount small{font-size:18px;font-weight:600}
 .solde-card .date{font-size:12px;color:#a8c4a8;position:relative;z-index:1}
 
-/* MINI STATS */
 .mini-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
 .mini-stat{background:#fff;padding:15px;border-radius:14px;box-shadow:0 2px 10px rgba(26,58,26,.06);border-left:4px solid #7cb342}
 .mini-stat.out{border-left-color:#dc2626}
@@ -52,11 +47,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .mini-stat.in .val{color:#558b2f}
 .mini-stat.out .val{color:#b91c1c}
 
-/* SECTION TITLE */
 .sec-title{font-size:14px;color:#1a3a1a;font-weight:700;margin:20px 0 12px;display:flex;align-items:center;gap:8px}
 .sec-title::before{content:'';width:4px;height:18px;background:linear-gradient(180deg,#c9a227,#7cb342);border-radius:2px}
 
-/* TRANSACTION ITEM */
 .tx-item{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(26,58,26,.06);display:flex;gap:12px;align-items:center;border-left:4px solid #7cb342;cursor:pointer;transition:.2s}
 .tx-item:active{transform:scale(.98);background:#f9fbf6}
 .tx-item.out{border-left-color:#dc2626}
@@ -69,19 +62,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .tx-item .amount{font-size:16px;font-weight:800;text-align:right;color:#558b2f;flex-shrink:0}
 .tx-item.out .amount{color:#b91c1c}
 
-/* EMPTY */
 .empty{text-align:center;padding:60px 20px;color:#7a8a7a}
 .empty .icon{font-size:60px;margin-bottom:15px;opacity:.4}
 .empty h3{color:#2d4a2d;margin-bottom:5px;font-size:16px}
 
-/* FILTERS */
 .filters{display:flex;gap:8px;margin-bottom:15px;overflow-x:auto;padding-bottom:5px;-webkit-overflow-scrolling:touch}
 .filters::-webkit-scrollbar{display:none}
 .filter-btn{padding:9px 16px;border-radius:20px;background:#fff;border:1px solid #d4e0c8;font-size:13px;font-weight:600;color:#4a5a4a;white-space:nowrap;cursor:pointer;flex-shrink:0}
 .filter-btn.active{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border-color:#c9a227}
 .filter-btn:active{transform:scale(.95)}
 
-/* BOTTOM NAV — 5 buttons */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #e8f0dc;display:grid;grid-template-columns:repeat(5,1fr);z-index:60;box-shadow:0 -4px 20px rgba(26,58,26,.08);padding-bottom:env(safe-area-inset-bottom)}
 .nav-btn{background:none;border:none;padding:12px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#7a8a7a;font-size:10px;font-weight:700;letter-spacing:.3px;position:relative}
 .nav-btn .ic{font-size:20px;line-height:1;transition:.2s}
@@ -91,7 +81,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .nav-btn.center .ic{background:linear-gradient(135deg,#c9a227,#e8c547);color:#1a3a1a;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 15px rgba(201,162,39,.4);margin-top:-15px;border:3px solid #fff}
 .nav-btn.center.active .ic{transform:scale(1.1)}
 
-/* FORM */
 .form-card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(26,58,26,.06)}
 .form-group{margin-bottom:15px}
 .form-group label{display:block;font-size:12px;color:#2d4a2d;margin-bottom:7px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
@@ -101,7 +90,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .form-group textarea{resize:vertical;min-height:70px}
 .form-group small{color:#7a8a7a;font-size:11px;margin-top:4px;display:block}
 
-/* TYPE SELECTOR */
 .type-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
 .type-btn{padding:20px 10px;border-radius:14px;border:3px solid #d4e0c8;background:#f9fbf6;cursor:pointer;text-align:center;transition:.2s}
 .type-btn .ic{font-size:32px;display:block;margin-bottom:5px}
@@ -110,30 +98,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .type-btn.out.selected{border-color:#dc2626;background:#fee2e2;color:#b91c1c}
 .type-btn:active{transform:scale(.97)}
 
-/* QUICK AMOUNTS */
 .quick-amounts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
 .quick-amounts button{padding:10px 5px;border:1px solid #d4e0c8;background:#f9fbf6;border-radius:10px;font-size:13px;font-weight:700;color:#2d4a2d;cursor:pointer}
 .quick-amounts button:active{background:#fef9e8;border-color:#c9a227}
 
-/* PERSON SUGGESTIONS */
 .person-suggestions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .person-suggestions button{padding:7px 12px;border:1px solid #d4e0c8;background:#f9fbf6;border-radius:20px;font-size:12px;font-weight:600;color:#2d4a2d;cursor:pointer}
 .person-suggestions button:active{background:#fef9e8;border-color:#c9a227}
 
-/* INFO BANNER */
 .info-banner{background:linear-gradient(135deg,#f0f9e8,#dcf5c4);border-left:4px solid #7cb342;padding:12px 14px;border-radius:10px;margin-bottom:15px;font-size:13px;color:#3d6b3d;font-weight:600;display:flex;gap:8px;align-items:center}
 .info-banner.danger{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-left-color:#dc2626;color:#991b1b}
 
-/* BUTTONS */
 .btn{padding:14px 20px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:.2s;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn:active{transform:scale(.98)}
 .btn-primary{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border:2px solid #c9a227;box-shadow:0 4px 15px rgba(26,58,26,.2)}
 .btn-success{background:linear-gradient(135deg,#7cb342,#558b2f);color:#fff;box-shadow:0 4px 15px rgba(124,179,66,.3)}
 .btn-danger{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
 .btn-secondary{background:#e8f0dc;color:#2d4a2d}
+.btn-pdf{background:linear-gradient(135deg,#dc2626,#991b1b);color:#fff;box-shadow:0 4px 15px rgba(220,38,38,.3)}
 .btn:disabled{opacity:.5;transform:none}
 
-/* MODAL */
 .modal{position:fixed;inset:0;background:rgba(26,58,26,.75);display:none;align-items:flex-end;justify-content:center;z-index:200;backdrop-filter:blur(3px)}
 .modal.show{display:flex;animation:fadeIn .2s}
 .modal-box{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:600px;max-height:92vh;overflow-y:auto;border-top:5px solid #c9a227;animation:slideUp .3s}
@@ -145,13 +129,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .modal-foot{padding:15px 20px;border-top:2px solid #e8f0dc;display:flex;gap:10px;position:sticky;bottom:0;background:#fff;padding-bottom:calc(15px + env(safe-area-inset-bottom))}
 .modal-foot .btn{flex:1}
 
-/* DETAIL ROW */
 .detail-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #e8f0dc;font-size:14px;gap:10px}
 .detail-row:last-child{border:none}
 .detail-row .lbl{color:#5a6b5a;font-weight:600;flex-shrink:0}
 .detail-row .val{color:#1a3a1a;font-weight:700;text-align:right;word-break:break-word}
 
-/* TOAST */
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(100px);background:#1a3a1a;color:#fff;padding:14px 22px;border-radius:30px;box-shadow:0 10px 30px rgba(0,0,0,.3);opacity:0;transition:.3s;z-index:300;border-left:4px solid #c9a227;max-width:calc(100% - 30px);font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 .toast.error{background:#991b1b}
@@ -180,195 +162,38 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .bon-paper .foot{text-align:center;font-size:9px;margin-top:15px;border-top:1px dashed #000;padding-top:8px;color:#555}
 .preview-tip{text-align:center;font-size:12px;color:#5a6b5a;margin-bottom:12px;font-weight:600}
 
-/* ============================================ */
-/* ===== PRINT — A4 ÷ 2 (A5 × A5) =========== */
-/* ============================================ */
-.print-bon{display:none}
+/* PDF OPTIONS */
+.pdf-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.pdf-opt{padding:12px;border:2px solid #d4e0c8;background:#f9fbf6;border-radius:10px;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#2d4a2d;transition:.2s}
+.pdf-opt:hover,.pdf-opt.selected{border-color:#c9a227;background:#fef9e8;color:#92400e}
 
+/* PRINT */
+.print-bon{display:none}
 @media print{
-  @page {
-    size: A4 portrait;
-    margin: 0;
-  }
-  
-  html, body {
-    background: #fff !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    width: 210mm;
-    height: 297mm;
-  }
-  
-  body > *:not(.print-bon) {
-    display: none !important;
-  }
-  
-  .print-bon {
-    display: block !important;
-    width: 210mm;
-    height: 297mm;
-    color: #000;
-    font-family: 'Courier New', monospace;
-    font-size: 11px;
-    line-height: 1.35;
-    box-sizing: border-box;
-  }
-  
-  /* Chaque bon = exactement 1/2 A4 (= A5) */
-  .print-bon .bon-copy {
-    width: 210mm;
-    height: 148.5mm;
-    padding: 8mm 12mm 6mm 12mm;
-    box-sizing: border-box;
-    position: relative;
-    overflow: hidden;
-    background: #fff;
-    page-break-inside: avoid;
-  }
-  
-  .print-bon .bon-copy.first {
-    border-bottom: 2px dashed #000;
-  }
-  
-  .print-bon .bon-copy.second {
-    border-top: none;
-  }
-  
-  /* ============ Contenu du bon ============ */
-  .print-bon .bon-logo {
-    text-align: center;
-    margin-bottom: 6px;
-  }
-  
-  .print-bon .bon-logo img {
-    max-height: 55px;
-    max-width: 140px;
-    object-fit: contain;
-  }
-  
-  .print-bon .bon-logo .emoji {
-    font-size: 40px;
-    line-height: 1;
-  }
-  
-  .print-bon h1 {
-    text-align: center;
-    font-size: 18px;
-    margin-bottom: 2px;
-    letter-spacing: 3px;
-    font-weight: 800;
-  }
-  
-  .print-bon .sub {
-    text-align: center;
-    font-size: 9px;
-    margin-bottom: 6px;
-    border-bottom: 1px dashed #000;
-    padding-bottom: 5px;
-    color: #333;
-  }
-  
-  .print-bon .num {
-    text-align: center;
-    font-size: 14px;
-    font-weight: 700;
-    margin: 6px 0;
-    background: #000;
-    color: #fff;
-    padding: 5px;
-    letter-spacing: 2px;
-  }
-  
-  .print-bon .type {
-    text-align: center;
-    font-size: 13px;
-    font-weight: 800;
-    margin-bottom: 6px;
-    letter-spacing: 1px;
-  }
-  
-  .print-bon .montant {
-    font-size: 22px;
-    font-weight: 800;
-    text-align: center;
-    margin: 8px 0;
-    border: 2px solid #000;
-    padding: 8px;
-    letter-spacing: 1px;
-  }
-  
-  .print-bon .line {
-    display: flex;
-    justify-content: space-between;
-    padding: 3px 0;
-    border-bottom: 1px dotted #666;
-    font-size: 11px;
-    gap: 10px;
-  }
-  
-  .print-bon .line strong {
-    font-weight: 700;
-    text-align: right;
-  }
-  
-  .print-bon .line span:first-child {
-    color: #333;
-    flex-shrink: 0;
-    font-weight: 600;
-  }
-  
-  .print-bon .notes {
-    margin-top: 5px;
-    padding: 5px;
-    border: 1px dashed #000;
-    font-size: 10px;
-  }
-  
-  .print-bon .signature {
-    margin-top: 15px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    font-size: 11px;
-  }
-  
-  .print-bon .sig-box {
-    text-align: center;
-  }
-  
-  .print-bon .sig-box .role {
-    font-weight: 800;
-    font-size: 10px;
-    margin-bottom: 3px;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-  }
-  
-  .print-bon .sig-box .name {
-    font-size: 11px;
-    color: #000;
-    margin-bottom: 25px;
-    font-weight: 700;
-    min-height: 14px;
-    text-decoration: underline;
-  }
-  
-  .print-bon .sig-box .line-sig {
-    border-top: 1px solid #000;
-    padding-top: 3px;
-    font-size: 9px;
-    color: #333;
-    font-weight: 600;
-  }
-  
-  .print-bon .foot {
-    text-align: center;
-    font-size: 9px;
-    margin-top: 10px;
-    border-top: 1px dashed #000;
-    padding-top: 5px;
-    color: #333;
-  }
+  @page{size:A4 portrait;margin:0}
+  html,body{background:#fff !important;padding:0 !important;margin:0 !important;width:210mm;height:297mm}
+  body>*:not(.print-bon){display:none !important}
+  .print-bon{display:block !important;width:210mm;height:297mm;color:#000;font-family:'Courier New',monospace;font-size:11px;line-height:1.35;box-sizing:border-box}
+  .print-bon .bon-copy{width:210mm;height:148.5mm;padding:8mm 12mm 6mm 12mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;page-break-inside:avoid}
+  .print-bon .bon-copy.first{border-bottom:2px dashed #000}
+  .print-bon .bon-logo{text-align:center;margin-bottom:6px}
+  .print-bon .bon-logo img{max-height:55px;max-width:140px;object-fit:contain}
+  .print-bon .bon-logo .emoji{font-size:40px;line-height:1}
+  .print-bon h1{text-align:center;font-size:18px;margin-bottom:2px;letter-spacing:3px;font-weight:800}
+  .print-bon .sub{text-align:center;font-size:9px;margin-bottom:6px;border-bottom:1px dashed #000;padding-bottom:5px;color:#333}
+  .print-bon .num{text-align:center;font-size:14px;font-weight:700;margin:6px 0;background:#000;color:#fff;padding:5px;letter-spacing:2px}
+  .print-bon .type{text-align:center;font-size:13px;font-weight:800;margin-bottom:6px;letter-spacing:1px}
+  .print-bon .montant{font-size:22px;font-weight:800;text-align:center;margin:8px 0;border:2px solid #000;padding:8px;letter-spacing:1px}
+  .print-bon .line{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dotted #666;font-size:11px;gap:10px}
+  .print-bon .line strong{font-weight:700;text-align:right}
+  .print-bon .line span:first-child{color:#333;flex-shrink:0;font-weight:600}
+  .print-bon .notes{margin-top:5px;padding:5px;border:1px dashed #000;font-size:10px}
+  .print-bon .signature{margin-top:15px;display:grid;grid-template-columns:1fr 1fr;gap:40px;font-size:11px}
+  .print-bon .sig-box{text-align:center}
+  .print-bon .sig-box .role{font-weight:800;font-size:10px;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px}
+  .print-bon .sig-box .name{font-size:11px;color:#000;margin-bottom:25px;font-weight:700;min-height:14px;text-decoration:underline}
+  .print-bon .sig-box .line-sig{border-top:1px solid #000;padding-top:3px;font-size:9px;color:#333;font-weight:600}
+  .print-bon .foot{text-align:center;font-size:9px;margin-top:10px;border-top:1px dashed #000;padding-top:5px;color:#333}
 }
 </style>
 </head>
@@ -406,18 +231,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         <div class="amount" id="soldeCaisse">0 <small>DH</small></div>
         <div class="date" id="dateAujourdhui">—</div>
       </div>
-
       <div class="mini-stats">
-        <div class="mini-stat in">
-          <small>📥 Entrées du jour</small>
-          <div class="val" id="statEntrees">0 DH</div>
-        </div>
-        <div class="mini-stat out">
-          <small>📤 Sorties du jour</small>
-          <div class="val" id="statSorties">0 DH</div>
-        </div>
+        <div class="mini-stat in"><small>📥 Entrées du jour</small><div class="val" id="statEntrees">0 DH</div></div>
+        <div class="mini-stat out"><small>📤 Sorties du jour</small><div class="val" id="statSorties">0 DH</div></div>
       </div>
-
       <div class="sec-title">📋 Dernières opérations</div>
       <div class="filters">
         <button class="filter-btn active" data-f="today" onclick="setFilter(this,'today')">Aujourd'hui</button>
@@ -426,14 +243,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         <button class="filter-btn" data-f="entree" onclick="setFilter(this,'entree')">📥 Dépôts</button>
         <button class="filter-btn" data-f="sortie" onclick="setFilter(this,'sortie')">📤 Retraits</button>
       </div>
-
       <div id="txList"></div>
     </div>
 
     <!-- NOUVELLE OPÉRATION -->
     <div class="page" id="page-nouvelle">
       <div class="sec-title">➕ Nouvelle opération</div>
-
       <div class="form-card">
         <div class="type-selector">
           <div class="type-btn in selected" id="typeIn" onclick="selectType('entree')">
@@ -445,10 +260,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
             <div class="lbl">RETRAIT</div>
           </div>
         </div>
-
-        <div class="info-banner" id="infoBanner">
-          💡 Dépôt : indiquez simplement qui dépose et quand
-        </div>
+        <div class="info-banner" id="infoBanner">💡 Dépôt : indiquez simplement qui dépose et quand</div>
 
         <div class="form-group">
           <label>Montant (DH) <span class="req">*</span></label>
@@ -460,30 +272,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
             <button type="button" onclick="setMontant(1000)">1000</button>
           </div>
         </div>
-
         <div class="form-group">
           <label id="lblPersonne">Personne qui dépose <span class="req">*</span></label>
           <input id="fPersonne" placeholder="Nom de la personne">
           <div class="person-suggestions" id="personSuggestions"></div>
         </div>
-
         <div class="form-group">
           <label>Date de l'opération <span class="req">*</span></label>
           <input type="datetime-local" id="fDate">
         </div>
-
         <div id="sortieFields" style="display:none">
           <div class="form-group">
             <label>Motif / Raison <span class="req">*</span></label>
             <input id="fMotif" placeholder="Ex: Achat carburant, Salaire...">
             <div class="person-suggestions" id="motifSuggestions"></div>
           </div>
-
-          <div class="form-group">
-            <label>Bénéficiaire (à qui)</label>
-            <input id="fBeneficiaire" placeholder="Optionnel">
-          </div>
-
+          <div class="form-group"><label>Bénéficiaire (à qui)</label><input id="fBeneficiaire" placeholder="Optionnel"></div>
           <div class="form-group">
             <label>Mode de paiement</label>
             <select id="fMode">
@@ -492,29 +296,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
               <option value="Virement">🏦 Virement</option>
             </select>
           </div>
-
-          <div class="form-group">
-            <label>Référence / N° pièce</label>
-            <input id="fReference" placeholder="Optionnel">
-          </div>
-
-          <div class="form-group">
-            <label>Notes</label>
-            <textarea id="fNotes" placeholder="Remarques optionnelles"></textarea>
-          </div>
+          <div class="form-group"><label>Référence / N° pièce</label><input id="fReference" placeholder="Optionnel"></div>
+          <div class="form-group"><label>Notes</label><textarea id="fNotes" placeholder="Remarques optionnelles"></textarea></div>
         </div>
-
         <div id="entreeFields" class="form-group">
           <label>Note (optionnel)</label>
           <input id="fNoteEntree" placeholder="Ex: Dépôt espèces, chèque n°...">
         </div>
-
-        <button class="btn btn-success" id="btnSave" onclick="saveTransaction()" style="margin-bottom:10px">
-          💾 Enregistrer & Voir le bon
-        </button>
-        <button class="btn btn-secondary" onclick="resetForm()">
-          🗑 Réinitialiser
-        </button>
+        <button class="btn btn-success" id="btnSave" onclick="saveTransaction()" style="margin-bottom:10px">💾 Enregistrer & Voir le bon</button>
+        <button class="btn btn-secondary" onclick="resetForm()">🗑 Réinitialiser</button>
       </div>
     </div>
 
@@ -528,9 +318,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
           <input type="date" id="hDateTo" onchange="renderHistorique()" style="flex:1;padding:10px;border:2px solid #d4e0c8;border-radius:10px;font-size:14px;background:#f9fbf6">
         </div>
         <input id="hSearch" placeholder="🔍 Rechercher motif, personne..." oninput="renderHistorique()" style="width:100%;padding:12px;border:2px solid #d4e0c8;border-radius:10px;font-size:14px;background:#f9fbf6;margin-bottom:10px">
-        <div style="display:flex;gap:8px">
-          <button class="btn btn-secondary" onclick="resetHistoriqueFilters()" style="padding:10px;font-size:13px">🔄 Reset</button>
-          <button class="btn btn-primary" onclick="exportCSV()" style="padding:10px;font-size:13px">📥 Export CSV</button>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <button class="btn btn-secondary" onclick="resetHistoriqueFilters()" style="padding:10px;font-size:12px">🔄 Reset</button>
+          <button class="btn btn-primary" onclick="exportCSV()" style="padding:10px;font-size:12px">📥 CSV</button>
+          <button class="btn btn-pdf" onclick="openPdfDialog()" style="padding:10px;font-size:12px">📄 PDF</button>
         </div>
       </div>
 
@@ -540,19 +332,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <!-- STATS -->
     <div class="page" id="page-stats">
       <div class="sec-title">📊 Statistiques</div>
-
       <div class="solde-card" style="background:linear-gradient(135deg,#2d4a2d,#1a3a1a)">
         <div class="lbl">Solde actuel</div>
         <div class="amount" id="sSolde">0 <small>DH</small></div>
       </div>
-
       <div class="mini-stats">
         <div class="mini-stat in"><small>📥 Total dépôts</small><div class="val" id="sTotalIn">0 DH</div></div>
         <div class="mini-stat out"><small>📤 Total retraits</small><div class="val" id="sTotalOut">0 DH</div></div>
         <div class="mini-stat"><small>🧾 Nb opérations</small><div class="val" id="sTotalTx">0</div></div>
         <div class="mini-stat"><small>📅 Aujourd'hui</small><div class="val" id="sToday">0 DH</div></div>
       </div>
-
       <div class="sec-title" style="margin-top:25px">🏆 Top motifs de retrait</div>
       <div id="topMotifs"></div>
     </div>
@@ -560,7 +349,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <!-- PARAMÈTRES -->
     <div class="page" id="page-parametres">
       <div class="sec-title">⚙️ Paramètres</div>
-
       <div class="form-card">
         <div style="padding:14px;background:linear-gradient(135deg,#f0f9e8,#dcf5c4);border-left:4px solid #7cb342;border-radius:10px;margin-bottom:15px;font-size:13px;color:#3d6b3d;font-weight:600">
           💡 Ces paramètres sont sauvegardés et synchronisés automatiquement
@@ -569,91 +357,57 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         <div class="form-group">
           <label>👤 Nom du caissier</label>
           <input id="pCaissierNom" placeholder="Ex: Youssef Ben Ahmed">
-          <small>Utilisé dans l'en-tête de l'application (pas imprimé sur le bon)</small>
+          <small>Utilisé dans l'en-tête (pas imprimé sur le bon)</small>
         </div>
-
         <div class="form-group">
           <label>🏢 Nom de la société</label>
           <input id="pSocieteNom" placeholder="TAMA" value="TAMA">
-          <small>Affiché en en-tête du bon imprimé</small>
+          <small>Affiché en en-tête du bon et du PDF</small>
         </div>
-
         <div class="form-group">
           <label>📝 Sous-titre</label>
           <input id="pSousTitre" placeholder="Gestion de Caisse" value="Gestion de Caisse">
-          <small>Ex: "Gestion de Caisse", "Service Finance", etc.</small>
         </div>
+        <button class="btn btn-success" onclick="saveParametres()" style="margin-bottom:10px">💾 Enregistrer les paramètres</button>
 
-        <button class="btn btn-success" onclick="saveParametres()" style="margin-bottom:10px">
-          💾 Enregistrer les paramètres
-        </button>
-
-        <div class="sec-title" style="margin-top:25px">🖼️ Logo de l'application</div>
-
-        <div id="logoPreviewWrap" style="text-align:center;margin-bottom:15px">
-          <div id="logoPreviewBox" style="display:inline-block;width:100px;height:100px;border-radius:15px;background:linear-gradient(135deg,#c9a227,#e8c547);display:flex;align-items:center;justify-content:center;font-size:50px;overflow:hidden;border:3px solid #1a3a1a">
+        <div class="sec-title" style="margin-top:25px">🖼️ Logo</div>
+        <div style="text-align:center;margin-bottom:15px">
+          <div style="display:inline-block;width:100px;height:100px;border-radius:15px;background:linear-gradient(135deg,#c9a227,#e8c547);display:flex;align-items:center;justify-content:center;font-size:50px;overflow:hidden;border:3px solid #1a3a1a">
             <span id="logoPreviewIcon">🌾</span>
             <img id="logoPreviewImg" style="display:none;width:100%;height:100%;object-fit:cover" alt="Logo">
           </div>
         </div>
-
         <input type="file" id="logoFileInput" accept="image/*" onchange="uploadLogo(event)" style="display:none">
-        <button class="btn btn-primary" onclick="document.getElementById('logoFileInput').click()" style="margin-bottom:10px">
-          📁 Choisir une image
-        </button>
-        <button class="btn btn-danger" onclick="resetLogo()">
-          🔄 Réinitialiser le logo
-        </button>
+        <button class="btn btn-primary" onclick="document.getElementById('logoFileInput').click()" style="margin-bottom:10px">📁 Choisir une image</button>
+        <button class="btn btn-danger" onclick="resetLogo()">🔄 Réinitialiser le logo</button>
         <small style="display:block;color:#7a8a7a;font-size:11px;margin-top:10px;text-align:center">Format : PNG, JPG · Max 500 Ko</small>
       </div>
     </div>
 
   </main>
 
-  <!-- BOTTOM NAV — 5 onglets -->
   <nav class="bottom-nav">
-    <button class="nav-btn active" data-page="dashboard" onclick="navigate('dashboard')">
-      <span class="ic">🏠</span>
-      <span>Accueil</span>
-    </button>
-    <button class="nav-btn" data-page="historique" onclick="navigate('historique')">
-      <span class="ic">📚</span>
-      <span>Histo.</span>
-    </button>
-    <button class="nav-btn center" data-page="nouvelle" onclick="navigate('nouvelle')">
-      <span class="ic">➕</span>
-      <span>Nouveau</span>
-    </button>
-    <button class="nav-btn" data-page="stats" onclick="navigate('stats')">
-      <span class="ic">📊</span>
-      <span>Stats</span>
-    </button>
-    <button class="nav-btn" data-page="parametres" onclick="navigate('parametres')">
-      <span class="ic">⚙️</span>
-      <span>Params</span>
-    </button>
+    <button class="nav-btn active" data-page="dashboard" onclick="navigate('dashboard')"><span class="ic">🏠</span><span>Accueil</span></button>
+    <button class="nav-btn" data-page="historique" onclick="navigate('historique')"><span class="ic">📚</span><span>Histo.</span></button>
+    <button class="nav-btn center" data-page="nouvelle" onclick="navigate('nouvelle')"><span class="ic">➕</span><span>Nouveau</span></button>
+    <button class="nav-btn" data-page="stats" onclick="navigate('stats')"><span class="ic">📊</span><span>Stats</span></button>
+    <button class="nav-btn" data-page="parametres" onclick="navigate('parametres')"><span class="ic">⚙️</span><span>Params</span></button>
   </nav>
 </div>
 
 <!-- MODAL DETAIL -->
 <div class="modal" id="modal">
   <div class="modal-box">
-    <div class="modal-head">
-      <h3 id="modalTitle">Détails</h3>
-      <button onclick="closeModal()">✕</button>
-    </div>
+    <div class="modal-head"><h3 id="modalTitle">Détails</h3><button onclick="closeModal()">✕</button></div>
     <div class="modal-body" id="modalBody"></div>
     <div class="modal-foot" id="modalFoot"></div>
   </div>
 </div>
 
-<!-- MODAL APERÇU DU BON -->
+<!-- MODAL APERÇU -->
 <div class="modal" id="previewModal">
   <div class="modal-box">
-    <div class="modal-head">
-      <h3>👁 Aperçu du bon</h3>
-      <button onclick="closeModal('previewModal')">✕</button>
-    </div>
+    <div class="modal-head"><h3>👁 Aperçu du bon</h3><button onclick="closeModal('previewModal')">✕</button></div>
     <div class="modal-body">
       <div class="preview-tip">📄 2 exemplaires identiques imprimés sur A4 (2 × A5)</div>
       <div class="preview-container" id="previewContainer"></div>
@@ -665,13 +419,62 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   </div>
 </div>
 
-<!-- PRINT BON -->
-<div class="print-bon" id="printBon"></div>
+<!-- MODAL PDF -->
+<div class="modal" id="pdfModal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>📄 Export PDF</h3><button onclick="closeModal('pdfModal')">✕</button></div>
+    <div class="modal-body">
+      <div style="padding:14px;background:linear-gradient(135deg,#e0f2fe,#bae6fd);border-left:4px solid #0369a1;border-radius:10px;margin-bottom:15px;font-size:13px;color:#075985;font-weight:600">
+        📅 Choisissez la période à exporter
+      </div>
 
-<!-- TOAST -->
+      <!-- Raccourcis période -->
+      <div style="font-size:12px;font-weight:700;color:#2d4a2d;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Raccourcis</div>
+      <div class="pdf-options" style="margin-bottom:15px">
+        <div class="pdf-opt" onclick="setPdfPeriod('today')">Aujourd'hui</div>
+        <div class="pdf-opt" onclick="setPdfPeriod('week')">7 derniers jours</div>
+        <div class="pdf-opt" onclick="setPdfPeriod('month')">Ce mois</div>
+        <div class="pdf-opt" onclick="setPdfPeriod('lastmonth')">Mois dernier</div>
+        <div class="pdf-opt" onclick="setPdfPeriod('year')">Cette année</div>
+        <div class="pdf-opt" onclick="setPdfPeriod('all')">Tout</div>
+      </div>
+
+      <!-- Période personnalisée -->
+      <div style="font-size:12px;font-weight:700;color:#2d4a2d;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Période personnalisée</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:15px">
+        <div>
+          <label style="font-size:11px;color:#5a6b5a;font-weight:700;display:block;margin-bottom:4px">Du</label>
+          <input type="date" id="pdfDateFrom" style="width:100%;padding:10px;border:2px solid #d4e0c8;border-radius:10px;font-size:14px;background:#f9fbf6">
+        </div>
+        <div>
+          <label style="font-size:11px;color:#5a6b5a;font-weight:700;display:block;margin-bottom:4px">Au</label>
+          <input type="date" id="pdfDateTo" style="width:100%;padding:10px;border:2px solid #d4e0c8;border-radius:10px;font-size:14px;background:#f9fbf6">
+        </div>
+      </div>
+
+      <!-- Type -->
+      <div style="font-size:12px;font-weight:700;color:#2d4a2d;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Type d'opérations</div>
+      <div class="pdf-options" style="margin-bottom:10px">
+        <div class="pdf-opt selected" id="pdfTypeAll" onclick="selectPdfType('all',this)">Toutes</div>
+        <div class="pdf-opt" id="pdfTypeIn" onclick="selectPdfType('entree',this)">📥 Dépôts</div>
+        <div class="pdf-opt" id="pdfTypeOut" onclick="selectPdfType('sortie',this)">📤 Retraits</div>
+      </div>
+
+      <div id="pdfInfo" style="padding:12px;background:#f0f9e8;border-left:4px solid #7cb342;border-radius:10px;font-size:13px;color:#3d6b3d;font-weight:600;text-align:center">
+        Sélectionnez une période
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeModal('pdfModal')">Annuler</button>
+      <button class="btn btn-pdf" onclick="generatePDF()">📄 Générer le PDF</button>
+    </div>
+  </div>
+</div>
+
+<div class="print-bon" id="printBon"></div>
 <div class="toast" id="toast"><span id="toastMsg"></span></div>
 
-<!-- FIREBASE -->
+<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, onValue, set, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -699,6 +502,10 @@ window.fbRemove = remove;
 window.dispatchEvent(new Event('firebase-ready'));
 </script>
 
+<!-- jsPDF + autotable pour export PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
 <script>
 // ============================================================
 // ==================== ÉTAT GLOBAL ===========================
@@ -712,7 +519,6 @@ let listenersAttached = false;
 let pendingPrintId = null;
 let pendingPrintTx = null;
 
-// ✅ Paramètres (chargés depuis Firebase)
 let settings = {
   caissierNom: 'Caissier',
   societeNom: 'TAMA',
@@ -720,11 +526,12 @@ let settings = {
   logo: ''
 };
 
-// Utilisateur (UID local)
 const currentUser = { uid: 'caissier-local', email: 'caisse@tama.ma' };
-
 const PERSONNES_SUGGESTIONS = ['Caissier', 'Client', 'Fournisseur', 'Direction'];
 const MOTIFS_SUGGESTIONS_SORTIE = ['Achat fournisseur', 'Carburant', 'Frais transport', 'Salaire', 'Versement banque'];
+
+// PDF state
+let pdfTypeFilter = 'all';
 
 // ============================================================
 // ==================== HELPERS ===============================
@@ -755,6 +562,12 @@ function formatDate(iso){
          d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
 }
 
+function formatDateShort(iso){
+  if(!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'2-digit'});
+}
+
 function todayStr(){ return new Date().toISOString().split('T')[0]; }
 
 function escapeHtml(str){
@@ -783,7 +596,6 @@ function initListeners(){
   if(listenersAttached) return;
   listenersAttached = true;
 
-  // ✅ Logo (partagé avec l'app Credit Management)
   const logoRef = window.fbRef(window.db, 'settings/logo');
   window.fbOnValue(logoRef, snap => {
     const data = snap.val();
@@ -796,7 +608,6 @@ function initListeners(){
     }
   });
 
-  // ✅ Paramètres caisse (nom caissier, société...)
   const settingsRef = window.fbRef(window.db, 'caisse/settings');
   window.fbOnValue(settingsRef, snap => {
     const data = snap.val() || {};
@@ -806,12 +617,10 @@ function initListeners(){
     applySettingsUI();
   });
 
-  // Transactions
   const txRef = window.fbRef(window.db, 'caisse/transactions');
   window.fbOnValue(txRef, snap => {
     const data = snap.val();
     transactions = data ? Object.values(data) : [];
-    console.log('📥 Transactions:', transactions.length);
     refresh();
   }, err => console.error('❌ tx:', err));
 }
@@ -820,39 +629,21 @@ function initListeners(){
 // ==================== LOGO ==================================
 // ============================================================
 function applyLogoUI(dataUrl){
-  // Header
   const hImg = document.getElementById('hImg');
   const hIcon = document.getElementById('hIcon');
-  if(hImg && hIcon){
-    hImg.src = dataUrl;
-    hImg.style.display = 'block';
-    hIcon.style.display = 'none';
-  }
-  // Preview dans paramètres
+  if(hImg && hIcon){ hImg.src = dataUrl; hImg.style.display = 'block'; hIcon.style.display = 'none'; }
   const pImg = document.getElementById('logoPreviewImg');
   const pIcon = document.getElementById('logoPreviewIcon');
-  if(pImg && pIcon){
-    pImg.src = dataUrl;
-    pImg.style.display = 'block';
-    pIcon.style.display = 'none';
-  }
+  if(pImg && pIcon){ pImg.src = dataUrl; pImg.style.display = 'block'; pIcon.style.display = 'none'; }
 }
 
 function resetLogoUI(){
   const hImg = document.getElementById('hImg');
   const hIcon = document.getElementById('hIcon');
-  if(hImg && hIcon){
-    hImg.src = '';
-    hImg.style.display = 'none';
-    hIcon.style.display = 'block';
-  }
+  if(hImg && hIcon){ hImg.src = ''; hImg.style.display = 'none'; hIcon.style.display = 'block'; }
   const pImg = document.getElementById('logoPreviewImg');
   const pIcon = document.getElementById('logoPreviewIcon');
-  if(pImg && pIcon){
-    pImg.src = '';
-    pImg.style.display = 'none';
-    pIcon.style.display = 'block';
-  }
+  if(pImg && pIcon){ pImg.src = ''; pImg.style.display = 'none'; pIcon.style.display = 'block'; }
 }
 
 function uploadLogo(e){
@@ -867,7 +658,7 @@ function uploadLogo(e){
     toast('🖼️ Logo mis à jour');
   };
   reader.readAsDataURL(file);
-  e.target.value = ''; // Reset input
+  e.target.value = '';
 }
 
 function resetLogo(){
@@ -881,11 +672,9 @@ function resetLogo(){
 // ==================== SETTINGS ==============================
 // ============================================================
 function applySettingsUI(){
-  // Header
   const hUser = document.getElementById('hUserLabel');
   if(hUser) hUser.textContent = settings.caissierNom || 'Service Caisse';
 
-  // Inputs paramètres
   const pCaissier = document.getElementById('pCaissierNom');
   const pSociete = document.getElementById('pSocieteNom');
   const pSous = document.getElementById('pSousTitre');
@@ -901,9 +690,7 @@ async function saveParametres(){
 
   try {
     await window.fbSet(window.fbRef(window.db, 'caisse/settings'), {
-      caissierNom,
-      societeNom,
-      sousTitre
+      caissierNom, societeNom, sousTitre
     });
     toast('✅ Paramètres enregistrés');
   } catch(e){
@@ -1141,15 +928,9 @@ async function saveTransaction(){
   if(currentType === 'entree'){
     const noteEntree = document.getElementById('fNoteEntree').value.trim();
     txData = {
-      type: 'entree',
-      montant: Number(montant),
-      personne,
-      motif: 'Dépôt',
-      beneficiaire: '',
-      mode: 'Espèce',
-      reference: '',
-      notes: noteEntree,
-      date: new Date(dateVal).toISOString()
+      type: 'entree', montant: Number(montant), personne,
+      motif: 'Dépôt', beneficiaire: '', mode: 'Espèce', reference: '',
+      notes: noteEntree, date: new Date(dateVal).toISOString()
     };
   } else {
     const motif = document.getElementById('fMotif').value.trim();
@@ -1166,15 +947,8 @@ async function saveTransaction(){
     }
 
     txData = {
-      type: 'sortie',
-      montant: Number(montant),
-      personne,
-      motif,
-      beneficiaire,
-      mode,
-      reference,
-      notes,
-      date: new Date(dateVal).toISOString()
+      type: 'sortie', montant: Number(montant), personne, motif,
+      beneficiaire, mode, reference, notes, date: new Date(dateVal).toISOString()
     };
   }
 
@@ -1186,12 +960,7 @@ async function saveTransaction(){
                  new Date().getFullYear() + '-' +
                  String(transactions.length + 1).padStart(4, '0');
 
-  const tx = {
-    id,
-    numero,
-    ...txData,
-    createdAt: new Date().toISOString()
-  };
+  const tx = { id, numero, ...txData, createdAt: new Date().toISOString() };
 
   try {
     await window.fbSet(window.fbRef(window.db, 'caisse/transactions/' + id), tx);
@@ -1226,9 +995,6 @@ function previewBon(txOrId){
   document.getElementById('previewModal').classList.add('show');
 }
 
-// ============================================================
-// ==================== HTML DU BON ===========================
-// ============================================================
 function buildBonHTML(t, isIn){
   let lignesSupp = '';
   if(!isIn){
@@ -1240,12 +1006,10 @@ function buildBonHTML(t, isIn){
   const personRole = isIn ? 'Déposant' : 'Personne qui prend l\'argent';
   const personName = t.personne || '—';
 
-  // ✅ Logo : image si dispo, sinon emoji 🌾
   const logoHTML = settings.logo
     ? `<div class="bon-logo"><img src="${settings.logo}" alt="Logo"></div>`
     : `<div class="bon-logo"><span class="emoji">🌾</span></div>`;
 
-  // ✅ Nom société + sous-titre dynamiques
   const socNom = settings.societeNom || 'TAMA';
   const socSous = settings.sousTitre || 'Gestion de Caisse';
 
@@ -1280,7 +1044,7 @@ function buildBonHTML(t, isIn){
 }
 
 // ============================================================
-// ==================== PRINT — A4 ÷ 2 =========================
+// ==================== PRINT =================================
 // ============================================================
 function printBon(txOrId){
   let t;
@@ -1290,13 +1054,10 @@ function printBon(txOrId){
   if(!t){ toast('Opération introuvable', 'error'); return; }
 
   const isIn = t.type === 'entree';
-
-  // ✅ 2 bons IDENTIQUES (sans labels EXEMPLAIRE)
   const bon1 = buildBonCopy(t, isIn, 'first');
   const bon2 = buildBonCopy(t, isIn, 'second');
 
   document.getElementById('printBon').innerHTML = bon1 + bon2;
-
   setTimeout(() => window.print(), 200);
 }
 
@@ -1306,9 +1067,6 @@ function buildBonCopy(t, isIn, className){
   return `<div class="bon-copy ${className}">${cleanHTML}</div>`;
 }
 
-// ============================================================
-// ==================== IMPRIMER DEPUIS L'APERÇU ==============
-// ============================================================
 function confirmPrint(){
   if(!pendingPrintTx){ toast('Aucun bon à imprimer', 'error'); return; }
   closeModal('previewModal');
@@ -1415,8 +1173,322 @@ function exportCSV(){
   a.download = 'TAMA_Caisse_' + todayStr() + '.csv';
   a.click();
   URL.revokeObjectURL(url);
-  toast('📥 Export téléchargé');
+  toast('📥 Export CSV téléchargé');
 }
+
+// ============================================================
+// ==================== PDF EXPORT ============================
+// ============================================================
+function openPdfDialog(){
+  // Pré-remplir avec les filtres actuels de la page
+  const from = document.getElementById('hDateFrom').value;
+  const to = document.getElementById('hDateTo').value;
+  if(from) document.getElementById('pdfDateFrom').value = from;
+  if(to) document.getElementById('pdfDateTo').value = to;
+  updatePdfInfo();
+  document.getElementById('pdfModal').classList.add('show');
+}
+
+function setPdfPeriod(period){
+  const today = new Date();
+  const y = today.getFullYear();
+  const m = today.getMonth();
+  let from = '', to = '';
+
+  if(period === 'today'){
+    from = to = todayStr();
+  } else if(period === 'week'){
+    const start = new Date(today);
+    start.setDate(start.getDate() - 6);
+    from = start.toISOString().split('T')[0];
+    to = todayStr();
+  } else if(period === 'month'){
+    from = `${y}-${String(m+1).padStart(2,'0')}-01`;
+    to = todayStr();
+  } else if(period === 'lastmonth'){
+    const lm = m === 0 ? 11 : m - 1;
+    const ly = m === 0 ? y - 1 : y;
+    const lastDay = new Date(ly, lm + 1, 0).getDate();
+    from = `${ly}-${String(lm+1).padStart(2,'0')}-01`;
+    to = `${ly}-${String(lm+1).padStart(2,'0')}-${String(lastDay).padStart(2,'0')}`;
+  } else if(period === 'year'){
+    from = `${y}-01-01`;
+    to = todayStr();
+  } else if(period === 'all'){
+    from = ''; to = '';
+  }
+
+  document.getElementById('pdfDateFrom').value = from;
+  document.getElementById('pdfDateTo').value = to;
+  updatePdfInfo();
+}
+
+function selectPdfType(type, el){
+  pdfTypeFilter = type;
+  document.querySelectorAll('#pdfModal .pdf-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  updatePdfInfo();
+}
+
+function getPdfFilteredList(){
+  const from = document.getElementById('pdfDateFrom').value;
+  const to = document.getElementById('pdfDateTo').value;
+
+  let list = [...transactions];
+  if(from) list = list.filter(t => (t.date || t.createdAt || '').substring(0,10) >= from);
+  if(to) list = list.filter(t => (t.date || t.createdAt || '').substring(0,10) <= to);
+  if(pdfTypeFilter === 'entree') list = list.filter(t => t.type === 'entree');
+  if(pdfTypeFilter === 'sortie') list = list.filter(t => t.type === 'sortie');
+
+  list.sort((a,b) => new Date(a.date || a.createdAt) - new Date(b.date || b.createdAt));
+  return list;
+}
+
+function updatePdfInfo(){
+  const list = getPdfFilteredList();
+  const totalIn = list.filter(t => t.type === 'entree').reduce((s,t) => s + Number(t.montant || 0), 0);
+  const totalOut = list.filter(t => t.type === 'sortie').reduce((s,t) => s + Number(t.montant || 0), 0);
+  const el = document.getElementById('pdfInfo');
+
+  if(!list.length){
+    el.style.background = '#fef2f2';
+    el.style.borderLeftColor = '#dc2626';
+    el.style.color = '#991b1b';
+    el.innerHTML = '⚠️ Aucune opération pour cette période';
+  } else {
+    el.style.background = '#f0f9e8';
+    el.style.borderLeftColor = '#7cb342';
+    el.style.color = '#3d6b3d';
+    el.innerHTML = `${list.length} opération(s) · 📥 ${totalIn.toLocaleString('fr-FR')} DH · 📤 ${totalOut.toLocaleString('fr-FR')} DH`;
+  }
+}
+
+// ✅ Génère le PDF
+function generatePDF(){
+  if(!window.jspdf || !window.jspdf.jsPDF){
+    toast('Bibliothèque PDF en cours de chargement...', 'warning');
+    return;
+  }
+
+  const list = getPdfFilteredList();
+  if(!list.length){ toast('Aucune opération à exporter', 'warning'); return; }
+
+  const from = document.getElementById('pdfDateFrom').value;
+  const to = document.getElementById('pdfDateTo').value;
+
+  const totalIn = list.filter(t => t.type === 'entree').reduce((s,t) => s + Number(t.montant || 0), 0);
+  const totalOut = list.filter(t => t.type === 'sortie').reduce((s,t) => s + Number(t.montant || 0), 0);
+  const soldePeriode = totalIn - totalOut;
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+  const pageW = 210;
+  const margin = 12;
+
+  // ======== HEADER ========
+  // Bandeau vert
+  doc.setFillColor(26, 58, 26);
+  doc.rect(0, 0, pageW, 30, 'F');
+  doc.setFillColor(201, 162, 39);
+  doc.rect(0, 30, pageW, 1.5, 'F');
+
+  // Logo (si présent) — optionnel
+  if(settings.logo){
+    try {
+      doc.addImage(settings.logo, 'PNG', margin, 4, 22, 22);
+    } catch(e){ /* ignore si erreur image */ }
+  }
+
+  // Nom société
+  doc.setTextColor(232, 197, 71);
+  doc.setFontSize(20);
+  doc.setFont(undefined, 'bold');
+  doc.text(settings.societeNom || 'TAMA', settings.logo ? margin + 26 : margin, 13);
+
+  doc.setTextColor(168, 196, 168);
+  doc.setFontSize(9);
+  doc.setFont(undefined, 'normal');
+  doc.text(settings.sousTitre || 'Gestion de Caisse', settings.logo ? margin + 26 : margin, 19);
+
+  // Date d'export à droite
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(9);
+  doc.text('Édité le ' + new Date().toLocaleString('fr-FR'), pageW - margin, 13, { align: 'right' });
+  doc.setTextColor(201, 162, 39);
+  doc.setFontSize(11);
+  doc.setFont(undefined, 'bold');
+  doc.text('RAPPORT DE CAISSE', pageW - margin, 20, { align: 'right' });
+
+  // ======== PÉRIODE ========
+  let y = 40;
+  doc.setTextColor(26, 58, 26);
+  doc.setFontSize(11);
+  doc.setFont(undefined, 'bold');
+  const periodeLabel = (from && to) ? `Du ${formatDateShort(from)} au ${formatDateShort(to)}`
+    : from ? `À partir du ${formatDateShort(from)}`
+    : to ? `Jusqu'au ${formatDateShort(to)}`
+    : 'Toutes les opérations';
+  doc.text('Période : ' + periodeLabel, margin, y);
+  y += 8;
+
+  // ======== RÉSUMÉ (3 blocs) ========
+  const boxW = (pageW - margin*2 - 6) / 3;
+  const boxH = 22;
+
+  // Entrées
+  doc.setFillColor(220, 245, 196);
+  doc.roundedRect(margin, y, boxW, boxH, 3, 3, 'F');
+  doc.setDrawColor(124, 179, 66);
+  doc.setLineWidth(0.8);
+  doc.roundedRect(margin, y, boxW, boxH, 3, 3, 'S');
+  doc.setTextColor(61, 107, 61);
+  doc.setFontSize(8);
+  doc.setFont(undefined, 'normal');
+  doc.text('TOTAL DÉPÔTS', margin + 3, y + 6);
+  doc.setFontSize(14);
+  doc.setFont(undefined, 'bold');
+  doc.text('+ ' + totalIn.toLocaleString('fr-FR') + ' DH', margin + 3, y + 16);
+
+  // Sorties
+  doc.setFillColor(254, 226, 226);
+  doc.roundedRect(margin + boxW + 3, y, boxW, boxH, 3, 3, 'F');
+  doc.setDrawColor(220, 38, 38);
+  doc.roundedRect(margin + boxW + 3, y, boxW, boxH, 3, 3, 'S');
+  doc.setTextColor(153, 27, 27);
+  doc.setFontSize(8);
+  doc.setFont(undefined, 'normal');
+  doc.text('TOTAL RETRAITS', margin + boxW + 6, y + 6);
+  doc.setFontSize(14);
+  doc.setFont(undefined, 'bold');
+  doc.text('- ' + totalOut.toLocaleString('fr-FR') + ' DH', margin + boxW + 6, y + 16);
+
+  // Solde période
+  const soldeColor = soldePeriode >= 0 ? [26, 58, 26] : [185, 28, 28];
+  const soldeBg = soldePeriode >= 0 ? [240, 249, 232] : [254, 242, 242];
+  doc.setFillColor(soldeBg[0], soldeBg[1], soldeBg[2]);
+  doc.roundedRect(margin + (boxW + 3)*2, y, boxW, boxH, 3, 3, 'F');
+  doc.setDrawColor(soldeColor[0], soldeColor[1], soldeColor[2]);
+  doc.roundedRect(margin + (boxW + 3)*2, y, boxW, boxH, 3, 3, 'S');
+  doc.setTextColor(soldeColor[0], soldeColor[1], soldeColor[2]);
+  doc.setFontSize(8);
+  doc.setFont(undefined, 'normal');
+  doc.text('SOLDE PÉRIODE', margin + (boxW + 3)*2 + 3, y + 6);
+  doc.setFontSize(14);
+  doc.setFont(undefined, 'bold');
+  const soldeStr = (soldePeriode >= 0 ? '+ ' : '- ') + Math.abs(soldePeriode).toLocaleString('fr-FR') + ' DH';
+  doc.text(soldeStr, margin + (boxW + 3)*2 + 3, y + 16);
+
+  y += boxH + 8;
+
+  // ======== TABLEAU ========
+  const rows = list.map(t => {
+    const isIn = t.type === 'entree';
+    return [
+      t.numero || '',
+      isIn ? 'Dépôt' : 'Retrait',
+      formatDateShort(t.date || t.createdAt),
+      t.motif || '—',
+      t.personne || '—',
+      t.beneficiaire || '—',
+      (isIn ? '+ ' : '- ') + Number(t.montant || 0).toLocaleString('fr-FR')
+    ];
+  });
+
+  doc.autoTable({
+    startY: y,
+    head: [['N°', 'Type', 'Date', 'Motif', 'Personne', 'Bénéficiaire', 'Montant']],
+    body: rows,
+    styles: {
+      font: 'helvetica',
+      fontSize: 8,
+      cellPadding: 2,
+      textColor: [26, 42, 26],
+      lineColor: [212, 224, 200],
+      lineWidth: 0.1
+    },
+    headStyles: {
+      fillColor: [45, 74, 45],
+      textColor: [232, 197, 71],
+      fontStyle: 'bold',
+      fontSize: 8,
+      halign: 'left'
+    },
+    alternateRowStyles: { fillColor: [249, 251, 246] },
+    columnStyles: {
+      0: { cellWidth: 22, fontStyle: 'bold' },
+      1: { cellWidth: 16, halign: 'center' },
+      2: { cellWidth: 18 },
+      3: { cellWidth: 38 },
+      4: { cellWidth: 34 },
+      5: { cellWidth: 30 },
+      6: { cellWidth: 28, halign: 'right', fontStyle: 'bold' }
+    },
+    didParseCell: data => {
+      // Colorer les montants selon type
+      if(data.column.index === 6 && data.section === 'body'){
+        const type = list[data.row.index].type;
+        data.cell.styles.textColor = type === 'entree' ? [85, 139, 47] : [185, 28, 28];
+      }
+      // Colorer le type
+      if(data.column.index === 1 && data.section === 'body'){
+        const type = list[data.row.index].type;
+        data.cell.styles.textColor = type === 'entree' ? [85, 139, 47] : [185, 28, 28];
+        data.cell.styles.fontStyle = 'bold';
+      }
+    },
+    margin: { left: margin, right: margin },
+    didDrawPage: data => {
+      // Pied de page
+      const pageCount = doc.internal.getNumberOfPages();
+      const pageNum = doc.internal.getCurrentPageInfo().pageNumber;
+      const footerY = doc.internal.pageSize.getHeight() - 8;
+
+      doc.setDrawColor(201, 162, 39);
+      doc.setLineWidth(0.5);
+      doc.line(margin, footerY - 3, pageW - margin, footerY - 3);
+
+      doc.setFontSize(8);
+      doc.setTextColor(122, 138, 122);
+      doc.setFont(undefined, 'normal');
+      doc.text('TAMA — Rapport généré automatiquement', margin, footerY);
+      doc.text(`Page ${pageNum} / ${pageCount}`, pageW - margin, footerY, { align: 'right' });
+    }
+  });
+
+  // ======== RÉSUMÉ FINAL ========
+  const finalY = doc.lastAutoTable.finalY + 10;
+
+  if(finalY < doc.internal.pageSize.getHeight() - 40){
+    doc.setFillColor(240, 249, 232);
+    doc.roundedRect(margin, finalY, pageW - margin*2, 20, 3, 3, 'F');
+    doc.setDrawColor(124, 179, 66);
+    doc.setLineWidth(0.8);
+    doc.roundedRect(margin, finalY, pageW - margin*2, 20, 3, 3, 'S');
+
+    doc.setTextColor(61, 107, 61);
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'bold');
+    doc.text('SOLDE DE LA PÉRIODE', margin + 5, finalY + 8);
+
+    doc.setFontSize(16);
+    doc.setTextColor(soldePeriode >= 0 ? 85 : 185, soldePeriode >= 0 ? 139 : 28, soldePeriode >= 0 ? 47 : 28);
+    doc.text(soldeStr, pageW - margin - 5, finalY + 13, { align: 'right' });
+  }
+
+  // Sauvegarder
+  const filename = 'TAMA_Rapport_' +
+    (from ? from.replace(/-/g, '') : 'tout') + '_' +
+    (to ? to.replace(/-/g, '') : 'fin') + '.pdf';
+  doc.save(filename);
+
+  closeModal('pdfModal');
+  toast('📄 PDF généré : ' + list.length + ' opérations');
+}
+
+// Recalculer l'info quand on change la période
+document.getElementById('pdfDateFrom').addEventListener('change', updatePdfInfo);
+document.getElementById('pdfDateTo').addEventListener('change', updatePdfInfo);
 
 // ============================================================
 // ==================== MODAL CLOSE ===========================
@@ -1426,6 +1498,9 @@ document.getElementById('modal').addEventListener('click', e => {
 });
 document.getElementById('previewModal').addEventListener('click', e => {
   if(e.target.id === 'previewModal') closeModal('previewModal');
+});
+document.getElementById('pdfModal').addEventListener('click', e => {
+  if(e.target.id === 'pdfModal') closeModal('pdfModal');
 });
 
 // ============================================================
