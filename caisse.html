@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#1a3a1a">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>TAMA Caisse</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -178,22 +177,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .preview-tip{text-align:center;font-size:12px;color:#5a6b5a;margin-bottom:12px;font-weight:600}
 
 /* ============================================ */
-/* ===== PRINT — 2 BONS SUR UNE PAGE A4 ===== */
+/* ===== PRINT — A4 DIVISÉ EN 2 × A5 ========= */
 /* ============================================ */
 .print-bon{display:none}
 
 @media print{
+  /* Page A4 sans marges navigateur */
   @page {
     size: A4 portrait;
-    margin: 8mm;
+    margin: 0;
   }
   
   html, body {
     background: #fff !important;
     padding: 0 !important;
     margin: 0 !important;
-    width: 100%;
-    height: auto;
+    width: 210mm;
+    height: 297mm;
   }
   
   body > *:not(.print-bon) {
@@ -202,45 +202,53 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   
   .print-bon {
     display: block !important;
-    width: 100%;
+    width: 210mm;
+    height: 297mm;
     color: #000;
     font-family: 'Courier New', monospace;
     font-size: 11px;
     line-height: 1.35;
-  }
-  
-  /* Chaque bon occupe ~ la moitié de la page A4 */
-  .print-bon .bon-copy {
-    border: 2px solid #000;
-    padding: 8mm 10mm;
-    height: 135mm;
     box-sizing: border-box;
-    page-break-inside: avoid;
+  }
+  
+  /* ✅ Chaque bon = exactement 1/2 A4 (= A5 paysage) */
+  .print-bon .bon-copy {
+    width: 210mm;
+    height: 148.5mm;
+    padding: 8mm 12mm 6mm 12mm;
+    box-sizing: border-box;
     position: relative;
+    overflow: hidden;
     background: #fff;
+    page-break-inside: avoid;
+    page-break-after: avoid;
   }
   
+  /* Séparateur entre les 2 bons (au milieu de la page) */
   .print-bon .bon-copy.first {
-    margin-bottom: 4mm;
+    border-bottom: 2px dashed #000;
   }
   
+  /* Le 2e bon ne doit pas déborder sur une 2e page */
   .print-bon .bon-copy.second {
-    border-top: 3px dashed #000;
-    padding-top: 10mm;
+    border-top: none;
   }
   
+  /* Label exemplaire en haut à droite */
   .print-bon .copy-label {
     position: absolute;
-    top: 3mm;
-    right: 5mm;
+    top: 4mm;
+    right: 10mm;
     font-size: 10px;
     font-weight: 800;
     padding: 3px 10px;
     border: 2px solid #000;
     letter-spacing: 1px;
     background: #f0f0f0;
+    border-radius: 3px;
   }
   
+  /* ============ Contenu du bon ============ */
   .print-bon h1 {
     text-align: center;
     font-size: 18px;
@@ -252,9 +260,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   .print-bon .sub {
     text-align: center;
     font-size: 9px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     border-bottom: 1px dashed #000;
-    padding-bottom: 6px;
+    padding-bottom: 5px;
     color: #333;
   }
   
@@ -262,7 +270,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     text-align: center;
     font-size: 14px;
     font-weight: 700;
-    margin: 8px 0;
+    margin: 6px 0;
     background: #000;
     color: #fff;
     padding: 5px;
@@ -273,7 +281,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     text-align: center;
     font-size: 13px;
     font-weight: 800;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     letter-spacing: 1px;
   }
   
@@ -281,7 +289,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     font-size: 22px;
     font-weight: 800;
     text-align: center;
-    margin: 10px 0;
+    margin: 8px 0;
     border: 2px solid #000;
     padding: 8px;
     letter-spacing: 1px;
@@ -290,7 +298,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   .print-bon .line {
     display: flex;
     justify-content: space-between;
-    padding: 4px 0;
+    padding: 3px 0;
     border-bottom: 1px dotted #666;
     font-size: 11px;
     gap: 10px;
@@ -308,28 +316,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   }
   
   .print-bon .notes {
-    margin-top: 6px;
-    padding: 6px;
+    margin-top: 5px;
+    padding: 5px;
     border: 1px dashed #000;
     font-size: 10px;
   }
   
   .print-bon .signature {
-    margin-top: 15px;
+    margin-top: 12px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 25px;
+    gap: 30px;
     font-size: 11px;
   }
   
   .print-bon .sig-box {
     text-align: center;
-    padding-top: 5px;
   }
   
   .print-bon .sig-box .role {
     font-weight: 800;
-    font-size: 11px;
+    font-size: 10px;
     margin-bottom: 3px;
     text-transform: uppercase;
     letter-spacing: .5px;
@@ -338,15 +345,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   .print-bon .sig-box .name {
     font-size: 11px;
     color: #000;
-    margin-bottom: 25px;
+    margin-bottom: 22px;
     font-weight: 700;
-    min-height: 15px;
+    min-height: 14px;
     text-decoration: underline;
   }
   
   .print-bon .sig-box .line-sig {
     border-top: 1px solid #000;
-    padding-top: 4px;
+    padding-top: 3px;
     font-size: 9px;
     color: #333;
     font-weight: 600;
@@ -355,19 +362,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   .print-bon .foot {
     text-align: center;
     font-size: 9px;
-    margin-top: 12px;
+    margin-top: 8px;
     border-top: 1px dashed #000;
-    padding-top: 6px;
+    padding-top: 5px;
     color: #333;
-  }
-  
-  .print-bon .cut-line {
-    text-align: center;
-    font-size: 14px;
-    color: #000;
-    letter-spacing: 3px;
-    margin: 2mm 0;
-    font-weight: 700;
   }
 }
 </style>
@@ -399,7 +397,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
   <main class="main">
 
-    <!-- PAGE DASHBOARD -->
+    <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
       <div class="solde-card">
         <div class="lbl">💰 Solde en caisse</div>
@@ -430,7 +428,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <div id="txList"></div>
     </div>
 
-    <!-- PAGE NOUVELLE OPÉRATION -->
+    <!-- NOUVELLE OPÉRATION -->
     <div class="page" id="page-nouvelle">
       <div class="sec-title">➕ Nouvelle opération</div>
 
@@ -518,7 +516,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       </div>
     </div>
 
-    <!-- PAGE HISTORIQUE -->
+    <!-- HISTORIQUE -->
     <div class="page" id="page-historique">
       <div class="sec-title">📚 Historique complet</div>
 
@@ -537,7 +535,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <div id="historiqueList"></div>
     </div>
 
-    <!-- PAGE STATS -->
+    <!-- STATS -->
     <div class="page" id="page-stats">
       <div class="sec-title">📊 Statistiques</div>
 
@@ -600,12 +598,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <button onclick="closeModal('previewModal')">✕</button>
     </div>
     <div class="modal-body">
-      <div class="preview-tip">📄 Vérifiez avant impression — 2 exemplaires seront imprimés sur A4</div>
+      <div class="preview-tip">📄 2 exemplaires seront imprimés sur A4 (2 × A5)</div>
       <div class="preview-container" id="previewContainer"></div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-secondary" onclick="closeModal('previewModal')">✏️ Modifier</button>
-      <button class="btn btn-primary" onclick="confirmPrint()">🖨 Imprimer (A4 × 2)</button>
+      <button class="btn btn-primary" onclick="confirmPrint()">🖨 Imprimer (A4 ÷ 2)</button>
     </div>
   </div>
 </div>
@@ -654,12 +652,10 @@ let currentFilter = 'today';
 let currentType = 'entree';
 let fbReady = false;
 let listenersAttached = false;
-
 let pendingPrintId = null;
 let pendingPrintTx = null;
 
 const currentUser = { uid: 'caissier-local', email: 'caisse@tama.ma', name: 'Caissier' };
-
 const PERSONNES_SUGGESTIONS = ['Caissier', 'Client', 'Fournisseur', 'Direction'];
 const MOTIFS_SUGGESTIONS_SORTIE = ['Achat fournisseur', 'Carburant', 'Frais transport', 'Salaire', 'Versement banque'];
 
@@ -681,13 +677,9 @@ function openModal(title, body, foot=''){
   document.getElementById('modal').classList.add('show');
 }
 
-function closeModal(id='modal'){
-  document.getElementById(id).classList.remove('show');
-}
+function closeModal(id='modal'){ document.getElementById(id).classList.remove('show'); }
 
-function formatDH(n){
-  return Number(n || 0).toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' DH';
-}
+function formatDH(n){ return Number(n || 0).toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' DH'; }
 
 function formatDate(iso){
   if(!iso) return '—';
@@ -696,9 +688,7 @@ function formatDate(iso){
          d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
 }
 
-function todayStr(){
-  return new Date().toISOString().split('T')[0];
-}
+function todayStr(){ return new Date().toISOString().split('T')[0]; }
 
 function escapeHtml(str){
   if(!str) return '';
@@ -757,7 +747,6 @@ function getSolde(){
 function filterTransactions(list){
   const now = new Date();
   const today = todayStr();
-
   return list.filter(t => {
     const d = (t.date || t.createdAt || '').substring(0, 10);
     if(currentFilter === 'today' && d !== today) return false;
@@ -807,7 +796,6 @@ function renderTxList(containerId, list){
     el.innerHTML = '<div class="empty"><div class="icon">📭</div><h3>Aucune opération</h3></div>';
     return;
   }
-
   el.innerHTML = list.map(t => {
     const isIn = t.type === 'entree';
     const label = isIn ? '📥 Dépôt' : (t.motif || '—');
@@ -829,7 +817,6 @@ function renderHistorique(){
   const search = (document.getElementById('hSearch').value || '').toLowerCase();
 
   let list = [...transactions];
-
   if(from) list = list.filter(t => (t.date || t.createdAt || '').substring(0,10) >= from);
   if(to) list = list.filter(t => (t.date || t.createdAt || '').substring(0,10) <= to);
   if(search){
@@ -840,7 +827,6 @@ function renderHistorique(){
       (t.numero || '').toLowerCase().includes(search)
     );
   }
-
   list.sort((a,b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
   renderTxList('historiqueList', list);
 }
@@ -913,13 +899,10 @@ function selectType(type){
     banner.className = 'info-banner danger';
     banner.innerHTML = '⚠️ Retrait : motif obligatoire + signature du bénéficiaire';
   }
-
   updateSuggestions();
 }
 
-function setMontant(v){
-  document.getElementById('fMontant').value = v;
-}
+function setMontant(v){ document.getElementById('fMontant').value = v; }
 
 function updateSuggestions(){
   document.getElementById('personSuggestions').innerHTML = PERSONNES_SUGGESTIONS.map(p =>
@@ -1054,11 +1037,8 @@ async function saveTransaction(){
 // ============================================================
 function previewBon(txOrId){
   let t;
-  if(typeof txOrId === 'object' && txOrId !== null){
-    t = txOrId;
-  } else {
-    t = transactions.find(x => x.id === txOrId);
-  }
+  if(typeof txOrId === 'object' && txOrId !== null) t = txOrId;
+  else t = transactions.find(x => x.id === txOrId);
 
   if(!t){ toast('Opération introuvable', 'error'); return; }
 
@@ -1075,9 +1055,8 @@ function previewBon(txOrId){
 
 // ============================================================
 // ==================== HTML DU BON ===========================
-// Génère le HTML d'UN bon (utilisé pour aperçu ET impression)
 // ============================================================
-function buildBonHTML(t, soldeApres, isIn, copyLabel = ''){
+function buildBonHTML(t, soldeApres, isIn){
   let lignesSupp = '';
   if(!isIn){
     if(t.beneficiaire) lignesSupp += `<div class="line"><span>Bénéficiaire :</span><strong>${escapeHtml(t.beneficiaire)}</strong></div>`;
@@ -1085,36 +1064,24 @@ function buildBonHTML(t, soldeApres, isIn, copyLabel = ''){
     if(t.reference) lignesSupp += `<div class="line"><span>Référence :</span><strong>${escapeHtml(t.reference)}</strong></div>`;
   }
 
-  // ✅ Signature : rôle + nom de la personne
   const personRole = isIn ? 'Déposant' : 'Personne qui prend l\'argent';
   const personName = t.personne || '—';
   const caissierName = t.createdByName || currentUser.name || 'Caissier';
 
-  const labelHTML = copyLabel ? `<div class="copy-label">${copyLabel}</div>` : '';
-
   return `
     <div class="bon-paper">
-      ${labelHTML}
       <h1>🌾 TAMA</h1>
       <div class="sub">Bon de Caisse<br>${new Date().toLocaleString('fr-FR')}</div>
-
       <div class="num">${t.numero}</div>
-
-      <div class="type">
-        ${isIn ? '📥 REÇU DE DÉPÔT' : '📤 BON DE RETRAIT'}
-      </div>
-
+      <div class="type">${isIn ? '📥 REÇU DE DÉPÔT' : '📤 BON DE RETRAIT'}</div>
       <div class="montant">${isIn ? '+' : '−'} ${Number(t.montant || 0).toLocaleString('fr-FR')} DH</div>
-
       <div class="line"><span>Date :</span><strong>${formatDate(t.date)}</strong></div>
       <div class="line"><span>${isIn ? 'Déposé par :' : 'Pris par :'}</span><strong>${escapeHtml(personName)}</strong></div>
       ${!isIn ? `<div class="line"><span>Motif :</span><strong>${escapeHtml(t.motif || '—')}</strong></div>` : ''}
       ${lignesSupp}
       <div class="line"><span>Caissier :</span><strong>${escapeHtml(caissierName)}</strong></div>
       <div class="line"><span>Solde après :</span><strong>${soldeApres.toLocaleString('fr-FR')} DH</strong></div>
-
       ${t.notes ? `<div class="notes"><strong>Note :</strong> ${escapeHtml(t.notes)}</div>` : ''}
-
       <div class="signature">
         <div class="sig-box">
           <div class="role">Caissier</div>
@@ -1127,52 +1094,42 @@ function buildBonHTML(t, soldeApres, isIn, copyLabel = ''){
           <div class="line-sig">Signature</div>
         </div>
       </div>
-
-      <div class="foot">
-        Merci pour votre confiance<br>
-        TAMA — Gestion de Caisse
-      </div>
+      <div class="foot">Merci pour votre confiance<br>TAMA — Gestion de Caisse</div>
     </div>
   `;
 }
 
 // ============================================================
-// ==================== PRINT — 2 BONS SUR A4 =================
+// ==================== PRINT — A4 ÷ 2 (A5 × A5) ==============
 // ============================================================
 function printBon(txOrId){
   let t;
-  if(typeof txOrId === 'object' && txOrId !== null){
-    t = txOrId;
-  } else {
-    t = transactions.find(x => x.id === txOrId);
-  }
+  if(typeof txOrId === 'object' && txOrId !== null) t = txOrId;
+  else t = transactions.find(x => x.id === txOrId);
 
   if(!t){ toast('Opération introuvable', 'error'); return; }
 
   const isIn = t.type === 'entree';
   const soldeApres = getSoldeAfter(t);
 
-  // ✅ Génère 2 bons avec labels différents
+  // ✅ Génère 2 bons : chacun dans son A5 (moitié de A4)
   const bonSociete = buildBonCopy(t, soldeApres, isIn, 'EXEMPLAIRE SOCIÉTÉ', 'first');
-  const bonClient = buildBonCopy(t, soldeApres, isIn, 'EXEMPLAIRE CLIENT', 'second');
+  const bonClient  = buildBonCopy(t, soldeApres, isIn, 'EXEMPLAIRE CLIENT',  'second');
 
-  document.getElementById('printBon').innerHTML = `
-    ${bonSociete}
-    <div class="cut-line">✂ - - - - - - - - - - - - - - - - - - - - - - - - - - - - ✂</div>
-    ${bonClient}
-  `;
+  document.getElementById('printBon').innerHTML = bonSociete + bonClient;
 
   setTimeout(() => window.print(), 200);
 }
 
-// Génère un "bon-copy" (bloc dans la page A4)
+// Enveloppe un bon dans un bloc .bon-copy (une demi-page A4)
 function buildBonCopy(t, soldeApres, isIn, copyLabel, className){
-  const bonInner = buildBonHTML(t, soldeApres, isIn); // pas de label ici
-  // On enveloppe dans .bon-copy avec sa classe et le label en overlay
+  const innerHTML = buildBonHTML(t, soldeApres, isIn);
+  // On enlève la classe .bon-paper pour éviter les styles d'aperçu
+  const cleanHTML = innerHTML.replace('class="bon-paper"', '');
   return `
     <div class="bon-copy ${className}">
       <div class="copy-label">${copyLabel}</div>
-      ${bonInner}
+      ${cleanHTML}
     </div>
   `;
 }
@@ -1225,10 +1182,7 @@ function viewTransaction(id){
     `;
   }
 
-  if(t.notes){
-    details += `<div class="detail-row"><span class="lbl">Note</span><span class="val" style="font-weight:500">${escapeHtml(t.notes)}</span></div>`;
-  }
-
+  if(t.notes) details += `<div class="detail-row"><span class="lbl">Note</span><span class="val" style="font-weight:500">${escapeHtml(t.notes)}</span></div>`;
   details += `<div class="detail-row"><span class="lbl">Caissier</span><span class="val">${escapeHtml(t.createdByName || t.createdBy || '—')}</span></div>`;
 
   const body = `
@@ -1239,7 +1193,6 @@ function viewTransaction(id){
       </div>
       <div style="font-size:12px;color:#5a6b5a;font-weight:700;margin-top:5px">${t.numero}</div>
     </div>
-
     ${details}
   `;
 
@@ -1282,10 +1235,7 @@ function exportCSV(){
 
   if(!list.length){ toast('Aucune donnée', 'warning'); return; }
 
-  const rows = [
-    ['N° Bon','Type','Montant (DH)','Motif','Personne','Bénéficiaire','Mode','Référence','Date','Caissier','Notes']
-  ];
-
+  const rows = [['N° Bon','Type','Montant (DH)','Motif','Personne','Bénéficiaire','Mode','Référence','Date','Caissier','Notes']];
   list.forEach(t => {
     rows.push([
       t.numero || '',
@@ -1347,7 +1297,6 @@ window.addEventListener('firebase-ready', () => {
 });
 
 setTimeout(hideLoader, 5000);
-
 document.getElementById('fDate').value = getLocalDateTime();
 selectType('entree');
 </script>
