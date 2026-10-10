@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a3a1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>TAMA Caisse</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow-x:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#eef2ee;color:#1a2a1a;padding-bottom:80px}
+
+.header{background:linear-gradient(135deg,#1a3a1a,#2d4a2d);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #c9a227;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.header-left{display:flex;align-items:center;gap:10px}
+.header-icon{width:38px;height:38px;background:linear-gradient(135deg,#c9a227,#e8c547);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;border:2px solid #c9a227}
+.header-icon img{width:100%;height:100%;object-fit:cover}
+.header h1{color:#e8c547;font-size:17px;letter-spacing:1px}
+.header small{color:#a8c4a8;font-size:9px;letter-spacing:1px;display:block}
+
+#loader{position:fixed;inset:0;background:linear-gradient(135deg,#1a3a1a,#2d4a2d);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;color:#e8c547;transition:opacity .4s}
+#loader.hidden{opacity:0;pointer-events:none}
+#loader .logo{font-size:60px;animation:bounce 1.5s infinite}
+#loader h1{font-size:24px;letter-spacing:3px}
+#loader p{color:#a8c4a8;font-size:12px}
+#loader .spinner{width:40px;height:40px;border:4px solid rgba(201,162,39,.2);border-top-color:#c9a227;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
+.main{padding:15px;max-width:600px;margin:0 auto}
+.page{display:none}
+.page.active{display:block;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.solde-card{background:linear-gradient(135deg,#1a3a1a,#2d4a2d);color:#fff;border-radius:18px;padding:22px;text-align:center;margin-bottom:18px;box-shadow:0 8px 25px rgba(26,58,26,.25);position:relative;overflow:hidden;border:2px solid #c9a227}
+.solde-card::before{content:'';position:absolute;top:-50px;right:-50px;width:150px;height:150px;background:radial-gradient(circle,rgba(201,162,39,.2),transparent 70%);border-radius:50%}
+.solde-card .lbl{font-size:11px;letter-spacing:2px;color:#a8c4a8;text-transform:uppercase;position:relative;z-index:1}
+.solde-card .amount{font-size:38px;font-weight:800;color:#e8c547;margin:8px 0;letter-spacing:-1px;position:relative;z-index:1}
+.solde-card .amount small{font-size:18px;font-weight:600}
+.solde-card .date{font-size:12px;color:#a8c4a8;position:relative;z-index:1}
+
+.mini-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.mini-stat{background:#fff;padding:15px;border-radius:14px;box-shadow:0 2px 10px rgba(26,58,26,.06);border-left:4px solid #7cb342}
+.mini-stat.out{border-left-color:#dc2626}
+.mini-stat small{font-size:11px;color:#5a6b5a;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.mini-stat .val{font-size:20px;font-weight:800;color:#1a3a1a;margin-top:5px}
+.mini-stat.in .val{color:#558b2f}
+.mini-stat.out .val{color:#b91c1c}
+
+.sec-title{font-size:14px;color:#1a3a1a;font-weight:700;margin:20px 0 12px;display:flex;align-items:center;gap:8px}
+.sec-title::before{content:'';width:4px;height:18px;background:linear-gradient(180deg,#c9a227,#7cb342);border-radius:2px}
+
+.table-wrap{background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(26,58,26,.06);overflow:hidden;margin-bottom:15px;border:1px solid #e8f0dc}
+.table-head-row{background:linear-gradient(135deg,#1a3a1a,#2d4a2d);color:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #c9a227}
+.table-head-row h4{font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#e8c547;font-weight:800}
+.table-head-row .count{background:rgba(201,162,39,.25);color:#e8c547;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl thead{background:linear-gradient(180deg,#f0f5e8,#e8f0dc)}
+.tbl thead th{padding:9px 8px;text-align:left;font-size:9px;font-weight:800;color:#2d4a2d;text-transform:uppercase;letter-spacing:.8px;border-bottom:2px solid #c9a227;white-space:nowrap}
+.tbl thead th.r{text-align:right}
+.tbl tbody tr{border-bottom:1px solid #eef2ee;transition:.15s;cursor:pointer}
+.tbl tbody tr:hover{background:#f9fbf6}
+.tbl tbody tr:nth-child(even){background:#fcfdfa}
+.tbl tbody tr.in td:first-child{border-left:3px solid #7cb342}
+.tbl tbody tr.out td:first-child{border-left:3px solid #dc2626}
+.tbl td{padding:10px 8px;vertical-align:middle;color:#1a2a1a;font-size:11px}
+.tbl td.b{font-weight:700}
+.tbl td.num{font-weight:800;text-align:right;font-variant-numeric:tabular-nums;letter-spacing:-.3px;white-space:nowrap}
+.tbl td.num.in{color:#558b2f}
+.tbl td.num.out{color:#b91c1c}
+.tbl td.dt{color:#5a6b5a;font-size:10px;white-space:nowrap}
+.tbl td.mf{max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+.tbl td.ps{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#5a6b5a}
+.badge-type{display:inline-block;padding:3px 8px;border-radius:12px;font-size:9px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;white-space:nowrap}
+.badge-type.in{background:#dcf5c4;color:#3d6b3d}
+.badge-type.out{background:#fee2e2;color:#b91c1c}
+.tbl-empty{padding:40px 20px;text-align:center;color:#7a8a7a}
+.tbl-empty .icon{font-size:44px;opacity:.4;margin-bottom:8px}
+.tbl-empty h3{color:#2d4a2d;font-size:14px;margin-bottom:3px}
+.tbl tfoot tr{background:linear-gradient(180deg,#f0f5e8,#e8f0dc);border-top:2px solid #c9a227}
+.tbl tfoot td{padding:10px 8px;font-weight:800;color:#1a3a1a;font-size:11px}
+.tbl tfoot td.num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tbl-scroll::-webkit-scrollbar{height:5px}
+.tbl-scroll::-webkit-scrollbar-thumb{background:#c9a227;border-radius:3px}
+
+.empty{text-align:center;padding:60px 20px;color:#7a8a7a}
+.empty .icon{font-size:60px;margin-bottom:15px;opacity:.4}
+.empty h3{color:#2d4a2d;margin-bottom:5px;font-size:16px}
+
+.filters{display:flex;gap:8px;margin-bottom:15px;overflow-x:auto;padding-bottom:5px;-webkit-overflow-scrolling:touch}
+.filters::-webkit-scrollbar{display:none}
+.filter-btn{padding:9px 16px;border-radius:20px;background:#fff;border:1px solid #d4e0c8;font-size:13px;font-weight:600;color:#4a5a4a;white-space:nowrap;cursor:pointer;flex-shrink:0}
+.filter-btn.active{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border-color:#c9a227}
+.filter-btn:active{transform:scale(.95)}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #e8f0dc;display:grid;grid-template-columns:repeat(5,1fr);z-index:60;box-shadow:0 -4px 20px rgba(26,58,26,.08);padding-bottom:env(safe-area-inset-bottom)}
+.nav-btn{background:none;border:none;padding:12px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#7a8a7a;font-size:10px;font-weight:700;letter-spacing:.3px;position:relative}
+.nav-btn .ic{font-size:20px;line-height:1;transition:.2s}
+.nav-btn.active{color:#1a3a1a}
+.nav-btn.active .ic{transform:scale(1.15)}
+.nav-btn.active::after{content:'';position:absolute;bottom:0;width:26px;height:3px;background:#c9a227;border-radius:2px 2px 0 0}
+.nav-btn.center .ic{background:linear-gradient(135deg,#c9a227,#e8c547);color:#1a3a1a;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 15px rgba(201,162,39,.4);margin-top:-15px;border:3px solid #fff}
+.nav-btn.center.active .ic{transform:scale(1.1)}
+
+.form-card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(26,58,26,.06)}
+.form-group{margin-bottom:15px}
+.form-group label{display:block;font-size:12px;color:#2d4a2d;margin-bottom:7px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.form-group label .req{color:#dc2626}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:14px;border:2px solid #d4e0c8;border-radius:12px;font-size:16px;outline:none;font-family:inherit;background:#f9fbf6;-webkit-appearance:none;transition:.2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#c9a227;background:#fff}
+.form-group textarea{resize:vertical;min-height:70px}
+.form-group small{color:#7a8a7a;font-size:11px;margin-top:4px;display:block}
+
+/* UPLOAD ZONE */
+.upload-zone{border:3px dashed #c9a227;border-radius:12px;padding:20px;text-align:center;background:#fef9e8;cursor:pointer;transition:.2s}
+.upload-zone:hover{background:#fde68a}
+.upload-zone .ic{font-size:36px;display:block;margin-bottom:6px}
+.upload-zone .title{font-size:13px;font-weight:700;color:#1a3a1a;margin-bottom:3px}
+.upload-zone .hint{font-size:11px;color:#7a8a7a}
+.upload-preview{margin-top:12px;padding:10px;background:#f9fbf6;border:1px solid #d4e0c8;border-radius:10px;display:flex;align-items:center;gap:10px}
+.upload-preview img{width:60px;height:60px;border-radius:8px;object-fit:cover;border:2px solid #c9a227;flex-shrink:0}
+.upload-preview .pdf-ico{width:60px;height:60px;border-radius:8px;background:#fee2e2;color:#b91c1c;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;border:2px solid #dc2626}
+.upload-preview .meta{flex:1;min-width:0}
+.upload-preview .meta .name{font-size:13px;font-weight:700;color:#1a3a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.upload-preview .meta .size{font-size:11px;color:#7a8a7a;margin-top:2px}
+.upload-preview .del{background:#fee2e2;color:#b91c1c;border:none;width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:16px;font-weight:700;flex-shrink:0}
+
+.proof-progress{height:6px;background:#e8f0dc;border-radius:3px;overflow:hidden;margin-top:8px;display:none}
+.proof-progress.show{display:block}
+.proof-progress div{height:100%;background:linear-gradient(90deg,#c9a227,#7cb342);width:0;transition:width .3s}
+
+.type-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.type-btn{padding:20px 10px;border-radius:14px;border:3px solid #d4e0c8;background:#f9fbf6;cursor:pointer;text-align:center;transition:.2s}
+.type-btn .ic{font-size:32px;display:block;margin-bottom:5px}
+.type-btn .lbl{font-size:14px;font-weight:800;letter-spacing:.5px}
+.type-btn.in.selected{border-color:#7cb342;background:#dcf5c4;color:#3d6b3d}
+.type-btn.out.selected{border-color:#dc2626;background:#fee2e2;color:#b91c1c}
+.type-btn:active{transform:scale(.97)}
+
+.quick-amounts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.quick-amounts button{padding:10px 5px;border:1px solid #d4e0c8;background:#f9fbf6;border-radius:10px;font-size:13px;font-weight:700;color:#2d4a2d;cursor:pointer}
+.quick-amounts button:active{background:#fef9e8;border-color:#c9a227}
+
+.person-suggestions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.person-suggestions button{padding:7px 12px;border:1px solid #d4e0c8;background:#f9fbf6;border-radius:20px;font-size:12px;font-weight:600;color:#2d4a2d;cursor:pointer}
+.person-suggestions button:active{background:#fef9e8;border-color:#c9a227}
+
+.info-banner{background:linear-gradient(135deg,#f0f9e8,#dcf5c4);border-left:4px solid #7cb342;padding:12px 14px;border-radius:10px;margin-bottom:15px;font-size:13px;color:#3d6b3d;font-weight:600;display:flex;gap:8px;align-items:center}
+.info-banner.danger{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-left-color:#dc2626;color:#991b1b}
+
+.btn{padding:14px 20px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:.2s;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border:2px solid #c9a227;box-shadow:0 4px 15px rgba(26,58,26,.2)}
+.btn-success{background:linear-gradient(135deg,#7cb342,#558b2f);color:#fff;box-shadow:0 4px 15px rgba(124,179,66,.3)}
+.btn-danger{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
+.btn-secondary{background:#e8f0dc;color:#2d4a2d}
+.btn-pdf{background:linear-gradient(135deg,#dc2626,#991b1b);color:#fff;box-shadow:0 4px 15px rgba(220,38,38,.3)}
+.btn:disabled{opacity:.5;transform:none}
+
+.modal{position:fixed;inset:0;background:rgba(26,58,26,.75);display:none;align-items:flex-end;justify-content:center;z-index:200;backdrop-filter:blur(3px)}
+.modal.show{display:flex;animation:fadeIn .2s}
+.modal-box{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:600px;max-height:92vh;overflow-y:auto;border-top:5px solid #c9a227;animation:slideUp .3s}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-head{padding:18px 20px;border-bottom:2px solid #e8f0dc;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;z-index:10}
+.modal-head h3{font-size:17px;color:#1a3a1a}
+.modal-head button{background:#e8f0dc;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px;font-weight:700;color:#2d4a2d}
+.modal-body{padding:20px}
+.modal-foot{padding:15px 20px;border-top:2px solid #e8f0dc;display:flex;gap:10px;position:sticky;bottom:0;background:#fff;padding-bottom:calc(15px + env(safe-area-inset-bottom))}
+.modal-foot .btn{flex:1}
+
+.detail-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #e8f0dc;font-size:14px;gap:10px}
+.detail-row:last-child{border:none}
+.detail-row .lbl{color:#5a6b5a;font-weight:600;flex-shrink:0}
+.detail-row .val{color:#1a3a1a;font-weight:700;text-align:right;word-break:break-word}
+
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(100px);background:#1a3a1a;color:#fff;padding:14px 22px;border-radius:30px;box-shadow:0 10px 30px rgba(0,0,0,.3);opacity:0;transition:.3s;z-index:300;border-left:4px solid #c9a227;max-width:calc(100% - 30px);font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.error{background:#991b1b}
+.toast.warning{background:#92400e}
+
+.preview-container{background:#f5f5f5;padding:15px;border-radius:12px;margin-bottom:15px;max-height:55vh;overflow-y:auto;display:flex;justify-content:center}
+.bon-paper{background:#fff;width:100%;max-width:340px;padding:18px 16px;font-family:'Courier New',monospace;color:#000;box-shadow:0 2px 15px rgba(0,0,0,.15);border:1px solid #ddd;font-size:12px;line-height:1.4}
+.bon-paper .bon-logo{text-align:center;margin-bottom:6px}
+.bon-paper .bon-logo img{max-height:50px;max-width:120px;object-fit:contain}
+.bon-paper .bon-logo .emoji{font-size:36px;line-height:1}
+.bon-paper h1{text-align:center;font-size:18px;margin-bottom:3px;letter-spacing:2px;font-weight:800}
+.bon-paper .sub{text-align:center;font-size:10px;margin-bottom:12px;border-bottom:1px dashed #000;padding-bottom:8px;color:#333}
+.bon-paper .num{text-align:center;font-size:13px;font-weight:700;margin:12px 0;background:#000;color:#fff;padding:5px;letter-spacing:1px}
+.bon-paper .type{text-align:center;font-size:14px;font-weight:800;margin-bottom:10px}
+.bon-paper .montant{font-size:20px;font-weight:800;text-align:center;margin:12px 0;border:2px solid #000;padding:8px}
+.bon-paper .line{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dotted #999;font-size:11px;gap:8px}
+.bon-paper .line strong{font-weight:700;text-align:right;word-break:break-word}
+.bon-paper .line span:first-child{color:#333;flex-shrink:0}
+.bon-paper .notes{margin-top:8px;padding:6px;border:1px dashed #000;font-size:10px}
+.bon-paper .bon-proof{margin-top:8px;padding:6px;border:1px dashed #666;font-size:10px;display:flex;align-items:center;gap:8px}
+.bon-paper .bon-proof img{width:40px;height:40px;object-fit:cover;border:1px solid #000;border-radius:3px}
+.bon-paper .bon-proof .txt{flex:1;font-size:10px;font-weight:700}
+.bon-paper .signature{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:10px}
+.bon-paper .signature .sig-box{text-align:center}
+.bon-paper .signature .sig-box .role{font-weight:700;margin-bottom:3px;font-size:10px}
+.bon-paper .signature .sig-box .name{font-size:10px;color:#333;margin-bottom:22px;min-height:14px;font-weight:600}
+.bon-paper .signature .sig-box .line-sig{border-top:1px solid #000;padding-top:3px;font-size:9px;color:#555}
+.bon-paper .foot{text-align:center;font-size:9px;margin-top:15px;border-top:1px dashed #000;padding-top:8px;color:#555}
+.preview-tip{text-align:center;font-size:12px;color:#5a6b5a;margin-bottom:12px;font-weight:600}
+
+.pdf-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.pdf-opt{padding:12px;border:2px solid #d4e0c8;background:#f9fbf6;border-radius:10px;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#2d4a2d;transition:.2s}
+.pdf-opt:hover,.pdf-opt.selected{border-color:#c9a227;background:#fef9e8;color:#92400e}
+
+/* PROOF VIEWER MODAL */
+.proof-viewer{max-width:95vw;max-height:95vh;background:#1a1a1a;border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.proof-viewer-head{padding:12px 16px;background:linear-gradient(135deg,#1a3a1a,#2d4a2d);color:#fff;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #c9a227}
+.proof-viewer-head h3{font-size:14px;color:#e8c547}
+.proof-viewer-head button{background:rgba(255,255,255,.15);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;font-weight:700}
+.proof-viewer-body{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;padding:10px}
+.proof-viewer-body img{max-width:100%;max-height:80vh;object-fit:contain}
+.proof-viewer-body iframe{width:90vw;height:80vh;border:none;background:#fff}
+
+/* ============================================================ */
+/* ============ PRINT — A4 DIVISÉ EN 2 × A5 =================== */
+/* ============================================================ */
+.print-bon{display:none}
+
+@media print{
+  @page{size:A4 portrait;margin:0}
+  html,body{background:#fff !important;padding:0 !important;margin:0 !important;width:210mm;height:297mm}
+  body>*:not(.print-bon){display:none !important}
+  .print-bon{display:block !important;width:210mm;height:297mm;color:#000;font-family:'Courier New',monospace;font-size:11px;line-height:1.35;box-sizing:border-box;margin:0;padding:0}
+
+  .print-bon .bon-copy{width:210mm;height:148.5mm;padding:6mm 10mm 4mm 10mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;page-break-inside:avoid;page-break-after:always}
+  .print-bon .bon-copy:last-child{page-break-after:auto}
+  .print-bon .bon-copy.first{border-bottom:2px dashed #000}
+
+  .print-bon .bon-logo{text-align:center;margin-bottom:4px}
+  .print-bon .bon-logo img{max-height:45px;max-width:120px;object-fit:contain}
+  .print-bon .bon-logo .emoji{font-size:34px;line-height:1}
+  .print-bon h1{text-align:center;font-size:17px;margin-bottom:2px;letter-spacing:3px;font-weight:800}
+  .print-bon .sub{text-align:center;font-size:9px;margin-bottom:5px;border-bottom:1px dashed #000;padding-bottom:4px;color:#333}
+  .print-bon .num{text-align:center;font-size:13px;font-weight:700;margin:5px 0;background:#000;color:#fff;padding:4px;letter-spacing:2px}
+  .print-bon .type{text-align:center;font-size:12px;font-weight:800;margin-bottom:5px;letter-spacing:1px}
+  .print-bon .montant{font-size:20px;font-weight:800;text-align:center;margin:6px 0;border:2px solid #000;padding:7px;letter-spacing:1px}
+  .print-bon .line{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dotted #666;font-size:10.5px;gap:10px}
+  .print-bon .line strong{font-weight:700;text-align:right}
+  .print-bon .line span:first-child{color:#333;flex-shrink:0;font-weight:600}
+  .print-bon .notes{margin-top:4px;padding:4px;border:1px dashed #000;font-size:10px}
+
+  /* ✅ Justificatif sur le bon imprimé */
+  .print-bon .bon-proof{margin-top:5px;padding:5px;border:1px dashed #000;display:flex;align-items:center;gap:8px;font-size:10px}
+  .print-bon .bon-proof img{width:32mm;height:32mm;object-fit:cover;border:1px solid #000;border-radius:2px}
+  .print-bon .bon-proof .txt{flex:1;font-weight:700;font-size:10px}
+  .print-bon .bon-proof .txt small{display:block;font-weight:400;color:#333;margin-top:2px;font-size:9px}
+
+  .print-bon .signature{margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:35px;font-size:10.5px}
+  .print-bon .sig-box{text-align:center}
+  .print-bon .sig-box .role{font-weight:800;font-size:9.5px;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px}
+  .print-bon .sig-box .name{font-size:10.5px;color:#000;margin-bottom:20px;font-weight:700;min-height:13px;text-decoration:underline}
+  .print-bon .sig-box .line-sig{border-top:1px solid #000;padding-top:3px;font-size:9px;color:#333;font-weight:600}
+  .print-bon .foot{text-align:center;font-size:9px;margin-top:8px;border-top:1px dashed #000;padding-top:4px;color:#333}
+}
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div class="logo">💰</div>
+  <h1>TAMA</h1>
+  <p>Chargement...</p>
+  <div class="spinner"></div>
+</div>
+
+<div id="app" style="display:none">
+  <header class="header">
+    <div class="header-left">
+      <div class="header-icon">
+        <span id="hIcon">💰</span>
+        <img id="hImg" style="display:none" alt="Logo">
+      </div>
+      <div>
+        <h1>TAMA Caisse</h1>
+        <small id="hUserLabel">Service Caisse</small>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <div class="page active" id="page-dashboard">
+      <div class="solde-card">
+        <div class="lbl">💰 Solde en caisse</div>
+        <div class="amount" id="soldeCaisse">0 <small>DH</small></div>
+        <div class="date" id="dateAujourdhui">—</div>
+      </div>
+      <div class="mini-stats">
+        <div class="mini-stat in"><small>📥 Entrées du jour</small><div class="val" id="statEntrees">0 DH</div></div>
+        <div class="mini-stat out"><small>📤 Sorties du jour</small><div class="val" id="statSorties">0 DH</div></div>
+      </div>
+      <div class="sec-title">📋 Dernières opérations</div>
+      <div class="filters">
+        <button class="filter-btn active" data-f="today" onclick="setFilter(this,'today')">Aujourd'hui</button>
+        <button class="filter-btn" data-f="week" onclick="setFilter(this,'week')">7 jours</button>
+        <button class="filter-btn" data-f="all" onclick="setFilter(this,'all')">Tout</button>
+        <button class="filter-btn" data-f="entree" onclick="setFilter(this,'entree')">📥 Dépôts</button>
+        <button class="filter-btn" data-f="sortie" onclick="setFilter(this,'sortie')">📤 Retraits</button>
+      </div>
+      <div id="txList"></div>
+    </div>
+
+    <div class="page" id="page-nouvelle">
+      <div class="sec-title">➕ Nouvelle opération</div>
+      <div class="form-card">
+        <div class="type-selector">
+          <div class="type-btn in selected" id="typeIn" onclick="selectType('entree')"><span class="ic">📥</span><div class="lbl">DÉPÔT</div></div>
+          <div class="type-btn out" id="typeOut" onclick="selectType('sortie')"><span class="ic">📤</span><div class="lbl">RETRAIT</div></div>
+        </div>
+        <div class="info-banner" id="infoBanner">💡 Dépôt : indiquez simplement qui dépose et quand</div>
+
+        <div class="form-group">
+          <label>Montant (DH) <span class="req">*</span></label>
+          <input type="number" id="fMontant" inputmode="decimal" min="0" step="0.01" placeholder="0.00">
+          <div class="quick-amounts">
+            <button type="button" onclick="setMontant(100)">100</button>
+            <button type="button" onclick="setMontant(200)">200</button>
+            <button type="button" onclick="setMontant(500)">500</button>
+            <button type="button" onclick="setMontant(1000)">1000</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label id="lblPersonne">Personne qui dépose <span class="req">*</span></label>
+          <input id="fPersonne" placeholder="Nom de la personne">
+          <div class="person-suggestions" id="personSuggestions"></div>
+        </div>
+        <div class="form-group">
+          <label>Date de l'opération <span class="req">*</span></label>
+          <input type="datetime-local" id="fDate">
+        </div>
+
+        <!-- ✅ NOUVEAU : Justificatif -->
+        <div class="form-group">
+          <label>📎 Justificatif (optionnel)</label>
+          <div class="upload-zone" onclick="document.getElementById('fProof').click()">
+            <span class="ic">📁</span>
+            <div class="title">Cliquez pour ajouter un fichier</div>
+            <div class="hint">Image ou PDF · Max 2 Mo</div>
+          </div>
+          <input type="file" id="fProof" accept="image/*,application/pdf" onchange="handleProofSelect(event)" style="display:none">
+          <div class="proof-progress" id="proofProgress"><div id="proofProgressBar"></div></div>
+          <div id="proofPreviewWrap"></div>
+        </div>
+
+        <div id="sortieFields" style="display:none">
+          <div class="form-group">
+            <label>Motif / Raison <span class="req">*</span></label>
+            <input id="fMotif" placeholder="Ex: Achat carburant, Salaire...">
+            <div class="person-suggestions" id="motifSuggestions"></div>
+          </div>
+          <div class="form-group"><label>Bénéficiaire (à qui)</label><input id="fBeneficiaire" placeholder="Optionnel"></div>
+          <div class="form-group">
+            <label>Mode de paiement</label>
+            <select id="fMode">
+              <option value="Espèce">💵 Espèce</option>
+              <option value="Chèque">📝 Chèque</option>
+              <option value="Virement">🏦 Virement</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Référence / N° pièce</label><input id="fReference" placeholder="Optionnel"></div>
+          <div class="form-group"><label>Notes</label><textarea id="fNotes" placeholder="Remarques optionnelles"></textarea></div>
+        </div>
+        <div id="entreeFields" class="form-group">
+          <label>Note (optionnel)</label>
+          <input id="fNoteEntree" placeholder="Ex: Dépôt espèces, chèque n°...">
+        </div>
+        <button class="btn btn-success" id="btnSave" onclick="saveTransaction()" style="margin-bottom:10px">💾 Enregistrer & Voir le bon</button>
+        <button class="btn btn-secondary" onclick="resetForm()">🗑 Réinitialiser</button>
+      </div>
+    </div>
+
+    <div class="page" id="page-historique">
+      <div class="sec-title">📚 Historique complet</div>
+      <div class="form-card" style="margin-bottom:15px;padding:14px">
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <input type="date" id="hDateFrom" onchange="renderHistorique()" style="flex:1;padding:10px;border:2px solid #d4e0c8;border-radius:10px;font-size:14px;background:#f9fbf6">
+          <input type="date" id="hDateTo" onchange="renderHistorique()" style="flex:1;padding:10px;border:2px solid #d4e0c8;border-radius:10px;font-size:14px;background:#f9fbf6">
+        </div>
+        <input id="hSearch" placeholder="🔍 Rechercher motif, personne..." oninput="renderHistorique()" style="width:100%;padding:12px;border:2px solid #d4e0c8;border-radius:10px;font-size:14px;background:#f9fbf6;margin-bottom:10px">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <button class="btn btn-secondary" onclick="resetHistoriqueFilters()" style="padding:10px;font-size:12px">🔄 Reset</button>
+          <button class="btn btn-primary" onclick="exportCSV()" style="padding:10px;font-size:12px">📥 CSV</button>
+          <button class="btn btn-pdf" onclick="openPdfDialog()" style="padding:10px;font-size:12px">📄 PDF</button>
+        </div>
+      </div>
+      <div id="historiqueList"></div>
+    </div>
+
+    <div class="page" id="page-stats">
+      <div class="sec-title">📊 Statistiques</div>
+      <div class="solde-card" style="background:linear-gradient(135deg,#2d4a2d,#1a3a1a)">
+        <div class="lbl">Solde actuel</div>
+        <div class="amount" id="sSolde">0 <small>DH</small></div>
+      </div>
+      <div class="mini-stats">
+        <div class="mini-stat in"><small>📥 Total dépôts</small><div class="val" id="sTotalIn">0 DH</div></div>
+        <div class="mini-stat out"><small>📤 Total retraits</small><div class="val" id="sTotalOut">0 DH</div></div>
+        <div class="mini-stat"><small>🧾 Nb opérations</small><div class="val" id="sTotalTx">0</div></div>
+        <div class="mini-stat"><small>📅 Aujourd'hui</small><div class="val" id="sToday">0 DH</div></div>
+      </div>
+      <div class="sec-title" style="margin-top:25px">🏆 Top motifs de retrait</div>
+      <div id="topMotifs"></div>
+    </div>
+
+    <div class="page" id="page-parametres">
+      <div class="sec-title">⚙️ Paramètres</div>
+      <div class="form-card">
+        <div style="padding:14px;background:linear-gradient(135deg,#f0f9e8,#dcf5c4);border-left:4px solid #7cb342;border-radius:10px;margin-bottom:15px;font-size:13px;color:#3d6b3d;font-weight:600">
+          💡 Ces paramètres sont sauvegardés automatiquement
+        </div>
+        <div class="form-group">
+          <label>👤 Nom du caissier</label>
+          <input id="pCaissierNom" placeholder="Ex: Youssef Ben Ahmed">
+          <small>Utilisé dans l'en-tête (pas imprimé sur le bon)</small>
+        </div>
+        <div class="form-group">
+          <label>🏢 Nom de la société</label>
+          <input id="pSocieteNom" placeholder="TAMA" value="TAMA">
+        </div>
+        <div class="form-group">
+          <label>📝 Sous-titre</label>
+          <input id="pSousTitre" placeholder="Gestion de Caisse" value="Gestion de Caisse">
+        </div>
+        <button class="btn btn-success" onclick="saveParametres()" style="margin-bottom:10px">💾 Enregistrer les paramètres</button>
+        <div class="sec-title" style="margin-top:25px">🖼️ Logo</div>
+        <div style="text-align:center;margin-bottom:15px">
+          <div style="display:inline-block;width:100px;height:100px;border-radius:15px;background:linear-gradient(135deg,#c9a227,#e8c547);display:flex;align-items:center;justify-content:center;font-size:50px;overflow:hidden;border:3px solid #1a3a1a">
+            <span id="logoPreviewIcon">🌾</span>
+            <img id="logoPreviewImg" style="display:none;width:100%;height:100%;object-fit:cover" alt="Logo">
+          </div>
+        </div>
+        <input type="file" id="logoFileInput" accept="image/*" onchange="uploadLogo(event)" style="display:none">
+        <button class="btn btn-primary" onclick="document.getElementById('logoFileInput').click()" style="margin-bottom:10px">📁 Choisir une image</button>
+        <button class="btn btn-danger" onclick="resetLogo()">🔄 Réinitialiser le logo</button>
+      </div>
+    </div>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-page="dashboard" onclick="navigate('dashboard')"><span class="ic">🏠</span><span>Accueil</span></button>
+    <button class="nav-btn" data-page="historique" onclick="navigate('historique')"><span class="ic">📚</span><span>Histo.</span></button>
+    <button class="nav-btn center" data-page="nouvelle" onclick="navigate('nouvelle')"><span class="ic">➕</span><span>Nouveau</span></button>
+    <button class="nav-btn" data-page="stats" onclick="navigate('stats')"><span class="ic">📊</span><span>Stats</span></button>
+    <button class="nav-btn" data-page="parametres" onclick="navigate('parametres')"><span class="ic">⚙️</span><span>Params</span></button>
+  </nav>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3 id="modalTitle">Détails</h3><button onclick="closeModal()">✕</button></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<div class="modal" id="previewModal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>👁 Aperçu du bon</h3><button onclick="closeModal('previewModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="preview-tip">📄 2 exemplaires identiques imprimés sur A4 (2 × A5)</div>
+      <div class="preview-container" id="previewContainer"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeModal('previewModal')">✏️ Modifier</button>
+      <button class="btn btn-primary" onclick="confirmPrint()">🖨 Imprimer (A4 ÷ 2)</button>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ NOUVEAU : Modale visionneuse justificatif -->
+<div class="modal" id="proofViewerModal">
+  <div class="proof-viewer">
+    <div class="proof-viewer-head">
+      <h3 id="proofViewerTitle">📎 Justificatif</h3>
+      <button onclick="closeProofViewer()">✕</button>
+    </div>
+    <div class="proof-viewer-body" id="proofViewerBody"></div>
+  </div>
+</div>
+
+<div class="modal" id="pdfModal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>📄 Export PDF</h3><button onclick="closeModal('pdfModal')">✕</button></div>
+    <div class="modal-body">
+      <div style="padding:14px;background:linear-gradient(135deg,#e0f2fe,#bae6fd);border-left:4px solid #0369a1;border-radius:10px;margin-bottom:15px;font-size:13px;color:#075985;font-weight:600">
+        📅 Choisissez la période à exporter
+      </div>
+      <div style="font-size:12px;font-weight:700;color:#2d4a2d;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Raccourcis</div>
+      <div class="pdf-options" style="margin-bottom:15px">
+        <div class="pdf-opt" onclick="setPdfPeriod('today')">Aujourd'hui</div>
+        <div class="pdf-opt" onclick="setPdfPeriod('week')">7 derniers jours</div>
+        <div class="pdf-opt" onclick="setPdfPeriod('month')">Ce mois</div>
+        <div class="pdf-opt" onclick="setPdfPeriod('lastmonth')">Mois dernier</div>
+        <div class="pdf-opt" onclick="setPdfPeriod('year')">Cette année</div>
+        <div class="pdf-opt" onclick="setPdfPeriod('all')">Tout</div>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:#2d4a2d;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Période personnalisée</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:15px">
+        <div><label style="font-size:11px;color:#5a6b5a;font-weight:700;display:block;margin-bottom:4px">Du</label><input type="date" id="pdfDateFrom" style="width:100%;padding:10px;border:2px solid #d4e0c8;border-radius:10px;font-size:14px;background:#f9fbf6"></div>
+        <div><label style="font-size:11px;color:#5a6b5a;font-weight:700;display:block;margin-bottom:4px">Au</label><input type="date" id="pdfDateTo" style="width:100%;padding:10px;border:2px solid #d4e0c8;border-radius:10px;font-size:14px;background:#f9fbf6"></div>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:#2d4a2d;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Type d'opérations</div>
+      <div class="pdf-options" style="margin-bottom:10px">
+        <div class="pdf-opt selected" id="pdfTypeAll" onclick="selectPdfType('all',this)">Toutes</div>
+        <div class="pdf-opt" id="pdfTypeIn" onclick="selectPdfType('entree',this)">📥 Dépôts</div>
+        <div class="pdf-opt" id="pdfTypeOut" onclick="selectPdfType('sortie',this)">📤 Retraits</div>
+      </div>
+      <div id="pdfInfo" style="padding:12px;background:#f0f9e8;border-left:4px solid #7cb342;border-radius:10px;font-size:13px;color:#3d6b3d;font-weight:600;text-align:center">Sélectionnez une période</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeModal('pdfModal')">Annuler</button>
+      <button class="btn btn-pdf" onclick="generatePDF()">📄 Générer le PDF</button>
+    </div>
+  </div>
+</div>
+
+<div class="print-bon" id="printBon"></div>
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, onValue, set, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAzetUtAuLilj2OzAfEdMo7zFvFUFu7EQE",
+  authDomain: "tama-b4f63.firebaseapp.com",
+  databaseURL: "https://tama-b4f63-default-rtdb.firebaseio.com",
+  projectId: "tama-b4f63",
+  storageBucket: "tama-b4f63.firebasestorage.app",
+  messagingSenderId: "14758669505",
+  appId: "1:14758669505:web:10e6338fedcf61c0f1b840"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+window.db = db; window.fbRef = ref; window.fbOnValue = onValue;
+window.fbSet = set; window.fbUpdate = update; window.fbRemove = remove;
+window.dispatchEvent(new Event('firebase-ready'));
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+// ============================================================
+// ==================== ÉTAT GLOBAL ===========================
+// ============================================================
+let transactions = [];
+let currentPage = 'dashboard';
+let currentFilter = 'today';
+let currentType = 'entree';
+let fbReady = false;
+let listenersAttached = false;
+let pendingPrintId = null;
+let pendingPrintTx = null;
+
+// ✅ Justificatif en cours de sélection
+let currentProof = null; // { data: "data:image/jpeg;base64,...", name: "facture.jpg", type: "image/jpeg", size: 12345 }
+let currentProofId = null; // ID du justificatif (existant pour modif)
+
+let settings = { caissierNom: 'Caissier', societeNom: 'TAMA', sousTitre: 'Gestion de Caisse', logo: '' };
+const currentUser = { uid: 'caissier-local', email: 'caisse@tama.ma' };
+const PERSONNES_SUGGESTIONS = ['Caissier', 'Client', 'Fournisseur', 'Direction'];
+const MOTIFS_SUGGESTIONS_SORTIE = ['Achat fournisseur', 'Carburant', 'Frais transport', 'Salaire', 'Versement banque'];
+let pdfTypeFilter = 'all';
+
+const MAX_IMAGE_DIM = 800;
+const MAX_IMAGE_QUALITY = 0.7;
+const MAX_PDF_SIZE = 2 * 1024 * 1024; // 2 MB
+
+// ============================================================
+// ==================== FORMATAGE =============================
+// ============================================================
+function fmtMontant(n){ return Math.round(Number(n || 0)).toString(); }
+function fmtMontantDH(n){ return fmtMontant(n) + ' DH'; }
+function fmtMontantSigne(n, isIn){ return (isIn ? '+' : '-') + fmtMontant(n); }
+
+function formatBytes(b){
+  if(!b) return '0 o';
+  if(b < 1024) return b + ' o';
+  if(b < 1024*1024) return (b/1024).toFixed(1) + ' Ko';
+  return (b/(1024*1024)).toFixed(2) + ' Mo';
+}
+
+// ============================================================
+// ==================== HELPERS ===============================
+// ============================================================
+function toast(msg, type='success'){
+  const t = document.getElementById('toast');
+  t.className = 'toast show ' + type;
+  document.getElementById('toastMsg').textContent = msg;
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function openModal(title, body, foot=''){
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = body;
+  document.getElementById('modalFoot').innerHTML = foot;
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal(id='modal'){ document.getElementById(id).classList.remove('show'); }
+
+function formatDate(iso){
+  if(!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'numeric'}) + ' ' +
+         d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+}
+function formatDateShort(iso){
+  if(!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'2-digit'});
+}
+function todayStr(){ return new Date().toISOString().split('T')[0]; }
+function escapeHtml(str){
+  if(!str) return '';
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ============================================================
+// ==================== NAVIGATION ============================
+// ============================================================
+function navigate(page){
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector(`.nav-btn[data-page="${page}"]`);
+  if(btn) btn.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+  refresh();
+}
+
+// ============================================================
+// ==================== LISTENERS FIREBASE ====================
+// ============================================================
+function initListeners(){
+  if(listenersAttached) return;
+  listenersAttached = true;
+
+  window.fbOnValue(window.fbRef(window.db, 'settings/logo'), snap => {
+    const data = snap.val();
+    if(data){ settings.logo = data; applyLogoUI(data); }
+    else { settings.logo = ''; resetLogoUI(); }
+  });
+
+  window.fbOnValue(window.fbRef(window.db, 'caisse/settings'), snap => {
+    const data = snap.val() || {};
+    settings.caissierNom = data.caissierNom || 'Caissier';
+    settings.societeNom = data.societeNom || 'TAMA';
+    settings.sousTitre = data.sousTitre || 'Gestion de Caisse';
+    applySettingsUI();
+  });
+
+  window.fbOnValue(window.fbRef(window.db, 'caisse/transactions'), snap => {
+    const data = snap.val();
+    transactions = data ? Object.values(data) : [];
+    refresh();
+  }, err => console.error('❌ tx:', err));
+}
+
+// ============================================================
+// ==================== LOGO ==================================
+// ============================================================
+function applyLogoUI(url){
+  const hImg = document.getElementById('hImg'), hIcon = document.getElementById('hIcon');
+  if(hImg && hIcon){ hImg.src = url; hImg.style.display = 'block'; hIcon.style.display = 'none'; }
+  const pImg = document.getElementById('logoPreviewImg'), pIcon = document.getElementById('logoPreviewIcon');
+  if(pImg && pIcon){ pImg.src = url; pImg.style.display = 'block'; pIcon.style.display = 'none'; }
+}
+function resetLogoUI(){
+  const hImg = document.getElementById('hImg'), hIcon = document.getElementById('hIcon');
+  if(hImg && hIcon){ hImg.src = ''; hImg.style.display = 'none'; hIcon.style.display = 'block'; }
+  const pImg = document.getElementById('logoPreviewImg'), pIcon = document.getElementById('logoPreviewIcon');
+  if(pImg && pIcon){ pImg.src = ''; pImg.style.display = 'none'; pIcon.style.display = 'block'; }
+}
+function uploadLogo(e){
+  const file = e.target.files[0]; if(!file) return;
+  if(file.size > 500*1024){ toast('Max 500 Ko', 'error'); return; }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const url = ev.target.result;
+    applyLogoUI(url);
+    window.fbSet(window.fbRef(window.db, 'settings/logo'), url);
+    toast('🖼️ Logo mis à jour');
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+function resetLogo(){
+  if(!confirm('Réinitialiser le logo ?')) return;
+  resetLogoUI();
+  window.fbRemove(window.fbRef(window.db, 'settings/logo'));
+  toast('Logo réinitialisé');
+}
+
+// ============================================================
+// ==================== SETTINGS ==============================
+// ============================================================
+function applySettingsUI(){
+  const hUser = document.getElementById('hUserLabel');
+  if(hUser) hUser.textContent = settings.caissierNom || 'Service Caisse';
+  const pCaissier = document.getElementById('pCaissierNom');
+  const pSociete = document.getElementById('pSocieteNom');
+  const pSous = document.getElementById('pSousTitre');
+  if(pCaissier) pCaissier.value = settings.caissierNom || '';
+  if(pSociete) pSociete.value = settings.societeNom || 'TAMA';
+  if(pSous) pSous.value = settings.sousTitre || 'Gestion de Caisse';
+}
+async function saveParametres(){
+  const caissierNom = document.getElementById('pCaissierNom').value.trim() || 'Caissier';
+  const societeNom = document.getElementById('pSocieteNom').value.trim() || 'TAMA';
+  const sousTitre = document.getElementById('pSousTitre').value.trim() || 'Gestion de Caisse';
+  try {
+    await window.fbSet(window.fbRef(window.db, 'caisse/settings'), { caissierNom, societeNom, sousTitre });
+    toast('✅ Paramètres enregistrés');
+  } catch(e){ toast('Erreur: ' + e.message, 'error'); }
+}
+
+// ============================================================
+// ==================== JUSTIFICATIF ==========================
+// ✅ Sélection + compression + aperçu
+// ============================================================
+function handleProofSelect(event){
+  const file = event.target.files[0];
+  if(!file) return;
+
+  const isImage = file.type.startsWith('image/');
+  const isPdf = file.type === 'application/pdf';
+
+  if(!isImage && !isPdf){ toast('Format non supporté (image ou PDF)', 'error'); event.target.value = ''; return; }
+  if(isPdf && file.size > MAX_PDF_SIZE){ toast('PDF trop gros (max 2 Mo)', 'error'); event.target.value = ''; return; }
+  if(isImage && file.size > 5*1024*1024){ toast('Image trop grosse (max 5 Mo)', 'error'); event.target.value = ''; return; }
+
+  showProofProgress(10);
+
+  if(isImage){
+    compressImage(file, (compressedDataUrl, compressedSize) => {
+      showProofProgress(100);
+      currentProof = {
+        data: compressedDataUrl,
+        name: file.name,
+        type: 'image/jpeg',
+        size: compressedSize,
+        originalSize: file.size
+      };
+      renderProofPreview();
+      hideProofProgress();
+      toast('📎 Image compressée : ' + formatBytes(file.size) + ' → ' + formatBytes(compressedSize));
+    });
+  } else {
+    // PDF : lire en base64 directement
+    const reader = new FileReader();
+    reader.onload = ev => {
+      showProofProgress(100);
+      currentProof = {
+        data: ev.target.result,
+        name: file.name,
+        type: 'application/pdf',
+        size: file.size
+      };
+      renderProofPreview();
+      hideProofProgress();
+      toast('📎 PDF ajouté');
+    };
+    reader.readAsDataURL(file);
+  }
+  event.target.value = '';
+}
+
+// ✅ Compression d'image via canvas
+function compressImage(file, callback){
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      let { width, height } = img;
+      // Redimensionner si trop grand
+      if(width > MAX_IMAGE_DIM || height > MAX_IMAGE_DIM){
+        if(width > height){ height = Math.round(height * MAX_IMAGE_DIM / width); width = MAX_IMAGE_DIM; }
+        else { width = Math.round(width * MAX_IMAGE_DIM / height); height = MAX_IMAGE_DIM; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      // Fond blanc (pour PNG transparent)
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+      const dataUrl = canvas.toDataURL('image/jpeg', MAX_IMAGE_QUALITY);
+      // Taille approx en bytes
+      const base64Len = dataUrl.split(',')[1].length;
+      const size = Math.round(base64Len * 3 / 4);
+      callback(dataUrl, size);
+    };
+    img.onerror = () => { toast('Erreur image', 'error'); hideProofProgress(); };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function showProofProgress(pct){
+  const wrap = document.getElementById('proofProgress');
+  const bar = document.getElementById('proofProgressBar');
+  if(wrap && bar){ wrap.classList.add('show'); bar.style.width = pct + '%'; }
+}
+function hideProofProgress(){
+  const wrap = document.getElementById('proofProgress');
+  const bar = document.getElementById('proofProgressBar');
+  if(wrap && bar){ setTimeout(() => { wrap.classList.remove('show'); bar.style.width = '0'; }, 300); }
+}
+
+function renderProofPreview(){
+  const wrap = document.getElementById('proofPreviewWrap');
+  if(!currentProof){ wrap.innerHTML = ''; return; }
+
+  const isImg = currentProof.type.startsWith('image/');
+  const thumb = isImg
+    ? `<img src="${currentProof.data}" alt="Proof">`
+    : `<div class="pdf-ico">📄</div>`;
+
+  wrap.innerHTML = `
+    <div class="upload-preview">
+      ${thumb}
+      <div class="meta">
+        <div class="name">${escapeHtml(currentProof.name)}</div>
+        <div class="size">${formatBytes(currentProof.size)}</div>
+      </div>
+      <button class="del" onclick="removeProof()" title="Retirer">✕</button>
+    </div>
+  `;
+}
+
+function removeProof(){
+  currentProof = null;
+  document.getElementById('proofPreviewWrap').innerHTML = '';
+}
+
+// ✅ Ouvrir la visionneuse plein écran
+function viewProof(proofId, name, type){
+  const body = document.getElementById('proofViewerBody');
+  const title = document.getElementById('proofViewerTitle');
+  title.textContent = '📎 ' + (name || 'Justificatif');
+
+  // Chercher le justificatif dans Firebase
+  window.fbOnValue(window.fbRef(window.db, 'caisse/proofs/' + proofId), snap => {
+    const proof = snap.val();
+    if(!proof){ body.innerHTML = '<p style="color:#fff;padding:20px">Justificatif introuvable</p>'; return; }
+
+    if((proof.type || '').startsWith('image/')){
+      body.innerHTML = `<img src="${proof.data}" alt="${escapeHtml(name)}">`;
+    } else if(proof.type === 'application/pdf'){
+      body.innerHTML = `<iframe src="${proof.data}"></iframe>`;
+    } else {
+      body.innerHTML = '<p style="color:#fff;padding:20px">Format non affichable</p>';
+    }
+  }, { onlyOnce: true });
+
+  document.getElementById('proofViewerModal').classList.add('show');
+}
+function closeProofViewer(){
+  document.getElementById('proofViewerModal').classList.remove('show');
+  document.getElementById('proofViewerBody').innerHTML = '';
+}
+
+// ============================================================
+// ==================== CALCULS ===============================
+// ============================================================
+function getSolde(){
+  return transactions.reduce((s, t) => s + (t.type === 'entree' ? Number(t.montant || 0) : -Number(t.montant || 0)), 0);
+}
+function filterTransactions(list){
+  const now = new Date(); const today = todayStr();
+  return list.filter(t => {
+    const d = (t.date || t.createdAt || '').substring(0, 10);
+    if(currentFilter === 'today' && d !== today) return false;
+    if(currentFilter === 'week'){
+      const diffDays = (now - new Date(d)) / (1000 * 60 * 60 * 24);
+      if(diffDays > 7) return false;
+    }
+    if(currentFilter === 'entree' && t.type !== 'entree') return false;
+    if(currentFilter === 'sortie' && t.type !== 'sortie') return false;
+    return true;
+  });
+}
+
+// ============================================================
+// ==================== RENDER ================================
+// ============================================================
+function refresh(){
+  if(currentPage === 'dashboard') renderDashboard();
+  if(currentPage === 'historique') renderHistorique();
+  if(currentPage === 'stats') renderStats();
+}
+
+function renderDashboard(){
+  const solde = getSolde();
+  document.getElementById('soldeCaisse').innerHTML = fmtMontant(solde) + ' <small>DH</small>';
+  document.getElementById('dateAujourdhui').textContent = new Date().toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+
+  const today = todayStr();
+  const todayTx = transactions.filter(t => (t.date || t.createdAt || '').substring(0, 10) === today);
+  const entrees = todayTx.filter(t => t.type === 'entree').reduce((s,t) => s + Number(t.montant || 0), 0);
+  const sorties = todayTx.filter(t => t.type === 'sortie').reduce((s,t) => s + Number(t.montant || 0), 0);
+
+  document.getElementById('statEntrees').textContent = fmtMontant(entrees) + ' DH';
+  document.getElementById('statSorties').textContent = fmtMontant(sorties) + ' DH';
+
+  const list = filterTransactions(transactions)
+    .sort((a,b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+    .slice(0, 30);
+  renderTxList('txList', list);
+}
+
+function renderTxList(containerId, list){
+  const el = document.getElementById(containerId);
+  if(!list.length){ el.innerHTML = '<div class="empty"><div class="icon">📭</div><h3>Aucune opération</h3></div>'; return; }
+  el.innerHTML = list.map(t => {
+    const isIn = t.type === 'entree';
+    const label = isIn ? '📥 Dépôt' : (t.motif || '—');
+    const hasProof = t.proofId ? ' 📎' : '';
+    return `<div style="background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(26,58,26,.06);display:flex;gap:12px;align-items:center;border-left:4px solid ${isIn ? '#7cb342' : '#dc2626'};cursor:pointer" onclick="viewTransaction('${t.id}')">
+      <div style="width:44px;height:44px;border-radius:12px;background:${isIn ? '#dcf5c4' : '#fee2e2'};display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${isIn ? '📥' : '📤'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14px;font-weight:700;color:#1a3a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(label)}${hasProof}</div>
+        <div style="font-size:12px;color:#5a6b5a;margin-top:3px">👤 ${escapeHtml(t.personne || '—')}</div>
+        <div style="font-size:11px;color:#7a8a7a;margin-top:2px">${formatDate(t.date || t.createdAt)}</div>
+      </div>
+      <div style="font-size:16px;font-weight:800;text-align:right;color:${isIn ? '#558b2f' : '#b91c1c'};flex-shrink:0">${fmtMontantSigne(t.montant, isIn)}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderHistoriqueTable(containerId, list){
+  const el = document.getElementById(containerId);
+  if(!list.length){
+    el.innerHTML = '<div class="tbl-empty"><div class="icon">📭</div><h3>Aucune opération</h3></div>';
+    return;
+  }
+  const totalIn = list.filter(t => t.type === 'entree').reduce((s,t) => s + Number(t.montant || 0), 0);
+  const totalOut = list.filter(t => t.type === 'sortie').reduce((s,t) => s + Number(t.montant || 0), 0);
+  const solde = totalIn - totalOut;
+
+  const rows = list.map(t => {
+    const isIn = t.type === 'entree';
+    const proof = t.proofId ? ' 📎' : '';
+    return `<tr class="${isIn ? 'in' : 'out'}" onclick="viewTransaction('${t.id}')">
+      <td class="b">${escapeHtml(t.numero || '—')}</td>
+      <td><span class="badge-type ${isIn ? 'in' : 'out'}">${isIn ? '📥 Dépôt' : '📤 Retrait'}</span></td>
+      <td class="dt">${formatDateShort(t.date || t.createdAt)}</td>
+      <td class="mf">${escapeHtml(t.motif || '—')}${proof}</td>
+      <td class="ps">${escapeHtml(t.personne || '—')}</td>
+      <td class="num ${isIn ? 'in' : 'out'}">${fmtMontantSigne(t.montant, isIn)}</td>
+    </tr>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="table-wrap">
+      <div class="table-head-row">
+        <h4>📋 Journal de caisse</h4>
+        <span class="count">${list.length} opération(s)</span>
+      </div>
+      <div class="tbl-scroll">
+        <table class="tbl">
+          <thead><tr><th>N° Bon</th><th>Type</th><th>Date</th><th>Motif</th><th>Personne</th><th class="r">Montant</th></tr></thead>
+          <tbody>${rows}</tbody>
+          <tfoot>
+            <tr><td colspan="4" style="text-align:right;color:#3d6b3d">📥 Total dépôts</td><td class="num in" style="color:#558b2f">+ ${fmtMontant(totalIn)}</td><td></td></tr>
+            <tr><td colspan="4" style="text-align:right;color:#991b1b">📤 Total retraits</td><td class="num out" style="color:#b91c1c">- ${fmtMontant(totalOut)}</td><td></td></tr>
+            <tr style="border-top:2px solid #c9a227"><td colspan="4" style="text-align:right;color:#1a3a1a;font-weight:800">SOLDE PÉRIODE</td><td class="num" style="color:${solde >= 0 ? '#558b2f' : '#b91c1c'};font-size:13px">${solde >= 0 ? '+' : '-'} ${fmtMontant(Math.abs(solde))}</td><td></td></tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderHistorique(){
+  const from = document.getElementById('hDateFrom').value;
+  const to = document.getElementById('hDateTo').value;
+  const search = (document.getElementById('hSearch').value || '').toLowerCase();
+  let list = [...transactions];
+  if(from) list = list.filter(t => (t.date || t.createdAt || '').substring(0,10) >= from);
+  if(to) list = list.filter(t => (t.date || t.createdAt || '').substring(0,10) <= to);
+  if(search){
+    list = list.filter(t =>
+      (t.motif || '').toLowerCase().includes(search) ||
+      (t.personne || '').toLowerCase().includes(search) ||
+      (t.beneficiaire || '').toLowerCase().includes(search) ||
+      (t.numero || '').toLowerCase().includes(search)
+    );
+  }
+  list.sort((a,b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+  renderHistoriqueTable('historiqueList', list);
+}
+
+function renderStats(){
+  const solde = getSolde();
+  const totalIn = transactions.filter(t => t.type === 'entree').reduce((s,t) => s + Number(t.montant || 0), 0);
+  const totalOut = transactions.filter(t => t.type === 'sortie').reduce((s,t) => s + Number(t.montant || 0), 0);
+
+  document.getElementById('sSolde').innerHTML = fmtMontant(solde) + ' <small>DH</small>';
+  document.getElementById('sTotalIn').textContent = fmtMontant(totalIn) + ' DH';
+  document.getElementById('sTotalOut').textContent = fmtMontant(totalOut) + ' DH';
+  document.getElementById('sTotalTx').textContent = transactions.length;
+
+  const today = todayStr();
+  const todayTotal = transactions
+    .filter(t => (t.date || t.createdAt || '').substring(0, 10) === today)
+    .reduce((s,t) => s + (t.type === 'entree' ? Number(t.montant) : -Number(t.montant)), 0);
+  document.getElementById('sToday').textContent = fmtMontant(todayTotal) + ' DH';
+
+  const motifsMap = {};
+  transactions.filter(t => t.type === 'sortie').forEach(t => {
+    const m = t.motif || 'Autre';
+    motifsMap[m] = (motifsMap[m] || 0) + Number(t.montant || 0);
+  });
+  const top = Object.entries(motifsMap).sort((a,b) => b[1] - a[1]).slice(0, 5);
+  const el = document.getElementById('topMotifs');
+  if(!top.length){
+    el.innerHTML = '<p style="color:#7a8a7a;text-align:center;padding:20px">Aucun retrait enregistré</p>';
+  } else {
+    const max = top[0][1];
+    el.innerHTML = top.map(([m, v]) => `
+      <div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:8px;box-shadow:0 2px 8px rgba(26,58,26,.06)">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <strong style="font-size:14px;color:#1a3a1a">${escapeHtml(m)}</strong>
+          <strong style="color:#b91c1c">${fmtMontantDH(v)}</strong>
+        </div>
+        <div style="height:6px;background:#e8f0dc;border-radius:3px;overflow:hidden">
+          <div style="width:${(v/max)*100}%;height:100%;background:linear-gradient(90deg,#dc2626,#e07c24);border-radius:3px"></div>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+// ============================================================
+// ==================== FORM ==================================
+// ============================================================
+function selectType(type){
+  currentType = type;
+  document.getElementById('typeIn').classList.toggle('selected', type === 'entree');
+  document.getElementById('typeOut').classList.toggle('selected', type === 'sortie');
+  document.getElementById('lblPersonne').innerHTML = type === 'entree'
+    ? 'Personne qui dépose <span class="req">*</span>'
+    : 'Personne qui prend l\'argent <span class="req">*</span>';
+  document.getElementById('fPersonne').placeholder = type === 'entree' ? 'Nom de la personne qui dépose' : 'Nom de la personne qui prend l\'argent';
+  document.getElementById('sortieFields').style.display = type === 'sortie' ? 'block' : 'none';
+  document.getElementById('entreeFields').style.display = type === 'entree' ? 'block' : 'none';
+  const banner = document.getElementById('infoBanner');
+  if(type === 'entree'){ banner.className = 'info-banner'; banner.innerHTML = '💡 Dépôt : indiquez qui dépose et quand'; }
+  else { banner.className = 'info-banner danger'; banner.innerHTML = '⚠️ Retrait : motif obligatoire + signature du bénéficiaire'; }
+  updateSuggestions();
+}
+function setMontant(v){ document.getElementById('fMontant').value = v; }
+function updateSuggestions(){
+  document.getElementById('personSuggestions').innerHTML = PERSONNES_SUGGESTIONS.map(p =>
+    `<button type="button" onclick="document.getElementById('fPersonne').value='${p}'">${p}</button>`
+  ).join('');
+  if(currentType === 'sortie'){
+    document.getElementById('motifSuggestions').innerHTML = MOTIFS_SUGGESTIONS_SORTIE.map(m =>
+      `<button type="button" onclick="document.getElementById('fMotif').value='${m}'">${m}</button>`
+    ).join('');
+  }
+}
+function setFilter(btn, filter){
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = filter;
+  renderDashboard();
+}
+function resetForm(){
+  document.getElementById('fMontant').value = '';
+  document.getElementById('fPersonne').value = '';
+  document.getElementById('fMotif').value = '';
+  document.getElementById('fBeneficiaire').value = '';
+  document.getElementById('fMode').value = 'Espèce';
+  document.getElementById('fReference').value = '';
+  document.getElementById('fNotes').value = '';
+  document.getElementById('fNoteEntree').value = '';
+  document.getElementById('fDate').value = getLocalDateTime();
+  removeProof(); // ✅ Vider le justificatif
+}
+function getLocalDateTime(){
+  const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 16);
+}
+function resetHistoriqueFilters(){
+  document.getElementById('hDateFrom').value = '';
+  document.getElementById('hDateTo').value = '';
+  document.getElementById('hSearch').value = '';
+  renderHistorique();
+}
+
+// ============================================================
+// ==================== SAVE TRANSACTION ======================
+// ============================================================
+async function saveTransaction(){
+  const montant = parseFloat(document.getElementById('fMontant').value);
+  const personne = document.getElementById('fPersonne').value.trim();
+  const dateVal = document.getElementById('fDate').value;
+
+  if(!montant || montant <= 0){ toast('Montant invalide', 'error'); return; }
+  if(!personne){ toast('Personne obligatoire', 'error'); return; }
+  if(!dateVal){ toast('Date obligatoire', 'error'); return; }
+
+  let txData = {};
+  if(currentType === 'entree'){
+    const noteEntree = document.getElementById('fNoteEntree').value.trim();
+    txData = { type: 'entree', montant: Number(montant), personne, motif: 'Dépôt', beneficiaire: '', mode: 'Espèce', reference: '', notes: noteEntree, date: new Date(dateVal).toISOString() };
+  } else {
+    const motif = document.getElementById('fMotif').value.trim();
+    const beneficiaire = document.getElementById('fBeneficiaire').value.trim();
+    const mode = document.getElementById('fMode').value;
+    const reference = document.getElementById('fReference').value.trim();
+    const notes = document.getElementById('fNotes').value.trim();
+    if(!motif){ toast('Motif obligatoire pour un retrait', 'error'); return; }
+    const solde = getSolde();
+    if(montant > solde){
+      if(!confirm(`⚠️ Retrait (${fmtMontantDH(montant)}) > Solde (${fmtMontantDH(solde)})\n\nContinuer quand même ?`)) return;
+    }
+    txData = { type: 'sortie', montant: Number(montant), personne, motif, beneficiaire, mode, reference, notes, date: new Date(dateVal).toISOString() };
+  }
+
+  const btn = document.getElementById('btnSave');
+  btn.disabled = true; btn.textContent = '⏳ Enregistrement...';
+
+  try {
+    // ✅ 1) Sauvegarder le justificatif séparément si présent
+    let proofId = null;
+    if(currentProof){
+      proofId = 'PROOF-' + Date.now();
+      await window.fbSet(window.fbRef(window.db, 'caisse/proofs/' + proofId), {
+        data: currentProof.data,
+        name: currentProof.name,
+        type: currentProof.type,
+        size: currentProof.size,
+        createdAt: new Date().toISOString()
+      });
+    }
+
+    // ✅ 2) Créer la transaction avec référence au justificatif
+    const id = 'TX-' + Date.now();
+    const numero = (currentType === 'entree' ? 'DEP-' : 'RET-') + new Date().getFullYear() + '-' + String(transactions.length + 1).padStart(4, '0');
+    const tx = {
+      id, numero, ...txData,
+      proofId,
+      proofName: currentProof ? currentProof.name : '',
+      proofType: currentProof ? currentProof.type : '',
+      createdAt: new Date().toISOString()
+    };
+
+    await window.fbSet(window.fbRef(window.db, 'caisse/transactions/' + id), tx);
+    resetForm();
+    toast(currentType === 'entree' ? '✅ Dépôt enregistré' : '✅ Retrait enregistré');
+    setTimeout(() => previewBon(tx), 300);
+  } catch(e){
+    toast('Erreur: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💾 Enregistrer & Voir le bon';
+  }
+}
+
+// ============================================================
+// ==================== APERÇU DU BON =========================
+// ============================================================
+function previewBon(txOrId){
+  let t;
+  if(typeof txOrId === 'object' && txOrId !== null) t = txOrId;
+  else t = transactions.find(x => x.id === txOrId);
+  if(!t){ toast('Opération introuvable', 'error'); return; }
+  pendingPrintId = t.id;
+  pendingPrintTx = t;
+  const isIn = t.type === 'entree';
+
+  // ✅ Charger le justificatif si présent
+  if(t.proofId){
+    window.fbOnValue(window.fbRef(window.db, 'caisse/proofs/' + t.proofId), snap => {
+      const proof = snap.val();
+      document.getElementById('previewContainer').innerHTML = buildBonHTML(t, isIn, proof);
+      document.getElementById('previewModal').classList.add('show');
+    }, { onlyOnce: true });
+  } else {
+    document.getElementById('previewContainer').innerHTML = buildBonHTML(t, isIn, null);
+    document.getElementById('previewModal').classList.add('show');
+  }
+}
+
+function buildBonHTML(t, isIn, proof){
+  let lignesSupp = '';
+  if(!isIn){
+    if(t.beneficiaire) lignesSupp += `<div class="line"><span>Bénéficiaire :</span><strong>${escapeHtml(t.beneficiaire)}</strong></div>`;
+    lignesSupp += `<div class="line"><span>Mode :</span><strong>${escapeHtml(t.mode || 'Espèce')}</strong></div>`;
+    if(t.reference) lignesSupp += `<div class="line"><span>Référence :</span><strong>${escapeHtml(t.reference)}</strong></div>`;
+  }
+
+  const personRole = isIn ? 'Déposant' : 'Personne qui prend l\'argent';
+  const personName = t.personne || '—';
+
+  const logoHTML = settings.logo
+    ? `<div class="bon-logo"><img src="${settings.logo}" alt="Logo"></div>`
+    : `<div class="bon-logo"><span class="emoji">🌾</span></div>`;
+
+  const socNom = settings.societeNom || 'TAMA';
+  const socSous = settings.sousTitre || 'Gestion de Caisse';
+
+  // ✅ Bloc justificatif
+  let proofHTML = '';
+  if(proof){
+    if((proof.type || '').startsWith('image/')){
+      proofHTML = `<div class="bon-proof">
+        <img src="${proof.data}" alt="Justificatif">
+        <div class="txt">📎 Justificatif joint<small>${escapeHtml(proof.name || '')}</small></div>
+      </div>`;
+    } else {
+      proofHTML = `<div class="bon-proof">
+        <div class="txt">📄 Justificatif joint<small>${escapeHtml(proof.name || 'Document PDF')}</small></div>
+      </div>`;
+    }
+  }
+
+  return `
+    <div class="bon-paper">
+      ${logoHTML}
+      <h1>${escapeHtml(socNom)}</h1>
+      <div class="sub">${escapeHtml(socSous)}<br>${new Date().toLocaleString('fr-FR')}</div>
+      <div class="num">${t.numero}</div>
+      <div class="type">${isIn ? '📥 REÇU DE DÉPÔT' : '📤 BON DE RETRAIT'}</div>
+      <div class="montant">${isIn ? '+' : '-'} ${fmtMontant(t.montant)} DH</div>
+      <div class="line"><span>Date :</span><strong>${formatDate(t.date)}</strong></div>
+      <div class="line"><span>${isIn ? 'Déposé par :' : 'Pris par :'}</span><strong>${escapeHtml(personName)}</strong></div>
+      ${!isIn ? `<div class="line"><span>Motif :</span><strong>${escapeHtml(t.motif || '—')}</strong></div>` : ''}
+      ${lignesSupp}
+      ${t.notes ? `<div class="notes"><strong>Note :</strong> ${escapeHtml(t.notes)}</div>` : ''}
+      ${proofHTML}
+      <div class="signature">
+        <div class="sig-box"><div class="role">Caissier</div><div class="name">&nbsp;</div><div class="line-sig">Signature</div></div>
+        <div class="sig-box"><div class="role">${escapeHtml(personRole)}</div><div class="name">${escapeHtml(personName)}</div><div class="line-sig">Signature</div></div>
+      </div>
+      <div class="foot">Merci pour votre confiance<br>${escapeHtml(socNom)} — ${escapeHtml(socSous)}</div>
+    </div>
+  `;
+}
+
+function printBon(txOrId){
+  let t;
+  if(typeof txOrId === 'object' && txOrId !== null) t = txOrId;
+  else t = transactions.find(x => x.id === txOrId);
+  if(!t){ toast('Opération introuvable', 'error'); return; }
+  const isIn = t.type === 'entree';
+
+  // ✅ Charger le justificatif puis imprimer
+  const doPrint = (proof) => {
+    const bon1 = buildBonCopy(t, isIn, proof, 'first');
+    const bon2 = buildBonCopy(t, isIn, proof, 'second');
+    document.getElementById('printBon').innerHTML = bon1 + bon2;
+    setTimeout(() => window.print(), 200);
+  };
+
+  if(t.proofId){
+    window.fbOnValue(window.fbRef(window.db, 'caisse/proofs/' + t.proofId), snap => {
+      doPrint(snap.val());
+    }, { onlyOnce: true });
+  } else {
+    doPrint(null);
+  }
+}
+
+function buildBonCopy(t, isIn, proof, className){
+  const cleanHTML = buildBonHTML(t, isIn, proof).replace('class="bon-paper"', '');
+  return `<div class="bon-copy ${className}">${cleanHTML}</div>`;
+}
+
+function confirmPrint(){
+  if(!pendingPrintTx){ toast('Aucun bon à imprimer', 'error'); return; }
+  closeModal('previewModal');
+  setTimeout(() => printBon(pendingPrintTx), 200);
+}
+
+// ============================================================
+// ==================== VIEW TRANSACTION ======================
+// ============================================================
+function viewTransaction(id){
+  const t = transactions.find(x => x.id === id);
+  if(!t) return;
+  const isIn = t.type === 'entree';
+
+  let details = `
+    <div class="detail-row"><span class="lbl">Type</span><span class="val">${isIn ? '📥 DÉPÔT' : '📤 RETRAIT'}</span></div>
+    <div class="detail-row"><span class="lbl">${isIn ? 'Déposé par' : 'Pris par'}</span><span class="val">${escapeHtml(t.personne || '—')}</span></div>
+    <div class="detail-row"><span class="lbl">Date</span><span class="val">${formatDate(t.date)}</span></div>
+  `;
+  if(!isIn){
+    details += `
+      <div class="detail-row"><span class="lbl">Motif</span><span class="val">${escapeHtml(t.motif || '—')}</span></div>
+      ${t.beneficiaire ? `<div class="detail-row"><span class="lbl">Bénéficiaire</span><span class="val">${escapeHtml(t.beneficiaire)}</span></div>` : ''}
+      <div class="detail-row"><span class="lbl">Mode paiement</span><span class="val">${escapeHtml(t.mode || '—')}</span></div>
+      ${t.reference ? `<div class="detail-row"><span class="lbl">Référence</span><span class="val">${escapeHtml(t.reference)}</span></div>` : ''}
+    `;
+  }
+  if(t.notes) details += `<div class="detail-row"><span class="lbl">Note</span><span class="val" style="font-weight:500">${escapeHtml(t.notes)}</span></div>`;
+
+  // ✅ Bloc justificatif
+  let proofHTML = '';
+  if(t.proofId){
+    proofHTML = `
+      <div style="margin-top:15px;padding:12px;background:#fef9e8;border-left:4px solid #c9a227;border-radius:10px">
+        <div style="font-size:11px;color:#78350f;font-weight:700;text-transform:uppercase;margin-bottom:6px">📎 Justificatif joint</div>
+        <div style="font-size:13px;font-weight:700;color:#1a3a1a;margin-bottom:8px">${escapeHtml(t.proofName || 'Document')}</div>
+        <button class="btn btn-primary" style="padding:8px;font-size:12px" onclick="closeModal();setTimeout(()=>viewProof('${t.proofId}','${escapeHtml(t.proofName||'')}','${t.proofType||''}'),200)">👁 Voir le justificatif</button>
+      </div>
+    `;
+  }
+
+  const body = `
+    <div style="text-align:center;margin-bottom:20px;padding:18px;background:linear-gradient(135deg,${isIn ? '#f0f9e8,#dcf5c4' : '#fef2f2,#fee2e2'});border-radius:14px">
+      <div style="font-size:36px;margin-bottom:5px">${isIn ? '📥' : '📤'}</div>
+      <div style="font-size:26px;font-weight:800;color:${isIn ? '#558b2f' : '#b91c1c'}">
+        ${isIn ? '+' : '-'} ${fmtMontant(t.montant)} DH
+      </div>
+      <div style="font-size:12px;color:#5a6b5a;font-weight:700;margin-top:5px">${t.numero}</div>
+    </div>
+    ${details}
+    ${proofHTML}
+  `;
+
+  const foot = `
+    <button class="btn btn-secondary" onclick="closeModal()">Fermer</button>
+    <button class="btn btn-primary" onclick="closeModal();setTimeout(()=>previewBon('${t.id}'),200)">👁 Voir le bon</button>
+    <button class="btn btn-danger" onclick="deleteTransaction('${t.id}')">🗑</button>
+  `;
+  openModal('Détails opération', body, foot);
+}
+
+async function deleteTransaction(id){
+  const t = transactions.find(x => x.id === id);
+  if(!t) return;
+  if(!confirm(`Supprimer ${t.numero} ?\n\n${t.motif} — ${fmtMontantDH(t.montant)}`)) return;
+  try {
+    // ✅ Supprimer aussi le justificatif
+    if(t.proofId){
+      await window.fbRemove(window.fbRef(window.db, 'caisse/proofs/' + t.proofId));
+    }
+    await window.fbRemove(window.fbRef(window.db, 'caisse/transactions/' + id));
+    closeModal();
+    toast('🗑 Opération supprimée');
+  } catch(e){
+    toast('Erreur: ' + e.message, 'error');
+  }
+}
+
+// ============================================================
+// ==================== EXPORT CSV ============================
+// ============================================================
+function exportCSV(){
+  let list = [...transactions];
+  const from = document.getElementById('hDateFrom').value;
+  const to = document.getElementById('hDateTo').value;
+  if(from) list = list.filter(t => (t.date || t.createdAt || '').substring(0,10) >= from);
+  if(to) list = list.filter(t => (t.date || t.createdAt || '').substring(0,10) <= to);
+  list.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  if(!list.length){ toast('Aucune donnée', 'warning'); return; }
+
+  const rows = [['N° Bon','Type','Montant (DH)','Motif','Personne','Bénéficiaire','Mode','Référence','Date','Justificatif','Notes']];
+  list.forEach(t => {
+    rows.push([
+      t.numero || '', t.type === 'entree' ? 'DÉPÔT' : 'RETRAIT',
+      fmtMontant(t.montant), t.motif || '', t.personne || '', t.beneficiaire || '',
+      t.mode || '', t.reference || '', formatDate(t.date),
+      t.proofId ? 'Oui (' + (t.proofName || '') + ')' : 'Non',
+      t.notes || ''
+    ]);
+  });
+
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\ufeff' + csv], {type: 'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'TAMA_Caisse_' + todayStr() + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('📥 Export CSV téléchargé');
+}
+
+// ============================================================
+// ==================== PDF EXPORT ============================
+// ============================================================
+function openPdfDialog(){
+  const from = document.getElementById('hDateFrom').value;
+  const to = document.getElementById('hDateTo').value;
+  if(from) document.getElementById('pdfDateFrom').value = from;
+  if(to) document.getElementById('pdfDateTo').value = to;
+  updatePdfInfo();
+  document.getElementById('pdfModal').classList.add('show');
+}
+
+function setPdfPeriod(period){
+  const today = new Date(); const y = today.getFullYear(); const m = today.getMonth();
+  let from = '', to = '';
+  if(period === 'today'){ from = to = todayStr(); }
+  else if(period === 'week'){
+    const start = new Date(today); start.setDate(start.getDate() - 6);
+    from = start.toISOString().split('T')[0]; to = todayStr();
+  }
+  else if(period === 'month'){ from = `${y}-${String(m+1).padStart(2,'0')}-01`; to = todayStr(); }
+  else if(period === 'lastmonth'){
+    const lm = m === 0 ? 11 : m - 1; const ly = m === 0 ? y - 1 : y;
+    const lastDay = new Date(ly, lm + 1, 0).getDate();
+    from = `${ly}-${String(lm+1).padStart(2,'0')}-01`;
+    to = `${ly}-${String(lm+1).padStart(2,'0')}-${String(lastDay).padStart(2,'0')}`;
+  }
+  else if(period === 'year'){ from = `${y}-01-01`; to = todayStr(); }
+  else if(period === 'all'){ from = ''; to = ''; }
+  document.getElementById('pdfDateFrom').value = from;
+  document.getElementById('pdfDateTo').value = to;
+  updatePdfInfo();
+}
+
+function selectPdfType(type, el){
+  pdfTypeFilter = type;
+  document.querySelectorAll('#pdfModal .pdf-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  updatePdfInfo();
+}
+
+function getPdfFilteredList(){
+  const from = document.getElementById('pdfDateFrom').value;
+  const to = document.getElementById('pdfDateTo').value;
+  let list = [...transactions];
+  if(from) list = list.filter(t => (t.date || t.createdAt || '').substring(0,10) >= from);
+  if(to) list = list.filter(t => (t.date || t.createdAt || '').substring(0,10) <= to);
+  if(pdfTypeFilter === 'entree') list = list.filter(t => t.type === 'entree');
+  if(pdfTypeFilter === 'sortie') list = list.filter(t => t.type === 'sortie');
+  list.sort((a,b) => new Date(a.date || a.createdAt) - new Date(b.date || b.createdAt));
+  return list;
+}
+
+function updatePdfInfo(){
+  const list = getPdfFilteredList();
+  const totalIn = list.filter(t => t.type === 'entree').reduce((s,t) => s + Number(t.montant || 0), 0);
+  const totalOut = list.filter(t => t.type === 'sortie').reduce((s,t) => s + Number(t.montant || 0), 0);
+  const el = document.getElementById('pdfInfo');
+  if(!list.length){
+    el.style.background = '#fef2f2'; el.style.borderLeftColor = '#dc2626'; el.style.color = '#991b1b';
+    el.innerHTML = '⚠️ Aucune opération pour cette période';
+  } else {
+    el.style.background = '#f0f9e8'; el.style.borderLeftColor = '#7cb342'; el.style.color = '#3d6b3d';
+    el.innerHTML = `${list.length} opération(s) · 📥 ${fmtMontant(totalIn)} DH · 📤 ${fmtMontant(totalOut)} DH`;
+  }
+}
+
+function generatePDF(){
+  if(!window.jspdf || !window.jspdf.jsPDF){ toast('Bibliothèque PDF en cours de chargement...', 'warning'); return; }
+  const list = getPdfFilteredList();
+  if(!list.length){ toast('Aucune opération à exporter', 'warning'); return; }
+
+  const from = document.getElementById('pdfDateFrom').value;
+  const to = document.getElementById('pdfDateTo').value;
+  const totalIn = list.filter(t => t.type === 'entree').reduce((s,t) => s + Number(t.montant || 0), 0);
+  const totalOut = list.filter(t => t.type === 'sortie').reduce((s,t) => s + Number(t.montant || 0), 0);
+  const soldePeriode = totalIn - totalOut;
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const pageW = 210, pageH = 297, margin = 12;
+
+  // HEADER
+  doc.setFillColor(26, 58, 26); doc.rect(0, 0, pageW, 32, 'F');
+  doc.setFillColor(201, 162, 39); doc.rect(0, 32, pageW, 1.5, 'F');
+  if(settings.logo){ try { doc.addImage(settings.logo, 'PNG', margin, 4, 24, 24); } catch(e){} }
+  doc.setTextColor(232, 197, 71); doc.setFontSize(20); doc.setFont(undefined, 'bold');
+  doc.text(settings.societeNom || 'TAMA', settings.logo ? margin + 28 : margin, 14);
+  doc.setTextColor(168, 196, 168); doc.setFontSize(9); doc.setFont(undefined, 'normal');
+  doc.text(settings.sousTitre || 'Gestion de Caisse', settings.logo ? margin + 28 : margin, 20);
+  doc.setTextColor(255, 255, 255); doc.setFontSize(8);
+  doc.text('Édité le ' + new Date().toLocaleString('fr-FR'), pageW - margin, 13, { align: 'right' });
+  doc.setTextColor(201, 162, 39); doc.setFontSize(11); doc.setFont(undefined, 'bold');
+  doc.text('RAPPORT DE CAISSE', pageW - margin, 21, { align: 'right' });
+
+  let y = 42;
+  doc.setTextColor(26, 58, 26); doc.setFontSize(10); doc.setFont(undefined, 'bold');
+  const periodeLabel = (from && to) ? `Du ${formatDateShort(from)} au ${formatDateShort(to)}` : from ? `À partir du ${formatDateShort(from)}` : to ? `Jusqu'au ${formatDateShort(to)}` : 'Toutes les opérations';
+  doc.text('Période : ' + periodeLabel, margin, y);
+  doc.setFont(undefined, 'normal'); doc.setFontSize(9); doc.setTextColor(122, 138, 122);
+  doc.text(`${list.length} opération(s)`, pageW - margin, y, { align: 'right' });
+  y += 6;
+
+  const boxW = (pageW - margin*2 - 6) / 3, boxH = 22;
+
+  doc.setFillColor(220, 245, 196); doc.roundedRect(margin, y, boxW, boxH, 3, 3, 'F');
+  doc.setDrawColor(124, 179, 66); doc.setLineWidth(0.8); doc.roundedRect(margin, y, boxW, boxH, 3, 3, 'S');
+  doc.setTextColor(61, 107, 61); doc.setFontSize(8); doc.setFont(undefined, 'normal');
+  doc.text('TOTAL DÉPÔTS', margin + 3, y + 6);
+  doc.setFontSize(14); doc.setFont(undefined, 'bold');
+  doc.text('+ ' + fmtMontant(totalIn) + ' DH', margin + 3, y + 16);
+
+  doc.setFillColor(254, 226, 226); doc.roundedRect(margin + boxW + 3, y, boxW, boxH, 3, 3, 'F');
+  doc.setDrawColor(220, 38, 38); doc.roundedRect(margin + boxW + 3, y, boxW, boxH, 3, 3, 'S');
+  doc.setTextColor(153, 27, 27); doc.setFontSize(8); doc.setFont(undefined, 'normal');
+  doc.text('TOTAL RETRAITS', margin + boxW + 6, y + 6);
+  doc.setFontSize(14); doc.setFont(undefined, 'bold');
+  doc.text('- ' + fmtMontant(totalOut) + ' DH', margin + boxW + 6, y + 16);
+
+  const soldeColor = soldePeriode >= 0 ? [26, 58, 26] : [185, 28, 28];
+  const soldeBg = soldePeriode >= 0 ? [240, 249, 232] : [254, 242, 242];
+  doc.setFillColor(soldeBg[0], soldeBg[1], soldeBg[2]); doc.roundedRect(margin + (boxW + 3)*2, y, boxW, boxH, 3, 3, 'F');
+  doc.setDrawColor(soldeColor[0], soldeColor[1], soldeColor[2]); doc.roundedRect(margin + (boxW + 3)*2, y, boxW, boxH, 3, 3, 'S');
+  doc.setTextColor(soldeColor[0], soldeColor[1], soldeColor[2]); doc.setFontSize(8); doc.setFont(undefined, 'normal');
+  doc.text('SOLDE PÉRIODE', margin + (boxW + 3)*2 + 3, y + 6);
+  doc.setFontSize(14); doc.setFont(undefined, 'bold');
+  const soldeStr = (soldePeriode >= 0 ? '+ ' : '- ') + fmtMontant(Math.abs(soldePeriode)) + ' DH';
+  doc.text(soldeStr, margin + (boxW + 3)*2 + 3, y + 16);
+
+  y += boxH + 8;
+
+  const rows = list.map(t => {
+    const isIn = t.type === 'entree';
+    return [
+      t.numero || '', isIn ? 'Dépôt' : 'Retrait',
+      formatDateShort(t.date || t.createdAt),
+      t.motif || '—', t.personne || '—',
+      t.proofId ? 'Oui' : 'Non',
+      (isIn ? '+' : '-') + ' ' + fmtMontant(t.montant)
+    ];
+  });
+
+  doc.autoTable({
+    startY: y,
+    head: [['N° BON', 'TYPE', 'DATE', 'MOTIF', 'PERSONNE', 'JUST.', 'MONTANT (DH)']],
+    body: rows,
+    styles: { font: 'helvetica', fontSize: 8.5, cellPadding: { top: 3, right: 3, bottom: 3, left: 3 }, textColor: [26, 42, 26], lineColor: [200, 210, 195], lineWidth: 0.15, valign: 'middle', overflow: 'ellipsize' },
+    headStyles: { fillColor: [26, 58, 26], textColor: [232, 197, 71], fontStyle: 'bold', fontSize: 8, halign: 'left', cellPadding: { top: 4, right: 3, bottom: 4, left: 3 }, lineWidth: 0 },
+    alternateRowStyles: { fillColor: [249, 251, 246] },
+    columnStyles: {
+      0: { cellWidth: 22, fontStyle: 'bold', textColor: [45, 74, 45] },
+      1: { cellWidth: 16, halign: 'center', fontStyle: 'bold' },
+      2: { cellWidth: 18, halign: 'center' },
+      3: { cellWidth: 42 },
+      4: { cellWidth: 38 },
+      5: { cellWidth: 14, halign: 'center' },
+      6: { cellWidth: 24, halign: 'right', fontStyle: 'bold' }
+    },
+    didParseCell: data => {
+      if(data.section === 'body'){
+        const tx = list[data.row.index];
+        const isIn = tx.type === 'entree';
+        if(data.column.index === 1) data.cell.styles.textColor = isIn ? [61, 107, 61] : [185, 28, 28];
+        if(data.column.index === 5 && tx.proofId) data.cell.styles.textColor = [201, 162, 39];
+        if(data.column.index === 6){
+          data.cell.styles.textColor = isIn ? [85, 139, 47] : [185, 28, 28];
+          data.cell.styles.fontSize = 9;
+        }
+      }
+    },
+    margin: { left: margin, right: margin, bottom: 20 },
+    didDrawPage: data => {
+      const pageCount = doc.internal.getNumberOfPages();
+      const pageNum = doc.internal.getCurrentPageInfo().pageNumber;
+      const footerY = pageH - 8;
+      doc.setDrawColor(201, 162, 39); doc.setLineWidth(0.5);
+      doc.line(margin, footerY - 3, pageW - margin, footerY - 3);
+      doc.setFontSize(8); doc.setTextColor(122, 138, 122); doc.setFont(undefined, 'normal');
+      doc.text(`${settings.societeNom} — Rapport généré automatiquement`, margin, footerY);
+      doc.text(`Page ${pageNum} / ${pageCount}`, pageW - margin, footerY, { align: 'right' });
+    }
+  });
+
+  const finalY = doc.lastAutoTable.finalY + 8;
+  if(finalY < pageH - 40){
+    doc.setFillColor(soldeBg[0], soldeBg[1], soldeBg[2]);
+    doc.roundedRect(margin, finalY, pageW - margin*2, 18, 3, 3, 'F');
+    doc.setDrawColor(soldeColor[0], soldeColor[1], soldeColor[2]); doc.setLineWidth(0.8);
+    doc.roundedRect(margin, finalY, pageW - margin*2, 18, 3, 3, 'S');
+    doc.setTextColor(soldeColor[0], soldeColor[1], soldeColor[2]); doc.setFontSize(10); doc.setFont(undefined, 'bold');
+    doc.text('SOLDE DE LA PÉRIODE', margin + 5, finalY + 11);
+    doc.setFontSize(15);
+    doc.text(soldeStr, pageW - margin - 5, finalY + 12, { align: 'right' });
+  }
+
+  const filename = 'TAMA_Rapport_' + (from ? from.replace(/-/g, '') : 'tout') + '_' + (to ? to.replace(/-/g, '') : 'fin') + '.pdf';
+  doc.save(filename);
+  closeModal('pdfModal');
+  toast('📄 PDF généré : ' + list.length + ' opérations');
+}
+
+document.getElementById('pdfDateFrom').addEventListener('change', updatePdfInfo);
+document.getElementById('pdfDateTo').addEventListener('change', updatePdfInfo);
+
+// ============================================================
+// ==================== MODAL CLOSE ===========================
+// ============================================================
+document.getElementById('modal').addEventListener('click', e => { if(e.target.id === 'modal') closeModal(); });
+document.getElementById('previewModal').addEventListener('click', e => { if(e.target.id === 'previewModal') closeModal('previewModal'); });
+document.getElementById('pdfModal').addEventListener('click', e => { if(e.target.id === 'pdfModal') closeModal('pdfModal'); });
+document.getElementById('proofViewerModal').addEventListener('click', e => { if(e.target.id === 'proofViewerModal') closeProofViewer(); });
+
+// ============================================================
+// ==================== INIT ==================================
+// ============================================================
+function hideLoader(){
+  const l = document.getElementById('loader');
+  if(l && !l.classList.contains('hidden')){
+    l.classList.add('hidden');
+    setTimeout(() => { if(l.parentNode) l.remove(); }, 400);
+  }
+}
+
+window.addEventListener('firebase-ready', () => {
+  fbReady = true;
+  setTimeout(() => {
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('fDate').value = getLocalDateTime();
+    selectType('entree');
+    initListeners();
+    updateSuggestions();
+    hideLoader();
+  }, 600);
+});
+
+setTimeout(hideLoader, 5000);
+document.getElementById('fDate').value = getLocalDateTime();
+selectType('entree');
+</script>
+</body>
+</html>
