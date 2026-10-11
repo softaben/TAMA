@@ -112,7 +112,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .form-group textarea{resize:vertical;min-height:70px}
 .form-group small{color:#7a8a7a;font-size:11px;margin-top:4px;display:block}
 
-/* UPLOAD ZONE */
 .upload-zone{border:3px dashed #c9a227;border-radius:12px;padding:20px;text-align:center;background:#fef9e8;cursor:pointer;transition:.2s}
 .upload-zone:hover{background:#fde68a}
 .upload-zone .ic{font-size:36px;display:block;margin-bottom:6px}
@@ -148,12 +147,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 .info-banner{background:linear-gradient(135deg,#f0f9e8,#dcf5c4);border-left:4px solid #7cb342;padding:12px 14px;border-radius:10px;margin-bottom:15px;font-size:13px;color:#3d6b3d;font-weight:600;display:flex;gap:8px;align-items:center}
 .info-banner.danger{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-left-color:#dc2626;color:#991b1b}
+.info-banner.edit{background:linear-gradient(135deg,#fef9e8,#fde68a);border-left-color:#c9a227;color:#78350f}
 
 .btn{padding:14px 20px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:.2s;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn:active{transform:scale(.98)}
 .btn-primary{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border:2px solid #c9a227;box-shadow:0 4px 15px rgba(26,58,26,.2)}
 .btn-success{background:linear-gradient(135deg,#7cb342,#558b2f);color:#fff;box-shadow:0 4px 15px rgba(124,179,66,.3)}
 .btn-danger{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
+.btn-warning{background:linear-gradient(135deg,#e07c24,#c2410c);color:#fff;box-shadow:0 4px 15px rgba(224,124,36,.3)}
 .btn-secondary{background:#e8f0dc;color:#2d4a2d}
 .btn-pdf{background:linear-gradient(135deg,#dc2626,#991b1b);color:#fff;box-shadow:0 4px 15px rgba(220,38,38,.3)}
 .btn:disabled{opacity:.5;transform:none}
@@ -208,14 +209,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .pdf-opt{padding:12px;border:2px solid #d4e0c8;background:#f9fbf6;border-radius:10px;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#2d4a2d;transition:.2s}
 .pdf-opt:hover,.pdf-opt.selected{border-color:#c9a227;background:#fef9e8;color:#92400e}
 
-/* PROOF VIEWER MODAL */
-.proof-viewer{max-width:95vw;max-height:95vh;background:#1a1a1a;border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.proof-viewer{max-width:95vw;max-height:95vh;background:#1a1a1a;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;position:relative}
 .proof-viewer-head{padding:12px 16px;background:linear-gradient(135deg,#1a3a1a,#2d4a2d);color:#fff;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #c9a227}
 .proof-viewer-head h3{font-size:14px;color:#e8c547}
+.proof-viewer-head .head-actions{display:flex;gap:8px;align-items:center}
 .proof-viewer-head button{background:rgba(255,255,255,.15);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;font-weight:700}
+.proof-viewer-head .btn-download{background:linear-gradient(135deg,#c9a227,#e8c547);color:#1a3a1a;width:auto;padding:0 14px;height:34px;border-radius:20px;font-size:12px;font-weight:800;display:flex;align-items:center;gap:6px;white-space:nowrap}
 .proof-viewer-body{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;padding:10px}
 .proof-viewer-body img{max-width:100%;max-height:80vh;object-fit:contain}
 .proof-viewer-body iframe{width:90vw;height:80vh;border:none;background:#fff}
+
+/* EDIT MODE banner */
+.edit-banner{background:linear-gradient(135deg,#fef9e8,#fde68a);border:2px solid #c9a227;border-radius:12px;padding:14px;margin-bottom:15px;font-size:13px;color:#78350f;font-weight:700;display:flex;align-items:center;gap:10px}
+.edit-banner .ic{font-size:22px}
 
 /* ============================================================ */
 /* ============ PRINT — A4 DIVISÉ EN 2 × A5 =================== */
@@ -245,7 +251,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   .print-bon .line span:first-child{color:#333;flex-shrink:0;font-weight:600}
   .print-bon .notes{margin-top:4px;padding:4px;border:1px dashed #000;font-size:10px}
 
-  /* ✅ Justificatif sur le bon imprimé */
   .print-bon .bon-proof{margin-top:5px;padding:5px;border:1px dashed #000;display:flex;align-items:center;gap:8px;font-size:10px}
   .print-bon .bon-proof img{width:32mm;height:32mm;object-fit:cover;border:1px solid #000;border-radius:2px}
   .print-bon .bon-proof .txt{flex:1;font-weight:700;font-size:10px}
@@ -307,7 +312,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     </div>
 
     <div class="page" id="page-nouvelle">
-      <div class="sec-title">➕ Nouvelle opération</div>
+      <div class="sec-title" id="formPageTitle">➕ Nouvelle opération</div>
+
+      <div class="edit-banner" id="editBanner" style="display:none">
+        <span class="ic">✏️</span>
+        <div>
+          <div>Mode modification</div>
+          <small style="font-weight:500" id="editBannerNum"></small>
+        </div>
+      </div>
+
       <div class="form-card">
         <div class="type-selector">
           <div class="type-btn in selected" id="typeIn" onclick="selectType('entree')"><span class="ic">📥</span><div class="lbl">DÉPÔT</div></div>
@@ -335,7 +349,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
           <input type="datetime-local" id="fDate">
         </div>
 
-        <!-- ✅ NOUVEAU : Justificatif -->
         <div class="form-group">
           <label>📎 Justificatif (optionnel)</label>
           <div class="upload-zone" onclick="document.getElementById('fProof').click()">
@@ -370,7 +383,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
           <label>Note (optionnel)</label>
           <input id="fNoteEntree" placeholder="Ex: Dépôt espèces, chèque n°...">
         </div>
+
         <button class="btn btn-success" id="btnSave" onclick="saveTransaction()" style="margin-bottom:10px">💾 Enregistrer & Voir le bon</button>
+        <button class="btn btn-warning" id="btnCancelEdit" onclick="cancelEdit()" style="margin-bottom:10px;display:none">❌ Annuler la modification</button>
         <button class="btn btn-secondary" onclick="resetForm()">🗑 Réinitialiser</button>
       </div>
     </div>
@@ -417,7 +432,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         <div class="form-group">
           <label>👤 Nom du caissier</label>
           <input id="pCaissierNom" placeholder="Ex: Youssef Ben Ahmed">
-          <small>Utilisé dans l'en-tête (pas imprimé sur le bon)</small>
         </div>
         <div class="form-group">
           <label>🏢 Nom de la société</label>
@@ -446,7 +460,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <nav class="bottom-nav">
     <button class="nav-btn active" data-page="dashboard" onclick="navigate('dashboard')"><span class="ic">🏠</span><span>Accueil</span></button>
     <button class="nav-btn" data-page="historique" onclick="navigate('historique')"><span class="ic">📚</span><span>Histo.</span></button>
-    <button class="nav-btn center" data-page="nouvelle" onclick="navigate('nouvelle')"><span class="ic">➕</span><span>Nouveau</span></button>
+    <button class="nav-btn center" data-page="nouvelle" onclick="startNewTransaction()"><span class="ic">➕</span><span>Nouveau</span></button>
     <button class="nav-btn" data-page="stats" onclick="navigate('stats')"><span class="ic">📊</span><span>Stats</span></button>
     <button class="nav-btn" data-page="parametres" onclick="navigate('parametres')"><span class="ic">⚙️</span><span>Params</span></button>
   </nav>
@@ -474,12 +488,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   </div>
 </div>
 
-<!-- ✅ NOUVEAU : Modale visionneuse justificatif -->
 <div class="modal" id="proofViewerModal">
   <div class="proof-viewer">
     <div class="proof-viewer-head">
       <h3 id="proofViewerTitle">📎 Justificatif</h3>
-      <button onclick="closeProofViewer()">✕</button>
+      <div class="head-actions">
+        <button class="btn-download" id="proofDownloadBtn" onclick="downloadCurrentProof()">⬇️ Télécharger</button>
+        <button onclick="closeProofViewer()">✕</button>
+      </div>
     </div>
     <div class="proof-viewer-body" id="proofViewerBody"></div>
   </div>
@@ -561,9 +577,17 @@ let listenersAttached = false;
 let pendingPrintId = null;
 let pendingPrintTx = null;
 
-// ✅ Justificatif en cours de sélection
-let currentProof = null; // { data: "data:image/jpeg;base64,...", name: "facture.jpg", type: "image/jpeg", size: 12345 }
-let currentProofId = null; // ID du justificatif (existant pour modif)
+// ✅ Justificatif
+let currentProof = null;
+let existingProofId = null;
+let existingProofData = null;
+
+// ✅ Pour le téléchargement depuis la visionneuse
+let currentViewerProofId = null;
+let currentViewerProofName = null;
+
+// ✅ MODE ÉDITION
+let editingTxId = null;
 
 let settings = { caissierNom: 'Caissier', societeNom: 'TAMA', sousTitre: 'Gestion de Caisse', logo: '' };
 const currentUser = { uid: 'caissier-local', email: 'caisse@tama.ma' };
@@ -573,7 +597,7 @@ let pdfTypeFilter = 'all';
 
 const MAX_IMAGE_DIM = 800;
 const MAX_IMAGE_QUALITY = 0.7;
-const MAX_PDF_SIZE = 2 * 1024 * 1024; // 2 MB
+const MAX_PDF_SIZE = 2 * 1024 * 1024;
 
 // ============================================================
 // ==================== FORMATAGE =============================
@@ -581,7 +605,6 @@ const MAX_PDF_SIZE = 2 * 1024 * 1024; // 2 MB
 function fmtMontant(n){ return Math.round(Number(n || 0)).toString(); }
 function fmtMontantDH(n){ return fmtMontant(n) + ' DH'; }
 function fmtMontantSigne(n, isIn){ return (isIn ? '+' : '-') + fmtMontant(n); }
-
 function formatBytes(b){
   if(!b) return '0 o';
   if(b < 1024) return b + ' o';
@@ -599,16 +622,13 @@ function toast(msg, type='success'){
   clearTimeout(window._toastTimer);
   window._toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
 }
-
 function openModal(title, body, foot=''){
   document.getElementById('modalTitle').textContent = title;
   document.getElementById('modalBody').innerHTML = body;
   document.getElementById('modalFoot').innerHTML = foot;
   document.getElementById('modal').classList.add('show');
 }
-
 function closeModal(id='modal'){ document.getElementById(id).classList.remove('show'); }
-
 function formatDate(iso){
   if(!iso) return '—';
   const d = new Date(iso);
@@ -638,6 +658,15 @@ function navigate(page){
   if(btn) btn.classList.add('active');
   window.scrollTo({top:0, behavior:'smooth'});
   refresh();
+}
+
+function startNewTransaction(){
+  if(editingTxId){
+    if(!confirm('Vous êtes en mode modification. Quitter sans enregistrer ?')) return;
+    exitEditMode();
+  }
+  resetForm();
+  navigate('nouvelle');
 }
 
 // ============================================================
@@ -728,7 +757,6 @@ async function saveParametres(){
 
 // ============================================================
 // ==================== JUSTIFICATIF ==========================
-// ✅ Sélection + compression + aperçu
 // ============================================================
 function handleProofSelect(event){
   const file = event.target.files[0];
@@ -737,37 +765,25 @@ function handleProofSelect(event){
   const isImage = file.type.startsWith('image/');
   const isPdf = file.type === 'application/pdf';
 
-  if(!isImage && !isPdf){ toast('Format non supporté (image ou PDF)', 'error'); event.target.value = ''; return; }
+  if(!isImage && !isPdf){ toast('Format non supporté', 'error'); event.target.value = ''; return; }
   if(isPdf && file.size > MAX_PDF_SIZE){ toast('PDF trop gros (max 2 Mo)', 'error'); event.target.value = ''; return; }
   if(isImage && file.size > 5*1024*1024){ toast('Image trop grosse (max 5 Mo)', 'error'); event.target.value = ''; return; }
 
   showProofProgress(10);
 
   if(isImage){
-    compressImage(file, (compressedDataUrl, compressedSize) => {
+    compressImage(file, (dataUrl, size) => {
       showProofProgress(100);
-      currentProof = {
-        data: compressedDataUrl,
-        name: file.name,
-        type: 'image/jpeg',
-        size: compressedSize,
-        originalSize: file.size
-      };
+      currentProof = { data: dataUrl, name: file.name, type: 'image/jpeg', size };
       renderProofPreview();
       hideProofProgress();
-      toast('📎 Image compressée : ' + formatBytes(file.size) + ' → ' + formatBytes(compressedSize));
+      toast('📎 Image compressée : ' + formatBytes(file.size) + ' → ' + formatBytes(size));
     });
   } else {
-    // PDF : lire en base64 directement
     const reader = new FileReader();
     reader.onload = ev => {
       showProofProgress(100);
-      currentProof = {
-        data: ev.target.result,
-        name: file.name,
-        type: 'application/pdf',
-        size: file.size
-      };
+      currentProof = { data: ev.target.result, name: file.name, type: 'application/pdf', size: file.size };
       renderProofPreview();
       hideProofProgress();
       toast('📎 PDF ajouté');
@@ -777,14 +793,12 @@ function handleProofSelect(event){
   event.target.value = '';
 }
 
-// ✅ Compression d'image via canvas
 function compressImage(file, callback){
   const reader = new FileReader();
   reader.onload = ev => {
     const img = new Image();
     img.onload = () => {
       let { width, height } = img;
-      // Redimensionner si trop grand
       if(width > MAX_IMAGE_DIM || height > MAX_IMAGE_DIM){
         if(width > height){ height = Math.round(height * MAX_IMAGE_DIM / width); width = MAX_IMAGE_DIM; }
         else { width = Math.round(width * MAX_IMAGE_DIM / height); height = MAX_IMAGE_DIM; }
@@ -792,14 +806,10 @@ function compressImage(file, callback){
       const canvas = document.createElement('canvas');
       canvas.width = width; canvas.height = height;
       const ctx = canvas.getContext('2d');
-      // Fond blanc (pour PNG transparent)
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, width, height);
       ctx.drawImage(img, 0, 0, width, height);
       const dataUrl = canvas.toDataURL('image/jpeg', MAX_IMAGE_QUALITY);
-      // Taille approx en bytes
-      const base64Len = dataUrl.split(',')[1].length;
-      const size = Math.round(base64Len * 3 / 4);
+      const size = Math.round(dataUrl.split(',')[1].length * 3 / 4);
       callback(dataUrl, size);
     };
     img.onerror = () => { toast('Erreur image', 'error'); hideProofProgress(); };
@@ -809,55 +819,115 @@ function compressImage(file, callback){
 }
 
 function showProofProgress(pct){
-  const wrap = document.getElementById('proofProgress');
-  const bar = document.getElementById('proofProgressBar');
+  const wrap = document.getElementById('proofProgress'), bar = document.getElementById('proofProgressBar');
   if(wrap && bar){ wrap.classList.add('show'); bar.style.width = pct + '%'; }
 }
 function hideProofProgress(){
-  const wrap = document.getElementById('proofProgress');
-  const bar = document.getElementById('proofProgressBar');
+  const wrap = document.getElementById('proofProgress'), bar = document.getElementById('proofProgressBar');
   if(wrap && bar){ setTimeout(() => { wrap.classList.remove('show'); bar.style.width = '0'; }, 300); }
 }
 
 function renderProofPreview(){
   const wrap = document.getElementById('proofPreviewWrap');
-  if(!currentProof){ wrap.innerHTML = ''; return; }
+  if(!wrap) return;
 
-  const isImg = currentProof.type.startsWith('image/');
-  const thumb = isImg
-    ? `<img src="${currentProof.data}" alt="Proof">`
-    : `<div class="pdf-ico">📄</div>`;
-
-  wrap.innerHTML = `
-    <div class="upload-preview">
-      ${thumb}
-      <div class="meta">
-        <div class="name">${escapeHtml(currentProof.name)}</div>
-        <div class="size">${formatBytes(currentProof.size)}</div>
+  // Si un nouveau justif est sélectionné
+  if(currentProof){
+    const isImg = currentProof.type.startsWith('image/');
+    const thumb = isImg
+      ? `<img src="${currentProof.data}" alt="Proof">`
+      : `<div class="pdf-ico">📄</div>`;
+    wrap.innerHTML = `
+      <div class="upload-preview">
+        ${thumb}
+        <div class="meta">
+          <div class="name">${escapeHtml(currentProof.name)}</div>
+          <div class="size">${formatBytes(currentProof.size)}${existingProofId ? ' · <strong>Nouveau</strong>' : ''}</div>
+        </div>
+        <button class="del" onclick="removeProof()" title="Retirer">✕</button>
       </div>
-      <button class="del" onclick="removeProof()" title="Retirer">✕</button>
-    </div>
-  `;
+    `;
+    return;
+  }
+
+  // Sinon si un justif existant est chargé (mode édition)
+  if(existingProofData){
+    const p = existingProofData;
+    const isImg = (p.type || '').startsWith('image/');
+    const thumb = isImg
+      ? `<img src="${p.data}" alt="Proof">`
+      : `<div class="pdf-ico">📄</div>`;
+    wrap.innerHTML = `
+      <div class="upload-preview">
+        ${thumb}
+        <div class="meta">
+          <div class="name">${escapeHtml(p.name || 'Justificatif')}</div>
+          <div class="size">${formatBytes(p.size || 0)} · <strong style="color:#c9a227">Actuel</strong></div>
+        </div>
+        <div style="display:flex;gap:5px;flex-shrink:0">
+          <button class="del" style="background:#dcf5c4;color:#3d6b3d" onclick="downloadProof('${existingProofId}','${escapeHtml(p.name || '')}')" title="Télécharger">⬇️</button>
+          <button class="del" onclick="removeExistingProof()" title="Supprimer">✕</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  wrap.innerHTML = '';
 }
 
 function removeProof(){
   currentProof = null;
-  document.getElementById('proofPreviewWrap').innerHTML = '';
+  renderProofPreview();
+}
+function removeExistingProof(){
+  if(!confirm('Supprimer le justificatif existant ?')) return;
+  existingProofId = null;
+  existingProofData = null;
+  renderProofPreview();
 }
 
-// ✅ Ouvrir la visionneuse plein écran
-function viewProof(proofId, name, type){
+// ============================================================
+// ============ TÉLÉCHARGEMENT JUSTIFICATIF ===================
+// ============================================================
+function downloadProof(proofId, name){
+  window.fbOnValue(window.fbRef(window.db, 'caisse/proofs/' + proofId), snap => {
+    const proof = snap.val();
+    if(!proof){ toast('Justificatif introuvable', 'error'); return; }
+    
+    const a = document.createElement('a');
+    a.href = proof.data;
+    a.download = name || proof.name || ('justificatif_' + proofId);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    toast('📥 Téléchargement de ' + (name || proof.name || 'justificatif'));
+  }, { onlyOnce: true });
+}
+
+function downloadCurrentProof(){
+  if(!currentViewerProofId){ toast('Aucun justificatif', 'error'); return; }
+  downloadProof(currentViewerProofId, currentViewerProofName);
+}
+
+// ============================================================
+// ==================== VISIONNEUSE ===========================
+// ============================================================
+function viewProof(proofId, name){
   const body = document.getElementById('proofViewerBody');
   const title = document.getElementById('proofViewerTitle');
   title.textContent = '📎 ' + (name || 'Justificatif');
+  
+  // Sauvegarder pour le bouton télécharger
+  currentViewerProofId = proofId;
+  currentViewerProofName = name || '';
 
-  // Chercher le justificatif dans Firebase
   window.fbOnValue(window.fbRef(window.db, 'caisse/proofs/' + proofId), snap => {
     const proof = snap.val();
     if(!proof){ body.innerHTML = '<p style="color:#fff;padding:20px">Justificatif introuvable</p>'; return; }
-
     if((proof.type || '').startsWith('image/')){
-      body.innerHTML = `<img src="${proof.data}" alt="${escapeHtml(name)}">`;
+      body.innerHTML = `<img src="${proof.data}" alt="">`;
     } else if(proof.type === 'application/pdf'){
       body.innerHTML = `<iframe src="${proof.data}"></iframe>`;
     } else {
@@ -870,6 +940,8 @@ function viewProof(proofId, name, type){
 function closeProofViewer(){
   document.getElementById('proofViewerModal').classList.remove('show');
   document.getElementById('proofViewerBody').innerHTML = '';
+  currentViewerProofId = null;
+  currentViewerProofName = null;
 }
 
 // ============================================================
@@ -1079,6 +1151,7 @@ function setFilter(btn, filter){
   currentFilter = filter;
   renderDashboard();
 }
+
 function resetForm(){
   document.getElementById('fMontant').value = '';
   document.getElementById('fPersonne').value = '';
@@ -1089,12 +1162,19 @@ function resetForm(){
   document.getElementById('fNotes').value = '';
   document.getElementById('fNoteEntree').value = '';
   document.getElementById('fDate').value = getLocalDateTime();
-  removeProof(); // ✅ Vider le justificatif
+  currentProof = null;
+  existingProofId = null;
+  existingProofData = null;
+  renderProofPreview();
+
+  if(editingTxId) exitEditMode();
 }
+
 function getLocalDateTime(){
   const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
   return d.toISOString().slice(0, 16);
 }
+
 function resetHistoriqueFilters(){
   document.getElementById('hDateFrom').value = '';
   document.getElementById('hDateTo').value = '';
@@ -1103,7 +1183,72 @@ function resetHistoriqueFilters(){
 }
 
 // ============================================================
-// ==================== SAVE TRANSACTION ======================
+// ============ MODE ÉDITION ==================================
+// ============================================================
+function enterEditMode(tx){
+  editingTxId = tx.id;
+
+  document.getElementById('editBanner').style.display = 'flex';
+  document.getElementById('editBannerNum').textContent = 'N° ' + tx.numero;
+  document.getElementById('formPageTitle').innerHTML = '✏️ Modifier l\'opération';
+  document.getElementById('btnSave').innerHTML = '💾 Enregistrer les modifications';
+  document.getElementById('btnCancelEdit').style.display = 'flex';
+
+  selectType(tx.type);
+
+  document.getElementById('fMontant').value = tx.montant || '';
+  document.getElementById('fPersonne').value = tx.personne || '';
+  document.getElementById('fDate').value = toLocalInputValue(tx.date || tx.createdAt);
+
+  if(tx.type === 'sortie'){
+    document.getElementById('fMotif').value = tx.motif || '';
+    document.getElementById('fBeneficiaire').value = tx.beneficiaire || '';
+    document.getElementById('fMode').value = tx.mode || 'Espèce';
+    document.getElementById('fReference').value = tx.reference || '';
+    document.getElementById('fNotes').value = tx.notes || '';
+  } else {
+    document.getElementById('fNoteEntree').value = tx.notes || '';
+  }
+
+  currentProof = null;
+  existingProofId = tx.proofId || null;
+  existingProofData = null;
+
+  if(existingProofId){
+    window.fbOnValue(window.fbRef(window.db, 'caisse/proofs/' + existingProofId), snap => {
+      existingProofData = snap.val();
+      renderProofPreview();
+    }, { onlyOnce: true });
+  } else {
+    renderProofPreview();
+  }
+
+  navigate('nouvelle');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function exitEditMode(){
+  editingTxId = null;
+  document.getElementById('editBanner').style.display = 'none';
+  document.getElementById('formPageTitle').innerHTML = '➕ Nouvelle opération';
+  document.getElementById('btnSave').innerHTML = '💾 Enregistrer & Voir le bon';
+  document.getElementById('btnCancelEdit').style.display = 'none';
+}
+
+function cancelEdit(){
+  if(!confirm('Annuler les modifications ?')) return;
+  resetForm();
+  navigate('historique');
+}
+
+function toLocalInputValue(iso){
+  if(!iso) return getLocalDateTime();
+  const d = new Date(iso); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 16);
+}
+
+// ============================================================
+// ============ SAVE (création OU modification) ================
 // ============================================================
 async function saveTransaction(){
   const montant = parseFloat(document.getElementById('fMontant').value);
@@ -1125,10 +1270,13 @@ async function saveTransaction(){
     const reference = document.getElementById('fReference').value.trim();
     const notes = document.getElementById('fNotes').value.trim();
     if(!motif){ toast('Motif obligatoire pour un retrait', 'error'); return; }
-    const solde = getSolde();
+
+    const txsForSolde = editingTxId ? transactions.filter(t => t.id !== editingTxId) : transactions;
+    const solde = txsForSolde.reduce((s, t) => s + (t.type === 'entree' ? Number(t.montant || 0) : -Number(t.montant || 0)), 0);
     if(montant > solde){
-      if(!confirm(`⚠️ Retrait (${fmtMontantDH(montant)}) > Solde (${fmtMontantDH(solde)})\n\nContinuer quand même ?`)) return;
+      if(!confirm(`⚠️ Retrait (${fmtMontantDH(montant)}) > Solde disponible (${fmtMontantDH(solde)})\n\nContinuer quand même ?`)) return;
     }
+
     txData = { type: 'sortie', montant: Number(montant), personne, motif, beneficiaire, mode, reference, notes, date: new Date(dateVal).toISOString() };
   }
 
@@ -1136,39 +1284,71 @@ async function saveTransaction(){
   btn.disabled = true; btn.textContent = '⏳ Enregistrement...';
 
   try {
-    // ✅ 1) Sauvegarder le justificatif séparément si présent
-    let proofId = null;
+    let proofId = existingProofId;
+    let proofName = existingProofData ? (existingProofData.name || '') : '';
+    let proofType = existingProofData ? (existingProofData.type || '') : '';
+
     if(currentProof){
-      proofId = 'PROOF-' + Date.now();
-      await window.fbSet(window.fbRef(window.db, 'caisse/proofs/' + proofId), {
+      if(existingProofId){
+        try { await window.fbRemove(window.fbRef(window.db, 'caisse/proofs/' + existingProofId)); } catch(e){}
+      }
+      const newProofId = 'PROOF-' + Date.now();
+      await window.fbSet(window.fbRef(window.db, 'caisse/proofs/' + newProofId), {
         data: currentProof.data,
         name: currentProof.name,
         type: currentProof.type,
         size: currentProof.size,
         createdAt: new Date().toISOString()
       });
+      proofId = newProofId;
+      proofName = currentProof.name;
+      proofType = currentProof.type;
+    }
+    else if(!existingProofId && editingTxId){
+      const original = transactions.find(t => t.id === editingTxId);
+      if(original && original.proofId){
+        try { await window.fbRemove(window.fbRef(window.db, 'caisse/proofs/' + original.proofId)); } catch(e){}
+      }
+      proofId = null; proofName = ''; proofType = '';
     }
 
-    // ✅ 2) Créer la transaction avec référence au justificatif
-    const id = 'TX-' + Date.now();
-    const numero = (currentType === 'entree' ? 'DEP-' : 'RET-') + new Date().getFullYear() + '-' + String(transactions.length + 1).padStart(4, '0');
-    const tx = {
-      id, numero, ...txData,
-      proofId,
-      proofName: currentProof ? currentProof.name : '',
-      proofType: currentProof ? currentProof.type : '',
-      createdAt: new Date().toISOString()
-    };
+    let tx;
+    if(editingTxId){
+      const original = transactions.find(t => t.id === editingTxId);
+      const updates = {
+        ...txData,
+        proofId: proofId,
+        proofName: proofName,
+        proofType: proofType,
+        updatedAt: new Date().toISOString()
+      };
+      await window.fbUpdate(window.fbRef(window.db, 'caisse/transactions/' + editingTxId), updates);
+      tx = { ...original, ...updates, id: editingTxId };
+      toast('✅ Opération modifiée');
+    } else {
+      const id = 'TX-' + Date.now();
+      const numero = (currentType === 'entree' ? 'DEP-' : 'RET-') + new Date().getFullYear() + '-' + String(transactions.length + 1).padStart(4, '0');
+      tx = {
+        id, numero, ...txData,
+        proofId: proofId,
+        proofName: proofName,
+        proofType: proofType,
+        createdAt: new Date().toISOString()
+      };
+      await window.fbSet(window.fbRef(window.db, 'caisse/transactions/' + id), tx);
+      toast(currentType === 'entree' ? '✅ Dépôt enregistré' : '✅ Retrait enregistré');
+    }
 
-    await window.fbSet(window.fbRef(window.db, 'caisse/transactions/' + id), tx);
+    const wasEditing = !!editingTxId;
+    if(wasEditing) exitEditMode();
     resetForm();
-    toast(currentType === 'entree' ? '✅ Dépôt enregistré' : '✅ Retrait enregistré');
+
     setTimeout(() => previewBon(tx), 300);
   } catch(e){
     toast('Erreur: ' + e.message, 'error');
   } finally {
     btn.disabled = false;
-    btn.textContent = '💾 Enregistrer & Voir le bon';
+    if(!editingTxId) btn.textContent = '💾 Enregistrer & Voir le bon';
   }
 }
 
@@ -1184,7 +1364,6 @@ function previewBon(txOrId){
   pendingPrintTx = t;
   const isIn = t.type === 'entree';
 
-  // ✅ Charger le justificatif si présent
   if(t.proofId){
     window.fbOnValue(window.fbRef(window.db, 'caisse/proofs/' + t.proofId), snap => {
       const proof = snap.val();
@@ -1215,18 +1394,12 @@ function buildBonHTML(t, isIn, proof){
   const socNom = settings.societeNom || 'TAMA';
   const socSous = settings.sousTitre || 'Gestion de Caisse';
 
-  // ✅ Bloc justificatif
   let proofHTML = '';
   if(proof){
     if((proof.type || '').startsWith('image/')){
-      proofHTML = `<div class="bon-proof">
-        <img src="${proof.data}" alt="Justificatif">
-        <div class="txt">📎 Justificatif joint<small>${escapeHtml(proof.name || '')}</small></div>
-      </div>`;
+      proofHTML = `<div class="bon-proof"><img src="${proof.data}" alt=""><div class="txt">📎 Justificatif joint<small>${escapeHtml(proof.name || '')}</small></div></div>`;
     } else {
-      proofHTML = `<div class="bon-proof">
-        <div class="txt">📄 Justificatif joint<small>${escapeHtml(proof.name || 'Document PDF')}</small></div>
-      </div>`;
+      proofHTML = `<div class="bon-proof"><div class="txt">📄 Justificatif joint<small>${escapeHtml(proof.name || 'Document PDF')}</small></div></div>`;
     }
   }
 
@@ -1260,7 +1433,6 @@ function printBon(txOrId){
   if(!t){ toast('Opération introuvable', 'error'); return; }
   const isIn = t.type === 'entree';
 
-  // ✅ Charger le justificatif puis imprimer
   const doPrint = (proof) => {
     const bon1 = buildBonCopy(t, isIn, proof, 'first');
     const bon2 = buildBonCopy(t, isIn, proof, 'second');
@@ -1310,15 +1482,18 @@ function viewTransaction(id){
     `;
   }
   if(t.notes) details += `<div class="detail-row"><span class="lbl">Note</span><span class="val" style="font-weight:500">${escapeHtml(t.notes)}</span></div>`;
+  if(t.updatedAt) details += `<div class="detail-row"><span class="lbl" style="color:#c9a227">✏️ Modifié le</span><span class="val" style="color:#c9a227;font-weight:500">${formatDate(t.updatedAt)}</span></div>`;
 
-  // ✅ Bloc justificatif
   let proofHTML = '';
   if(t.proofId){
     proofHTML = `
       <div style="margin-top:15px;padding:12px;background:#fef9e8;border-left:4px solid #c9a227;border-radius:10px">
         <div style="font-size:11px;color:#78350f;font-weight:700;text-transform:uppercase;margin-bottom:6px">📎 Justificatif joint</div>
         <div style="font-size:13px;font-weight:700;color:#1a3a1a;margin-bottom:8px">${escapeHtml(t.proofName || 'Document')}</div>
-        <button class="btn btn-primary" style="padding:8px;font-size:12px" onclick="closeModal();setTimeout(()=>viewProof('${t.proofId}','${escapeHtml(t.proofName||'')}','${t.proofType||''}'),200)">👁 Voir le justificatif</button>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-primary" style="padding:8px;font-size:12px;flex:1" onclick="closeModal();setTimeout(()=>viewProof('${t.proofId}','${escapeHtml(t.proofName||'')}'),200)">👁 Voir</button>
+          <button class="btn btn-success" style="padding:8px;font-size:12px;flex:1" onclick="downloadProof('${t.proofId}','${escapeHtml(t.proofName||'')}')">⬇️ Télécharger</button>
+        </div>
       </div>
     `;
   }
@@ -1336,9 +1511,10 @@ function viewTransaction(id){
   `;
 
   const foot = `
-    <button class="btn btn-secondary" onclick="closeModal()">Fermer</button>
-    <button class="btn btn-primary" onclick="closeModal();setTimeout(()=>previewBon('${t.id}'),200)">👁 Voir le bon</button>
-    <button class="btn btn-danger" onclick="deleteTransaction('${t.id}')">🗑</button>
+    <button class="btn btn-secondary" onclick="closeModal()" style="flex:0.6">Fermer</button>
+    <button class="btn btn-warning" onclick="closeModal();setTimeout(()=>{enterEditMode(transactions.find(x=>x.id==='${t.id}'))},200)" title="Modifier">✏️ Modifier</button>
+    <button class="btn btn-primary" onclick="closeModal();setTimeout(()=>previewBon('${t.id}'),200)" style="flex:0.8">👁 Bon</button>
+    <button class="btn btn-danger" onclick="deleteTransaction('${t.id}')" style="flex:0.3">🗑</button>
   `;
   openModal('Détails opération', body, foot);
 }
@@ -1348,9 +1524,8 @@ async function deleteTransaction(id){
   if(!t) return;
   if(!confirm(`Supprimer ${t.numero} ?\n\n${t.motif} — ${fmtMontantDH(t.montant)}`)) return;
   try {
-    // ✅ Supprimer aussi le justificatif
     if(t.proofId){
-      await window.fbRemove(window.fbRef(window.db, 'caisse/proofs/' + t.proofId));
+      try { await window.fbRemove(window.fbRef(window.db, 'caisse/proofs/' + t.proofId)); } catch(e){}
     }
     await window.fbRemove(window.fbRef(window.db, 'caisse/transactions/' + id));
     closeModal();
@@ -1405,7 +1580,6 @@ function openPdfDialog(){
   updatePdfInfo();
   document.getElementById('pdfModal').classList.add('show');
 }
-
 function setPdfPeriod(period){
   const today = new Date(); const y = today.getFullYear(); const m = today.getMonth();
   let from = '', to = '';
@@ -1427,14 +1601,12 @@ function setPdfPeriod(period){
   document.getElementById('pdfDateTo').value = to;
   updatePdfInfo();
 }
-
 function selectPdfType(type, el){
   pdfTypeFilter = type;
   document.querySelectorAll('#pdfModal .pdf-opt').forEach(o => o.classList.remove('selected'));
   el.classList.add('selected');
   updatePdfInfo();
 }
-
 function getPdfFilteredList(){
   const from = document.getElementById('pdfDateFrom').value;
   const to = document.getElementById('pdfDateTo').value;
@@ -1446,7 +1618,6 @@ function getPdfFilteredList(){
   list.sort((a,b) => new Date(a.date || a.createdAt) - new Date(b.date || b.createdAt));
   return list;
 }
-
 function updatePdfInfo(){
   const list = getPdfFilteredList();
   const totalIn = list.filter(t => t.type === 'entree').reduce((s,t) => s + Number(t.montant || 0), 0);
@@ -1460,7 +1631,6 @@ function updatePdfInfo(){
     el.innerHTML = `${list.length} opération(s) · 📥 ${fmtMontant(totalIn)} DH · 📤 ${fmtMontant(totalOut)} DH`;
   }
 }
-
 function generatePDF(){
   if(!window.jspdf || !window.jspdf.jsPDF){ toast('Bibliothèque PDF en cours de chargement...', 'warning'); return; }
   const list = getPdfFilteredList();
@@ -1476,7 +1646,6 @@ function generatePDF(){
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
   const pageW = 210, pageH = 297, margin = 12;
 
-  // HEADER
   doc.setFillColor(26, 58, 26); doc.rect(0, 0, pageW, 32, 'F');
   doc.setFillColor(201, 162, 39); doc.rect(0, 32, pageW, 1.5, 'F');
   if(settings.logo){ try { doc.addImage(settings.logo, 'PNG', margin, 4, 24, 24); } catch(e){} }
