@@ -171,30 +171,32 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 .preview-tip{text-align:center;font-size:12px;color:#5a6b5a;margin-bottom:12px;font-weight:600}
 
 /* ============================================================
-   BON DE LIVRAISON (papier)
+   BON DE LIVRAISON (papier) — Responsive + A4 strict
    ============================================================ */
 .bl-paper {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 11px;
   color: #1a1a1a;
   background: #fff;
-  width: 190mm;
+  width: 100%;
+  max-width: 190mm;
   min-height: 260mm;
   padding: 0;
   position: relative;
   line-height: 1.35;
   box-shadow: 0 2px 15px rgba(0,0,0,.15);
+  overflow-x: hidden;
 }
 
-/* ✅ HEADER avec logo SANS CADRE */
 .bl-paper .bl-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8mm;
+  margin-bottom: 6mm;
   position: relative;
-  padding: 4mm 0;
-  min-height: 25mm;
+  padding: 3mm 0;
+  min-height: 22mm;
+  gap: 10px;
 }
 
 .bl-paper .bl-logo-block {
@@ -203,12 +205,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
   gap: 8px;
   z-index: 2;
   position: relative;
+  min-width: 0;
 }
 
-/* ✅ Logo SANS cadre, SANS fond, taille contrôlée */
 .bl-paper .bl-logo {
-  width: 24mm;
-  height: 24mm;
+  width: 22mm;
+  height: 22mm;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -228,20 +230,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 }
 
 .bl-paper .bl-logo-emoji {
-  font-size: 28px;
+  font-size: 26px;
   line-height: 1;
   display: inline-block;
 }
 
-/* ✅ Texte TAMA à côté du logo */
 .bl-paper .bl-logo-text {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  min-width: 0;
 }
 
 .bl-paper .bl-logo-text h1 {
-  font-size: 18px;
+  font-size: 16px;
   color: #5CB531;
   letter-spacing: 1px;
   font-weight: 900;
@@ -255,13 +257,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
   margin-top: 2px;
 }
 
-/* Bannière verte décorative (positionnée, ne dépasse pas) */
 .bl-paper .bl-banner {
   position: absolute;
-  top: -4mm;
-  right: -4mm;
-  width: 60mm;
-  height: 12mm;
+  top: -3mm;
+  right: -3mm;
+  width: 55mm;
+  height: 11mm;
   background: linear-gradient(135deg, #5CB531 0%, #3d7a20 100%);
   transform: skewY(-8deg);
   transform-origin: top right;
@@ -279,41 +280,43 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 
 .bl-paper .bl-doc-title {
   text-align: center;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 900;
-  letter-spacing: 6px;
+  letter-spacing: 5px;
   color: #1a1a1a;
-  margin: 6mm 0 5mm;
+  margin: 5mm 0 4mm;
   text-transform: uppercase;
 }
+
 .bl-paper .bl-info-section {
   display: grid;
   grid-template-columns: 1fr 1.5fr;
-  gap: 5mm;
-  margin-bottom: 5mm;
+  gap: 4mm;
+  margin-bottom: 4mm;
 }
-.bl-paper .bl-info-left { display: flex; flex-direction: column; gap: 3mm; }
+.bl-paper .bl-info-left { display: flex; flex-direction: column; gap: 2.5mm; }
 .bl-paper .bl-info-box {
   border: 1.5px solid #2a2a2a;
   border-radius: 10px;
-  padding: 3mm 4mm;
+  padding: 2.5mm 3.5mm;
   background: #fff;
+  min-width: 0;
 }
 .bl-paper .bl-info-box .bl-row {
-  display: flex; justify-content: space-between; align-items: center; gap: 3mm; font-size: 10px;
+  display: flex; justify-content: space-between; align-items: center; gap: 2mm; font-size: 10px; flex-wrap: wrap;
 }
-.bl-paper .bl-info-box .bl-row .label { color: #555; font-weight: 700; }
+.bl-paper .bl-info-box .bl-row .label { color: #555; font-weight: 700; white-space: nowrap; }
 .bl-paper .bl-info-box .bl-row .value { font-weight: 800; color: #1a1a1a; }
 .bl-paper .bl-info-box .bl-num {
-  text-align: center; font-size: 12px; padding: 2mm 0;
+  text-align: center; font-size: 12px; padding: 1.5mm 0;
 }
 .bl-paper .bl-info-box .bl-num .prefix { color: #555; font-weight: 700; font-size: 10px; }
-.bl-paper .bl-info-box .bl-num .num { color: #1a1a1a; font-weight: 900; margin-left: 6px; font-size: 13px; }
+.bl-paper .bl-info-box .bl-num .num { color: #1a1a1a; font-weight: 900; margin-left: 4px; font-size: 13px; }
 
 .bl-paper .bl-client-box {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 5mm; padding: 4mm;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2.5mm 4mm; padding: 3mm;
 }
-.bl-paper .bl-client-box .field { display: flex; flex-direction: column; gap: 1mm; }
+.bl-paper .bl-client-box .field { display: flex; flex-direction: column; gap: 1mm; min-width: 0; }
 .bl-paper .bl-client-box .field .label {
   font-size: 8px; color: #555; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
 }
@@ -322,43 +325,47 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 }
 .bl-paper .bl-client-box .field.full { grid-column: 1 / -1; }
 
+/* Tableau */
 .bl-paper .bl-items-table {
   display: grid;
-  grid-template-columns: 22mm 1fr 14mm 20mm 18mm 15mm 22mm;
-  gap: 1.5mm;
-  margin-top: 4mm;
-  margin-bottom: 4mm;
+  grid-template-columns: 22mm 1fr 14mm 18mm 16mm 13mm 20mm;
+  gap: 1.2mm;
+  margin-top: 3mm;
+  margin-bottom: 3mm;
+  width: 100%;
 }
 .bl-paper .bl-items-table.no-prix {
-  grid-template-columns: 22mm 1fr 18mm 25mm;
+  grid-template-columns: 22mm 1fr 16mm 22mm;
 }
 .bl-paper .bl-col-box {
   border: 1.5px solid #2a2a2a;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
-  min-height: 45mm;
+  min-height: 40mm;
   background: #fff;
   overflow: hidden;
+  min-width: 0;
 }
 .bl-paper .bl-col-header {
   font-weight: 800;
-  font-size: 9px;
+  font-size: 8.5px;
   text-align: center;
-  padding: 2mm 1mm;
+  padding: 1.5mm 0.5mm;
   color: #1a1a1a;
   text-transform: uppercase;
   letter-spacing: 0.3px;
   border-bottom: 1px dashed #e8e8e8;
   background: #fafcfa;
-}
-.bl-paper .bl-col-body { flex: 1; display: flex; flex-direction: column; padding: 1mm 0; }
-.bl-paper .bl-cell {
-  padding: 1.8mm 2mm;
-  font-size: 10px;
-  line-height: 1.4;
   word-break: break-word;
-  min-height: 7mm;
+}
+.bl-paper .bl-col-body { flex: 1; display: flex; flex-direction: column; padding: 0.8mm 0; }
+.bl-paper .bl-cell {
+  padding: 1.5mm 1.5mm;
+  font-size: 9.5px;
+  line-height: 1.35;
+  word-break: break-word;
+  min-height: 6.5mm;
   display: flex;
   align-items: center;
 }
@@ -376,19 +383,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 3mm;
+  gap: 2.5mm;
   margin-top: 3mm;
-  margin-bottom: 6mm;
+  margin-bottom: 5mm;
 }
 .bl-paper .bl-total-box {
   border: 1.5px solid #2a2a2a;
   border-radius: 10px;
-  padding: 2.5mm 5mm;
-  min-width: 70mm;
+  padding: 2mm 4mm;
+  min-width: 65mm;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 6mm;
+  gap: 5mm;
   background: #fff;
 }
 .bl-paper .bl-total-box .label {
@@ -405,67 +412,70 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 .bl-paper .bl-total-box.ttc .label { color: #3d7a20; font-size: 10px; }
 .bl-paper .bl-total-box.ttc .value { font-size: 14px; font-weight: 900; }
 
-/* ✅ 3 CACHETS */
+/* 3 CACHETS */
 .bl-paper .bl-signatures {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 5mm;
-  margin-top: 8mm;
-  margin-bottom: 6mm;
+  gap: 4mm;
+  margin-top: 6mm;
+  margin-bottom: 5mm;
 }
 .bl-paper .bl-sig-box {
   border: 1.5px solid #2a2a2a;
   border-radius: 10px;
-  padding: 3mm 4mm;
-  min-height: 32mm;
+  padding: 2.5mm 3mm;
+  min-height: 28mm;
   display: flex;
   flex-direction: column;
   background: #fefefe;
+  min-width: 0;
 }
 .bl-paper .bl-sig-box .sig-title {
-  font-size: 9px;
+  font-size: 8.5px;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.6px;
   color: #1a1a1a;
   text-align: center;
-  padding-bottom: 2mm;
+  padding-bottom: 1.5mm;
   border-bottom: 1px dashed #999;
-  margin-bottom: 2mm;
+  margin-bottom: 1.5mm;
 }
 .bl-paper .bl-sig-box .sig-role {
-  font-size: 8.5px;
+  font-size: 8px;
   color: #555;
   text-align: center;
   font-weight: 700;
-  margin-bottom: 2mm;
+  margin-bottom: 1.5mm;
   text-transform: uppercase;
 }
 .bl-paper .bl-sig-box .sig-space {
   flex: 1;
-  min-height: 15mm;
+  min-height: 12mm;
   border-bottom: 1px solid #666;
   position: relative;
 }
 .bl-paper .bl-sig-box .sig-space::after {
   content: 'Signature & Cachet';
   position: absolute;
-  bottom: 2mm;
+  bottom: 1.5mm;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 8px;
+  font-size: 7.5px;
   color: #bbb;
   font-style: italic;
+  white-space: nowrap;
 }
 .bl-paper .bl-sig-box .sig-name {
-  font-size: 8.5px;
+  font-size: 8px;
   color: #666;
   text-align: center;
-  margin-top: 2mm;
+  margin-top: 1.5mm;
 }
 
+/* Footer — ✅ AUCUN LIEN, AUCUNE URL */
 .bl-paper .bl-footer {
-  margin-top: 6mm;
+  margin-top: 5mm;
   padding-top: 3mm;
 }
 .bl-paper .bl-footer .separator {
@@ -474,31 +484,120 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
 .bl-paper .bl-footer .logo-line { text-align: center; margin-bottom: 2.5mm; }
 .bl-paper .bl-footer .tama-logo {
   display: inline-flex; align-items: center; gap: 6px;
-  font-size: 16px; font-weight: 900; color: #5CB531; letter-spacing: 3px;
+  font-size: 15px; font-weight: 900; color: #5CB531; letter-spacing: 3px;
 }
 .bl-paper .bl-footer .info-line {
-  text-align: center; font-size: 8.5px; color: #555; line-height: 1.7; padding: 0 4mm;
+  text-align: center; font-size: 8px; color: #555; line-height: 1.7; padding: 0 3mm;
+  word-break: break-word;
 }
 .bl-paper .bl-footer .info-line .lbl { color: #5CB531; font-weight: 800; }
 .bl-paper .bl-footer .info-line .sep { color: #bbb; margin: 0 4px; }
 
 /* ============================================================
-   PRINT
+   RESPONSIVE — Mobile : la facture s'adapte à l'écran
    ============================================================ */
-.print-area{display:none}
-@media print{
-  @page{ size: A4 portrait; margin: 10mm; }
-  html,body{ background:#fff !important; padding:0 !important; margin:0 !important; width:auto; height:auto; }
-  body>*:not(.print-area){ display:none !important; }
-  .print-area{ display:block !important; }
-  .print-area .bl-paper{
-    width: 190mm;
+@media screen and (max-width: 640px) {
+  .preview-wrapper { padding: 8px; }
+  .bl-paper {
     min-height: auto;
+    padding: 10px;
+    font-size: 10px;
+    max-width: 100%;
     box-shadow: none;
+  }
+  .bl-paper .bl-header { margin-bottom: 4mm; }
+  .bl-paper .bl-logo { width: 18mm; height: 18mm; }
+  .bl-paper .bl-logo-text h1 { font-size: 14px; }
+  .bl-paper .bl-doc-title { font-size: 16px; letter-spacing: 3px; margin: 4mm 0 3mm; }
+  .bl-paper .bl-info-section { grid-template-columns: 1fr; gap: 3mm; }
+  .bl-paper .bl-client-box { grid-template-columns: 1fr; gap: 2mm 4mm; }
+  .bl-paper .bl-client-box .field.full { grid-column: 1; }
+  .bl-paper .bl-items-table { grid-template-columns: 1fr !important; gap: 4px; }
+  .bl-paper .bl-col-box { min-height: auto; }
+  .bl-paper .bl-col-header { padding: 1.5mm; font-size: 9px; }
+  .bl-paper .bl-cell { padding: 1.5mm; min-height: auto; }
+  .bl-paper .bl-total-box { min-width: auto; width: 100%; padding: 2mm 3mm; }
+  .bl-paper .bl-totals { align-items: stretch; }
+  .bl-paper .bl-signatures { grid-template-columns: 1fr; gap: 3mm; }
+  .bl-paper .bl-sig-box { min-height: 22mm; }
+  .bl-paper .bl-footer .info-line { font-size: 7.5px; }
+}
+
+/* ============================================================
+   PRINT — A4 strict, 1 feuille, pas de dépassement
+   ============================================================ */
+.print-area { display: none; }
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+
+  html, body {
+    background: #fff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Cacher TOUT sauf la zone d'impression */
+  body > *:not(.print-area) {
+    display: none !important;
+  }
+
+  .print-area {
+    display: block !important;
+    width: 100%;
+    margin: 0;
     padding: 0;
+  }
+
+  /* ✅ LA FEUILLE : largeur fixe A4 - marges, hauteur auto */
+  .print-area .bl-paper {
+    width: 190mm !important;    /* A4 (210) - 2×10mm marges */
+    max-width: 190mm !important;
+    min-height: 0 !important;   /* ✅ plus de min-height qui déborde */
+    height: auto !important;    /* ✅ hauteur selon contenu */
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    font-size: 10.5px;
     page-break-after: always;
   }
-  .print-area .bl-paper:last-child{ page-break-after: auto; }
+
+  /* ✅ Une seule page : pas de saut après la dernière */
+  .print-area .bl-paper:last-child {
+    page-break-after: auto;
+  }
+
+  /* Tableau adapté pour A4 */
+  .print-area .bl-items-table {
+    grid-template-columns: 24mm 1fr 14mm 18mm 17mm 13mm 21mm !important;
+    gap: 1.2mm !important;
+  }
+  .print-area .bl-items-table.no-prix {
+    grid-template-columns: 24mm 1fr 16mm 22mm !important;
+  }
+
+  /* Éviter les coupures à l'intérieur des blocs */
+  .print-area .bl-col-box,
+  .print-area .bl-sig-box,
+  .print-area .bl-total-box,
+  .print-area .bl-info-box,
+  .print-area .bl-header,
+  .print-area .bl-footer {
+    page-break-inside: avoid;
+  }
+
+  .print-area .bl-signatures {
+    page-break-inside: avoid;
+  }
+
+  /* ✅ Conserver les couleurs en impression */
   .bl-paper .bl-banner,
   .bl-paper .bl-total-box.ttc,
   .bl-paper .bl-footer .separator,
@@ -507,6 +606,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
   .bl-paper .bl-logo-text h1 {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+  }
+
+  /* ✅ Supprimer TOUTE trace de lien/URL */
+  a, a:visited, a:hover, a:active {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+  a::after, a::before {
+    content: none !important;
+  }
+
+  /* ✅ Empêcher l'affichage de l'URL des liens (Chrome/Safari) */
+  a[href]:after {
+    content: "" !important;
   }
 }
 
@@ -805,7 +918,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
         <input id="pEmail" placeholder="contact@tamagricole.com">
       </div>
       <div class="form-group">
-        <label>🖼️ Logo <small style="font-weight:400;color:#7a8a7a;text-transform:none">(sans cadre sur le bon)</small></label>
+        <label>🖼️ Logo</label>
         <div style="text-align:center;margin-bottom:10px">
           <div style="display:inline-block;width:100px;height:100px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:transparent">
             <span id="logoPreviewIcon" style="font-size:50px">📦</span>
@@ -820,7 +933,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-s
   </div>
 </div>
 
-<!-- ZONE D'IMPRESSION -->
+<!-- ✅ ZONE D'IMPRESSION (aucun lien, aucune URL) -->
 <div class="print-area" id="printArea"></div>
 
 <div class="toast" id="toast"><span id="toastMsg"></span></div>
@@ -1584,12 +1697,10 @@ function previewBon(bonOrId){
   document.getElementById('previewModal').classList.add('show');
 }
 
-// ✅ Construit le BL HTML
 function buildBLHTML(b){
   const lignes = b.lignes || [];
   const hasPrices = b.showPrices !== false;
 
-  // ✅ Logo SANS cadre
   const logoHTML = settings.logo
     ? `<div class="bl-logo"><img src="${settings.logo}" alt="Logo"></div>`
     : `<div class="bl-logo"><span class="bl-logo-emoji">📦</span></div>`;
@@ -1597,7 +1708,6 @@ function buildBLHTML(b){
   const socNom = settings.societeNom || 'TAMA';
   const socSous = settings.sousTitre || 'Trade and Marketing Agricole';
 
-  // Lignes
   let colRefHTML = '', colDesigHTML = '', colUniteHTML = '', colQteHTML = '', colPuHTML = '', colRemiseHTML = '', colMontantHTML = '';
   lignes.forEach(l => {
     const m = computeLigne(l);
@@ -1612,7 +1722,6 @@ function buildBLHTML(b){
     }
   });
 
-  // Tableau
   const tableHTML = hasPrices
     ? `<section class="bl-items-table">
         <div class="bl-col-box bl-col-ref"><div class="bl-col-header">Référence</div><div class="bl-col-body">${colRefHTML}</div></div>
@@ -1630,7 +1739,6 @@ function buildBLHTML(b){
         <div class="bl-col-box bl-col-qte"><div class="bl-col-header">Qté</div><div class="bl-col-body">${colQteHTML}</div></div>
       </section>`;
 
-  // Totaux (si prix visibles) — ✅ SANS ARRÊTÉ EN LETTRES
   let totauxHTML = '';
   if(hasPrices){
     const { ht, tva, ttc } = computeTotaux(lignes);
@@ -1721,7 +1829,6 @@ function buildBLHTML(b){
 
       ${b.notes ? `<div style="margin-top:4mm;padding:3mm;border:1px dashed #666;font-size:9.5px;border-radius:6px"><strong>Note :</strong> ${escapeHtml(b.notes)}</div>` : ''}
 
-      <!-- 3 CACHETS -->
       <section class="bl-signatures">
         <div class="bl-sig-box">
           <div class="sig-title">✍️ Livreur</div>
