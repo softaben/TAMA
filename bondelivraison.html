@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#5CB531">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>TAMA Livraison</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow-x:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:#eef2ee;color:#1a2a1a;padding-bottom:80px}
+
+/* HEADER APP */
+.header{background:linear-gradient(135deg,#3d7a20,#5CB531);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #e8c547;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.header-left{display:flex;align-items:center;gap:10px}
+.header-icon{width:38px;height:38px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;border:2px solid #e8c547}
+.header-icon img{width:100%;height:100%;object-fit:cover}
+.header h1{color:#fff;font-size:17px;letter-spacing:1px}
+.header small{color:#f0f9e8;font-size:9px;letter-spacing:1px;display:block}
+
+#loader{position:fixed;inset:0;background:linear-gradient(135deg,#3d7a20,#5CB531);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;color:#fff;transition:opacity .4s}
+#loader.hidden{opacity:0;pointer-events:none}
+#loader .logo{font-size:60px;animation:bounce 1.5s infinite}
+#loader h1{font-size:24px;letter-spacing:3px}
+#loader p{color:#dcf5c4;font-size:12px}
+#loader .spinner{width:40px;height:40px;border:4px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
+.main{padding:15px;max-width:600px;margin:0 auto}
+.page{display:none}
+.page.active{display:block;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.solde-card{background:linear-gradient(135deg,#3d7a20,#5CB531);color:#fff;border-radius:18px;padding:22px;text-align:center;margin-bottom:18px;box-shadow:0 8px 25px rgba(92,181,49,.3);position:relative;overflow:hidden;border:2px solid #e8c547}
+.solde-card::before{content:'';position:absolute;top:-50px;right:-50px;width:150px;height:150px;background:radial-gradient(circle,rgba(255,255,255,.15),transparent 70%);border-radius:50%}
+.solde-card .lbl{font-size:11px;letter-spacing:2px;color:#f0f9e8;text-transform:uppercase;position:relative;z-index:1}
+.solde-card .amount{font-size:38px;font-weight:800;color:#fff;margin:8px 0;letter-spacing:-1px;position:relative;z-index:1}
+.solde-card .amount small{font-size:18px;font-weight:600}
+.solde-card .date{font-size:12px;color:#f0f9e8;position:relative;z-index:1}
+
+.mini-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.mini-stat{background:#fff;padding:15px;border-radius:14px;box-shadow:0 2px 10px rgba(26,58,26,.06);border-left:4px solid #5CB531}
+.mini-stat.gold{border-left-color:#e8c547}
+.mini-stat small{font-size:11px;color:#5a6b5a;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.mini-stat .val{font-size:20px;font-weight:800;color:#1a3a1a;margin-top:5px}
+
+.sec-title{font-size:14px;color:#1a3a1a;font-weight:700;margin:20px 0 12px;display:flex;align-items:center;gap:8px}
+.sec-title::before{content:'';width:4px;height:18px;background:linear-gradient(180deg,#5CB531,#e8c547);border-radius:2px}
+
+.doc-card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(26,58,26,.06);border-left:4px solid #5CB531;cursor:pointer;transition:.2s}
+.doc-card:active{transform:scale(.98);background:#f9fbf6}
+.doc-card .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+.doc-card .num{font-size:14px;font-weight:800;color:#1a3a1a}
+.doc-card .badge-bl{background:#dcf5c4;color:#3d7a20;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:800}
+.doc-card .badge-noprix{background:#fef3c7;color:#92400e;padding:3px 8px;border-radius:12px;font-size:9px;font-weight:800;margin-left:4px}
+.doc-card .client{font-size:13px;font-weight:700;color:#2d4a2d;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc-card .meta{font-size:11px;color:#7a8a7a;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.doc-card .total{font-size:15px;font-weight:800;color:#5CB531;text-align:right;margin-top:6px;padding-top:6px;border-top:1px dashed #e8f0dc}
+
+.empty{text-align:center;padding:60px 20px;color:#7a8a7a}
+.empty .icon{font-size:60px;margin-bottom:15px;opacity:.4}
+.empty h3{color:#2d4a2d;margin-bottom:5px;font-size:16px}
+
+.filters{display:flex;gap:8px;margin-bottom:15px;overflow-x:auto;padding-bottom:5px;-webkit-overflow-scrolling:touch}
+.filters::-webkit-scrollbar{display:none}
+.filter-btn{padding:9px 16px;border-radius:20px;background:#fff;border:1px solid #d4e0c8;font-size:13px;font-weight:600;color:#4a5a4a;white-space:nowrap;cursor:pointer;flex-shrink:0}
+.filter-btn.active{background:linear-gradient(135deg,#3d7a20,#5CB531);color:#fff;border-color:#5CB531}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #e8f0dc;display:grid;grid-template-columns:repeat(5,1fr);z-index:60;box-shadow:0 -4px 20px rgba(26,58,26,.08);padding-bottom:env(safe-area-inset-bottom)}
+.nav-btn{background:none;border:none;padding:12px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#7a8a7a;font-size:10px;font-weight:700;letter-spacing:.3px;position:relative}
+.nav-btn .ic{font-size:20px;line-height:1;transition:.2s}
+.nav-btn.active{color:#3d7a20}
+.nav-btn.active .ic{transform:scale(1.15)}
+.nav-btn.active::after{content:'';position:absolute;bottom:0;width:26px;height:3px;background:#5CB531;border-radius:2px 2px 0 0}
+.nav-btn.center .ic{background:linear-gradient(135deg,#5CB531,#3d7a20);color:#fff;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 15px rgba(92,181,49,.4);margin-top:-15px;border:3px solid #fff}
+.nav-btn.center.active .ic{transform:scale(1.1)}
+
+.form-card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(26,58,26,.06)}
+.form-group{margin-bottom:15px}
+.form-group label{display:block;font-size:12px;color:#2d4a2d;margin-bottom:7px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.form-group label .req{color:#dc2626}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:14px;border:2px solid #d4e0c8;border-radius:12px;font-size:16px;outline:none;font-family:inherit;background:#f9fbf6;-webkit-appearance:none;transition:.2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#5CB531;background:#fff}
+.form-group textarea{resize:vertical;min-height:70px}
+.form-group small{color:#7a8a7a;font-size:11px;margin-top:4px;display:block}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.toggle-option{display:flex;align-items:center;justify-content:space-between;padding:14px;background:#f9fbf6;border:2px solid #d4e0c8;border-radius:12px;margin-bottom:15px;cursor:pointer;transition:.2s}
+.toggle-option:hover{border-color:#5CB531;background:#f0f9e8}
+.toggle-option .left{display:flex;align-items:center;gap:10px}
+.toggle-option .icon{font-size:22px}
+.toggle-option .label{font-size:13px;font-weight:700;color:#1a3a1a}
+.toggle-option .label small{display:block;font-size:11px;color:#7a8a7a;font-weight:500;margin-top:2px}
+.toggle-switch{position:relative;width:50px;height:28px;background:#d4e0c8;border-radius:14px;transition:.3s;flex-shrink:0}
+.toggle-switch::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 2px 4px rgba(0,0,0,.15)}
+.toggle-switch.on{background:#5CB531}
+.toggle-switch.on::after{transform:translateX(22px)}
+
+.info-banner{background:linear-gradient(135deg,#f0f9e8,#dcf5c4);border-left:4px solid #5CB531;padding:12px 14px;border-radius:10px;margin-bottom:15px;font-size:13px;color:#3d7a20;font-weight:600;display:flex;gap:8px;align-items:center;justify-content:space-between}
+.info-banner .action{background:#5CB531;color:#fff;border:none;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:800;cursor:pointer}
+
+.btn{padding:14px 20px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:.2s;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:linear-gradient(135deg,#3d7a20,#5CB531);color:#fff;box-shadow:0 4px 15px rgba(92,181,49,.3)}
+.btn-success{background:linear-gradient(135deg,#5CB531,#3d7a20);color:#fff;box-shadow:0 4px 15px rgba(92,181,49,.3)}
+.btn-danger{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
+.btn-secondary{background:#e8f0dc;color:#2d4a2d}
+.btn-warning{background:linear-gradient(135deg,#e07c24,#c2410c);color:#fff}
+.btn-sm{padding:8px 12px;font-size:12px;width:auto}
+.btn:disabled{opacity:.5}
+
+.modal{position:fixed;inset:0;background:rgba(26,58,26,.75);display:none;align-items:flex-end;justify-content:center;z-index:200;backdrop-filter:blur(3px)}
+.modal.show{display:flex;animation:fadeIn .2s}
+.modal-box{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;border-top:5px solid #5CB531;animation:slideUp .3s}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-head{padding:18px 20px;border-bottom:2px solid #e8f0dc;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;z-index:10}
+.modal-head h3{font-size:17px;color:#1a3a1a}
+.modal-head button{background:#e8f0dc;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px;font-weight:700;color:#2d4a2d}
+.modal-body{padding:20px}
+.modal-foot{padding:15px 20px;border-top:2px solid #e8f0dc;display:flex;gap:10px;position:sticky;bottom:0;background:#fff;padding-bottom:calc(15px + env(safe-area-inset-bottom));flex-wrap:wrap}
+.modal-foot .btn{flex:1;min-width:80px}
+
+.detail-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #e8f0dc;font-size:14px;gap:10px}
+.detail-row:last-child{border:none}
+.detail-row .lbl{color:#5a6b5a;font-weight:600;flex-shrink:0}
+.detail-row .val{color:#1a3a1a;font-weight:700;text-align:right;word-break:break-word}
+
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(100px);background:#1a3a1a;color:#fff;padding:14px 22px;border-radius:30px;box-shadow:0 10px 30px rgba(0,0,0,.3);opacity:0;transition:.3s;z-index:300;border-left:4px solid #5CB531;max-width:calc(100% - 30px);font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.error{background:#991b1b}
+.toast.warning{background:#92400e}
+
+.catalogue-search{width:100%;padding:12px 14px;border:2px solid #d4e0c8;border-radius:12px;font-size:15px;background:#f9fbf6;outline:none;margin-bottom:12px}
+.catalogue-search:focus{border-color:#5CB531;background:#fff}
+.prod-grid{display:grid;grid-template-columns:1fr;gap:8px;max-height:60vh;overflow-y:auto;padding-right:4px}
+.prod-item{background:#fff;border:2px solid #e8f0dc;border-radius:12px;padding:12px;cursor:pointer;transition:.2s;display:flex;gap:10px;align-items:center}
+.prod-item:hover{border-color:#5CB531;background:#f0f9e8}
+.prod-item:active{transform:scale(.98)}
+.prod-item .ref-badge{background:linear-gradient(135deg,#3d7a20,#5CB531);color:#fff;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:800;flex-shrink:0;min-width:70px;text-align:center}
+.prod-item .info{flex:1;min-width:0}
+.prod-item .info .name{font-size:13px;font-weight:700;color:#1a3a1a;margin-bottom:2px}
+.prod-item .info .meta{font-size:11px;color:#7a8a7a;display:flex;gap:8px;flex-wrap:wrap}
+.prod-item .info .price{font-size:12px;font-weight:800;color:#3d7a20;margin-top:3px}
+.prod-item .add-ico{font-size:24px;color:#5CB531;flex-shrink:0}
+
+.ligne-item{background:#fff;border-radius:12px;padding:12px;margin-bottom:8px;border-left:4px solid #5CB531;box-shadow:0 2px 6px rgba(26,58,26,.06)}
+.ligne-item .ligne-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
+.ligne-item .ligne-head .title{flex:1;min-width:0}
+.ligne-item .ligne-head .ref{font-size:11px;font-weight:800;color:#5CB531;text-transform:uppercase}
+.ligne-item .ligne-head .design{font-size:13px;font-weight:700;color:#1a3a1a;margin-top:2px;line-height:1.3}
+.ligne-item .ligne-head .del-btn{background:#fee2e2;color:#b91c1c;border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;font-weight:700;flex-shrink:0}
+.ligne-item .grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px}
+.ligne-item .grid .cell{text-align:center}
+.ligne-item .grid .cell label{font-size:9px;color:#7a8a7a;font-weight:700;text-transform:uppercase;display:block;margin-bottom:3px}
+.ligne-item .grid .cell input{padding:8px 6px;border:1px solid #d4e0c8;border-radius:8px;font-size:13px;background:#f9fbf6;outline:none;width:100%;text-align:center;font-weight:700}
+.ligne-item .grid .cell input:focus{border-color:#5CB531;background:#fff}
+.ligne-item .montant-ligne{text-align:right;font-weight:800;color:#3d7a20;margin-top:8px;font-size:14px;padding-top:6px;border-top:1px dashed #e8f0dc}
+
+.lignes-wrap{background:#f9fbf6;border:1px solid #d4e0c8;border-radius:12px;padding:10px;margin-top:8px}
+.btn-add-ligne{background:#f0f9e8;color:#3d7a20;border:2px dashed #5CB531;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;width:100%;transition:.2s;margin-top:8px;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-add-ligne:hover{background:#dcf5c4}
+
+.totaux-card{background:linear-gradient(135deg,#f0f9e8,#dcf5c4);border:2px solid #5CB531;border-radius:12px;padding:14px;margin-top:12px}
+.totaux-card .row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px;border-bottom:1px dashed rgba(92,181,49,.3)}
+.totaux-card .row:last-child{border:none;font-size:18px;font-weight:800;color:#1a3a1a;padding-top:10px;border-top:2px solid #5CB531;margin-top:6px}
+
+.preview-wrapper{background:#f5f5f5;padding:15px;border-radius:12px;margin-bottom:15px;max-height:70vh;overflow-y:auto;display:flex;justify-content:center}
+.preview-tip{text-align:center;font-size:12px;color:#5a6b5a;margin-bottom:12px;font-weight:600}
+
+/* ============================================================
+   BON DE LIVRAISON (papier)
+   ============================================================ */
+.bl-paper {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  color: #1a1a1a;
+  background: #fff;
+  width: 190mm;
+  min-height: 260mm;
+  padding: 0;
+  position: relative;
+  line-height: 1.35;
+  box-shadow: 0 2px 15px rgba(0,0,0,.15);
+}
+
+/* ✅ HEADER avec logo SANS CADRE */
+.bl-paper .bl-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8mm;
+  position: relative;
+  padding: 4mm 0;
+  min-height: 25mm;
+}
+
+.bl-paper .bl-logo-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+  position: relative;
+}
+
+/* ✅ Logo SANS cadre, SANS fond, taille contrôlée */
+.bl-paper .bl-logo {
+  width: 24mm;
+  height: 24mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.bl-paper .bl-logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  background: transparent;
+  border: none;
+}
+
+.bl-paper .bl-logo-emoji {
+  font-size: 28px;
+  line-height: 1;
+  display: inline-block;
+}
+
+/* ✅ Texte TAMA à côté du logo */
+.bl-paper .bl-logo-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bl-paper .bl-logo-text h1 {
+  font-size: 18px;
+  color: #5CB531;
+  letter-spacing: 1px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.bl-paper .bl-logo-text p {
+  font-size: 9px;
+  color: #555;
+  margin-top: 2px;
+}
+
+/* Bannière verte décorative (positionnée, ne dépasse pas) */
+.bl-paper .bl-banner {
+  position: absolute;
+  top: -4mm;
+  right: -4mm;
+  width: 60mm;
+  height: 12mm;
+  background: linear-gradient(135deg, #5CB531 0%, #3d7a20 100%);
+  transform: skewY(-8deg);
+  transform-origin: top right;
+  border-bottom-left-radius: 6px;
+  z-index: 0;
+  opacity: 0.9;
+}
+.bl-paper .bl-banner::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 4px;
+}
+
+.bl-paper .bl-doc-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: #1a1a1a;
+  margin: 6mm 0 5mm;
+  text-transform: uppercase;
+}
+.bl-paper .bl-info-section {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 5mm;
+  margin-bottom: 5mm;
+}
+.bl-paper .bl-info-left { display: flex; flex-direction: column; gap: 3mm; }
+.bl-paper .bl-info-box {
+  border: 1.5px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 3mm 4mm;
+  background: #fff;
+}
+.bl-paper .bl-info-box .bl-row {
+  display: flex; justify-content: space-between; align-items: center; gap: 3mm; font-size: 10px;
+}
+.bl-paper .bl-info-box .bl-row .label { color: #555; font-weight: 700; }
+.bl-paper .bl-info-box .bl-row .value { font-weight: 800; color: #1a1a1a; }
+.bl-paper .bl-info-box .bl-num {
+  text-align: center; font-size: 12px; padding: 2mm 0;
+}
+.bl-paper .bl-info-box .bl-num .prefix { color: #555; font-weight: 700; font-size: 10px; }
+.bl-paper .bl-info-box .bl-num .num { color: #1a1a1a; font-weight: 900; margin-left: 6px; font-size: 13px; }
+
+.bl-paper .bl-client-box {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 5mm; padding: 4mm;
+}
+.bl-paper .bl-client-box .field { display: flex; flex-direction: column; gap: 1mm; }
+.bl-paper .bl-client-box .field .label {
+  font-size: 8px; color: #555; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
+}
+.bl-paper .bl-client-box .field .value {
+  font-size: 10px; font-weight: 800; color: #1a1a1a; word-break: break-word; min-height: 12px;
+}
+.bl-paper .bl-client-box .field.full { grid-column: 1 / -1; }
+
+.bl-paper .bl-items-table {
+  display: grid;
+  grid-template-columns: 22mm 1fr 14mm 20mm 18mm 15mm 22mm;
+  gap: 1.5mm;
+  margin-top: 4mm;
+  margin-bottom: 4mm;
+}
+.bl-paper .bl-items-table.no-prix {
+  grid-template-columns: 22mm 1fr 18mm 25mm;
+}
+.bl-paper .bl-col-box {
+  border: 1.5px solid #2a2a2a;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  min-height: 45mm;
+  background: #fff;
+  overflow: hidden;
+}
+.bl-paper .bl-col-header {
+  font-weight: 800;
+  font-size: 9px;
+  text-align: center;
+  padding: 2mm 1mm;
+  color: #1a1a1a;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-bottom: 1px dashed #e8e8e8;
+  background: #fafcfa;
+}
+.bl-paper .bl-col-body { flex: 1; display: flex; flex-direction: column; padding: 1mm 0; }
+.bl-paper .bl-cell {
+  padding: 1.8mm 2mm;
+  font-size: 10px;
+  line-height: 1.4;
+  word-break: break-word;
+  min-height: 7mm;
+  display: flex;
+  align-items: center;
+}
+.bl-paper .bl-cell + .bl-cell { border-top: 1px dotted #d8d8d8; }
+.bl-paper .bl-col-ref .bl-cell { justify-content: flex-start; font-weight: 700; }
+.bl-paper .bl-col-desig .bl-cell { justify-content: flex-start; }
+.bl-paper .bl-col-unite .bl-cell { justify-content: center; }
+.bl-paper .bl-col-qte .bl-cell { justify-content: flex-end; font-variant-numeric: tabular-nums; }
+.bl-paper .bl-col-pu .bl-cell { justify-content: flex-end; font-variant-numeric: tabular-nums; }
+.bl-paper .bl-col-remise .bl-cell { justify-content: center; }
+.bl-paper .bl-col-montant .bl-cell { justify-content: flex-end; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+/* Totaux */
+.bl-paper .bl-totals {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3mm;
+  margin-top: 3mm;
+  margin-bottom: 6mm;
+}
+.bl-paper .bl-total-box {
+  border: 1.5px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 2.5mm 5mm;
+  min-width: 70mm;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6mm;
+  background: #fff;
+}
+.bl-paper .bl-total-box .label {
+  font-size: 9px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.3px;
+}
+.bl-paper .bl-total-box .value {
+  font-size: 11px; font-weight: 800; color: #1a1a1a; font-variant-numeric: tabular-nums;
+}
+.bl-paper .bl-total-box.ttc {
+  background: linear-gradient(135deg, #f0f9e8, #dcf5c4);
+  border-color: #5CB531;
+  border-width: 2px;
+}
+.bl-paper .bl-total-box.ttc .label { color: #3d7a20; font-size: 10px; }
+.bl-paper .bl-total-box.ttc .value { font-size: 14px; font-weight: 900; }
+
+/* ✅ 3 CACHETS */
+.bl-paper .bl-signatures {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 5mm;
+  margin-top: 8mm;
+  margin-bottom: 6mm;
+}
+.bl-paper .bl-sig-box {
+  border: 1.5px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 3mm 4mm;
+  min-height: 32mm;
+  display: flex;
+  flex-direction: column;
+  background: #fefefe;
+}
+.bl-paper .bl-sig-box .sig-title {
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #1a1a1a;
+  text-align: center;
+  padding-bottom: 2mm;
+  border-bottom: 1px dashed #999;
+  margin-bottom: 2mm;
+}
+.bl-paper .bl-sig-box .sig-role {
+  font-size: 8.5px;
+  color: #555;
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 2mm;
+  text-transform: uppercase;
+}
+.bl-paper .bl-sig-box .sig-space {
+  flex: 1;
+  min-height: 15mm;
+  border-bottom: 1px solid #666;
+  position: relative;
+}
+.bl-paper .bl-sig-box .sig-space::after {
+  content: 'Signature & Cachet';
+  position: absolute;
+  bottom: 2mm;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8px;
+  color: #bbb;
+  font-style: italic;
+}
+.bl-paper .bl-sig-box .sig-name {
+  font-size: 8.5px;
+  color: #666;
+  text-align: center;
+  margin-top: 2mm;
+}
+
+.bl-paper .bl-footer {
+  margin-top: 6mm;
+  padding-top: 3mm;
+}
+.bl-paper .bl-footer .separator {
+  height: 2px; background: #5CB531; margin-bottom: 2.5mm; border-radius: 1px;
+}
+.bl-paper .bl-footer .logo-line { text-align: center; margin-bottom: 2.5mm; }
+.bl-paper .bl-footer .tama-logo {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 16px; font-weight: 900; color: #5CB531; letter-spacing: 3px;
+}
+.bl-paper .bl-footer .info-line {
+  text-align: center; font-size: 8.5px; color: #555; line-height: 1.7; padding: 0 4mm;
+}
+.bl-paper .bl-footer .info-line .lbl { color: #5CB531; font-weight: 800; }
+.bl-paper .bl-footer .info-line .sep { color: #bbb; margin: 0 4px; }
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+.print-area{display:none}
+@media print{
+  @page{ size: A4 portrait; margin: 10mm; }
+  html,body{ background:#fff !important; padding:0 !important; margin:0 !important; width:auto; height:auto; }
+  body>*:not(.print-area){ display:none !important; }
+  .print-area{ display:block !important; }
+  .print-area .bl-paper{
+    width: 190mm;
+    min-height: auto;
+    box-shadow: none;
+    padding: 0;
+    page-break-after: always;
+  }
+  .print-area .bl-paper:last-child{ page-break-after: auto; }
+  .bl-paper .bl-banner,
+  .bl-paper .bl-total-box.ttc,
+  .bl-paper .bl-footer .separator,
+  .bl-paper .bl-footer .info-line .lbl,
+  .bl-paper .bl-footer .tama-logo,
+  .bl-paper .bl-logo-text h1 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+.edit-banner{background:linear-gradient(135deg,#fef9e8,#fde68a);border:2px solid #e8c547;border-radius:12px;padding:14px;margin-bottom:15px;font-size:13px;color:#78350f;font-weight:700;display:flex;align-items:center;gap:10px}
+
+@media(max-width:768px){
+  .form-row{grid-template-columns:1fr}
+  .main{padding:15px}
+  .nav-btn{font-size:9px}
+  .nav-btn .ic{font-size:18px}
+}
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div class="logo">📦</div>
+  <h1>TAMA</h1>
+  <p>Livraison...</p>
+  <div class="spinner"></div>
+</div>
+
+<div id="app" style="display:none">
+  <header class="header">
+    <div class="header-left">
+      <div class="header-icon">
+        <span id="hIcon">📦</span>
+        <img id="hImg" style="display:none" alt="Logo">
+      </div>
+      <div>
+        <h1>TAMA Livraison</h1>
+        <small>Bons de Livraison</small>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="solde-card">
+        <div class="lbl">📦 Bons de livraison</div>
+        <div class="amount" id="dashTotal">0</div>
+        <div class="date" id="dateAujourdhui">—</div>
+      </div>
+      <div class="mini-stats">
+        <div class="mini-stat">
+          <small>📅 Aujourd'hui</small>
+          <div class="val" id="dashToday">0</div>
+        </div>
+        <div class="mini-stat gold">
+          <small>💰 Montant total</small>
+          <div class="val" id="dashMontant">0 DH</div>
+        </div>
+      </div>
+      <div class="sec-title">📋 Derniers bons</div>
+      <div class="filters">
+        <button class="filter-btn active" data-f="today" onclick="setFilter(this,'today')">Aujourd'hui</button>
+        <button class="filter-btn" data-f="week" onclick="setFilter(this,'week')">7 jours</button>
+        <button class="filter-btn" data-f="all" onclick="setFilter(this,'all')">Tout</button>
+      </div>
+      <div id="dashList"></div>
+    </div>
+
+    <!-- NOUVEAU BL -->
+    <div class="page" id="page-nouveau">
+      <div class="sec-title" id="formPageTitle">➕ Nouveau bon de livraison</div>
+
+      <div class="edit-banner" id="editBanner" style="display:none">
+        <span style="font-size:22px">✏️</span>
+        <div>
+          <div>Mode modification</div>
+          <small style="font-weight:500" id="editBannerNum"></small>
+        </div>
+      </div>
+
+      <div class="form-card">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>N° BL <span class="req">*</span></label>
+            <input id="fNumero" placeholder="BL2026001">
+          </div>
+          <div class="form-group">
+            <label>BC N°</label>
+            <input id="fBcNum" placeholder="1629">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Date <span class="req">*</span></label>
+          <input type="date" id="fDate">
+        </div>
+
+        <div class="info-banner">🏢 Informations client</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Code client</label>
+            <input id="fCodeClient" placeholder="CLT0257">
+          </div>
+          <div class="form-group">
+            <label>Nom client <span class="req">*</span></label>
+            <input id="fNomClient" placeholder="PREMIUM HARVEST">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>ICE client</label>
+            <input id="fIceClient" placeholder="003791371000090" maxlength="15">
+          </div>
+          <div class="form-group">
+            <label>Contact</label>
+            <input id="fContact" placeholder="Nom contact">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Adresse</label>
+            <input id="fAdresse" placeholder="Adresse">
+          </div>
+          <div class="form-group">
+            <label>Ville</label>
+            <input id="fVille" placeholder="Casablanca">
+          </div>
+        </div>
+
+        <div class="toggle-option" id="togglePrix" onclick="togglePrix()">
+          <div class="left">
+            <div class="icon">💰</div>
+            <div class="label">
+              Afficher les prix
+              <small id="togglePrixLabel">Activé — montants visibles sur le bon</small>
+            </div>
+          </div>
+          <div class="toggle-switch on" id="togglePrixSwitch"></div>
+        </div>
+
+        <div class="info-banner">
+          📦 Articles
+          <button class="action" onclick="openCatalogue()">📚 Catalogue</button>
+        </div>
+
+        <div class="lignes-wrap">
+          <div id="lignesContainer"></div>
+          <button type="button" class="btn-add-ligne" onclick="openCatalogue()">
+            <span>📚</span> Choisir depuis le catalogue
+          </button>
+          <button type="button" class="btn-add-ligne" onclick="addLigneManuelle()" style="border-color:#d4e0c8;background:#fff;color:#2d4a2d">
+            <span>✏️</span> Saisie manuelle
+          </button>
+        </div>
+
+        <div class="totaux-card" id="totauxCard">
+          <div class="row"><span>Total HT</span><span id="totHT">0 DH</span></div>
+          <div class="row"><span>TVA 20%</span><span id="totTVA">0 DH</span></div>
+          <div class="row"><span>TOTAL TTC</span><span id="totTTC">0 DH</span></div>
+        </div>
+
+        <div class="form-group" style="margin-top:15px">
+          <label>Notes</label>
+          <textarea id="fNotes" placeholder="Remarques optionnelles"></textarea>
+        </div>
+
+        <button class="btn btn-success" id="btnSave" onclick="saveBL()" style="margin-bottom:10px">💾 Enregistrer & Voir le bon</button>
+        <button class="btn btn-warning" id="btnCancelEdit" onclick="cancelEdit()" style="margin-bottom:10px;display:none">❌ Annuler la modification</button>
+        <button class="btn btn-secondary" onclick="resetForm()">🗑 Réinitialiser</button>
+      </div>
+    </div>
+
+    <!-- HISTORIQUE -->
+    <div class="page" id="page-historique">
+      <div class="sec-title">📚 Historique</div>
+      <div class="form-card" style="margin-bottom:15px;padding:14px">
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <input type="date" id="hDateFrom" onchange="renderHistorique()" style="flex:1;padding:10px;border:2px solid #d4e0c8;border-radius:10px;font-size:14px;background:#f9fbf6">
+          <input type="date" id="hDateTo" onchange="renderHistorique()" style="flex:1;padding:10px;border:2px solid #d4e0c8;border-radius:10px;font-size:14px;background:#f9fbf6">
+        </div>
+        <input id="hSearch" placeholder="🔍 Rechercher..." oninput="renderHistorique()" style="width:100%;padding:12px;border:2px solid #d4e0c8;border-radius:10px;font-size:14px;background:#f9fbf6">
+      </div>
+      <div id="historiqueList"></div>
+    </div>
+
+    <!-- CATALOGUE -->
+    <div class="page" id="page-catalogue">
+      <div class="sec-title">
+        📚 Catalogue produits
+        <button class="btn btn-primary btn-sm" onclick="openAddProduit()" style="margin-left:auto">➕ Nouveau</button>
+      </div>
+      <input id="catSearch" class="catalogue-search" placeholder="🔍 Rechercher..." oninput="renderCatalogue()">
+      <div id="catalogueList"></div>
+    </div>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-page="dashboard" onclick="navigate('dashboard')"><span class="ic">🏠</span><span>Accueil</span></button>
+    <button class="nav-btn" data-page="catalogue" onclick="navigate('catalogue')"><span class="ic">📚</span><span>Catalogue</span></button>
+    <button class="nav-btn center" data-page="nouveau" onclick="startNew()"><span class="ic">➕</span><span>Nouveau</span></button>
+    <button class="nav-btn" data-page="historique" onclick="navigate('historique')"><span class="ic">📋</span><span>Histo.</span></button>
+    <button class="nav-btn" data-page="parametres" onclick="openParamsModal()"><span class="ic">⚙️</span><span>Params</span></button>
+  </nav>
+</div>
+
+<!-- MODAL DÉTAILS -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-head"><h3 id="modalTitle">Détails</h3><button onclick="closeModal()">✕</button></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<!-- MODAL APERÇU -->
+<div class="modal" id="previewModal">
+  <div class="modal-box" style="max-width:900px">
+    <div class="modal-head"><h3>👁 Aperçu du bon</h3><button onclick="closeModal('previewModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="preview-tip">📄 Aperçu identique à l'impression</div>
+      <div class="preview-wrapper" id="previewContainer"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeModal('previewModal')">Fermer</button>
+      <button class="btn btn-primary" onclick="confirmPrint()">🖨 Imprimer / PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SÉLECTION PRODUIT -->
+<div class="modal" id="selectProdModal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>📚 Choisir un produit</h3><button onclick="closeModal('selectProdModal')">✕</button></div>
+    <div class="modal-body">
+      <input id="selectSearch" class="catalogue-search" placeholder="🔍 Rechercher..." oninput="renderSelectList()">
+      <div id="selectProdList" class="prod-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AJOUT PRODUIT -->
+<div class="modal" id="addProdModal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>➕ Nouveau produit</h3><button onclick="closeModal('addProdModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Référence <span class="req">*</span></label>
+        <input id="pRef" placeholder="FATH0016">
+      </div>
+      <div class="form-group">
+        <label>Désignation <span class="req">*</span></label>
+        <input id="pDesign" placeholder="FILET BLANC ANTI THRIPS">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Unité</label>
+          <input id="pUnite" placeholder="M², U, Kg...">
+        </div>
+        <div class="form-group">
+          <label>Prix TTC (DH)</label>
+          <input id="pPu" type="number" step="0.01" placeholder="7.80">
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeModal('addProdModal')">Annuler</button>
+      <button class="btn btn-success" onclick="saveProduit()">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PARAMS -->
+<div class="modal" id="paramsModal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>⚙️ Paramètres</h3><button onclick="closeModal('paramsModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>🏢 Nom société</label>
+        <input id="pSocieteNom" placeholder="TAMA">
+      </div>
+      <div class="form-group">
+        <label>📝 Sous-titre</label>
+        <input id="pSousTitre" placeholder="Trade and Marketing Agricole">
+      </div>
+      <div class="form-group">
+        <label>📍 Adresse</label>
+        <input id="pAdresse" placeholder="N° 111 Lot Al Ikhlasse Biougra - Chtouka Ait Baha">
+      </div>
+      <div class="form-group">
+        <label>📞 Téléphone</label>
+        <input id="pTel" placeholder="0528 81 13 53 - 06 61 82 63 31">
+      </div>
+      <div class="form-group">
+        <label>📧 Email</label>
+        <input id="pEmail" placeholder="contact@tamagricole.com">
+      </div>
+      <div class="form-group">
+        <label>🖼️ Logo <small style="font-weight:400;color:#7a8a7a;text-transform:none">(sans cadre sur le bon)</small></label>
+        <div style="text-align:center;margin-bottom:10px">
+          <div style="display:inline-block;width:100px;height:100px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:transparent">
+            <span id="logoPreviewIcon" style="font-size:50px">📦</span>
+            <img id="logoPreviewImg" style="display:none;max-width:100%;max-height:100%;object-fit:contain" alt="Logo">
+          </div>
+        </div>
+        <input type="file" id="logoFileInput" accept="image/*" onchange="uploadLogo(event)" style="display:none">
+        <button class="btn btn-primary btn-sm" onclick="document.getElementById('logoFileInput').click()" style="width:100%">📁 Changer le logo</button>
+      </div>
+      <button class="btn btn-success" onclick="saveParametres()">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ZONE D'IMPRESSION -->
+<div class="print-area" id="printArea"></div>
+
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, onValue, set, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAzetUtAuLilj2OzAfEdMo7zFvFUFu7EQE",
+  authDomain: "tama-b4f63.firebaseapp.com",
+  databaseURL: "https://tama-b4f63-default-rtdb.firebaseio.com",
+  projectId: "tama-b4f63",
+  storageBucket: "tama-b4f63.firebasestorage.app",
+  messagingSenderId: "14758669505",
+  appId: "1:14758669505:web:10e6338fedcf61c0f1b840"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+window.db = db; window.fbRef = ref; window.fbOnValue = onValue;
+window.fbSet = set; window.fbUpdate = update; window.fbRemove = remove;
+window.dispatchEvent(new Event('firebase-ready'));
+</script>
+
+<script>
+// ============================================================
+// ÉTAT GLOBAL
+// ============================================================
+let bons = [];
+let produits = [];
+let currentPage = 'dashboard';
+let currentFilter = 'today';
+let fbReady = false;
+let listenersAttached = false;
+let pendingPrintBon = null;
+let editingBonId = null;
+let showPrices = true;
+
+let settings = {
+  societeNom: 'TAMA',
+  sousTitre: 'Trade and Marketing Agricole',
+  adresse: 'N° 111 Lot Al Ikhlasse Biougra - Chtouka Ait Baha',
+  tel: '0528 81 13 53 - 06 61 82 63 31',
+  email: 'contact@tamagricole.com',
+  rc: '24631',
+  tp: '48802512',
+  ice: '002871730000046',
+  rib: '022 010 000 008 00 30 5844 84 25',
+  logo: ''
+};
+
+const TVA_RATE = 0.20;
+
+// ============================================================
+// HELPERS
+// ============================================================
+function toast(msg, type='success'){
+  const t = document.getElementById('toast');
+  t.className = 'toast show ' + type;
+  document.getElementById('toastMsg').textContent = msg;
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+function openModal(title, body, foot=''){
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = body;
+  document.getElementById('modalFoot').innerHTML = foot;
+  document.getElementById('modal').classList.add('show');
+}
+function closeModal(id='modal'){ document.getElementById(id).classList.remove('show'); }
+function formatDate(iso){
+  if(!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'numeric'});
+}
+function formatDateShort(iso){
+  if(!iso) return '—';
+  const d = new Date(iso);
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const yy = String(d.getFullYear()).slice(-2);
+  return dd + '/' + mm + '/' + yy;
+}
+function todayStr(){ return new Date().toISOString().split('T')[0]; }
+function escapeHtml(str){
+  if(!str) return '';
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function formatFR(n, decimals = 2){
+  return Number(n || 0).toLocaleString('fr-FR', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals
+  }).replace(/\u202f|\u00a0/g, ' ');
+}
+
+function computeLigne(l){
+  const brut = (l.qte || 0) * (l.pu || 0);
+  const remise = brut * ((l.remise || 0) / 100);
+  return brut - remise;
+}
+function computeTotaux(lignes){
+  const ht = lignes.reduce((s, l) => s + computeLigne(l), 0);
+  const tva = ht * TVA_RATE;
+  const ttc = ht + tva;
+  return { ht, tva, ttc };
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function navigate(page){
+  if(page === 'parametres'){ openParamsModal(); return; }
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector(`.nav-btn[data-page="${page}"]`);
+  if(btn) btn.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+  refresh();
+}
+
+function startNew(){
+  if(editingBonId){
+    if(!confirm('Quitter le mode modification ?')) return;
+    exitEditMode();
+  }
+  resetForm();
+  currentPage = 'nouveau';
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-nouveau').classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.nav-btn[data-page="nouveau"]').classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ============================================================
+// TOGGLE PRIX
+// ============================================================
+function togglePrix(){
+  showPrices = !showPrices;
+  const sw = document.getElementById('togglePrixSwitch');
+  const lbl = document.getElementById('togglePrixLabel');
+  const card = document.getElementById('totauxCard');
+  if(showPrices){
+    sw.classList.add('on');
+    lbl.textContent = 'Activé — montants visibles sur le bon';
+    card.style.display = 'block';
+  } else {
+    sw.classList.remove('on');
+    lbl.textContent = 'Désactivé — bon sans montants';
+    card.style.display = 'none';
+  }
+  calcTotaux();
+}
+
+// ============================================================
+// FIREBASE LISTENERS
+// ============================================================
+function initListeners(){
+  if(listenersAttached) return;
+  listenersAttached = true;
+
+  window.fbOnValue(window.fbRef(window.db, 'settings/logo'), snap => {
+    const data = snap.val();
+    if(data){ settings.logo = data; applyLogoUI(data); }
+    else { settings.logo = ''; resetLogoUI(); }
+  });
+
+  window.fbOnValue(window.fbRef(window.db, 'livraisons/settings'), snap => {
+    const data = snap.val() || {};
+    Object.assign(settings, {
+      societeNom: data.societeNom || settings.societeNom,
+      sousTitre: data.sousTitre || settings.sousTitre,
+      adresse: data.adresse || settings.adresse,
+      tel: data.tel || settings.tel,
+      email: data.email || settings.email
+    });
+  });
+
+  window.fbOnValue(window.fbRef(window.db, 'livraisons/bons'), snap => {
+    const data = snap.val();
+    bons = data ? Object.values(data) : [];
+    bons.sort((a,b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    refresh();
+  });
+
+  window.fbOnValue(window.fbRef(window.db, 'livraisons/produits'), snap => {
+    const data = snap.val();
+    produits = data ? Object.values(data) : [];
+    produits.sort((a,b) => (a.designation || '').localeCompare(b.designation || ''));
+    if(currentPage === 'catalogue') renderCatalogue();
+  });
+}
+
+// ============================================================
+// LOGO
+// ============================================================
+function applyLogoUI(url){
+  const hImg = document.getElementById('hImg'), hIcon = document.getElementById('hIcon');
+  if(hImg && hIcon){ hImg.src = url; hImg.style.display = 'block'; hIcon.style.display = 'none'; }
+  const pImg = document.getElementById('logoPreviewImg'), pIcon = document.getElementById('logoPreviewIcon');
+  if(pImg && pIcon){ pImg.src = url; pImg.style.display = 'block'; pIcon.style.display = 'none'; }
+}
+function resetLogoUI(){
+  const hImg = document.getElementById('hImg'), hIcon = document.getElementById('hIcon');
+  if(hImg && hIcon){ hImg.src = ''; hImg.style.display = 'none'; hIcon.style.display = 'block'; }
+  const pImg = document.getElementById('logoPreviewImg'), pIcon = document.getElementById('logoPreviewIcon');
+  if(pImg && pIcon){ pImg.src = ''; pImg.style.display = 'none'; pIcon.style.display = 'block'; }
+}
+function uploadLogo(e){
+  const file = e.target.files[0]; if(!file) return;
+  if(file.size > 500*1024){ toast('Max 500 Ko', 'error'); return; }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const url = ev.target.result;
+    applyLogoUI(url);
+    window.fbSet(window.fbRef(window.db, 'settings/logo'), url);
+    toast('🖼️ Logo mis à jour');
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+
+// ============================================================
+// PARAMS
+// ============================================================
+function openParamsModal(){
+  document.getElementById('pSocieteNom').value = settings.societeNom || '';
+  document.getElementById('pSousTitre').value = settings.sousTitre || '';
+  document.getElementById('pAdresse').value = settings.adresse || '';
+  document.getElementById('pTel').value = settings.tel || '';
+  document.getElementById('pEmail').value = settings.email || '';
+  document.getElementById('paramsModal').classList.add('show');
+}
+async function saveParametres(){
+  const societeNom = document.getElementById('pSocieteNom').value.trim() || 'TAMA';
+  const sousTitre = document.getElementById('pSousTitre').value.trim() || 'Trade and Marketing Agricole';
+  const adresse = document.getElementById('pAdresse').value.trim();
+  const tel = document.getElementById('pTel').value.trim();
+  const email = document.getElementById('pEmail').value.trim();
+  try {
+    await window.fbSet(window.fbRef(window.db, 'livraisons/settings'), { societeNom, sousTitre, adresse, tel, email });
+    Object.assign(settings, { societeNom, sousTitre, adresse, tel, email });
+    closeModal('paramsModal');
+    toast('✅ Paramètres enregistrés');
+  } catch(e){ toast('Erreur: ' + e.message, 'error'); }
+}
+
+// ============================================================
+// CATALOGUE
+// ============================================================
+function renderCatalogue(){
+  const el = document.getElementById('catalogueList');
+  const search = (document.getElementById('catSearch').value || '').toLowerCase().trim();
+  let list = [...produits];
+  if(search){
+    list = list.filter(p =>
+      (p.designation || '').toLowerCase().includes(search) ||
+      (p.ref || '').toLowerCase().includes(search)
+    );
+  }
+  if(!list.length){
+    el.innerHTML = '<div class="empty"><div class="icon">📚</div><h3>Aucun produit</h3></div>';
+    return;
+  }
+  el.innerHTML = list.map(p => `
+    <div class="prod-item" onclick="openAddProduit('${p.id}')">
+      <div class="ref-badge">${escapeHtml(p.ref || '—')}</div>
+      <div class="info">
+        <div class="name">${escapeHtml(p.designation || '')}</div>
+        <div class="meta">${p.unite ? `<span>📐 ${escapeHtml(p.unite)}</span>` : ''}</div>
+        <div class="price">💰 ${formatFR(p.pu)} DH</div>
+      </div>
+      <div class="add-ico">✏️</div>
+    </div>
+  `).join('');
+}
+
+function openAddProduit(id=null){
+  const existing = id ? produits.find(p => p.id === id) : null;
+  document.getElementById('pRef').value = existing?.ref || '';
+  document.getElementById('pDesign').value = existing?.designation || '';
+  document.getElementById('pUnite').value = existing?.unite || '';
+  document.getElementById('pPu').value = existing?.pu || '';
+  document.getElementById('addProdModal').dataset.editId = id || '';
+  document.querySelector('#addProdModal .modal-head h3').textContent = existing ? '✏️ Modifier le produit' : '➕ Nouveau produit';
+
+  const foot = document.querySelector('#addProdModal .modal-foot');
+  if(existing){
+    foot.innerHTML = `
+      <button class="btn btn-danger" onclick="deleteProduit('${id}')" style="flex:0.6">🗑</button>
+      <button class="btn btn-secondary" onclick="closeModal('addProdModal')">Annuler</button>
+      <button class="btn btn-success" onclick="saveProduit()">💾 Enregistrer</button>
+    `;
+  } else {
+    foot.innerHTML = `
+      <button class="btn btn-secondary" onclick="closeModal('addProdModal')">Annuler</button>
+      <button class="btn btn-success" onclick="saveProduit()">💾 Ajouter</button>
+    `;
+  }
+  document.getElementById('addProdModal').classList.add('show');
+}
+
+async function saveProduit(){
+  const ref = document.getElementById('pRef').value.trim();
+  const designation = document.getElementById('pDesign').value.trim();
+  const unite = document.getElementById('pUnite').value.trim();
+  const pu = parseFloat(document.getElementById('pPu').value) || 0;
+  if(!ref){ toast('Référence obligatoire', 'error'); return; }
+  if(!designation){ toast('Désignation obligatoire', 'error'); return; }
+  const editId = document.getElementById('addProdModal').dataset.editId;
+  try {
+    if(editId){
+      await window.fbUpdate(window.fbRef(window.db, 'livraisons/produits/' + editId), { ref, designation, unite, pu });
+      toast('✅ Produit modifié');
+    } else {
+      const id = 'PRD-' + Date.now();
+      await window.fbSet(window.fbRef(window.db, 'livraisons/produits/' + id), {
+        id, ref, designation, unite, pu, createdAt: new Date().toISOString()
+      });
+      toast('✅ Produit ajouté');
+    }
+    closeModal('addProdModal');
+  } catch(e){ toast('Erreur: ' + e.message, 'error'); }
+}
+
+async function deleteProduit(id){
+  if(!confirm('Supprimer ce produit ?')) return;
+  try {
+    await window.fbRemove(window.fbRef(window.db, 'livraisons/produits/' + id));
+    closeModal('addProdModal');
+    toast('🗑 Produit supprimé');
+  } catch(e){ toast('Erreur: ' + e.message, 'error'); }
+}
+
+// ============================================================
+// SÉLECTION PRODUIT
+// ============================================================
+function openCatalogue(){
+  document.getElementById('selectSearch').value = '';
+  renderSelectList();
+  document.getElementById('selectProdModal').classList.add('show');
+}
+function renderSelectList(){
+  const el = document.getElementById('selectProdList');
+  const search = (document.getElementById('selectSearch').value || '').toLowerCase().trim();
+  let list = [...produits];
+  if(search){
+    list = list.filter(p =>
+      (p.designation || '').toLowerCase().includes(search) ||
+      (p.ref || '').toLowerCase().includes(search)
+    );
+  }
+  if(!list.length){
+    el.innerHTML = `<div style="text-align:center;padding:30px;color:#7a8a7a">
+      <div style="font-size:40px;margin-bottom:10px">📚</div>
+      <strong>Aucun produit</strong>
+      <button class="btn btn-primary btn-sm" onclick="closeModal('selectProdModal');navigate('catalogue');setTimeout(()=>openAddProduit(),300)" style="margin-top:15px">➕ Ajouter</button>
+    </div>`;
+    return;
+  }
+  el.innerHTML = list.map(p => `
+    <div class="prod-item" onclick="selectProduit('${p.id}')">
+      <div class="ref-badge">${escapeHtml(p.ref || '—')}</div>
+      <div class="info">
+        <div class="name">${escapeHtml(p.designation || '')}</div>
+        <div class="meta">${p.unite ? `<span>📐 ${escapeHtml(p.unite)}</span>` : ''}</div>
+        <div class="price">💰 ${formatFR(p.pu)} DH</div>
+      </div>
+      <div class="add-ico">➕</div>
+    </div>
+  `).join('');
+}
+function selectProduit(id){
+  const p = produits.find(x => x.id === id);
+  if(!p) return;
+  closeModal('selectProdModal');
+  addLigne({
+    ref: p.ref || '',
+    designation: p.designation || '',
+    unite: p.unite || '',
+    qte: 1,
+    pu: p.pu || 0,
+    remise: 0
+  });
+  toast('✅ ' + p.designation + ' ajouté');
+}
+
+// ============================================================
+// LIGNES
+// ============================================================
+let ligneCounter = 0;
+function addLigneManuelle(){
+  addLigne({ ref: '', designation: '', unite: '', qte: 1, pu: 0, remise: 0 });
+}
+function addLigne(data = null){
+  const id = 'ligne_' + (++ligneCounter);
+  const wrap = document.getElementById('lignesContainer');
+  const div = document.createElement('div');
+  div.className = 'ligne-item';
+  div.id = id;
+  div.innerHTML = `
+    <div class="ligne-head">
+      <div class="title">
+        ${data?.ref ? `<div class="ref">${escapeHtml(data.ref)}</div>` : ''}
+        <div class="design" ${data?.ref ? '' : `contenteditable="true" data-placeholder="Désignation..."`}>${escapeHtml(data?.designation || '')}</div>
+      </div>
+      <button type="button" class="del-btn" onclick="removeLigne('${id}')">✕</button>
+    </div>
+    <div class="grid">
+      <div class="cell">
+        <label>Unité</label>
+        <input class="lig-unite" placeholder="M²" value="${data?.unite || ''}">
+      </div>
+      <div class="cell">
+        <label>Qté</label>
+        <input class="lig-qte" type="number" step="0.01" value="${data?.qte || 1}" oninput="calcTotaux()">
+      </div>
+      <div class="cell">
+        <label>P.U</label>
+        <input class="lig-pu" type="number" step="0.01" value="${data?.pu || 0}" oninput="calcTotaux()">
+      </div>
+      <div class="cell">
+        <label>Rem. %</label>
+        <input class="lig-rem" type="number" step="0.01" value="${data?.remise || 0}" oninput="calcTotaux()">
+      </div>
+    </div>
+    <div class="montant-ligne">Total ligne : <span class="lig-montant">0 DH</span></div>
+  `;
+  wrap.appendChild(div);
+  calcTotaux();
+}
+function removeLigne(id){
+  const el = document.getElementById(id);
+  if(el) el.remove();
+  calcTotaux();
+}
+function getLignes(){
+  const wrap = document.getElementById('lignesContainer');
+  return Array.from(wrap.children).map(el => {
+    const designEl = el.querySelector('.lig-design') || el.querySelector('.design');
+    return {
+      ref: el.querySelector('.ref')?.textContent.trim() || '',
+      designation: (designEl ? (designEl.value || designEl.textContent) : '').trim(),
+      unite: el.querySelector('.lig-unite').value.trim(),
+      qte: parseFloat(el.querySelector('.lig-qte').value) || 0,
+      pu: parseFloat(el.querySelector('.lig-pu').value) || 0,
+      remise: parseFloat(el.querySelector('.lig-rem').value) || 0
+    };
+  }).filter(l => l.designation || l.ref);
+}
+function calcTotaux(){
+  const lignes = getLignes();
+  let ht = 0;
+  const wrap = document.getElementById('lignesContainer');
+  Array.from(wrap.children).forEach(el => {
+    const q = parseFloat(el.querySelector('.lig-qte').value) || 0;
+    const p = parseFloat(el.querySelector('.lig-pu').value) || 0;
+    const r = parseFloat(el.querySelector('.lig-rem').value) || 0;
+    const m = (q * p) * (1 - r/100);
+    ht += m;
+    el.querySelector('.lig-montant').textContent = formatFR(m) + ' DH';
+  });
+  const tva = ht * TVA_RATE;
+  const ttc = ht + tva;
+  document.getElementById('totHT').textContent = formatFR(ht) + ' DH';
+  document.getElementById('totTVA').textContent = formatFR(tva) + ' DH';
+  document.getElementById('totTTC').textContent = formatFR(ttc) + ' DH';
+  return { ht, tva, ttc };
+}
+
+// ============================================================
+// FORM
+// ============================================================
+function resetForm(){
+  document.getElementById('fNumero').value = genNumero();
+  document.getElementById('fBcNum').value = '';
+  document.getElementById('fDate').value = todayStr();
+  document.getElementById('fCodeClient').value = '';
+  document.getElementById('fNomClient').value = '';
+  document.getElementById('fIceClient').value = '';
+  document.getElementById('fContact').value = '';
+  document.getElementById('fAdresse').value = '';
+  document.getElementById('fVille').value = '';
+  document.getElementById('fNotes').value = '';
+  document.getElementById('lignesContainer').innerHTML = '';
+  calcTotaux();
+  if(editingBonId) exitEditMode();
+}
+function genNumero(){
+  const year = new Date().getFullYear();
+  return 'BL' + year + String(bons.length + 1).padStart(4, '0');
+}
+
+// ============================================================
+// MODE ÉDITION
+// ============================================================
+function enterEditMode(b){
+  editingBonId = b.id;
+  document.getElementById('editBanner').style.display = 'flex';
+  document.getElementById('editBannerNum').textContent = 'N° ' + b.numero;
+  document.getElementById('formPageTitle').innerHTML = '✏️ Modifier le bon';
+  document.getElementById('btnSave').innerHTML = '💾 Enregistrer les modifications';
+  document.getElementById('btnCancelEdit').style.display = 'flex';
+
+  document.getElementById('fNumero').value = b.numero || '';
+  document.getElementById('fBcNum').value = b.bcNum || '';
+  document.getElementById('fDate').value = b.date || todayStr();
+  document.getElementById('fCodeClient').value = b.codeClient || '';
+  document.getElementById('fNomClient').value = b.nomClient || '';
+  document.getElementById('fIceClient').value = b.iceClient || '';
+  document.getElementById('fContact').value = b.contact || '';
+  document.getElementById('fAdresse').value = b.adresse || '';
+  document.getElementById('fVille').value = b.ville || '';
+  document.getElementById('fNotes').value = b.notes || '';
+
+  showPrices = b.showPrices !== false;
+  const sw = document.getElementById('togglePrixSwitch');
+  const lbl = document.getElementById('togglePrixLabel');
+  const card = document.getElementById('totauxCard');
+  if(showPrices){
+    sw.classList.add('on');
+    lbl.textContent = 'Activé — montants visibles sur le bon';
+    card.style.display = 'block';
+  } else {
+    sw.classList.remove('on');
+    lbl.textContent = 'Désactivé — bon sans montants';
+    card.style.display = 'none';
+  }
+
+  document.getElementById('lignesContainer').innerHTML = '';
+  ligneCounter = 0;
+  if(b.lignes && b.lignes.length) b.lignes.forEach(l => addLigne(l));
+  calcTotaux();
+
+  currentPage = 'nouveau';
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-nouveau').classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.nav-btn[data-page="nouveau"]').classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function exitEditMode(){
+  editingBonId = null;
+  document.getElementById('editBanner').style.display = 'none';
+  document.getElementById('formPageTitle').innerHTML = '➕ Nouveau bon de livraison';
+  document.getElementById('btnSave').innerHTML = '💾 Enregistrer & Voir le bon';
+  document.getElementById('btnCancelEdit').style.display = 'none';
+}
+function cancelEdit(){
+  if(!confirm('Annuler les modifications ?')) return;
+  resetForm();
+  navigate('historique');
+}
+
+// ============================================================
+// SAVE BL
+// ============================================================
+async function saveBL(){
+  const numero = document.getElementById('fNumero').value.trim();
+  const date = document.getElementById('fDate').value;
+  const nomClient = document.getElementById('fNomClient').value.trim();
+  const lignes = getLignes();
+  if(!numero){ toast('N° BL obligatoire', 'error'); return; }
+  if(!date){ toast('Date obligatoire', 'error'); return; }
+  if(!nomClient){ toast('Nom client obligatoire', 'error'); return; }
+  if(!lignes.length){ toast('Ajoutez au moins un article', 'error'); return; }
+
+  const { ht, tva, ttc } = calcTotaux();
+
+  const btn = document.getElementById('btnSave');
+  btn.disabled = true; btn.textContent = '⏳...';
+
+  try {
+    const bonData = {
+      numero,
+      bcNum: document.getElementById('fBcNum').value.trim(),
+      date,
+      codeClient: document.getElementById('fCodeClient').value.trim(),
+      nomClient,
+      iceClient: document.getElementById('fIceClient').value.trim(),
+      contact: document.getElementById('fContact').value.trim(),
+      adresse: document.getElementById('fAdresse').value.trim(),
+      ville: document.getElementById('fVille').value.trim(),
+      notes: document.getElementById('fNotes').value.trim(),
+      lignes,
+      ht, tva, ttc,
+      showPrices
+    };
+
+    let bon;
+    if(editingBonId){
+      const orig = bons.find(x => x.id === editingBonId);
+      const updates = { ...bonData, updatedAt: new Date().toISOString() };
+      await window.fbUpdate(window.fbRef(window.db, 'livraisons/bons/' + editingBonId), updates);
+      bon = { ...orig, ...updates, id: editingBonId };
+      toast('✅ Bon modifié');
+    } else {
+      const id = 'BL-' + Date.now();
+      bon = { id, ...bonData, createdAt: new Date().toISOString() };
+      await window.fbSet(window.fbRef(window.db, 'livraisons/bons/' + id), bon);
+      toast('✅ Bon de livraison créé');
+    }
+
+    if(editingBonId) exitEditMode();
+    resetForm();
+    setTimeout(() => previewBon(bon), 300);
+  } catch(e){
+    toast('Erreur: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    if(!editingBonId) btn.textContent = '💾 Enregistrer & Voir le bon';
+  }
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function refresh(){
+  if(currentPage === 'dashboard') renderDashboard();
+  if(currentPage === 'historique') renderHistorique();
+  if(currentPage === 'catalogue') renderCatalogue();
+}
+
+function renderDashboard(){
+  const today = todayStr();
+  const todayB = bons.filter(b => b.date === today);
+  document.getElementById('dashTotal').textContent = bons.length;
+  document.getElementById('dashToday').textContent = todayB.length;
+  const total = bons.reduce((s,b) => s + Number(b.ttc || 0), 0);
+  document.getElementById('dashMontant').textContent = formatFR(total) + ' DH';
+  document.getElementById('dateAujourdhui').textContent = new Date().toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+
+  let list = [...bons];
+  if(currentFilter === 'today') list = list.filter(b => b.date === today);
+  else if(currentFilter === 'week'){
+    const now = new Date();
+    list = list.filter(b => (now - new Date(b.date)) / (1000*60*60*24) <= 7);
+  }
+  renderList('dashList', list);
+}
+
+function renderHistorique(){
+  const from = document.getElementById('hDateFrom').value;
+  const to = document.getElementById('hDateTo').value;
+  const search = (document.getElementById('hSearch').value || '').toLowerCase();
+  let list = [...bons];
+  if(from) list = list.filter(b => b.date >= from);
+  if(to) list = list.filter(b => b.date <= to);
+  if(search){
+    list = list.filter(b =>
+      (b.numero || '').toLowerCase().includes(search) ||
+      (b.nomClient || '').toLowerCase().includes(search) ||
+      (b.codeClient || '').toLowerCase().includes(search) ||
+      (b.bcNum || '').toLowerCase().includes(search)
+    );
+  }
+  renderList('historiqueList', list);
+}
+
+function renderList(containerId, list){
+  const el = document.getElementById(containerId);
+  if(!list.length){
+    el.innerHTML = '<div class="empty"><div class="icon">📭</div><h3>Aucun bon</h3></div>';
+    return;
+  }
+  el.innerHTML = list.map(b => `
+    <div class="doc-card" onclick="viewBon('${b.id}')">
+      <div class="head">
+        <div class="num">${escapeHtml(b.numero)}</div>
+        <div>
+          <span class="badge-bl">BL</span>
+          ${b.showPrices === false ? '<span class="badge-noprix">SANS PRIX</span>' : ''}
+        </div>
+      </div>
+      <div class="client">${escapeHtml(b.nomClient)}${b.codeClient ? ' · '+escapeHtml(b.codeClient) : ''}</div>
+      <div class="meta">
+        <span>📅 ${formatDate(b.date)}</span>
+        ${b.bcNum ? `<span>BC ${escapeHtml(b.bcNum)}</span>` : ''}
+        <span>📦 ${(b.lignes||[]).length} art.</span>
+      </div>
+      ${b.showPrices !== false ? `<div class="total">${formatFR(b.ttc)} DH</div>` : ''}
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// VIEW BON
+// ============================================================
+function viewBon(id){
+  const b = bons.find(x => x.id === id);
+  if(!b) return;
+  const lignes = b.lignes || [];
+  const hasPrices = b.showPrices !== false;
+
+  const body = `
+    <div style="text-align:center;margin-bottom:15px;padding:14px;background:linear-gradient(135deg,#f0f9e8,#dcf5c4);border-radius:14px;border:2px solid #5CB531">
+      <div style="font-size:11px;color:#3d7a20;font-weight:700;text-transform:uppercase;letter-spacing:2px">BON DE LIVRAISON</div>
+      <div style="font-size:22px;font-weight:800;color:#1a3a1a;margin-top:4px">${escapeHtml(b.numero)}</div>
+      <div style="font-size:12px;color:#5a6b5a;margin-top:6px">📅 ${formatDate(b.date)}${b.bcNum ? ' · BC N° '+escapeHtml(b.bcNum) : ''}</div>
+      ${!hasPrices ? `<div style="margin-top:6px;font-size:10px;background:#fef3c7;color:#92400e;display:inline-block;padding:2px 8px;border-radius:10px;font-weight:800">SANS PRIX</div>` : ''}
+    </div>
+    <div class="detail-row"><span class="lbl">Client</span><span class="val">${escapeHtml(b.nomClient || '—')}</span></div>
+    ${b.codeClient ? `<div class="detail-row"><span class="lbl">Code</span><span class="val">${escapeHtml(b.codeClient)}</span></div>` : ''}
+    ${b.iceClient ? `<div class="detail-row"><span class="lbl">ICE</span><span class="val">${escapeHtml(b.iceClient)}</span></div>` : ''}
+    <div style="margin-top:12px;padding:10px;background:#f9fbf6;border-radius:10px">
+      <div style="font-size:11px;color:#5a6b5a;font-weight:700;text-transform:uppercase;margin-bottom:6px">📦 ${lignes.length} article(s)</div>
+      ${lignes.map((l,i) => `
+        <div style="padding:8px;border-bottom:1px dashed #e8f0dc;font-size:12px">
+          <div style="font-weight:700;color:#1a3a1a">${i+1}. ${escapeHtml(l.designation)}</div>
+          <div style="display:flex;justify-content:space-between;margin-top:4px">
+            <span>Qté : ${formatFR(l.qte)}</span>
+            ${hasPrices ? `<span>P.U : ${formatFR(l.pu)} DH</span>` : ''}
+          </div>
+          ${hasPrices ? `<div style="text-align:right;font-weight:800;color:#3d7a20">${formatFR(computeLigne(l))} DH</div>` : ''}
+        </div>
+      `).join('')}
+    </div>
+    ${hasPrices ? `
+      <div style="margin-top:10px;padding:12px;background:#f0f9e8;border:2px solid #5CB531;border-radius:10px">
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span>HT</span><strong>${formatFR(b.ht)} DH</strong></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span>TVA 20%</span><strong>${formatFR(b.tva)} DH</strong></div>
+        <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:#3d7a20;padding-top:8px;border-top:2px solid #5CB531;margin-top:8px"><span>TTC</span><strong>${formatFR(b.ttc)} DH</strong></div>
+      </div>
+    ` : ''}
+  `;
+
+  const foot = `
+    <button class="btn btn-secondary" onclick="closeModal()" style="flex:0.5">Fermer</button>
+    <button class="btn btn-warning" onclick="closeModal();setTimeout(()=>enterEditMode(bons.find(x=>x.id==='${b.id}')),200)">✏️ Modifier</button>
+    <button class="btn btn-primary" onclick="closeModal();setTimeout(()=>previewBon(bons.find(x=>x.id==='${b.id}')),200)">👁 Voir</button>
+    <button class="btn btn-danger" onclick="deleteBon('${b.id}')" style="flex:0.3">🗑</button>
+  `;
+  openModal('Bon de livraison', body, foot);
+}
+
+async function deleteBon(id){
+  const b = bons.find(x => x.id === id);
+  if(!b) return;
+  if(!confirm(`Supprimer ${b.numero} ?`)) return;
+  try {
+    await window.fbRemove(window.fbRef(window.db, 'livraisons/bons/' + id));
+    closeModal();
+    toast('🗑 Bon supprimé');
+  } catch(e){ toast('Erreur: ' + e.message, 'error'); }
+}
+
+// ============================================================
+// APERÇU + IMPRESSION
+// ============================================================
+function previewBon(bonOrId){
+  let b;
+  if(typeof bonOrId === 'object' && bonOrId !== null) b = bonOrId;
+  else b = bons.find(x => x.id === bonOrId);
+  if(!b){ toast('Bon introuvable', 'error'); return; }
+  pendingPrintBon = b;
+  document.getElementById('previewContainer').innerHTML = buildBLHTML(b);
+  document.getElementById('previewModal').classList.add('show');
+}
+
+// ✅ Construit le BL HTML
+function buildBLHTML(b){
+  const lignes = b.lignes || [];
+  const hasPrices = b.showPrices !== false;
+
+  // ✅ Logo SANS cadre
+  const logoHTML = settings.logo
+    ? `<div class="bl-logo"><img src="${settings.logo}" alt="Logo"></div>`
+    : `<div class="bl-logo"><span class="bl-logo-emoji">📦</span></div>`;
+
+  const socNom = settings.societeNom || 'TAMA';
+  const socSous = settings.sousTitre || 'Trade and Marketing Agricole';
+
+  // Lignes
+  let colRefHTML = '', colDesigHTML = '', colUniteHTML = '', colQteHTML = '', colPuHTML = '', colRemiseHTML = '', colMontantHTML = '';
+  lignes.forEach(l => {
+    const m = computeLigne(l);
+    colRefHTML += `<div class="bl-cell">${escapeHtml(l.ref || '')}</div>`;
+    colDesigHTML += `<div class="bl-cell">${escapeHtml(l.designation || '')}</div>`;
+    colUniteHTML += `<div class="bl-cell">${escapeHtml(l.unite || '')}</div>`;
+    colQteHTML += `<div class="bl-cell">${formatFR(l.qte)}</div>`;
+    if(hasPrices){
+      colPuHTML += `<div class="bl-cell">${formatFR(l.pu)}</div>`;
+      colRemiseHTML += `<div class="bl-cell">${l.remise || 0} %</div>`;
+      colMontantHTML += `<div class="bl-cell">${formatFR(m)}</div>`;
+    }
+  });
+
+  // Tableau
+  const tableHTML = hasPrices
+    ? `<section class="bl-items-table">
+        <div class="bl-col-box bl-col-ref"><div class="bl-col-header">Référence</div><div class="bl-col-body">${colRefHTML}</div></div>
+        <div class="bl-col-box bl-col-desig"><div class="bl-col-header">Désignation</div><div class="bl-col-body">${colDesigHTML}</div></div>
+        <div class="bl-col-box bl-col-unite"><div class="bl-col-header">Unité</div><div class="bl-col-body">${colUniteHTML}</div></div>
+        <div class="bl-col-box bl-col-qte"><div class="bl-col-header">Qté</div><div class="bl-col-body">${colQteHTML}</div></div>
+        <div class="bl-col-box bl-col-pu"><div class="bl-col-header">P.U (DH)</div><div class="bl-col-body">${colPuHTML}</div></div>
+        <div class="bl-col-box bl-col-remise"><div class="bl-col-header">Remise</div><div class="bl-col-body">${colRemiseHTML}</div></div>
+        <div class="bl-col-box bl-col-montant"><div class="bl-col-header">Montant (DH)</div><div class="bl-col-body">${colMontantHTML}</div></div>
+      </section>`
+    : `<section class="bl-items-table no-prix">
+        <div class="bl-col-box bl-col-ref"><div class="bl-col-header">Référence</div><div class="bl-col-body">${colRefHTML}</div></div>
+        <div class="bl-col-box bl-col-desig"><div class="bl-col-header">Désignation</div><div class="bl-col-body">${colDesigHTML}</div></div>
+        <div class="bl-col-box bl-col-unite"><div class="bl-col-header">Unité</div><div class="bl-col-body">${colUniteHTML}</div></div>
+        <div class="bl-col-box bl-col-qte"><div class="bl-col-header">Qté</div><div class="bl-col-body">${colQteHTML}</div></div>
+      </section>`;
+
+  // Totaux (si prix visibles) — ✅ SANS ARRÊTÉ EN LETTRES
+  let totauxHTML = '';
+  if(hasPrices){
+    const { ht, tva, ttc } = computeTotaux(lignes);
+    totauxHTML = `
+      <section class="bl-totals">
+        <div class="bl-total-box">
+          <span class="label">TOTAL HT (DH) :</span>
+          <span class="value">${formatFR(ht)}</span>
+        </div>
+        <div class="bl-total-box">
+          <span class="label">TVA 20% (DH) :</span>
+          <span class="value">${formatFR(tva)}</span>
+        </div>
+        <div class="bl-total-box ttc">
+          <span class="label">TOTAL TTC (DH) :</span>
+          <span class="value">${formatFR(ttc)}</span>
+        </div>
+      </section>
+    `;
+  }
+
+  return `
+    <div class="bl-paper">
+      <header class="bl-header">
+        <div class="bl-banner"></div>
+        <div class="bl-logo-block">
+          ${logoHTML}
+          <div class="bl-logo-text">
+            <h1>${escapeHtml(socNom)}</h1>
+            <p>${escapeHtml(socSous)}</p>
+          </div>
+        </div>
+      </header>
+
+      <h1 class="bl-doc-title">BON DE LIVRAISON</h1>
+
+      <section class="bl-info-section">
+        <div class="bl-info-left">
+          <div class="bl-info-box">
+            <div class="bl-row">
+              <span class="label">Date :</span>
+              <span class="value">${formatDateShort(b.date)}</span>
+              <span class="label">BC N° :</span>
+              <span class="value">${escapeHtml(b.bcNum || '—')}</span>
+            </div>
+          </div>
+          <div class="bl-info-box">
+            <div class="bl-num">
+              <span class="prefix">BON N° :</span>
+              <span class="num">${escapeHtml(b.numero)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bl-info-box">
+          <div class="bl-client-box">
+            <div class="field">
+              <span class="label">Code client</span>
+              <span class="value">${escapeHtml(b.codeClient || '—')}</span>
+            </div>
+            <div class="field">
+              <span class="label">Nom client</span>
+              <span class="value">${escapeHtml(b.nomClient || '—')}</span>
+            </div>
+            <div class="field">
+              <span class="label">ICE client</span>
+              <span class="value">${escapeHtml(b.iceClient || '—')}</span>
+            </div>
+            <div class="field">
+              <span class="label">Contact</span>
+              <span class="value">${escapeHtml(b.contact || '—')}</span>
+            </div>
+            <div class="field full">
+              <span class="label">Adresse</span>
+              <span class="value">${escapeHtml(b.adresse || '—')}</span>
+            </div>
+            <div class="field full">
+              <span class="label">Ville</span>
+              <span class="value">${escapeHtml(b.ville || '—')}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      ${tableHTML}
+
+      ${totauxHTML}
+
+      ${b.notes ? `<div style="margin-top:4mm;padding:3mm;border:1px dashed #666;font-size:9.5px;border-radius:6px"><strong>Note :</strong> ${escapeHtml(b.notes)}</div>` : ''}
+
+      <!-- 3 CACHETS -->
+      <section class="bl-signatures">
+        <div class="bl-sig-box">
+          <div class="sig-title">✍️ Livreur</div>
+          <div class="sig-role">Nom & Cachet</div>
+          <div class="sig-space"></div>
+          <div class="sig-name">Date : ____ / ____ / ________</div>
+        </div>
+        <div class="bl-sig-box">
+          <div class="sig-title">👤 Client</div>
+          <div class="sig-role">Nom & Cachet</div>
+          <div class="sig-space"></div>
+          <div class="sig-name">Date : ____ / ____ / ________</div>
+        </div>
+        <div class="bl-sig-box">
+          <div class="sig-title">📦 Magasinier</div>
+          <div class="sig-role">Nom & Cachet</div>
+          <div class="sig-space"></div>
+          <div class="sig-name">Date : ____ / ____ / ________</div>
+        </div>
+      </section>
+
+      <footer class="bl-footer">
+        <div class="separator"></div>
+        <div class="logo-line">
+          <div class="tama-logo">🌾 TAMA</div>
+        </div>
+        <div class="info-line">
+          <span class="lbl">${escapeHtml(settings.adresse)}</span>
+          <span class="sep">|</span>
+          <span class="lbl">Tél :</span> ${escapeHtml(settings.tel)}
+          <span class="sep">|</span>
+          <span class="lbl">Email :</span> ${escapeHtml(settings.email)}
+          <br>
+          <span class="lbl">RC :</span> ${escapeHtml(settings.rc)}
+          <span class="sep">-</span>
+          <span class="lbl">TP :</span> ${escapeHtml(settings.tp)}
+          <span class="sep">-</span>
+          <span class="lbl">ICE :</span> ${escapeHtml(settings.ice)}
+          <span class="sep">-</span>
+          <span class="lbl">RIB :</span> ${escapeHtml(settings.rib)}
+        </div>
+        <div class="separator" style="margin-top: 2.5mm;"></div>
+      </footer>
+    </div>
+  `;
+}
+
+function printBon(bonOrId){
+  let b;
+  if(typeof bonOrId === 'object' && bonOrId !== null) b = bonOrId;
+  else b = bons.find(x => x.id === bonOrId);
+  if(!b){ toast('Bon introuvable', 'error'); return; }
+  const html = buildBLHTML(b);
+  document.getElementById('printArea').innerHTML = html;
+  setTimeout(() => window.print(), 250);
+}
+
+function confirmPrint(){
+  if(!pendingPrintBon){ toast('Aucun bon', 'error'); return; }
+  closeModal('previewModal');
+  setTimeout(() => printBon(pendingPrintBon), 200);
+}
+
+// ============================================================
+// FILTERS
+// ============================================================
+function setFilter(btn, filter){
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = filter;
+  renderDashboard();
+}
+
+// ============================================================
+// MODAL CLOSE
+// ============================================================
+document.getElementById('modal').addEventListener('click', e => { if(e.target.id === 'modal') closeModal(); });
+document.getElementById('previewModal').addEventListener('click', e => { if(e.target.id === 'previewModal') closeModal('previewModal'); });
+document.getElementById('selectProdModal').addEventListener('click', e => { if(e.target.id === 'selectProdModal') closeModal('selectProdModal'); });
+document.getElementById('addProdModal').addEventListener('click', e => { if(e.target.id === 'addProdModal') closeModal('addProdModal'); });
+document.getElementById('paramsModal').addEventListener('click', e => { if(e.target.id === 'paramsModal') closeModal('paramsModal'); });
+
+// ============================================================
+// INIT
+// ============================================================
+function hideLoader(){
+  const l = document.getElementById('loader');
+  if(l && !l.classList.contains('hidden')){
+    l.classList.add('hidden');
+    setTimeout(() => { if(l.parentNode) l.remove(); }, 400);
+  }
+}
+
+window.addEventListener('firebase-ready', () => {
+  fbReady = true;
+  setTimeout(() => {
+    document.getElementById('app').style.display = 'block';
+    initListeners();
+    resetForm();
+    hideLoader();
+    setTimeout(() => { if(produits.length === 0) seedProduits(); }, 1500);
+  }, 600);
+});
+
+async function seedProduits(){
+  const exemples = [
+    { ref: 'FATH0016', designation: 'FILET BLANC ANTI THRIPS (5,0X100)', unite: 'M²', pu: 7.80 },
+    { ref: 'FATH0005', designation: 'FILET BLANC ANTI THRIPS (2,0X100)', unite: 'M²', pu: 7.80 }
+  ];
+  for(const p of exemples){
+    const id = 'PRD-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
+    await window.fbSet(window.fbRef(window.db, 'livraisons/produits/' + id), {
+      id, ...p, createdAt: new Date().toISOString()
+    });
+    await new Promise(r => setTimeout(r, 200));
+  }
+  console.log('✅ Catalogue initialisé');
+}
+
+setTimeout(hideLoader, 5000);
+</script>
+</body>
+</html>
