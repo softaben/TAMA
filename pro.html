@@ -2,13 +2,22 @@
 <html lang="fr" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0f2557">
-<title>TAMA - Calcul Ventes & Commissions</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TAMA">
+<title>TAMA</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230f2557'/><text x='50' y='68' font-size='55' text-anchor='middle' fill='%23ffd700'>📊</text></svg>">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+  }
   :root {
     --primary: #0f2557;
     --primary-light: #1e3c72;
@@ -16,731 +25,1188 @@
     --accent-light: #ffd700;
     --success: #10b981;
     --danger: #ef4444;
-    --gray-50: #f9fafb;
-    --gray-100: #f3f4f6;
-    --gray-200: #e5e7eb;
-    --gray-600: #4b5563;
-    --gray-700: #374151;
+    --bg: #f2f2f7;
+    --card: #ffffff;
+    --text-primary: #000000;
+    --text-secondary: #8e8e93;
+    --text-tertiary: #c7c7cc;
+    --separator: rgba(60,60,67,0.08);
+    --blue: #007aff;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f2557 0%, #1e3c72 50%, #2a5298 100%);
-    min-height: 100vh;
-    padding: 20px 15px;
-    color: var(--gray-700);
-    -webkit-font-smoothing: antialiased;
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+    color: var(--text-primary);
+    -webkit-user-select: none;
+    user-select: none;
   }
-  .container { max-width: 800px; margin: 0 auto; }
 
-  /* HEADER */
-  .header {
-    background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
-    color: var(--primary);
-    padding: 28px 24px;
-    border-radius: 20px;
-    margin-bottom: 24px;
-    text-align: center;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  /* ===== APP CONTAINER ===== */
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    max-width: 500px;
+    margin: 0 auto;
+    background: var(--bg);
     position: relative;
     overflow: hidden;
+    box-shadow: 0 0 40px rgba(0,0,0,0.1);
   }
-  .header::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -20%;
-    width: 300px;
-    height: 300px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 50%;
-  }
-  .header::after {
-    content: '';
-    position: absolute;
-    bottom: -40%;
-    left: -15%;
-    width: 250px;
-    height: 250px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 50%;
-  }
-  .header-content { position: relative; z-index: 1; }
-  .logo {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 56px;
-    height: 56px;
+
+  /* ===== STATUS BAR SPACER ===== */
+  .status-bar-spacer {
+    height: var(--safe-top);
     background: var(--primary);
-    color: var(--accent-light);
-    border-radius: 16px;
-    font-size: 1.8em;
-    margin-bottom: 10px;
-    box-shadow: 0 6px 20px rgba(15,37,87,0.4);
+    flex-shrink: 0;
   }
-  .header h1 {
-    font-size: 2.2em;
-    font-weight: 900;
-    letter-spacing: 4px;
-    margin-bottom: 4px;
-  }
-  .header p {
-    font-size: 0.9em;
-    font-weight: 600;
-    opacity: 0.75;
-    letter-spacing: 0.5px;
-  }
-  .edit-btn {
-    position: absolute;
-    top: 16px;
-    right: 16px;
+
+  /* ===== NAV BAR (Top) ===== */
+  .nav-bar {
     background: var(--primary);
     color: #fff;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: 700;
-    font-size: 0.82em;
-    font-family: inherit;
-    transition: all 0.2s;
-    z-index: 2;
+    padding: 12px 20px 16px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: space-between;
+    position: relative;
   }
-  .edit-btn:hover { background: #0a1a3d; transform: translateY(-1px); }
-  .edit-btn.active { background: var(--danger); }
+  .nav-bar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+  }
+  .nav-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .app-logo {
+    width: 38px;
+    height: 38px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3em;
+    box-shadow: 0 2px 8px rgba(255,183,0,0.4);
+  }
+  .app-title {
+    font-size: 1.4em;
+    font-weight: 800;
+    letter-spacing: 2px;
+    line-height: 1.1;
+  }
+  .app-subtitle {
+    font-size: 0.7em;
+    opacity: 0.7;
+    letter-spacing: 0.5px;
+    margin-top: 1px;
+    font-weight: 500;
+  }
+  .edit-toggle {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    backdrop-filter: blur(10px);
+  }
+  .edit-toggle:active { transform: scale(0.95); opacity: 0.8; }
+  .edit-toggle.active {
+    background: var(--danger);
+  }
 
-  /* CARDS */
+  /* ===== SCROLLABLE CONTENT ===== */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 16px 100px;
+  }
+  .content::-webkit-scrollbar { display: none; }
+
+  /* ===== SECTIONS ===== */
+  .section-title {
+    font-size: 0.72em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    padding: 8px 4px 8px;
+    margin-top: 4px;
+  }
+  .section-title:first-child { margin-top: 0; }
+
+  /* ===== CARDS (iOS Style) ===== */
   .card {
-    background: #fff;
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 16px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    transition: box-shadow 0.2s;
-    border-left: 4px solid transparent;
+    background: var(--card);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    border: 1px solid var(--separator);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.15s;
   }
-  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
-  .card.fer { border-left-color: #1e3c72; }
-  .card.filet { border-left-color: #6366f1; }
-  .card.plastic { border-left-color: #2575fc; }
-  .card.ficelle { border-left-color: #6a11cb; }
-  .card.titape { border-left-color: #ec4899; }
-  .card.organique { border-left-color: #10b981; }
-  .card.enr { border-left-color: #ff6b00; }
-
   .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
+    margin-bottom: 14px;
     gap: 8px;
   }
-  .card-title {
+  .card-title-wrap {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 1.1em;
-    font-weight: 800;
-    color: var(--primary);
+    min-width: 0;
+    flex: 1;
   }
-  .card-title .icon {
-    font-size: 1.4em;
+  .card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    flex-shrink: 0;
   }
-  .badge {
-    background: var(--primary);
-    color: #fff;
-    font-size: 0.72em;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-  }
-  .badge.plastic-badge { background: #2575fc; }
-  .badge.ficelle-badge { background: #6a11cb; }
-  .badge.organique-badge { background: #10b981; }
-  .badge.enr-badge { background: #ff6b00; }
+  .fer .card-icon { background: linear-gradient(135deg, #1e3c72, #2a5298); }
+  .filet .card-icon { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+  .plastic .card-icon { background: linear-gradient(135deg, #3b82f6, #2575fc); }
+  .ficelle .card-icon { background: linear-gradient(135deg, #8b5cf6, #6a11cb); }
+  .titape .card-icon { background: linear-gradient(135deg, #ec4899, #db2777); }
+  .organique .card-icon { background: linear-gradient(135deg, #10b981, #059669); }
+  .enr .card-icon { background: linear-gradient(135deg, #f97316, #ea580c); }
 
-  /* INPUTS */
-  label {
-    display: block;
-    font-size: 0.82em;
-    margin-bottom: 6px;
-    color: var(--gray-600);
+  .card-title {
+    font-size: 1em;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-subtitle {
+    font-size: 0.72em;
+    color: var(--text-secondary);
+    margin-top: 1px;
+    font-weight: 500;
+  }
+  .card-badge {
+    background: var(--gray-100, #f3f4f6);
+    color: var(--text-secondary);
+    font-size: 0.7em;
+    padding: 4px 10px;
+    border-radius: 20px;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
-  input[type="number"] {
-    width: 100%;
-    padding: 12px 14px;
-    border: 2px solid var(--gray-200);
-    border-radius: 10px;
-    font-size: 1.05em;
-    font-weight: 600;
-    transition: all 0.2s;
-    font-family: inherit;
-    color: var(--primary);
-    background: var(--gray-50);
-  }
-  input[type="number"]:focus {
-    outline: none;
-    border-color: var(--primary-light);
-    background: #fff;
-    box-shadow: 0 0 0 3px rgba(42,82,152,0.1);
-  }
-  .dual-input {
+
+  /* ===== INPUT FIELDS ===== */
+  .inputs-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 12px;
+    gap: 10px;
   }
-  .field-group {
-    background: var(--gray-50);
-    padding: 12px;
+  .input-field {
+    background: var(--bg);
     border-radius: 10px;
-    border: 1px solid var(--gray-200);
+    padding: 10px 12px;
+    border: 2px solid transparent;
     transition: all 0.2s;
+    cursor: text;
   }
-  .field-group.active {
-    background: #eff6ff;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+  .input-field.focused {
+    background: #fff;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(0,122,255,0.1);
   }
-  .field-group .mode-tag {
-    display: inline-block;
-    font-size: 0.65em;
-    padding: 2px 7px;
-    border-radius: 8px;
+  .input-label {
+    font-size: 0.68em;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .inverse-tag {
     background: var(--accent-light);
     color: var(--primary);
+    font-size: 0.85em;
+    padding: 1px 5px;
+    border-radius: 5px;
     font-weight: 800;
-    margin-left: 4px;
-    text-transform: uppercase;
+    letter-spacing: 0.2px;
+  }
+  .input-field input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    font-size: 1.15em;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: inherit;
+    outline: none;
+    -webkit-appearance: none;
+    padding: 0;
+  }
+  .input-field input::placeholder {
+    color: var(--text-tertiary);
+    font-weight: 500;
   }
 
-  /* INFO */
-  .info {
-    background: var(--gray-50);
-    padding: 12px 14px;
-    border-radius: 10px;
-    font-size: 0.85em;
-    color: var(--gray-600);
-    margin-top: 10px;
-    line-height: 1.6;
-    border-left: 3px solid var(--gray-200);
+  /* ===== INFO / PRICE ===== */
+  .info-row {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--separator);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
-  .info strong { color: var(--primary); font-weight: 700; }
-  .unit-price {
+  .info-text {
+    font-size: 0.78em;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .info-text strong {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+  .price-pill {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #10b981, #059669);
     color: #fff;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.9em;
-    margin-top: 6px;
+    padding: 5px 11px;
+    border-radius: 12px;
+    font-size: 0.8em;
     font-weight: 700;
-    box-shadow: 0 2px 8px rgba(16,185,129,0.3);
+    align-self: flex-start;
+    box-shadow: 0 2px 6px rgba(16,185,129,0.25);
   }
 
-  /* EDIT PANEL */
+  /* ===== EDIT PANEL ===== */
   .edit-panel {
     display: none;
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    border: 2px dashed var(--accent);
-    border-radius: 10px;
-    padding: 14px;
     margin-top: 12px;
+    padding: 12px;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border-radius: 10px;
+    border: 1px solid #fcd34d;
   }
-  .edit-panel.visible { display: block; }
-  .edit-panel h4 {
-    font-size: 0.85em;
+  .edit-panel.visible {
+    display: block;
+    animation: slideDown 0.25s ease-out;
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .edit-panel-header {
+    font-size: 0.75em;
+    font-weight: 800;
     color: #92400e;
     margin-bottom: 10px;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
   }
-  .edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .edit-grid .field { display: flex; flex-direction: column; }
-  .edit-grid label {
-    font-size: 0.72em;
+  .edit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .edit-field { display: flex; flex-direction: column; }
+  .edit-field label {
+    font-size: 0.65em;
+    font-weight: 700;
     color: #92400e;
     margin-bottom: 4px;
-    text-transform: none;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
   }
-  .edit-grid input {
+  .edit-field input {
+    background: #fff;
+    border: 1px solid #fcd34d;
     padding: 8px 10px;
+    border-radius: 8px;
     font-size: 0.95em;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: inherit;
+    outline: none;
+    -webkit-appearance: none;
+    width: 100%;
+  }
+  .edit-field input:focus {
     border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255,183,0,0.15);
+  }
+
+  /* ===== TAB BAR (BOTTOM) ===== */
+  .tab-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-top: 1px solid rgba(0,0,0,0.08);
+    padding: 8px 0 calc(8px + var(--safe-bottom));
+    display: flex;
+    justify-content: space-around;
+    z-index: 100;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 4px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.65em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s;
+    letter-spacing: 0.2px;
+  }
+  .tab-icon {
+    font-size: 1.6em;
+    line-height: 1;
+    transition: transform 0.2s;
+  }
+  .tab.active { color: var(--blue); }
+  .tab.active .tab-icon { transform: scale(1.1); }
+  .tab:active .tab-icon { transform: scale(0.9); }
+
+  /* ===== MODAL / SHEET ===== */
+  .sheet-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    backdrop-filter: blur(4px);
+  }
+  .sheet-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 500px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 20px 20px 0 0;
+    padding: 8px 20px calc(24px + var(--safe-bottom));
+    z-index: 201;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  .sheet.visible { transform: translateY(0); }
+  .sheet-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--text-tertiary);
+    border-radius: 2px;
+    margin: 8px auto 16px;
+  }
+  .sheet-title {
+    font-size: 1.5em;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+  }
+
+  /* ===== RESULTS IN SHEET ===== */
+  .results-summary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: 16px;
+    padding: 20px;
+    color: #fff;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 24px rgba(15,37,87,0.25);
+  }
+  .summary-total {
+    font-size: 0.75em;
+    font-weight: 600;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .summary-amount {
+    font-size: 2.5em;
+    font-weight: 900;
+    letter-spacing: -1px;
+    color: var(--accent-light);
+    margin-bottom: 4px;
+  }
+  .summary-units {
+    font-size: 0.85em;
+    font-weight: 600;
+    opacity: 0.85;
+  }
+
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--separator);
+    font-size: 0.95em;
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-row-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+  .result-row-amount {
+    color: var(--text-primary);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .result-row-units {
+    font-size: 0.75em;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  /* ===== UNITS LIST ===== */
+  .units-list {
+    background: var(--card);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    border: 1px solid var(--separator);
+  }
+  .unit-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--separator);
+    font-size: 0.92em;
+  }
+  .unit-row:last-child { border-bottom: none; }
+  .unit-row-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-primary);
+  }
+  .unit-icon-small {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95em;
+  }
+  .unit-row-value {
+    font-weight: 700;
+    color: var(--blue);
+    background: rgba(0,122,255,0.1);
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .unit-row.total {
+    background: var(--bg);
+    font-weight: 800;
+  }
+  .unit-row.total .unit-row-value {
+    background: var(--primary);
+    color: var(--accent-light);
+  }
+
+  /* ===== SETTINGS ===== */
+  .settings-group {
+    background: var(--card);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    border: 1px solid var(--separator);
+  }
+  .settings-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--separator);
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-row-label {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .settings-row-title {
+    font-size: 0.95em;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .settings-row-subtitle {
+    font-size: 0.75em;
+    color: var(--text-secondary);
+  }
+  .settings-row input {
+    background: var(--bg);
+    border: 1px solid var(--separator);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.95em;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: inherit;
+    outline: none;
+    width: 100px;
+    text-align: right;
+    -webkit-appearance: none;
+  }
+  .settings-row input:focus {
+    border-color: var(--blue);
     background: #fff;
   }
 
-  /* RESULTS */
-  .result-box {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-    color: #fff;
-    padding: 22px;
-    border-radius: 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 6px 24px rgba(15,37,87,0.3);
-  }
-  .result-box h3 {
-    font-size: 1em;
-    margin-bottom: 16px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    opacity: 0.95;
-  }
-  .result-line {
-    display: flex;
-    justify-content: space-between;
-    padding: 9px 0;
-    font-size: 0.95em;
-    border-bottom: 1px solid rgba(255,255,255,0.12);
-  }
-  .result-line:last-child {
-    border-bottom: none;
-    font-size: 1.4em;
-    font-weight: 900;
-    padding-top: 16px;
-    margin-top: 8px;
-    color: var(--accent-light);
-    border-top: 2px solid rgba(255,255,255,0.2);
-  }
-  .result-line span:first-child { opacity: 0.85; font-weight: 500; }
-  .result-line span:last-child { font-weight: 700; }
-
-  .units-box {
-    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-    color: #fff;
-    padding: 22px;
-    border-radius: 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 6px 24px rgba(106,17,203,0.3);
-  }
-  .units-box h3 {
-    font-size: 1em;
-    margin-bottom: 16px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    opacity: 0.95;
-  }
-  .unit-line {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    font-size: 0.92em;
-    border-bottom: 1px solid rgba(255,255,255,0.15);
-  }
-  .unit-line:last-child { border-bottom: none; }
-  .unit-line .u-val {
-    background: rgba(255,255,255,0.22);
-    padding: 4px 14px;
-    border-radius: 20px;
-    font-weight: 800;
-    font-size: 0.95em;
-  }
-  .unit-total {
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 2px solid rgba(255,255,255,0.35);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.35em;
-    font-weight: 900;
-    color: var(--accent-light);
-  }
-
-  .commission-box {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: #fff;
-    padding: 22px;
-    border-radius: 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 6px 24px rgba(16,185,129,0.3);
-  }
-  .commission-box h3 {
-    font-size: 1em;
-    margin-bottom: 12px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    opacity: 0.95;
-  }
-  .commission-box .result-line:last-child {
-    color: var(--accent-light);
-    font-size: 1.4em;
-  }
-
-  /* BUTTONS */
-  .btn-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 8px;
-  }
-  .btn {
-    padding: 14px;
+  .action-btn {
+    width: 100%;
+    padding: 16px;
     border: none;
-    border-radius: 12px;
-    font-size: 0.95em;
+    border-radius: 14px;
+    font-size: 1em;
     font-weight: 700;
-    cursor: pointer;
     font-family: inherit;
+    cursor: pointer;
     transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    margin-bottom: 10px;
+    -webkit-appearance: none;
   }
-  .btn-reset {
-    background: var(--danger);
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+  .action-btn:active { transform: scale(0.98); opacity: 0.9; }
+  .action-btn.danger {
+    background: rgba(239,68,68,0.1);
+    color: var(--danger);
   }
-  .btn-reset:hover { background: #dc2626; transform: translateY(-1px); }
-  .btn-reset-all {
-    background: var(--gray-600);
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(75,85,99,0.3);
+  .action-btn.secondary {
+    background: var(--bg);
+    color: var(--text-primary);
   }
-  .btn-reset-all:hover { background: #374151; transform: translateY(-1px); }
 
-  /* SAVE BADGE */
-  .save-badge {
-    display: none;
+  /* ===== SAVE TOAST ===== */
+  .save-toast {
     position: fixed;
-    bottom: 24px;
+    top: calc(var(--safe-top) + 80px);
     left: 50%;
-    transform: translateX(-50%);
-    background: var(--success);
+    transform: translateX(-50%) translateY(-20px);
+    background: rgba(16,185,129,0.95);
     color: #fff;
-    padding: 12px 24px;
-    border-radius: 30px;
-    font-weight: 800;
-    font-size: 0.9em;
-    box-shadow: 0 8px 24px rgba(16,185,129,0.4);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 700;
     z-index: 1000;
-    letter-spacing: 0.3px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px rgba(16,185,129,0.4);
   }
-  .save-badge.show { display: block; animation: slideUp 2s ease-in-out; }
-  @keyframes slideUp {
-    0% { opacity: 0; transform: translateX(-50%) translateY(30px) scale(0.9); }
-    15%, 85% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
-    100% { opacity: 0; transform: translateX(-50%) translateY(30px) scale(0.9); }
+  .save-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 
-  .footer {
+  /* ===== EMPTY STATE ===== */
+  .empty-state {
     text-align: center;
-    color: rgba(255,255,255,0.6);
-    font-size: 0.82em;
-    margin-top: 24px;
-    padding: 16px;
-    letter-spacing: 0.3px;
+    padding: 40px 20px;
+    color: var(--text-secondary);
   }
-  .footer strong { color: var(--accent-light); font-weight: 800; }
-
-  @media (max-width: 480px) {
-    body { padding: 12px 10px; }
-    .header { padding: 22px 18px; }
-    .header h1 { font-size: 1.8em; letter-spacing: 3px; }
-    .card { padding: 16px; }
-    .dual-input { grid-template-columns: 1fr; }
-    .edit-btn { padding: 8px 14px; font-size: 0.78em; }
+  .empty-state-icon {
+    font-size: 3em;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+  .empty-state-text {
+    font-size: 0.95em;
+    font-weight: 500;
   }
 </style>
 </head>
 <body>
-<div class="container">
+<div class="app">
 
-  <!-- HEADER -->
-  <div class="header">
-    <button class="edit-btn" id="editToggle" onclick="toggleEditMode()">✏️ Modifier</button>
-    <div class="header-content">
-      <div class="logo">📊</div>
-      <h1>TAMA</h1>
-      <p>Calcul Ventes & Commissions</p>
+  <!-- STATUS BAR SPACER -->
+  <div class="status-bar-spacer"></div>
+
+  <!-- NAV BAR -->
+  <div class="nav-bar">
+    <div class="nav-left">
+      <div class="app-logo">📊</div>
+      <div>
+        <div class="app-title">TAMA</div>
+        <div class="app-subtitle">Calcul & Commissions</div>
+      </div>
     </div>
+    <button class="edit-toggle" id="editToggle" onclick="toggleEditMode()">✏️ Modifier</button>
   </div>
 
-  <!-- FER DE FER -->
-  <div class="card fer">
-    <div class="card-header">
-      <div class="card-title"><span class="icon">🔩</span> Fer de fer</div>
-      <span class="badge" id="fer_badge">25 DH / Tonne</span>
-    </div>
-    <div class="dual-input">
-      <div class="field-group" id="fer_grp_kg">
-        <label>Poids (kg)</label>
-        <input type="number" id="fer_kg" value="0" min="0" step="1" oninput="calcFromKg('fer')">
+  <!-- SCROLLABLE CONTENT -->
+  <div class="content" id="content">
+
+    <!-- ========== CALCULS TAB ========== -->
+    <div id="tab-calc" class="tab-content">
+      <div class="section-title">Calculatrices</div>
+
+      <!-- FER DE FER -->
+      <div class="card fer">
+        <div class="card-header">
+          <div class="card-title-wrap">
+            <div class="card-icon">🔩</div>
+            <div>
+              <div class="card-title">Fer de fer</div>
+              <div class="card-subtitle" id="fer_subtitle">500 kg / U</div>
+            </div>
+          </div>
+          <span class="card-badge" id="fer_badge">25 DH/T</span>
+        </div>
+        <div class="inputs-row">
+          <div class="input-field" id="fer_grp_kg">
+            <div class="input-label">Poids (kg)</div>
+            <input type="number" id="fer_kg" value="0" min="0" step="1" oninput="calcFromKg('fer')" onfocus="focusField('fer_grp_kg')" onblur="blurField('fer_grp_kg')">
+          </div>
+          <div class="input-field" id="fer_grp_u">
+            <div class="input-label">Unités <span class="inverse-tag">U</span></div>
+            <input type="number" id="fer_u" value="0" min="0" step="1" oninput="calcFromU('fer')" onfocus="focusField('fer_grp_u')" onblur="blurField('fer_grp_u')">
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-text">1 Tonne = 1000 kg = <strong>2 U</strong> → 1 U = 500 kg</div>
+          <span class="price-pill" id="fer_unitPrice">💰 12.50 DH / U</span>
+        </div>
+        <div class="edit-panel" id="fer_edit">
+          <div class="edit-panel-header">⚙️ Paramètres</div>
+          <div class="edit-grid">
+            <div class="edit-field"><label>kg / U</label><input type="number" id="fer_cfg_ratio" step="0.01" min="0.01"></div>
+            <div class="edit-field"><label>DH / kg</label><input type="number" id="fer_cfg_price" step="0.0001" min="0"></div>
+          </div>
+        </div>
       </div>
-      <div class="field-group" id="fer_grp_u">
-        <label>Unités (U) <span class="mode-tag">inverse</span></label>
-        <input type="number" id="fer_u" value="0" min="0" step="1" oninput="calcFromU('fer')">
+
+      <!-- FILET -->
+      <div class="card filet">
+        <div class="card-header">
+          <div class="card-title-wrap">
+            <div class="card-icon">🕸️</div>
+            <div>
+              <div class="card-title">Filet</div>
+              <div class="card-subtitle" id="filet_subtitle">400 m / U</div>
+            </div>
+          </div>
+          <span class="card-badge" id="filet_badge">200 DH/1000m</span>
+        </div>
+        <div class="inputs-row">
+          <div class="input-field" id="filet_grp_m">
+            <div class="input-label">Longueur (m)</div>
+            <input type="number" id="filet_m" value="0" min="0" step="1" oninput="calcFromKg('filet')" onfocus="focusField('filet_grp_m')" onblur="blurField('filet_grp_m')">
+          </div>
+          <div class="input-field" id="filet_grp_u">
+            <div class="input-label">Unités <span class="inverse-tag">U</span></div>
+            <input type="number" id="filet_u" value="0" min="0" step="1" oninput="calcFromU('filet')" onfocus="focusField('filet_grp_u')" onblur="blurField('filet_grp_u')">
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-text"><strong>1 U = 400 m</strong> — Prix: 200 DH/1000m</div>
+          <span class="price-pill" id="filet_unitPrice">💰 80 DH / U</span>
+        </div>
+        <div class="edit-panel" id="filet_edit">
+          <div class="edit-panel-header">⚙️ Paramètres</div>
+          <div class="edit-grid">
+            <div class="edit-field"><label>m / U</label><input type="number" id="filet_cfg_ratio" step="0.01" min="0.01"></div>
+            <div class="edit-field"><label>DH / 1000m</label><input type="number" id="filet_cfg_price" step="0.01" min="0"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLASTIC -->
+      <div class="card plastic">
+        <div class="card-header">
+          <div class="card-title-wrap">
+            <div class="card-icon">🧴</div>
+            <div>
+              <div class="card-title">Plastic</div>
+              <div class="card-subtitle" id="plastic_subtitle">500 kg / U</div>
+            </div>
+          </div>
+          <span class="card-badge" id="plastic_badge">200 DH/T</span>
+        </div>
+        <div class="inputs-row">
+          <div class="input-field" id="plastic_grp_kg">
+            <div class="input-label">Poids (kg)</div>
+            <input type="number" id="plastic_kg" value="0" min="0" step="1" oninput="calcFromKg('plastic')" onfocus="focusField('plastic_grp_kg')" onblur="blurField('plastic_grp_kg')">
+          </div>
+          <div class="input-field" id="plastic_grp_u">
+            <div class="input-label">Unités <span class="inverse-tag">U</span></div>
+            <input type="number" id="plastic_u" value="0" min="0" step="1" oninput="calcFromU('plastic')" onfocus="focusField('plastic_grp_u')" onblur="blurField('plastic_grp_u')">
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-text"><strong>1 U = 500 kg</strong> — Prix: 200 DH/Tonne</div>
+          <span class="price-pill" id="plastic_unitPrice">💰 100 DH / U</span>
+        </div>
+        <div class="edit-panel" id="plastic_edit">
+          <div class="edit-panel-header">⚙️ Paramètres</div>
+          <div class="edit-grid">
+            <div class="edit-field"><label>kg / U</label><input type="number" id="plastic_cfg_ratio" step="0.01" min="0.01"></div>
+            <div class="edit-field"><label>DH / kg</label><input type="number" id="plastic_cfg_price" step="0.0001" min="0"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FICELLE -->
+      <div class="card ficelle">
+        <div class="card-header">
+          <div class="card-title-wrap">
+            <div class="card-icon">🧵</div>
+            <div>
+              <div class="card-title">Ficelle</div>
+              <div class="card-subtitle" id="ficelle_subtitle">1000 kg / U</div>
+            </div>
+          </div>
+          <span class="card-badge" id="ficelle_badge">50 DH/T</span>
+        </div>
+        <div class="inputs-row">
+          <div class="input-field" id="ficelle_grp_kg">
+            <div class="input-label">Poids (kg)</div>
+            <input type="number" id="ficelle_kg" value="0" min="0" step="1" oninput="calcFromKg('ficelle')" onfocus="focusField('ficelle_grp_kg')" onblur="blurField('ficelle_grp_kg')">
+          </div>
+          <div class="input-field" id="ficelle_grp_u">
+            <div class="input-label">Unités <span class="inverse-tag">U</span></div>
+            <input type="number" id="ficelle_u" value="0" min="0" step="1" oninput="calcFromU('ficelle')" onfocus="focusField('ficelle_grp_u')" onblur="blurField('ficelle_grp_u')">
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-text"><strong>1 U = 1000 kg</strong> — Prix: 50 DH/Tonne</div>
+          <span class="price-pill" id="ficelle_unitPrice">💰 50 DH / U</span>
+        </div>
+        <div class="edit-panel" id="ficelle_edit">
+          <div class="edit-panel-header">⚙️ Paramètres</div>
+          <div class="edit-grid">
+            <div class="edit-field"><label>kg / U</label><input type="number" id="ficelle_cfg_ratio" step="0.01" min="0.01"></div>
+            <div class="edit-field"><label>DH / kg</label><input type="number" id="ficelle_cfg_price" step="0.0001" min="0"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TITAPE -->
+      <div class="card titape">
+        <div class="card-header">
+          <div class="card-title-wrap">
+            <div class="card-icon">📼</div>
+            <div>
+              <div class="card-title">Titape</div>
+              <div class="card-subtitle" id="titape_subtitle">2 R / U</div>
+            </div>
+          </div>
+          <span class="card-badge" id="titape_badge">6 DH/R</span>
+        </div>
+        <div class="inputs-row">
+          <div class="input-field" id="titape_grp_rou">
+            <div class="input-label">Rouleaux</div>
+            <input type="number" id="titape_rou" value="0" min="0" step="1" oninput="calcFromKg('titape')" onfocus="focusField('titape_grp_rou')" onblur="blurField('titape_grp_rou')">
+          </div>
+          <div class="input-field" id="titape_grp_u">
+            <div class="input-label">Unités <span class="inverse-tag">U</span></div>
+            <input type="number" id="titape_u" value="0" min="0" step="1" oninput="calcFromU('titape')" onfocus="focusField('titape_grp_u')" onblur="blurField('titape_grp_u')">
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-text"><strong>2 Rouleaux = 1 U</strong> — 6 DH/Rouleau</div>
+          <span class="price-pill" id="titape_unitPrice">💰 12 DH / U</span>
+        </div>
+        <div class="edit-panel" id="titape_edit">
+          <div class="edit-panel-header">⚙️ Paramètres</div>
+          <div class="edit-grid">
+            <div class="edit-field"><label>R / U</label><input type="number" id="titape_cfg_ratio" step="0.01" min="0.01"></div>
+            <div class="edit-field"><label>DH / Rouleau</label><input type="number" id="titape_cfg_price" step="0.01" min="0"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MATIERE ORGANIQUE -->
+      <div class="card organique">
+        <div class="card-header">
+          <div class="card-title-wrap">
+            <div class="card-icon">🌱</div>
+            <div>
+              <div class="card-title">Matière organique</div>
+              <div class="card-subtitle" id="organique_subtitle">200 kg / U</div>
+            </div>
+          </div>
+          <span class="card-badge" id="organique_badge">500 DH/T</span>
+        </div>
+        <div class="inputs-row">
+          <div class="input-field" id="organique_grp_kg">
+            <div class="input-label">Poids (kg)</div>
+            <input type="number" id="organique_kg" value="0" min="0" step="1" oninput="calcFromKg('organique')" onfocus="focusField('organique_grp_kg')" onblur="blurField('organique_grp_kg')">
+          </div>
+          <div class="input-field" id="organique_grp_u">
+            <div class="input-label">Unités <span class="inverse-tag">U</span></div>
+            <input type="number" id="organique_u" value="0" min="0" step="1" oninput="calcFromU('organique')" onfocus="focusField('organique_grp_u')" onblur="blurField('organique_grp_u')">
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-text"><strong>1 U = 200 kg</strong> (1 Tonne = 5 U) — 500 DH/Tonne</div>
+          <span class="price-pill" id="organique_unitPrice">💰 100 DH / U</span>
+        </div>
+        <div class="edit-panel" id="organique_edit">
+          <div class="edit-panel-header">⚙️ Paramètres</div>
+          <div class="edit-grid">
+            <div class="edit-field"><label>kg / U</label><input type="number" id="organique_cfg_ratio" step="0.01" min="0.01"></div>
+            <div class="edit-field"><label>DH / kg</label><input type="number" id="organique_cfg_price" step="0.0001" min="0"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ENR -->
+      <div class="card enr">
+        <div class="card-header">
+          <div class="card-title-wrap">
+            <div class="card-icon">⚡</div>
+            <div>
+              <div class="card-title">ENR</div>
+              <div class="card-subtitle" id="enr_subtitle">10 kg / U</div>
+            </div>
+          </div>
+          <span class="card-badge" id="enr_badge">5 DH/kg</span>
+        </div>
+        <div class="inputs-row">
+          <div class="input-field" id="enr_grp_kg">
+            <div class="input-label">Poids (kg)</div>
+            <input type="number" id="enr_kg" value="0" min="0" step="1" oninput="calcFromKg('enr')" onfocus="focusField('enr_grp_kg')" onblur="blurField('enr_grp_kg')">
+          </div>
+          <div class="input-field" id="enr_grp_u">
+            <div class="input-label">Unités <span class="inverse-tag">U</span></div>
+            <input type="number" id="enr_u" value="0" min="0" step="1" oninput="calcFromU('enr')" onfocus="focusField('enr_grp_u')" onblur="blurField('enr_grp_u')">
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-text"><strong>1 U = 10 kg</strong> — Prix: 5 DH/kg</div>
+          <span class="price-pill" id="enr_unitPrice">💰 50 DH / U</span>
+        </div>
+        <div class="edit-panel" id="enr_edit">
+          <div class="edit-panel-header">⚙️ Paramètres</div>
+          <div class="edit-grid">
+            <div class="edit-field"><label>kg / U</label><input type="number" id="enr_cfg_ratio" step="0.01" min="0.01"></div>
+            <div class="edit-field"><label>DH / kg</label><input type="number" id="enr_cfg_price" step="0.0001" min="0"></div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="info">1 Tonne = 1000 kg = <strong>2 U</strong> → 1 U = 500 kg — Prix: <strong>25 DH/Tonne</strong><br>
-      <span class="unit-price" id="fer_unitPrice">💰 Prix unitaire (500 kg) = 12.50 DH</span>
-    </div>
-    <div class="edit-panel" id="fer_edit">
-      <h4>⚙️ Paramètres Fer de fer</h4>
-      <div class="edit-grid">
-        <div class="field"><label>kg par unité (kg/U)</label><input type="number" id="fer_cfg_ratio" step="0.01" min="0.01"></div>
-        <div class="field"><label>Prix par kg (DH/kg)</label><input type="number" id="fer_cfg_price" step="0.0001" min="0"></div>
+
+    <!-- ========== UNITÉS TAB ========== -->
+    <div id="tab-units" class="tab-content" style="display:none;">
+      <div class="section-title">Nombre d'unités</div>
+      <div class="units-list">
+        <div class="unit-row">
+          <span class="unit-row-label"><span class="unit-icon-small fer" style="background:#1e3c72;color:#fff;">🔩</span> Fer de fer</span>
+          <span class="unit-row-value" id="u_fer">0 U</span>
+        </div>
+        <div class="unit-row">
+          <span class="unit-row-label"><span class="unit-icon-small filet" style="background:#6366f1;color:#fff;">🕸️</span> Filet</span>
+          <span class="unit-row-value" id="u_filet">0 U</span>
+        </div>
+        <div class="unit-row">
+          <span class="unit-row-label"><span class="unit-icon-small plastic" style="background:#3b82f6;color:#fff;">🧴</span> Plastic</span>
+          <span class="unit-row-value" id="u_plastic">0 U</span>
+        </div>
+        <div class="unit-row">
+          <span class="unit-row-label"><span class="unit-icon-small ficelle" style="background:#8b5cf6;color:#fff;">🧵</span> Ficelle</span>
+          <span class="unit-row-value" id="u_ficelle">0 U</span>
+        </div>
+        <div class="unit-row">
+          <span class="unit-row-label"><span class="unit-icon-small titape" style="background:#ec4899;color:#fff;">📼</span> Titape</span>
+          <span class="unit-row-value" id="u_titape">0 U</span>
+        </div>
+        <div class="unit-row">
+          <span class="unit-row-label"><span class="unit-icon-small organique" style="background:#10b981;color:#fff;">🌱</span> Matière organique</span>
+          <span class="unit-row-value" id="u_organique">0 U</span>
+        </div>
+        <div class="unit-row">
+          <span class="unit-row-label"><span class="unit-icon-small enr" style="background:#f97316;color:#fff;">⚡</span> ENR</span>
+          <span class="unit-row-value" id="u_enr">0 U</span>
+        </div>
+        <div class="unit-row total">
+          <span class="unit-row-label">📦 Total</span>
+          <span class="unit-row-value" id="u_total">0 U</span>
+        </div>
       </div>
     </div>
+
+    <!-- ========== RÉSULTATS TAB ========== -->
+    <div id="tab-results" class="tab-content" style="display:none;">
+      <div class="section-title">Récapitulatif</div>
+
+      <div class="results-summary">
+        <div class="summary-total">Total général</div>
+        <div class="summary-amount" id="summary_total">0.00 DH</div>
+        <div class="summary-units"><span id="summary_units">0 U</span> au total</div>
+      </div>
+
+      <div class="units-list">
+        <div class="result-row" style="padding-left:16px;padding-right:16px;">
+          <span class="result-row-label">🔩 Fer de fer</span>
+          <div style="text-align:right;">
+            <div class="result-row-amount" id="res_fer">0.00 DH</div>
+            <div class="result-row-units" id="res_fer_u">0 U</div>
+          </div>
+        </div>
+        <div class="result-row" style="padding-left:16px;padding-right:16px;">
+          <span class="result-row-label">🕸️ Filet</span>
+          <div style="text-align:right;">
+            <div class="result-row-amount" id="res_filet">0.00 DH</div>
+            <div class="result-row-units" id="res_filet_u">0 U</div>
+          </div>
+        </div>
+        <div class="result-row" style="padding-left:16px;padding-right:16px;">
+          <span class="result-row-label">🧴 Plastic</span>
+          <div style="text-align:right;">
+            <div class="result-row-amount" id="res_plastic">0.00 DH</div>
+            <div class="result-row-units" id="res_plastic_u">0 U</div>
+          </div>
+        </div>
+        <div class="result-row" style="padding-left:16px;padding-right:16px;">
+          <span class="result-row-label">🧵 Ficelle</span>
+          <div style="text-align:right;">
+            <div class="result-row-amount" id="res_ficelle">0.00 DH</div>
+            <div class="result-row-units" id="res_ficelle_u">0 U</div>
+          </div>
+        </div>
+        <div class="result-row" style="padding-left:16px;padding-right:16px;">
+          <span class="result-row-label">📼 Titape</span>
+          <div style="text-align:right;">
+            <div class="result-row-amount" id="res_titape">0.00 DH</div>
+            <div class="result-row-units" id="res_titape_u">0 U</div>
+          </div>
+        </div>
+        <div class="result-row" style="padding-left:16px;padding-right:16px;">
+          <span class="result-row-label">🌱 Matière organique</span>
+          <div style="text-align:right;">
+            <div class="result-row-amount" id="res_organique">0.00 DH</div>
+            <div class="result-row-units" id="res_organique_u">0 U</div>
+          </div>
+        </div>
+        <div class="result-row" style="padding-left:16px;padding-right:16px;">
+          <span class="result-row-label">⚡ ENR</span>
+          <div style="text-align:right;">
+            <div class="result-row-amount" id="res_enr">0.00 DH</div>
+            <div class="result-row-units" id="res_enr_u">0 U</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Commission</div>
+      <div class="units-list">
+        <div class="unit-row">
+          <span class="unit-row-label">💰 Fer de fer (25 DH/T)</span>
+          <span class="unit-row-value" id="com_fer">0.00 DH</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== PARAMÈTRES TAB ========== -->
+    <div id="tab-settings" class="tab-content" style="display:none;">
+      <div class="section-title">Paramètres</div>
+
+      <div class="settings-group">
+        <div class="settings-row">
+          <div class="settings-row-label">
+            <span class="settings-row-title">🔩 Fer de fer</span>
+            <span class="settings-row-subtitle">kg/U · DH/kg</span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <input type="number" id="fer_cfg_ratio_s" step="0.01" min="0.01" placeholder="kg/U">
+            <input type="number" id="fer_cfg_price_s" step="0.0001" min="0" placeholder="DH/kg">
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-label">
+            <span class="settings-row-title">🕸️ Filet</span>
+            <span class="settings-row-subtitle">m/U · DH/1000m</span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <input type="number" id="filet_cfg_ratio_s" step="0.01" min="0.01" placeholder="m/U">
+            <input type="number" id="filet_cfg_price_s" step="0.01" min="0" placeholder="DH/1000m">
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-label">
+            <span class="settings-row-title">🧴 Plastic</span>
+            <span class="settings-row-subtitle">kg/U · DH/kg</span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <input type="number" id="plastic_cfg_ratio_s" step="0.01" min="0.01" placeholder="kg/U">
+            <input type="number" id="plastic_cfg_price_s" step="0.0001" min="0" placeholder="DH/kg">
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-label">
+            <span class="settings-row-title">🧵 Ficelle</span>
+            <span class="settings-row-subtitle">kg/U · DH/kg</span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <input type="number" id="ficelle_cfg_ratio_s" step="0.01" min="0.01" placeholder="kg/U">
+            <input type="number" id="ficelle_cfg_price_s" step="0.0001" min="0" placeholder="DH/kg">
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-label">
+            <span class="settings-row-title">📼 Titape</span>
+            <span class="settings-row-subtitle">R/U · DH/R</span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <input type="number" id="titape_cfg_ratio_s" step="0.01" min="0.01" placeholder="R/U">
+            <input type="number" id="titape_cfg_price_s" step="0.01" min="0" placeholder="DH/R">
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-label">
+            <span class="settings-row-title">🌱 Matière organique</span>
+            <span class="settings-row-subtitle">kg/U · DH/kg</span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <input type="number" id="organique_cfg_ratio_s" step="0.01" min="0.01" placeholder="kg/U">
+            <input type="number" id="organique_cfg_price_s" step="0.0001" min="0" placeholder="DH/kg">
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-label">
+            <span class="settings-row-title">⚡ ENR</span>
+            <span class="settings-row-subtitle">kg/U · DH/kg</span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <input type="number" id="enr_cfg_ratio_s" step="0.01" min="0.01" placeholder="kg/U">
+            <input type="number" id="enr_cfg_price_s" step="0.0001" min="0" placeholder="DH/kg">
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Actions</div>
+      <button class="action-btn secondary" onclick="resetAll()">🗑️ Réinitialiser les quantités</button>
+      <button class="action-btn danger" onclick="resetAllSettings()">↩️ Restaurer les paramètres par défaut</button>
+    </div>
+
   </div>
 
-  <!-- FILET -->
-  <div class="card filet">
-    <div class="card-header">
-      <div class="card-title"><span class="icon">🕸️</span> Filet</div>
-      <span class="badge" id="filet_badge">200 DH / 1000 m</span>
-    </div>
-    <div class="dual-input">
-      <div class="field-group" id="filet_grp_m">
-        <label>Longueur (m)</label>
-        <input type="number" id="filet_m" value="0" min="0" step="1" oninput="calcFromKg('filet')">
-      </div>
-      <div class="field-group" id="filet_grp_u">
-        <label>Unités (U) <span class="mode-tag">inverse</span></label>
-        <input type="number" id="filet_u" value="0" min="0" step="1" oninput="calcFromU('filet')">
-      </div>
-    </div>
-    <div class="info">400 m/U — <strong>1 U = 400 m</strong> — Prix: <strong>200 DH/1000m</strong><br>
-      <span class="unit-price" id="filet_unitPrice">💰 Prix unitaire (400 m) = 80 DH</span>
-    </div>
-    <div class="edit-panel" id="filet_edit">
-      <h4>⚙️ Paramètres Filet</h4>
-      <div class="edit-grid">
-        <div class="field"><label>mètres par unité (m/U)</label><input type="number" id="filet_cfg_ratio" step="0.01" min="0.01"></div>
-        <div class="field"><label>Prix par 1000 m (DH)</label><input type="number" id="filet_cfg_price" step="0.01" min="0"></div>
-      </div>
-    </div>
+  <!-- TAB BAR -->
+  <div class="tab-bar">
+    <button class="tab active" data-tab="calc" onclick="switchTab('calc')">
+      <span class="tab-icon">🧮</span>
+      <span>Calculs</span>
+    </button>
+    <button class="tab" data-tab="units" onclick="switchTab('units')">
+      <span class="tab-icon">📦</span>
+      <span>Unités</span>
+    </button>
+    <button class="tab" data-tab="results" onclick="switchTab('results')">
+      <span class="tab-icon">💰</span>
+      <span>Résultats</span>
+    </button>
+    <button class="tab" data-tab="settings" onclick="switchTab('settings')">
+      <span class="tab-icon">⚙️</span>
+      <span>Réglages</span>
+    </button>
   </div>
 
-  <!-- PLASTIC -->
-  <div class="card plastic">
-    <div class="card-header">
-      <div class="card-title"><span class="icon">🧴</span> Plastic</div>
-      <span class="badge plastic-badge" id="plastic_badge">200 DH / Tonne</span>
-    </div>
-    <div class="dual-input">
-      <div class="field-group" id="plastic_grp_kg">
-        <label>Poids (kg)</label>
-        <input type="number" id="plastic_kg" value="0" min="0" step="1" oninput="calcFromKg('plastic')">
-      </div>
-      <div class="field-group" id="plastic_grp_u">
-        <label>Unités (U) <span class="mode-tag">inverse</span></label>
-        <input type="number" id="plastic_u" value="0" min="0" step="1" oninput="calcFromU('plastic')">
-      </div>
-    </div>
-    <div class="info"><strong>1 U = 500 kg</strong> — Prix: <strong>200 DH/Tonne</strong><br>
-      <span class="unit-price" id="plastic_unitPrice">💰 Prix unitaire (500 kg) = 100 DH</span>
-    </div>
-    <div class="edit-panel" id="plastic_edit">
-      <h4>⚙️ Paramètres Plastic</h4>
-      <div class="edit-grid">
-        <div class="field"><label>kg par unité (kg/U)</label><input type="number" id="plastic_cfg_ratio" step="0.01" min="0.01"></div>
-        <div class="field"><label>Prix par kg (DH/kg)</label><input type="number" id="plastic_cfg_price" step="0.0001" min="0"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- FICELLE -->
-  <div class="card ficelle">
-    <div class="card-header">
-      <div class="card-title"><span class="icon">🧵</span> Ficelle</div>
-      <span class="badge ficelle-badge" id="ficelle_badge">50 DH / Tonne</span>
-    </div>
-    <div class="dual-input">
-      <div class="field-group" id="ficelle_grp_kg">
-        <label>Poids (kg)</label>
-        <input type="number" id="ficelle_kg" value="0" min="0" step="1" oninput="calcFromKg('ficelle')">
-      </div>
-      <div class="field-group" id="ficelle_grp_u">
-        <label>Unités (U) <span class="mode-tag">inverse</span></label>
-        <input type="number" id="ficelle_u" value="0" min="0" step="1" oninput="calcFromU('ficelle')">
-      </div>
-    </div>
-    <div class="info"><strong>1 U = 1000 kg (1 Tonne)</strong> — Prix: <strong>50 DH/Tonne</strong><br>
-      <span class="unit-price" id="ficelle_unitPrice">💰 Prix unitaire (1000 kg) = 50 DH</span>
-    </div>
-    <div class="edit-panel" id="ficelle_edit">
-      <h4>⚙️ Paramètres Ficelle</h4>
-      <div class="edit-grid">
-        <div class="field"><label>kg par unité (kg/U)</label><input type="number" id="ficelle_cfg_ratio" step="0.01" min="0.01"></div>
-        <div class="field"><label>Prix par kg (DH/kg)</label><input type="number" id="ficelle_cfg_price" step="0.0001" min="0"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TITAPE -->
-  <div class="card titape">
-    <div class="card-header">
-      <div class="card-title"><span class="icon">📼</span> Titape</div>
-      <span class="badge" id="titape_badge">6 DH / Rouleau</span>
-    </div>
-    <div class="dual-input">
-      <div class="field-group" id="titape_grp_rou">
-        <label>Rouleaux</label>
-        <input type="number" id="titape_rou" value="0" min="0" step="1" oninput="calcFromKg('titape')">
-      </div>
-      <div class="field-group" id="titape_grp_u">
-        <label>Unités (U) <span class="mode-tag">inverse</span></label>
-        <input type="number" id="titape_u" value="0" min="0" step="1" oninput="calcFromU('titape')">
-      </div>
-    </div>
-    <div class="info"><strong>2 Rouleaux = 1 U</strong> — Prix: <strong>6 DH/Rouleau</strong><br>
-      <span class="unit-price" id="titape_unitPrice">💰 Prix unitaire (2 R) = 12 DH</span>
-    </div>
-    <div class="edit-panel" id="titape_edit">
-      <h4>⚙️ Paramètres Titape</h4>
-      <div class="edit-grid">
-        <div class="field"><label>Rouleaux par unité (R/U)</label><input type="number" id="titape_cfg_ratio" step="0.01" min="0.01"></div>
-        <div class="field"><label>Prix par rouleau (DH/R)</label><input type="number" id="titape_cfg_price" step="0.01" min="0"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MATIERE ORGANIQUE -->
-  <div class="card organique">
-    <div class="card-header">
-      <div class="card-title"><span class="icon">🌱</span> Matière organique</div>
-      <span class="badge organique-badge" id="organique_badge">500 DH / Tonne</span>
-    </div>
-    <div class="dual-input">
-      <div class="field-group" id="organique_grp_kg">
-        <label>Poids (kg)</label>
-        <input type="number" id="organique_kg" value="0" min="0" step="1" oninput="calcFromKg('organique')">
-      </div>
-      <div class="field-group" id="organique_grp_u">
-        <label>Unités (U) <span class="mode-tag">inverse</span></label>
-        <input type="number" id="organique_u" value="0" min="0" step="1" oninput="calcFromU('organique')">
-      </div>
-    </div>
-    <div class="info"><strong>1 U = 200 kg</strong> (1 Tonne = 5 U) — Prix: <strong>500 DH/Tonne</strong><br>
-      <span class="unit-price" id="organique_unitPrice">💰 Prix unitaire (200 kg) = 100 DH</span>
-    </div>
-    <div class="edit-panel" id="organique_edit">
-      <h4>⚙️ Paramètres Matière organique</h4>
-      <div class="edit-grid">
-        <div class="field"><label>kg par unité (kg/U)</label><input type="number" id="organique_cfg_ratio" step="0.01" min="0.01"></div>
-        <div class="field"><label>Prix par kg (DH/kg)</label><input type="number" id="organique_cfg_price" step="0.0001" min="0"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ENR -->
-  <div class="card enr">
-    <div class="card-header">
-      <div class="card-title"><span class="icon">⚡</span> ENR</div>
-      <span class="badge enr-badge" id="enr_badge">5 DH / kg</span>
-    </div>
-    <div class="dual-input">
-      <div class="field-group" id="enr_grp_kg">
-        <label>Poids (kg)</label>
-        <input type="number" id="enr_kg" value="0" min="0" step="1" oninput="calcFromKg('enr')">
-      </div>
-      <div class="field-group" id="enr_grp_u">
-        <label>Unités (U) <span class="mode-tag">inverse</span></label>
-        <input type="number" id="enr_u" value="0" min="0" step="1" oninput="calcFromU('enr')">
-      </div>
-    </div>
-    <div class="info"><strong>1 U = 10 kg</strong> — Prix: <strong>5 DH/kg</strong><br>
-      <span class="unit-price" id="enr_unitPrice">💰 Prix unitaire (10 kg) = 50 DH</span>
-    </div>
-    <div class="edit-panel" id="enr_edit">
-      <h4>⚙️ Paramètres ENR</h4>
-      <div class="edit-grid">
-        <div class="field"><label>kg par unité (kg/U)</label><input type="number" id="enr_cfg_ratio" step="0.01" min="0.01"></div>
-        <div class="field"><label>Prix par kg (DH/kg)</label><input type="number" id="enr_cfg_price" step="0.0001" min="0"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- UNITES -->
-  <div class="units-box">
-    <h3>📦 Nombre d'unités (U)</h3>
-    <div class="unit-line"><span>🔩 Fer de fer</span><span class="u-val" id="u_fer">0 U</span></div>
-    <div class="unit-line"><span>🕸️ Filet</span><span class="u-val" id="u_filet">0 U</span></div>
-    <div class="unit-line"><span>🧴 Plastic</span><span class="u-val" id="u_plastic">0 U</span></div>
-    <div class="unit-line"><span>🧵 Ficelle</span><span class="u-val" id="u_ficelle">0 U</span></div>
-    <div class="unit-line"><span>📼 Titape</span><span class="u-val" id="u_titape">0 U</span></div>
-    <div class="unit-line"><span>🌱 Matière organique</span><span class="u-val" id="u_organique">0 U</span></div>
-    <div class="unit-line"><span>⚡ ENR</span><span class="u-val" id="u_enr">0 U</span></div>
-    <div class="unit-total"><span>📦 Total unités:</span><span id="u_total">0 U</span></div>
-  </div>
-
-  <!-- RESUME -->
-  <div class="result-box">
-    <h3>💰 Récapitulatif</h3>
-    <div class="result-line"><span>Fer de fer</span><span id="res_fer">0.00 DH</span></div>
-    <div class="result-line"><span>Filet</span><span id="res_filet">0.00 DH</span></div>
-    <div class="result-line"><span>Plastic</span><span id="res_plastic">0.00 DH</span></div>
-    <div class="result-line"><span>Ficelle</span><span id="res_ficelle">0.00 DH</span></div>
-    <div class="result-line"><span>Titape</span><span id="res_titape">0.00 DH</span></div>
-    <div class="result-line"><span>Matière organique</span><span id="res_organique">0.00 DH</span></div>
-    <div class="result-line"><span>ENR</span><span id="res_enr">0.00 DH</span></div>
-    <div class="result-line"><span>💵 TOTAL GÉNÉRAL</span><span id="res_total">0.00 DH</span></div>
-  </div>
-
-  <!-- COMMISSION -->
-  <div class="commission-box">
-    <h3>🎯 Commission</h3>
-    <div class="result-line"><span>Commission Fer de fer (25 DH/Tonne = 0.025 DH/kg)</span><span id="com_fer">0.00 DH</span></div>
-  </div>
-
-  <!-- BUTTONS -->
-  <div class="btn-row">
-    <button class="btn btn-reset" onclick="resetAll()">🗑️ Réinitialiser quantités</button>
-    <button class="btn btn-reset-all" onclick="resetAllSettings()">↩️ Restaurer paramètres</button>
-  </div>
-
-  <div class="footer">📊 <strong>TAMA</strong> — U = Unité — Tous les calculs en kilogrammes (kg)</div>
+  <!-- SAVE TOAST -->
+  <div class="save-toast" id="saveToast">✅ Enregistré</div>
 </div>
-
-<div class="save-badge" id="saveBadge">✅ Enregistré</div>
 
 <script>
 // ==== CONFIGURATION PAR DÉFAUT (tout en kg) ====
-// ratio = kg par unité (kg/U)
-// price = prix par kg (DH/kg)
 const DEFAULT_CONFIG = {
-  fer:       { ratio: 500,  price: 0.025 },   // 1 U = 500 kg, 25 DH/Tonne = 0.025 DH/kg
-  filet:     { ratio: 400,  price: 0.2   },   // 1 U = 400 m, 200 DH/1000m = 0.2 DH/m
-  plastic:   { ratio: 500,  price: 0.2   },   // 1 U = 500 kg, 200 DH/Tonne = 0.2 DH/kg
-  ficelle:   { ratio: 1000, price: 0.05  },   // 1 U = 1000 kg, 50 DH/Tonne = 0.05 DH/kg
-  titape:    { ratio: 2,    price: 6     },   // 1 U = 2 R, 6 DH/Rouleau
-  organique: { ratio: 200,  price: 0.5   },   // 1 U = 200 kg, 500 DH/Tonne = 0.5 DH/kg
-  enr:       { ratio: 10,   price: 5     }    // 1 U = 10 kg, 5 DH/kg
+  fer:       { ratio: 500,  price: 0.025 },
+  filet:     { ratio: 400,  price: 0.2   },
+  plastic:   { ratio: 500,  price: 0.2   },
+  ficelle:   { ratio: 1000, price: 0.05  },
+  titape:    { ratio: 2,    price: 6     },
+  organique: { ratio: 200,  price: 0.5   },
+  enr:       { ratio: 10,   price: 5     }
 };
 
 let CONFIG = {};
 
+// ==== TAB SWITCHING ====
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tabName).style.display = 'block';
+  document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+  document.getElementById('content').scrollTop = 0;
+}
+
+// ==== FIELD FOCUS ====
+function focusField(id) {
+  document.getElementById(id).classList.add('focused');
+}
+function blurField(id) {
+  document.getElementById(id).classList.remove('focused');
+}
+
+// ==== CONFIG LOAD/SAVE ====
 function loadConfig() {
   try {
-    const saved = localStorage.getItem('tama_config_v3');
+    const saved = localStorage.getItem('tama_config_mobile_v1');
     if (saved) {
       CONFIG = JSON.parse(saved);
       for (const key in DEFAULT_CONFIG) {
@@ -756,50 +1222,62 @@ function loadConfig() {
 }
 
 function saveConfig() {
-  localStorage.setItem('tama_config_v3', JSON.stringify(CONFIG));
-  showSaveBadge();
+  localStorage.setItem('tama_config_mobile_v1', JSON.stringify(CONFIG));
+  showToast();
 }
 
-function showSaveBadge() {
-  const badge = document.getElementById('saveBadge');
-  badge.classList.remove('show');
-  void badge.offsetWidth;
-  badge.classList.add('show');
-  setTimeout(() => badge.classList.remove('show'), 2000);
+function showToast() {
+  const toast = document.getElementById('saveToast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1800);
 }
 
 function syncInputsFromConfig() {
+  // Sync both calc-tab edit panels AND settings tab
   ['fer','filet','plastic','ficelle','titape','organique','enr'].forEach(key => {
+    // Edit panel in calc tab
     document.getElementById(key + '_cfg_ratio').value = CONFIG[key].ratio;
     document.getElementById(key + '_cfg_price').value = CONFIG[key].price;
+    // Settings tab
+    document.getElementById(key + '_cfg_ratio_s').value = CONFIG[key].ratio;
+    document.getElementById(key + '_cfg_price_s').value = CONFIG[key].price;
   });
   updateBadges();
 }
 
 function updateBadges() {
   const c = CONFIG;
-  document.getElementById('fer_badge').textContent = (c.fer.price * 1000).toFixed(2) + ' DH / Tonne';
-  document.getElementById('fer_unitPrice').textContent = '💰 Prix unitaire (' + c.fer.ratio + ' kg) = ' + (c.fer.ratio * c.fer.price).toFixed(2) + ' DH';
 
-  document.getElementById('filet_badge').textContent = (c.filet.price * 1000).toFixed(2) + ' DH / 1000 m';
-  document.getElementById('filet_unitPrice').textContent = '💰 Prix unitaire (' + c.filet.ratio + ' m) = ' + (c.filet.ratio * c.filet.price).toFixed(2) + ' DH';
+  document.getElementById('fer_badge').textContent = (c.fer.price * 1000).toFixed(2) + ' DH/T';
+  document.getElementById('fer_unitPrice').textContent = '💰 ' + (c.fer.ratio * c.fer.price).toFixed(2) + ' DH / U';
+  document.getElementById('fer_subtitle').textContent = c.fer.ratio + ' kg / U';
 
-  document.getElementById('plastic_badge').textContent = (c.plastic.price * 1000).toFixed(2) + ' DH / Tonne';
-  document.getElementById('plastic_unitPrice').textContent = '💰 Prix unitaire (' + c.plastic.ratio + ' kg) = ' + (c.plastic.ratio * c.plastic.price).toFixed(2) + ' DH';
+  document.getElementById('filet_badge').textContent = (c.filet.price * 1000).toFixed(0) + ' DH/1000m';
+  document.getElementById('filet_unitPrice').textContent = '💰 ' + (c.filet.ratio * c.filet.price).toFixed(2) + ' DH / U';
+  document.getElementById('filet_subtitle').textContent = c.filet.ratio + ' m / U';
 
-  document.getElementById('ficelle_badge').textContent = (c.ficelle.price * 1000).toFixed(2) + ' DH / Tonne';
-  document.getElementById('ficelle_unitPrice').textContent = '💰 Prix unitaire (' + c.ficelle.ratio + ' kg) = ' + (c.ficelle.ratio * c.ficelle.price).toFixed(2) + ' DH';
+  document.getElementById('plastic_badge').textContent = (c.plastic.price * 1000).toFixed(2) + ' DH/T';
+  document.getElementById('plastic_unitPrice').textContent = '💰 ' + (c.plastic.ratio * c.plastic.price).toFixed(2) + ' DH / U';
+  document.getElementById('plastic_subtitle').textContent = c.plastic.ratio + ' kg / U';
 
-  document.getElementById('titape_badge').textContent = c.titape.price + ' DH / Rouleau';
-  document.getElementById('titape_unitPrice').textContent = '💰 Prix unitaire (' + c.titape.ratio + ' R) = ' + (c.titape.ratio * c.titape.price).toFixed(2) + ' DH';
+  document.getElementById('ficelle_badge').textContent = (c.ficelle.price * 1000).toFixed(2) + ' DH/T';
+  document.getElementById('ficelle_unitPrice').textContent = '💰 ' + (c.ficelle.ratio * c.ficelle.price).toFixed(2) + ' DH / U';
+  document.getElementById('ficelle_subtitle').textContent = c.ficelle.ratio + ' kg / U';
 
-  document.getElementById('organique_badge').textContent = (c.organique.price * 1000).toFixed(2) + ' DH / Tonne';
-  document.getElementById('organique_unitPrice').textContent = '💰 Prix unitaire (' + c.organique.ratio + ' kg) = ' + (c.organique.ratio * c.organique.price).toFixed(2) + ' DH';
+  document.getElementById('titape_badge').textContent = c.titape.price + ' DH/R';
+  document.getElementById('titape_unitPrice').textContent = '💰 ' + (c.titape.ratio * c.titape.price).toFixed(2) + ' DH / U';
+  document.getElementById('titape_subtitle').textContent = c.titape.ratio + ' R / U';
 
-  document.getElementById('enr_badge').textContent = c.enr.price + ' DH / kg';
-  document.getElementById('enr_unitPrice').textContent = '💰 Prix unitaire (' + c.enr.ratio + ' kg) = ' + (c.enr.ratio * c.enr.price).toFixed(2) + ' DH';
+  document.getElementById('organique_badge').textContent = (c.organique.price * 1000).toFixed(0) + ' DH/T';
+  document.getElementById('organique_unitPrice').textContent = '💰 ' + (c.organique.ratio * c.organique.price).toFixed(2) + ' DH / U';
+  document.getElementById('organique_subtitle').textContent = c.organique.ratio + ' kg / U';
+
+  document.getElementById('enr_badge').textContent = c.enr.price + ' DH/kg';
+  document.getElementById('enr_unitPrice').textContent = '💰 ' + (c.enr.ratio * c.enr.price).toFixed(2) + ' DH / U';
+  document.getElementById('enr_subtitle').textContent = c.enr.ratio + ' kg / U';
 }
 
+// ==== EDIT MODE ====
 let editMode = false;
 function toggleEditMode() {
   editMode = !editMode;
@@ -812,26 +1290,42 @@ function toggleEditMode() {
   if (!editMode) { saveConfig(); recalcAll(); }
 }
 
-['fer','filet','plastic','ficelle','titape','organique','enr'].forEach(key => {
-  document.getElementById(key + '_cfg_ratio').addEventListener('input', function() {
-    const v = parseFloat(this.value);
-    if (v > 0) { CONFIG[key].ratio = v; updateBadges(); recalcAll(); }
+// ==== CONFIG INPUT LISTENERS ====
+function bindConfigInputs(suffix) {
+  ['fer','filet','plastic','ficelle','titape','organique','enr'].forEach(key => {
+    const ratioEl = document.getElementById(key + '_cfg_ratio' + suffix);
+    const priceEl = document.getElementById(key + '_cfg_price' + suffix);
+    if (ratioEl) {
+      ratioEl.addEventListener('input', function() {
+        const v = parseFloat(this.value);
+        if (v > 0) { CONFIG[key].ratio = v; syncConfigFields(); updateBadges(); recalcAll(); }
+      });
+    }
+    if (priceEl) {
+      priceEl.addEventListener('input', function() {
+        const v = parseFloat(this.value);
+        if (v >= 0) { CONFIG[key].price = v; syncConfigFields(); updateBadges(); recalcAll(); }
+      });
+    }
   });
-  document.getElementById(key + '_cfg_price').addEventListener('input', function() {
-    const v = parseFloat(this.value);
-    if (v >= 0) { CONFIG[key].price = v; updateBadges(); recalcAll(); }
-  });
-});
-
-function toU(key, val) {
-  const c = CONFIG[key];
-  return val / c.ratio;
 }
 
-function fromU(key, u) {
-  const c = CONFIG[key];
-  return u * c.ratio;
+function syncConfigFields() {
+  ['fer','filet','plastic','ficelle','titape','organique','enr'].forEach(key => {
+    const r1 = document.getElementById(key + '_cfg_ratio');
+    const p1 = document.getElementById(key + '_cfg_price');
+    const r2 = document.getElementById(key + '_cfg_ratio_s');
+    const p2 = document.getElementById(key + '_cfg_price_s');
+    if (r1) r1.value = CONFIG[key].ratio;
+    if (p1) p1.value = CONFIG[key].price;
+    if (r2) r2.value = CONFIG[key].ratio;
+    if (p2) p2.value = CONFIG[key].price;
+  });
 }
+
+// ==== CALCULATIONS ====
+function toU(key, val) { return val / CONFIG[key].ratio; }
+function fromU(key, u) { return u * CONFIG[key].ratio; }
 
 function calcPrice(key, val) {
   const c = CONFIG[key];
@@ -862,8 +1356,8 @@ function calcFromKg(key) {
   const val = parseFloat(document.getElementById(getFieldId(key)).value) || 0;
   const u = toU(key, val);
   document.getElementById(key + '_u').value = Number(u.toFixed(2));
-  document.getElementById(key + '_grp_' + getSuffix(key)).classList.add('active');
-  document.getElementById(key + '_grp_u').classList.remove('active');
+  document.getElementById(key + '_grp_' + getSuffix(key)).classList.add('focused');
+  document.getElementById(key + '_grp_u').classList.remove('focused');
   recalcAll();
 }
 
@@ -871,8 +1365,8 @@ function calcFromU(key) {
   const u = parseFloat(document.getElementById(key + '_u').value) || 0;
   const val = fromU(key, u);
   document.getElementById(getFieldId(key)).value = Number(val.toFixed(2));
-  document.getElementById(key + '_grp_' + getSuffix(key)).classList.remove('active');
-  document.getElementById(key + '_grp_u').classList.add('active');
+  document.getElementById(key + '_grp_' + getSuffix(key)).classList.remove('focused');
+  document.getElementById(key + '_grp_u').classList.add('focused');
   recalcAll();
 }
 
@@ -899,16 +1393,27 @@ function recalcAll() {
     totalU += u;
   }
 
-  document.getElementById('res_fer').textContent = fmt(results.fer.price);
-  document.getElementById('res_filet').textContent = fmt(results.filet.price);
-  document.getElementById('res_plastic').textContent = fmt(results.plastic.price);
-  document.getElementById('res_ficelle').textContent = fmt(results.ficelle.price);
-  document.getElementById('res_titape').textContent = fmt(results.titape.price);
-  document.getElementById('res_organique').textContent = fmt(results.organique.price);
-  document.getElementById('res_enr').textContent = fmt(results.enr.price);
-  document.getElementById('res_total').textContent = fmt(grandTotal);
-  document.getElementById('com_fer').textContent = fmt(values.fer * CONFIG.fer.price);
+  // Update summary card
+  document.getElementById('summary_total').textContent = fmt(grandTotal);
+  document.getElementById('summary_units').textContent = fmtU(totalU);
 
+  // Update results tab
+  document.getElementById('res_fer').textContent = fmt(results.fer.price);
+  document.getElementById('res_fer_u').textContent = fmtU(results.fer.u);
+  document.getElementById('res_filet').textContent = fmt(results.filet.price);
+  document.getElementById('res_filet_u').textContent = fmtU(results.filet.u);
+  document.getElementById('res_plastic').textContent = fmt(results.plastic.price);
+  document.getElementById('res_plastic_u').textContent = fmtU(results.plastic.u);
+  document.getElementById('res_ficelle').textContent = fmt(results.ficelle.price);
+  document.getElementById('res_ficelle_u').textContent = fmtU(results.ficelle.u);
+  document.getElementById('res_titape').textContent = fmt(results.titape.price);
+  document.getElementById('res_titape_u').textContent = fmtU(results.titape.u);
+  document.getElementById('res_organique').textContent = fmt(results.organique.price);
+  document.getElementById('res_organique_u').textContent = fmtU(results.organique.u);
+  document.getElementById('res_enr').textContent = fmt(results.enr.price);
+  document.getElementById('res_enr_u').textContent = fmtU(results.enr.u);
+
+  // Update units tab
   document.getElementById('u_fer').textContent = fmtU(results.fer.u);
   document.getElementById('u_filet').textContent = fmtU(results.filet.u);
   document.getElementById('u_plastic').textContent = fmtU(results.plastic.u);
@@ -917,26 +1422,32 @@ function recalcAll() {
   document.getElementById('u_organique').textContent = fmtU(results.organique.u);
   document.getElementById('u_enr').textContent = fmtU(results.enr.u);
   document.getElementById('u_total').textContent = fmtU(totalU);
+
+  // Commission
+  document.getElementById('com_fer').textContent = fmt(values.fer * CONFIG.fer.price);
 }
 
 function resetAll() {
   ['fer_kg','fer_u','filet_m','filet_u','plastic_kg','plastic_u','ficelle_kg','ficelle_u','titape_rou','titape_u','organique_kg','organique_u','enr_kg','enr_u'].forEach(id => {
     document.getElementById(id).value = 0;
   });
-  document.querySelectorAll('.field-group').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.input-field').forEach(el => el.classList.remove('focused'));
   recalcAll();
 }
 
 function resetAllSettings() {
-  if (!confirm('Restaurer les paramètres par défaut ? Toutes les modifications de prix et d\'unités seront supprimées.')) return;
+  if (!confirm('Restaurer les paramètres par défaut ? Toutes les modifications seront perdues.')) return;
   CONFIG = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
-  localStorage.removeItem('tama_config_v3');
+  localStorage.removeItem('tama_config_mobile_v1');
   syncInputsFromConfig();
   saveConfig();
   recalcAll();
 }
 
+// ==== INIT ====
 loadConfig();
+bindConfigInputs('');       // calc tab edit panels
+bindConfigInputs('_s');     // settings tab
 recalcAll();
 </script>
 </body>
