@@ -6,13 +6,14 @@
   <title>TAM AGRICOLE – Gestion commerciale</title>
   <style>
     /* ================================================================
-       TAM AGRICOLE – Feuille de style optimisée Mobile (Fixed & Responsive)
+       RESET & BASE (Dimensions fixes pour Mobile)
        ================================================================ */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
+      font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
     }
 
     :root {
@@ -26,17 +27,15 @@
       --gris-bordure: #ddd;
       --blanc: #fff;
       --rouge: #c62828;
-      --orange: #ef6c00;
       --radius: 12px;
       --radius-sm: 8px;
       --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.15);
     }
 
     html, body {
       height: 100%;
-      overflow: hidden; /* Empêche le défilement de la page entière */
-      font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+      width: 100%;
+      overflow: hidden; /* Empêche le défilement global */
       background: var(--gris-clair);
       color: var(--gris-fonce);
       display: flex;
@@ -50,281 +49,130 @@
       color: var(--blanc);
       box-shadow: var(--shadow);
       z-index: 100;
+      height: 56px;
+      display: flex;
+      align-items: center;
     }
 
     .header-container {
-      padding: 0.6rem 1rem;
+      width: 100%;
+      padding: 0 1rem;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
     }
 
     .logo {
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
     }
-
-    .logo-icon { font-size: 1.4rem; }
-    .logo h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.5px; }
 
     /* ---------- MAIN (ZONE DÉFILANTE) ---------- */
     .app-main {
       flex: 1;
       overflow-y: auto;
-      -webkit-overflow-scrolling: touch; /* Défilement fluide sur iOS */
-      padding: 1rem 0.8rem 5rem 0.8rem; /* Espace en bas pour la barre de nav */
+      -webkit-overflow-scrolling: touch;
+      padding: 1rem 0.8rem 80px 0.8rem; /* 80px pour laisser la place au menu */
       position: relative;
     }
 
-    .page {
-      display: none;
-      animation: fadeIn 0.2s ease;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    .page { display: none; animation: fadeIn 0.2s ease; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
     h2 { font-size: 1.3rem; color: var(--vert-fonce); margin-bottom: 0.8rem; }
     h3 { font-size: 1rem; color: var(--vert-principal); margin: 1rem 0 0.5rem; }
 
-    /* ---------- BOUTONS TACTILES ---------- */
+    /* ---------- BOUTONS ---------- */
     .btn {
-      border: none;
-      border-radius: 999px;
-      padding: 0.7rem 1.2rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.1s, background 0.2s;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.35rem;
-      min-height: 42px; /* Taille tactile recommandée */
+      border: none; border-radius: 999px; padding: 0.7rem 1.2rem;
+      font-size: 0.9rem; font-weight: 600; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;
+      min-height: 42px; transition: transform 0.1s;
     }
-
     .btn:active { transform: scale(0.96); }
     .btn-primary { background: var(--vert-principal); color: var(--blanc); }
     .btn-success { background: var(--vert-clair); color: var(--blanc); }
     .btn-secondary { background: var(--blanc); color: var(--vert-principal); border: 2px solid var(--vert-principal); }
     .btn-danger { background: var(--rouge); color: var(--blanc); }
-    .btn-large { padding: 1rem 2rem; font-size: 1rem; width: 100%; }
+    .btn-large { padding: 1rem; font-size: 1rem; width: 100%; }
     .btn-block { width: 100%; }
     .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; min-height: 36px; }
 
     /* ---------- ACCUEIL ---------- */
     .hero {
       background: linear-gradient(135deg, var(--vert-principal), var(--vert-clair));
-      color: var(--blanc);
-      border-radius: var(--radius);
-      padding: 2rem 1rem;
-      text-align: center;
-      box-shadow: var(--shadow-lg);
-      margin-bottom: 1.2rem;
+      color: var(--blanc); border-radius: var(--radius); padding: 2rem 1rem;
+      text-align: center; box-shadow: var(--shadow); margin-bottom: 1.2rem;
     }
-
     .hero h2 { color: var(--blanc); font-size: 1.5rem; margin-bottom: 0.5rem; }
     .hero p { font-size: 0.95rem; opacity: 0.95; margin-bottom: 1.5rem; }
     .hero-buttons { display: flex; flex-direction: column; gap: 0.8rem; }
 
-    .quick-stats {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr); /* 2 colonnes sur mobile */
-      gap: 0.8rem;
-    }
-
-    .quick-stat-card {
-      background: var(--blanc);
-      border-radius: var(--radius);
-      padding: 1rem;
-      box-shadow: var(--shadow);
-      text-align: center;
-      border-top: 4px solid var(--vert-clair);
-    }
-
+    .quick-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+    .quick-stat-card { background: var(--blanc); border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow); text-align: center; border-top: 4px solid var(--vert-clair); }
     .quick-stat-card .qs-value { font-size: 1.5rem; font-weight: 700; color: var(--vert-principal); }
     .quick-stat-card .qs-label { font-size: 0.75rem; color: var(--gris-moyen); margin-top: 0.2rem; }
 
     /* ---------- TOOLBAR / FILTRES ---------- */
-    .toolbar {
-      display: flex;
-      flex-direction: column; /* Empilé sur mobile */
-      gap: 0.6rem;
-      margin-bottom: 1rem;
+    .toolbar { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1rem; }
+    .input-search, .input-date, .input-select {
+      width: 100%; padding: 0.7rem 1rem; border: 1.5px solid var(--gris-bordure);
+      border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; background: var(--blanc); min-height: 44px;
     }
-
-    .input-search,
-    .input-date,
-    .input-select {
-      width: 100%;
-      padding: 0.7rem 1rem;
-      border: 1.5px solid var(--gris-bordure);
-      border-radius: var(--radius-sm);
-      font-size: 0.9rem;
-      outline: none;
-      background: var(--blanc);
-      min-height: 44px;
-    }
-
-    .input-search:focus,
-    .input-date:focus,
-    .input-select:focus { border-color: var(--vert-clair); box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15); }
-
     .toolbar .btn { width: 100%; margin-bottom: 0.2rem; }
 
     /* ---------- LISTES CLIENTS ---------- */
-    .liste-clients {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-
+    .liste-clients { display: flex; flex-direction: column; gap: 0.6rem; }
     .client-card {
-      background: var(--blanc);
-      border-radius: var(--radius);
-      padding: 0.9rem;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
+      background: var(--blanc); border-radius: var(--radius); padding: 0.9rem;
+      box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 0.5rem;
       border-left: 5px solid var(--gris-bordure);
     }
-
     .client-card.visite { border-left-color: var(--vert-clair); background: var(--vert-tres-clair); }
-
-    .client-card .client-name {
-      font-weight: 700;
-      font-size: 0.95rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-
+    .client-card .client-name { font-weight: 700; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
     .client-card .client-id { font-size: 0.75rem; color: var(--gris-moyen); }
     .client-card .client-meta { font-size: 0.8rem; color: var(--gris-moyen); }
     .client-card .client-actions { display: flex; gap: 0.5rem; margin-top: 0.3rem; }
     .client-card .client-actions .btn { flex: 1; }
-
-    .visite-badge {
-      background: var(--vert-clair);
-      color: var(--blanc);
-      padding: 0.2rem 0.6rem;
-      border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
+    .visite-badge { background: var(--vert-clair); color: var(--blanc); padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.7rem; font-weight: 600; }
 
     /* ---------- HISTORIQUE ---------- */
-    .historique-scroll {
-      background: var(--blanc);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .hist-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
-      padding: 0.6rem;
-      border-bottom: 1px solid var(--gris-bordure);
-      font-size: 0.85rem;
-    }
-
+    .historique-scroll { background: var(--blanc); border-radius: var(--radius); box-shadow: var(--shadow); padding: 0.5rem; margin-bottom: 1rem; }
+    .hist-item { display: flex; flex-direction: column; gap: 0.2rem; padding: 0.6rem; border-bottom: 1px solid var(--gris-bordure); font-size: 0.85rem; }
     .hist-item:last-child { border-bottom: none; }
     .hist-item .hist-date { color: var(--gris-moyen); font-size: 0.75rem; }
     .hist-item .hist-label { font-weight: 600; color: var(--vert-fonce); }
-    .hist-empty { text-align: center; color: var(--gris-moyen); padding: 1rem; font-style: italic; font-size: 0.9rem; }
+    .hist-empty { text-align: center; color: var(--gris-moyen); padding: 1rem; font-size: 0.9rem; }
 
     /* ---------- VENTES ---------- */
-    .vente-layout {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .vente-clients, .vente-produits, .vente-form {
-      background: var(--blanc);
-      border-radius: var(--radius);
-      padding: 1rem;
-      box-shadow: var(--shadow);
-    }
-
-    .liste-clients-vente {
-      max-height: 200px; /* Réduit pour laisser de la place */
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      margin-top: 0.5rem;
-      border: 1px solid var(--gris-bordure);
-      border-radius: var(--radius-sm);
-    }
-
-    .client-vente-item {
-      padding: 0.7rem;
-      cursor: pointer;
-      border-bottom: 1px solid var(--gris-bordure);
-      font-size: 0.9rem;
-    }
-
+    .vente-layout { display: flex; flex-direction: column; gap: 1rem; }
+    .vente-clients, .vente-produits, .vente-form { background: var(--blanc); border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow); }
+    
+    .liste-clients-vente { max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; border: 1px solid var(--gris-bordure); border-radius: var(--radius-sm); margin-top: 0.5rem; }
+    .client-vente-item { padding: 0.7rem; cursor: pointer; border-bottom: 1px solid var(--gris-bordure); font-size: 0.9rem; }
     .client-vente-item:last-child { border-bottom: none; }
     .client-vente-item.selected { background: var(--vert-clair); color: var(--blanc); font-weight: 600; }
 
-    .produits-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.5rem;
-      max-height: 250px;
-      overflow-y: auto;
-      margin-top: 0.5rem;
-      padding-right: 0.2rem;
-    }
-
+    .produits-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; max-height: 250px; overflow-y: auto; margin-top: 0.5rem; }
     .produit-btn {
-      background: var(--vert-tres-clair);
-      border: 2px solid var(--vert-clair);
-      border-radius: var(--radius-sm);
-      padding: 0.6rem 0.3rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--vert-fonce);
-      text-align: center;
-      min-height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: var(--vert-tres-clair); border: 2px solid var(--vert-clair); border-radius: var(--radius-sm);
+      padding: 0.6rem 0.3rem; font-size: 0.75rem; font-weight: 600; color: var(--vert-fonce);
+      text-align: center; min-height: 60px; display: flex; align-items: center; justify-content: center;
     }
-
     .produit-btn.selected { background: var(--vert-principal); color: var(--blanc); border-color: var(--vert-fonce); }
 
     /* ---------- FORMULAIRES ---------- */
     .form-group { margin-bottom: 0.8rem; }
     .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.3rem; }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 0.7rem;
-      border: 1.5px solid var(--gris-bordure);
-      border-radius: var(--radius-sm);
-      font-size: 0.9rem;
-      font-family: inherit;
-      outline: none;
-      background: var(--blanc);
-      min-height: 44px;
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 0.7rem; border: 1.5px solid var(--gris-bordure);
+      border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; background: var(--blanc); min-height: 44px;
     }
-
     .form-group input[readonly] { background: var(--gris-clair); font-weight: 600; }
     .total-field { background: var(--vert-tres-clair) !important; color: var(--vert-fonce) !important; font-weight: 700 !important; }
 
@@ -335,190 +183,84 @@
     .stat-card .stat-label { font-size: 0.75rem; color: var(--gris-moyen); margin-top: 0.2rem; }
     .dashboard-historiques { display: flex; flex-direction: column; gap: 1rem; }
 
-    /* ---------- BARRE DE NAVIGATION EN BAS (MOBILE) ---------- */
+    /* ---------- BARRE DE NAVIGATION EN BAS ---------- */
     .main-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: var(--blanc);
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-      display: flex;
-      justify-content: space-around;
-      padding: 0.4rem 0;
-      z-index: 200;
-      border-top: 1px solid var(--gris-bordure);
+      position: fixed; bottom: 0; left: 0; width: 100%; height: 65px;
+      background: var(--blanc); box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      display: flex; justify-content: space-around; align-items: center;
+      z-index: 200; border-top: 1px solid var(--gris-bordure);
     }
-
     .nav-btn {
-      background: none;
-      border: none;
-      color: var(--gris-moyen);
-      font-size: 0.7rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.2rem;
-      padding: 0.3rem;
-      flex: 1;
-      cursor: pointer;
+      background: none; border: none; color: var(--gris-moyen);
+      font-size: 0.7rem; display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+      flex: 1; cursor: pointer; padding: 0.3rem;
     }
-
     .nav-btn.active { color: var(--vert-principal); font-weight: 700; }
-    .nav-btn svg { width: 20px; height: 20px; fill: currentColor; }
+    .nav-btn svg { width: 22px; height: 22px; fill: currentColor; }
 
-    /* ---------- MODALE (PLEIN ÉCRAN SUR MOBILE) ---------- */
+    /* ---------- MODALE ---------- */
     .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      align-items: flex-end; /* S'ouvre du bas */
+      display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5);
+      z-index: 1000; align-items: flex-end;
     }
-
     .modal-overlay.open { display: flex; }
-
     .modal {
-      background: var(--blanc);
-      border-radius: var(--radius) var(--radius) 0 0;
-      width: 100%;
-      max-height: 90vh;
-      display: flex;
-      flex-direction: column;
+      background: var(--blanc); border-radius: var(--radius) var(--radius) 0 0;
+      width: 100%; max-height: 90vh; display: flex; flex-direction: column;
       animation: slideUp 0.3s ease;
     }
-
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--vert-principal); color: var(--blanc); border-radius: var(--radius) var(--radius) 0 0; }
     .modal-header h3 { color: var(--blanc); margin: 0; font-size: 1rem; }
     .modal-close { background: none; border: none; color: var(--blanc); font-size: 1.2rem; padding: 0.5rem; }
-    
     .modal-body { padding: 1rem; overflow-y: auto; flex: 1; }
     .modal-footer { padding: 1rem; display: flex; gap: 0.5rem; border-top: 1px solid var(--gris-bordure); }
     .modal-footer .btn { flex: 1; }
 
-    /* ---------- TOAST ---------- */
+    /* ---------- TOAST (EXACTEMENT COMME DEMANDÉ) ---------- */
     .toast {
       position: fixed;
-      bottom: 70px; /* Au-dessus de la nav */
+      bottom: 80px; /* Juste au-dessus du menu de navigation */
       left: 50%;
-      transform: translateX(-50%) translateY(120%);
-      background: var(--vert-fonce);
-      color: var(--blanc);
-      padding: 0.7rem 1.2rem;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      box-shadow: var(--shadow-lg);
-      z-index: 900;
-      transition: transform 0.3s ease;
+      transform: translateX(-50%) translateY(20px);
+      background: #1b5e20; /* Vert foncé */
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 999px; /* Forme de pilule */
+      font-size: 15px;
+      font-weight: 500;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      z-index: 9999;
+      opacity: 0;
       pointer-events: none;
-      max-width: 90vw;
-      text-align: center;
+      transition: opacity 0.3s, transform 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
     }
-
-    .toast.show { transform: translateX(-50%) translateY(0); }
-    .toast.error { background: var(--rouge); }
-
-    /* Masqué sur mobile (remplacé par la nav en bas) */
-    .menu-toggle { display: none; }
-
-    /* ---------- TABLETTE & DESKTOP ---------- */
-    @media (min-width: 768px) {
-      html, body { overflow: auto; height: auto; }
-      .app-header { position: sticky; top: 0; }
-      .header-container { max-width: 1300px; margin: 0 auto; }
-      
-      .main-nav {
-        position: static;
-        width: auto;
-        background: none;
-        box-shadow: none;
-        border: none;
-        flex-direction: row;
-        gap: 0.3rem;
-        margin-left: auto;
-      }
-      
-      .nav-btn {
-        flex-direction: row;
-        font-size: 0.85rem;
-        background: rgba(255, 255, 255, 0.12);
-        color: var(--blanc);
-        padding: 0.5rem 1rem;
-        border-radius: 999px;
-      }
-      .nav-btn svg { display: none; }
-      .nav-btn.active { background: var(--blanc); color: var(--vert-fonce); }
-
-      .app-main { max-width: 1300px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
-      
-      .hero-buttons { flex-direction: row; justify-content: center; }
-      .btn-large { width: auto; }
-      .quick-stats { grid-template-columns: repeat(4, 1fr); }
-      .toolbar { flex-direction: row; flex-wrap: wrap; }
-      .toolbar .btn { width: auto; margin: 0; }
-      .input-search { max-width: 300px; }
-      
-      .vente-layout { flex-direction: row; }
-      .vente-clients { flex: 1; min-width: 250px; }
-      .vente-produits { flex: 1.5; }
-      .vente-form { flex: 1.5; }
-      
-      .liste-clients { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
-      .dashboard-stats { grid-template-columns: repeat(4, 1fr); }
-      .dashboard-historiques { flex-direction: row; }
-      .dashboard-historiques > div { flex: 1; }
-      
-      .modal-overlay { align-items: center; }
-      .modal { border-radius: var(--radius); max-width: 500px; }
-      .modal-header { border-radius: var(--radius) var(--radius) 0 0; }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
+    .toast.error { background: #c62828; }
   </style>
 </head>
 <body>
-  <!-- ========== HEADER ========== -->
+
+  <!-- HEADER -->
   <header class="app-header">
     <div class="header-container">
       <div class="logo">
-        <span class="logo-icon">🌱</span>
-        <h1>TAM AGRICOLE</h1>
+        <span>🌱</span> TAM AGRICOLE
       </div>
-      
-      <!-- Barre de navigation (en bas sur mobile, en haut sur PC) -->
-      <nav class="main-nav">
-        <button class="nav-btn active" data-page="accueil">
-          <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-          Accueil
-        </button>
-        <button class="nav-btn" data-page="visites">
-          <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-          Visites
-        </button>
-        <button class="nav-btn" data-page="ventes">
-          <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-          Ventes
-        </button>
-        <button class="nav-btn" data-page="clients">
-          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-          Clients
-        </button>
-        <button class="nav-btn" data-page="dashboard">
-          <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
-          Stats
-        </button>
-      </nav>
     </div>
   </header>
 
-  <!-- ========== CONTENU PRINCIPAL ========== -->
+  <!-- MAIN -->
   <main class="app-main">
     
-    <!-- --- ACCUEIL --- -->
+    <!-- ACCUEIL -->
     <section id="page-accueil" class="page active">
       <div class="hero">
         <h2>Bienvenue</h2>
@@ -531,7 +273,7 @@
       <div class="quick-stats" id="quickStats"></div>
     </section>
 
-    <!-- --- VISITES --- -->
+    <!-- VISITES -->
     <section id="page-visites" class="page">
       <h2>👥 Visites</h2>
       <div class="toolbar">
@@ -539,15 +281,13 @@
         <input type="date" id="filtreDateVisites" class="input-date">
         <button class="btn btn-secondary btn-sm" id="resetFiltreVisites">Réinitialiser</button>
         <button class="btn btn-success btn-sm" id="btnExportVisitesCSV">📤 CSV</button>
-        <button class="btn btn-secondary btn-sm" id="btnSauvegardeJSON">💾 Sauver</button>
-        <button class="btn btn-secondary btn-sm" id="btnRestaurationJSON">📥 Restaurer</button>
       </div>
       <div id="listeVisites" class="liste-clients"></div>
       <h3>📅 Historique</h3>
       <div class="historique-scroll" id="historiqueVisites"></div>
     </section>
 
-    <!-- --- VENTES --- -->
+    <!-- VENTES -->
     <section id="page-ventes" class="page">
       <h2>💰 Ventes</h2>
       <div class="vente-layout">
@@ -564,7 +304,7 @@
           <h3>3. Détails</h3>
           <form id="formVente">
             <div class="form-group">
-              <label>Produit sélectionné</label>
+              <label>Produit</label>
               <input type="text" id="venteProduit" readonly>
             </div>
             <div class="form-group">
@@ -575,13 +315,10 @@
               <label>Unité</label>
               <select id="venteUnite">
                 <option value="kg">kg</option>
-                <option value="ML">ML (Mètre Linéaire)</option>
-                <option value="M²">M² (Mètre Carré)</option>
+                <option value="ML">ML</option>
+                <option value="M²">M²</option>
                 <option value="Packet">Packet</option>
-                <option value="tonne">tonne</option>
-                <option value="litre">litre</option>
                 <option value="unité">unité</option>
-                <option value="sac">sac</option>
               </select>
             </div>
             <div class="form-group">
@@ -589,24 +326,20 @@
               <input type="number" id="ventePrix" min="0" step="0.01" required>
             </div>
             <div class="form-group">
-              <label>Montant total (DH)</label>
+              <label>Montant total</label>
               <input type="text" id="venteTotal" readonly class="total-field">
             </div>
             <div class="form-group">
               <label>Date</label>
               <input type="date" id="venteDate" required>
             </div>
-            <div class="form-group">
-              <label>Observation</label>
-              <textarea id="venteObservation" rows="2" placeholder="Facultatif…"></textarea>
-            </div>
-            <button type="submit" class="btn btn-success btn-block">✅ ENREGISTRER</button>
+            <button type="submit" class="btn btn-success btn-block">✅ ENREGISTRER LA VENTE</button>
           </form>
         </div>
       </div>
     </section>
 
-    <!-- --- CLIENTS --- -->
+    <!-- CLIENTS -->
     <section id="page-clients" class="page">
       <h2>📋 Clients</h2>
       <div class="toolbar">
@@ -616,7 +349,7 @@
       <div id="listeClientsGestion" class="liste-clients"></div>
     </section>
 
-    <!-- --- DASHBOARD --- -->
+    <!-- DASHBOARD -->
     <section id="page-dashboard" class="page">
       <h2>📊 Statistiques</h2>
       <div class="dashboard-stats" id="dashboardStats"></div>
@@ -628,19 +361,43 @@
         <button class="btn btn-secondary btn-sm" id="resetDashFiltres">Réinitialiser</button>
       </div>
       <div class="dashboard-historiques">
-        <div class="hist-block">
-          <h3>📅 Historique des ventes</h3>
+        <div>
+          <h3>📅 Ventes récentes</h3>
           <div class="historique-scroll" id="histVentes"></div>
         </div>
-        <div class="hist-block">
-          <h3>👥 Historique des visites</h3>
+        <div>
+          <h3>👥 Visites récentes</h3>
           <div class="historique-scroll" id="histVisites"></div>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- ========== MODALE ========== -->
+  <!-- NAVIGATION EN BAS -->
+  <nav class="main-nav">
+    <button class="nav-btn active" data-page="accueil">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      Accueil
+    </button>
+    <button class="nav-btn" data-page="visites">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      Visites
+    </button>
+    <button class="nav-btn" data-page="ventes">
+      <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+      Ventes
+    </button>
+    <button class="nav-btn" data-page="clients">
+      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+      Clients
+    </button>
+    <button class="nav-btn" data-page="dashboard">
+      <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      Stats
+    </button>
+  </nav>
+
+  <!-- MODALE -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal" id="modal">
       <div class="modal-header">
@@ -652,115 +409,61 @@
     </div>
   </div>
 
-  <!-- ========== TOAST ========== -->
+  <!-- TOAST -->
   <div id="toast" class="toast"></div>
 
   <script>
     /* ================================================================
-       JAVASCRIPT INTÉGRÉ
+       JAVASCRIPT COMPLET
        ================================================================ */
-
-    const STORAGE_KEYS = {
-      CLIENTS: 'tam_clients_v3',
-      VISITES: 'tam_visites_v3',
-      VENTES: 'tam_ventes_v3'
-    };
+    const STORAGE_KEYS = { CLIENTS: 'tam_clients_v3', VISITES: 'tam_visites_v3', VENTES: 'tam_ventes_v3' };
 
     const PRODUITS = [
-      'FILET BLANC ANTI THRIPS (1,0X100) 11X21',
-      'FILET BLANC ANTI THRIPS (1,5X100) 11X21',
-      'FILET BLANC ANTI THRIPS (2,0X100) 11X21',
-      'FILET BLANC ANTI THRIPS (3,0X100) 11X21',
-      'FILET BLANC ANTI THRIPS (4,0X100) 11X21',
-      'FILET BLANC ANTI THRIPS (5,0X100) 11X21',
-      'FILET BLANC ANTI THRIPS (6,0X100) 11X21',
-      'FILET OMBRIERE 50% ARGENTE',
-      'AQUATAPE 8 MIL 10 CM',
-      'AQUATAPE 8 MIL 20 CM',
-      'AQUATAPE 8 MILL 15 CM',
-      'AQUADROP 12 MIL 20 CM 1.3 L',
-      'CINTAPE 8 MIL 20 CM',
-      'FIL DE FER 12',
-      'FIL DE FER 16',
-      'FIL DE FER 18',
-      'FIL DE FER 21',
-      'FIL DE FER GALVA N 12 Ø 1,80 MM',
-      'FIL DE FER GALVA N 12 D 1,80 MM ESPAGNE',
-      'FIL DE FER GALVA N 16 Ø 2,70 MM',
-      'FIL DE FER GALVA N 18 D 3,40 MM ESPAGNE',
-      'FIL DE FER GALVA N 21 Ø 4,90 MM',
-      'FIL D\'ACIER GALVANISE JP 16 D 2,50MM',
-      'CABLE D\'ACIER GALVA. TRESSE D 2*2,5',
-      'CABLE D\'ACIER GALVA. TRESSE D 2*3 6.00 MM',
-      'CABLE D\'ACIER GALVA. TRESSE D 3*3 6.40 MM',
-      'CABLE D\'ACIER GALVA. TRESSE D 3X3,8 MM',
-      'AGRAFES GALVANISE A-18',
-      'PERLHUMS EN 20 KG',
-      'POWHUMUS 20 KG',
-      'DIVERS'
+      'FILET BLANC ANTI THRIPS (1,0X100) 11X21', 'FILET BLANC ANTI THRIPS (1,5X100) 11X21',
+      'FILET BLANC ANTI THRIPS (2,0X100) 11X21', 'FILET BLANC ANTI THRIPS (3,0X100) 11X21',
+      'FILET BLANC ANTI THRIPS (4,0X100) 11X21', 'FILET BLANC ANTI THRIPS (5,0X100) 11X21',
+      'FILET BLANC ANTI THRIPS (6,0X100) 11X21', 'FILET OMBRIERE 50% ARGENTE',
+      'AQUATAPE 8 MIL 10 CM', 'AQUATAPE 8 MIL 20 CM', 'AQUATAPE 8 MILL 15 CM',
+      'AQUADROP 12 MIL 20 CM 1.3 L', 'CINTAPE 8 MIL 20 CM',
+      'FIL DE FER 12', 'FIL DE FER 16', 'FIL DE FER 18', 'FIL DE FER 21',
+      'FIL DE FER GALVA N 12 Ø 1,80 MM', 'FIL DE FER GALVA N 18 D 3,40 MM ESPAGNE',
+      'FIL DE FER GALVA N 21 Ø 4,90 MM', 'FIL D\'ACIER GALVANISE JP 16 D 2,50MM',
+      'CABLE D\'ACIER GALVA. TRESSE D 2*2,5', 'CABLE D\'ACIER GALVA. TRESSE D 2*3 6.00 MM',
+      'CABLE D\'ACIER GALVA. TRESSE D 3*3 6.40 MM', 'CABLE D\'ACIER GALVA. TRESSE D 3X3,8 MM',
+      'AGRAFES GALVANISE A-18', 'PERLHUMS EN 20 KG', 'POWHUMUS 20 KG', 'DIVERS'
     ];
 
     const CLIENTS_INITIAUX = [
-      { id: 'CLT0234', nom: 'DOMAINE SALAH' },
-      { id: 'CLT0151', nom: 'AFNANE PRIME' },
-      { id: 'CLT0178', nom: 'TOULOUT ABDERRAHIM ET ABDESSEL' },
-      { id: 'CLT0153', nom: 'FRESHBROTHERS' },
-      { id: 'CLT0182', nom: 'OUGRAICH LAHCEN' },
-      { id: 'CLT0116', nom: 'AGRI-ERROUIDA' },
-      { id: 'CLT0146', nom: 'COOPERATIVE SAFAA AGRI' },
-      { id: 'CLT0158', nom: 'DOMAINE BALLAT TAGOT' },
-      { id: 'CLT0243', nom: 'BASSATINE PRIM' },
-      { id: 'CLT0173', nom: 'DOMAINE L\'EST' },
-      { id: 'CLT0074', nom: 'BRAHIM HEMMAD' },
-      { id: 'CLT0117', nom: 'AGYAD AGRICULTURE SARL' },
-      { id: 'CLT0170', nom: 'STE ESOMA' },
-      { id: 'CLT0101', nom: 'AFRICA TRAVAUX AGRICOLES' },
-      { id: 'CLT0237', nom: 'JAOUDA GREEN' },
-      { id: 'CLT0239', nom: 'SOUSS BERRIES' },
-      { id: 'CLT0238', nom: 'GREEN BENZ GOLD' },
-      { id: 'CLT0154', nom: 'DOMAINE BOUANAS' },
-      { id: 'CLT0207', nom: 'LB INNOV SARL' },
-      { id: 'CLT0227', nom: 'DOMAINE AFOULKI' },
-      { id: 'CLT0232', nom: 'GOLDEN PLANT' },
-      { id: 'CLT0247', nom: 'LOUFANI HASSAN' },
-      { id: 'CLT0240', nom: 'ABDESLAM HAJJAJ' },
-      { id: 'CLT0184', nom: 'TOUZANI AGRICULTURE' },
-      { id: 'CLT0250', nom: 'ANNAKHIL FERME' },
-      { id: 'CLT0245', nom: 'AGRI KOUR' },
-      { id: 'CLT0248', nom: 'TBH AGRICOLE' },
-      { id: 'CLT0215', nom: 'VERGENAIM AGRI' },
-      { id: 'CLT0032', nom: 'BOUMALEK ABDELKBIR' },
-      { id: 'CLT0122', nom: 'MOHAMMED ESSADKAOUI' },
-      { id: 'CLT0257', nom: 'PREMIUM HARVEST' },
-      { id: 'CLT0262', nom: 'DOMAINE LB FRESH' },
-      { id: 'CLT0246', nom: 'KARAM GREEN AGRI' },
-      { id: 'CLT0256', nom: 'MUSTAPHA AIT GOUZAL' },
-      { id: 'CLT0214', nom: 'MAKAREM AGRICOLE REP BEN SALAH' },
-      { id: 'CLT0259', nom: 'ANSAR PRIM' },
-      { id: 'CLT0260', nom: 'Ste ANSAR PRIM SARL' },
-      { id: 'CLT0261', nom: 'KAMABRO SARL' },
-      { id: 'CLT0213', nom: 'PEPPER WORLD' },
-      { id: 'CLT0200', nom: 'BACHIR ZYANE' },
-      { id: 'CLT0242', nom: 'HAJ OUAADI MOHAMED' },
-      { id: 'CLT0263', nom: 'SAID OUTAIBI' },
-      { id: 'CLT0220', nom: 'AHMED AHFAY' },
-      { id: 'CLT0187', nom: 'AIT GOUZAL AHMED' },
-      { id: 'CLT0219', nom: 'SOLUTION AGRICOLE DU SOUSS' },
-      { id: 'CLT0251', nom: 'ABDERRAHIM GOUSKAR' },
-      { id: 'CLT0208', nom: 'REHIL AGRICOLE SARL AU' },
-      { id: 'CLT0268', nom: 'ABDELKBIR EL HIF' },
-      { id: 'CLT0270', nom: 'LAHSEN OUAADDI' },
-      { id: 'CLT0271', nom: 'DOMAINE AYOUR' },
-      { id: 'CLT0272', nom: 'FAST TRAVAUX' },
-      { id: 'CLT0273', nom: 'GREEN SABOR' },
-      { id: 'CLT0276', nom: 'BELAARIBI SAID' },
-      { id: 'CLT0183', nom: 'RACHID LOUFANI' },
-      { id: 'CLT0230', nom: 'OULHINTE ABDELLAH' },
-      { id: 'CLT0265', nom: 'SAFAR PRIM' },
-      { id: 'CLT0186', nom: 'OUBAYROUK RACHID' },
-      { id: 'CLT0241', nom: 'FADILI AZZEDINE 2' },
-      { id: 'CLT0222', nom: 'DOMAINE OUBLAID' },
-      { id: 'CLT0223', nom: 'AGROPOLE' },
+      { id: 'CLT0234', nom: 'DOMAINE SALAH' }, { id: 'CLT0151', nom: 'AFNANE PRIME' },
+      { id: 'CLT0178', nom: 'TOULOUT ABDERRAHIM' }, { id: 'CLT0153', nom: 'FRESHBROTHERS' },
+      { id: 'CLT0182', nom: 'OUGRAICH LAHCEN' }, { id: 'CLT0116', nom: 'AGRI-ERROUIDA' },
+      { id: 'CLT0146', nom: 'COOPERATIVE SAFAA AGRI' }, { id: 'CLT0158', nom: 'DOMAINE BALLAT TAGOT' },
+      { id: 'CLT0243', nom: 'BASSATINE PRIM' }, { id: 'CLT0173', nom: 'DOMAINE L\'EST' },
+      { id: 'CLT0074', nom: 'BRAHIM HEMMAD' }, { id: 'CLT0117', nom: 'AGYAD AGRICULTURE SARL' },
+      { id: 'CLT0170', nom: 'STE ESOMA' }, { id: 'CLT0101', nom: 'AFRICA TRAVAUX AGRICOLES' },
+      { id: 'CLT0237', nom: 'JAOUDA GREEN' }, { id: 'CLT0239', nom: 'SOUSS BERRIES' },
+      { id: 'CLT0238', nom: 'GREEN BENZ GOLD' }, { id: 'CLT0154', nom: 'DOMAINE BOUANAS' },
+      { id: 'CLT0207', nom: 'LB INNOV SARL' }, { id: 'CLT0227', nom: 'DOMAINE AFOULKI' },
+      { id: 'CLT0232', nom: 'GOLDEN PLANT' }, { id: 'CLT0247', nom: 'LOUFANI HASSAN' },
+      { id: 'CLT0240', nom: 'ABDESLAM HAJJAJ' }, { id: 'CLT0184', nom: 'TOUZANI AGRICULTURE' },
+      { id: 'CLT0250', nom: 'ANNAKHIL FERME' }, { id: 'CLT0245', nom: 'AGRI KOUR' },
+      { id: 'CLT0248', nom: 'TBH AGRICOLE' }, { id: 'CLT0215', nom: 'VERGENAIM AGRI' },
+      { id: 'CLT0032', nom: 'BOUMALEK ABDELKBIR' }, { id: 'CLT0122', nom: 'MOHAMMED ESSADKAOUI' },
+      { id: 'CLT0257', nom: 'PREMIUM HARVEST' }, { id: 'CLT0262', nom: 'DOMAINE LB FRESH' },
+      { id: 'CLT0246', nom: 'KARAM GREEN AGRI' }, { id: 'CLT0256', nom: 'MUSTAPHA AIT GOUZAL' },
+      { id: 'CLT0214', nom: 'MAKAREM AGRICOLE REP BEN SALAH' }, { id: 'CLT0259', nom: 'ANSAR PRIM' },
+      { id: 'CLT0260', nom: 'Ste ANSAR PRIM SARL' }, { id: 'CLT0261', nom: 'KAMABRO SARL' },
+      { id: 'CLT0213', nom: 'PEPPER WORLD' }, { id: 'CLT0200', nom: 'BACHIR ZYANE' },
+      { id: 'CLT0242', nom: 'HAJ OUAADI MOHAMED' }, { id: 'CLT0263', nom: 'SAID OUTAIBI' },
+      { id: 'CLT0220', nom: 'AHMED AHFAY' }, { id: 'CLT0187', nom: 'AIT GOUZAL AHMED' },
+      { id: 'CLT0219', nom: 'SOLUTION AGRICOLE DU SOUSS' }, { id: 'CLT0251', nom: 'ABDERRAHIM GOUSKAR' },
+      { id: 'CLT0208', nom: 'REHIL AGRICOLE SARL AU' }, { id: 'CLT0268', nom: 'ABDELKBIR EL HIF' },
+      { id: 'CLT0270', nom: 'LAHSEN OUAADDI' }, { id: 'CLT0271', nom: 'DOMAINE AYOUR' },
+      { id: 'CLT0272', nom: 'FAST TRAVAUX' }, { id: 'CLT0273', nom: 'GREEN SABOR' },
+      { id: 'CLT0276', nom: 'BELAARIBI SAID' }, { id: 'CLT0183', nom: 'RACHID LOUFANI' },
+      { id: 'CLT0230', nom: 'OULHINTE ABDELLAH' }, { id: 'CLT0265', nom: 'SAFAR PRIM' },
+      { id: 'CLT0186', nom: 'OUBAYROUK RACHID' }, { id: 'CLT0241', nom: 'FADILI AZZEDINE 2' },
+      { id: 'CLT0222', nom: 'DOMAINE OUBLAID' }, { id: 'CLT0223', nom: 'AGROPOLE' },
       { id: 'CLT0174', nom: 'HICHAM MORTADI' }
     ];
 
@@ -777,12 +480,19 @@
     function normaliser(str) { return (str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
     function echapperHTML(str) { const div = document.createElement('div'); div.textContent = str == null ? '' : String(str); return div.innerHTML; }
 
+    // AFFICHAGE DU TOAST STYLE VOTRE IMAGE
     function toast(message, type = 'success') {
       const el = document.getElementById('toast');
-      el.textContent = message;
+      // Si c'est une erreur, on met un point d'exclamation, sinon un check
+      const icon = type === 'error' ? '❌' : '✅';
+      el.innerHTML = `<span>${message}</span> <span style="font-size:1.1em;">${icon}</span>`;
+      
       el.className = 'toast show' + (type === 'error' ? ' error' : '');
+      
       clearTimeout(el._timer);
-      el._timer = setTimeout(() => { el.className = 'toast'; }, 3000);
+      el._timer = setTimeout(() => { 
+        el.className = 'toast'; 
+      }, 3000);
     }
 
     /* PERSISTANCE */
@@ -820,7 +530,6 @@
       if (page) page.classList.add('active');
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
       
-      // Remonter en haut lors du changement de page
       document.querySelector('.app-main').scrollTop = 0;
 
       if (pageId === 'visites')    { renderVisites(); renderHistoriqueVisites(); }
@@ -899,7 +608,7 @@
       visites.push({ id: 'V' + Date.now(), clientId: client.id, clientNom: client.nom, date: maintenant() });
       sauvegarder();
       renderVisites(); renderHistoriqueVisites(); renderQuickStats();
-      toast(`Visite enregistrée ✅`);
+      toast(`Visite enregistrée`);
     }
 
     function renderHistoriqueVisites() {
@@ -947,6 +656,7 @@
       document.getElementById('venteProduits').style.display = 'block';
       renderProduitsVente();
       document.getElementById('venteForm').style.display = 'none';
+      document.getElementById('venteProduits').scrollIntoView({ behavior: 'smooth' });
     }
 
     function renderProduitsVente() {
@@ -972,14 +682,12 @@
       document.getElementById('venteQuantite').value = '';
       document.getElementById('ventePrix').value = '';
       document.getElementById('venteTotal').value = '';
-      document.getElementById('venteObservation').value = '';
       
       if (produit.includes('FILET') || produit.includes('OMBRIERE')) document.getElementById('venteUnite').value = 'M²';
       else if (produit.includes('AQUATAPE') || produit.includes('AQUADROP') || produit.includes('CINTAPE')) document.getElementById('venteUnite').value = 'ML';
       else if (produit.includes('FER') || produit.includes('CABLE') || produit.includes('PERLHUMS') || produit.includes('POWHUMUS')) document.getElementById('venteUnite').value = 'kg';
       else if (produit.includes('AGRAFES')) document.getElementById('venteUnite').value = 'Packet';
 
-      // Faire défiler jusqu'au formulaire
       document.getElementById('venteForm').scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -1006,13 +714,13 @@
 
     function enregistrerVente() {
       const client = clients.find(c => c.id === venteState.clientId);
-      if (!client || !venteState.produit) { toast('Sélection incomplete.', 'error'); return; }
+      if (!client || !venteState.produit) { toast('Sélection incomplète', 'error'); return; }
 
       const quantite = parseFloat(document.getElementById('venteQuantite').value);
       const prix = parseFloat(document.getElementById('ventePrix').value);
       const dateVente = document.getElementById('venteDate').value;
 
-      if (!quantite || quantite <= 0 || !prix || prix <= 0 || !dateVente) { toast('Vérifiez les champs.', 'error'); return; }
+      if (!quantite || quantite <= 0 || !prix || prix <= 0 || !dateVente) { toast('Vérifiez les champs', 'error'); return; }
 
       ventes.push({
         id: 'S' + Date.now(),
@@ -1022,12 +730,13 @@
         unite: document.getElementById('venteUnite').value,
         prixUnitaire: prix,
         montant: quantite * prix,
-        date: dateVente + 'T' + new Date().toTimeString().slice(0, 8),
-        observation: document.getElementById('venteObservation').value.trim()
+        date: dateVente + 'T' + new Date().toTimeString().slice(0, 8)
       });
 
       sauvegarder();
-      toast(`Vente enregistrée ✅`);
+      // APPEL DU TOAST PERSONNALISÉ
+      toast(`Vente enregistrée`);
+      
       resetVenteForm();
       renderQuickStats();
     }
@@ -1058,12 +767,12 @@
 
     function ajouterClient(nom) {
       nom = nom.trim();
-      if (!nom || clients.some(c => normaliser(c.nom) === normaliser(nom))) { toast('Nom invalide ou existant.', 'error'); return false; }
+      if (!nom || clients.some(c => normaliser(c.nom) === normaliser(nom))) { toast('Nom invalide ou existant', 'error'); return false; }
 
       clients.push({ id: 'CLT' + Math.floor(1000 + Math.random() * 9000), nom });
       sauvegarder();
       renderClientsGestion(); renderQuickStats();
-      toast(`Client ajouté ✅`);
+      toast(`Client ajouté`);
       return true;
     }
 
@@ -1077,7 +786,7 @@
 
       sauvegarder();
       renderClientsGestion(); renderVisites(); renderHistoriqueVisites(); renderDashboard();
-      toast(`Client modifié ✅`);
+      toast(`Client modifié`);
       return true;
     }
 
@@ -1099,7 +808,7 @@
         ventes  = ventes.filter(v => v.clientId !== id);
         sauvegarder();
         fermerModale(); renderClientsGestion(); renderVisites(); renderQuickStats(); renderDashboard();
-        toast('Client supprimé.');
+        toast('Client supprimé');
       });
     }
 
@@ -1194,42 +903,16 @@
       });
     }
 
-    function telechargerFichier(nom, contenu, mime) {
-      const blob = new Blob([contenu], { type: mime || 'text/plain;charset=utf-8' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob); a.download = nom;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    }
-
     function exportCSV() {
       let csv = '\uFEFFTYPE;CLIENT;PRODUIT;QTE;UNITE;PRIX;MONTANT;DATE\n';
       ventes.forEach(v => { csv += `VENTE;${v.clientNom};${v.produit};${v.quantite};${v.unite};${v.prixUnitaire};${v.montant};${v.date}\n`; });
       visites.forEach(v => { csv += `VISITE;${v.clientNom};;;;;;${v.date}\n`; });
-      telechargerFichier(`tam_export_${dateDuJour()}.csv`, csv, 'text/csv;charset=utf-8');
-      toast('Export CSV réussi ✅');
-    }
-
-    function sauvegardeJSON() {
-      telechargerFichier(`tam_sauvegarde_${dateDuJour()}.json`, JSON.stringify({ clients, visites, ventes }, null, 2), 'application/json');
-      toast('Sauvegarde JSON réussie ✅');
-    }
-
-    function restaurationJSON() {
-      const input = document.createElement('input'); input.type = 'file'; input.accept = '.json';
-      input.onchange = e => {
-        const reader = new FileReader();
-        reader.onload = ev => {
-          try {
-            const data = JSON.parse(ev.target.result);
-            if (data.clients && data.visites && data.ventes) {
-              clients = data.clients; visites = data.visites; ventes = data.ventes;
-              sauvegarder(); rafraichirTout(); toast('Restauration réussie ✅');
-            }
-          } catch (err) { toast('Fichier invalide.', 'error'); }
-        };
-        reader.readAsText(e.target.files[0]);
-      };
-      input.click();
+      
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = `tam_export_${dateDuJour()}.csv`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      toast('Export CSV réussi');
     }
 
     /* INIT */
@@ -1246,8 +929,6 @@
         renderVisites(); renderHistoriqueVisites();
       });
       document.getElementById('btnExportVisitesCSV').addEventListener('click', exportCSV);
-      document.getElementById('btnSauvegardeJSON').addEventListener('click', sauvegardeJSON);
-      document.getElementById('btnRestaurationJSON').addEventListener('click', restaurationJSON);
     }
 
     function initClients() {
