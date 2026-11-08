@@ -2,16 +2,17 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TAM AGRICOLE – Gestion commerciale</title>
   <style>
     /* ================================================================
-       TAM AGRICOLE – Feuille de style intégrée
+       TAM AGRICOLE – Feuille de style optimisée Mobile (Fixed & Responsive)
        ================================================================ */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
     :root {
@@ -32,33 +33,30 @@
       --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.15);
     }
 
-    body {
+    html, body {
+      height: 100%;
+      overflow: hidden; /* Empêche le défilement de la page entière */
       font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
       background: var(--gris-clair);
       color: var(--gris-fonce);
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    /* ---------- HEADER ---------- */
+    /* ---------- HEADER FIXE ---------- */
     .app-header {
+      flex-shrink: 0;
       background: var(--vert-principal);
       color: var(--blanc);
       box-shadow: var(--shadow);
-      position: sticky;
-      top: 0;
       z-index: 100;
     }
 
     .header-container {
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 0.75rem 1rem;
+      padding: 0.6rem 1rem;
       display: flex;
       align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
+      justify-content: space-between;
     }
 
     .logo {
@@ -67,71 +65,21 @@
       gap: 0.5rem;
     }
 
-    .logo-icon {
-      font-size: 1.6rem;
-    }
+    .logo-icon { font-size: 1.4rem; }
+    .logo h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.5px; }
 
-    .logo h1 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      white-space: nowrap;
-    }
-
-    .main-nav {
-      display: flex;
-      gap: 0.25rem;
-      flex-wrap: wrap;
-      margin-left: auto;
-    }
-
-    .nav-btn {
-      background: rgba(255, 255, 255, 0.12);
-      color: var(--blanc);
-      border: none;
-      padding: 0.5rem 0.85rem;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 0.88rem;
-      font-weight: 500;
-      transition: background 0.2s, transform 0.1s;
-      white-space: nowrap;
-    }
-
-    .nav-btn:hover {
-      background: rgba(255, 255, 255, 0.25);
-    }
-
-    .nav-btn.active {
-      background: var(--blanc);
-      color: var(--vert-fonce);
-      font-weight: 700;
-    }
-
-    .menu-toggle {
-      display: none;
-      background: rgba(255, 255, 255, 0.15);
-      color: var(--blanc);
-      border: none;
-      font-size: 1.5rem;
-      padding: 0.3rem 0.6rem;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      margin-left: auto;
-    }
-
-    /* ---------- MAIN ---------- */
+    /* ---------- MAIN (ZONE DÉFILANTE) ---------- */
     .app-main {
       flex: 1;
-      max-width: 1300px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 1.25rem 1rem 3rem;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch; /* Défilement fluide sur iOS */
+      padding: 1rem 0.8rem 5rem 0.8rem; /* Espace en bas pour la barre de nav */
+      position: relative;
     }
 
     .page {
       display: none;
-      animation: fadeIn 0.25s ease;
+      animation: fadeIn 0.2s ease;
     }
 
     .page.active {
@@ -143,216 +91,165 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    h2 {
-      font-size: 1.5rem;
-      color: var(--vert-fonce);
-      margin-bottom: 1rem;
+    h2 { font-size: 1.3rem; color: var(--vert-fonce); margin-bottom: 0.8rem; }
+    h3 { font-size: 1rem; color: var(--vert-principal); margin: 1rem 0 0.5rem; }
+
+    /* ---------- BOUTONS TACTILES ---------- */
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 0.7rem 1.2rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      min-height: 42px; /* Taille tactile recommandée */
     }
 
-    h3 {
-      font-size: 1.1rem;
-      color: var(--vert-principal);
-      margin: 1.25rem 0 0.6rem;
-    }
+    .btn:active { transform: scale(0.96); }
+    .btn-primary { background: var(--vert-principal); color: var(--blanc); }
+    .btn-success { background: var(--vert-clair); color: var(--blanc); }
+    .btn-secondary { background: var(--blanc); color: var(--vert-principal); border: 2px solid var(--vert-principal); }
+    .btn-danger { background: var(--rouge); color: var(--blanc); }
+    .btn-large { padding: 1rem 2rem; font-size: 1rem; width: 100%; }
+    .btn-block { width: 100%; }
+    .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; min-height: 36px; }
 
-    /* ---------- HERO (accueil) ---------- */
+    /* ---------- ACCUEIL ---------- */
     .hero {
       background: linear-gradient(135deg, var(--vert-principal), var(--vert-clair));
       color: var(--blanc);
       border-radius: var(--radius);
-      padding: 3rem 1.5rem;
+      padding: 2rem 1rem;
       text-align: center;
       box-shadow: var(--shadow-lg);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.2rem;
     }
 
-    .hero h2 {
-      color: var(--blanc);
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .hero p {
-      font-size: 1.05rem;
-      opacity: 0.95;
-      margin-bottom: 2rem;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
+    .hero h2 { color: var(--blanc); font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .hero p { font-size: 0.95rem; opacity: 0.95; margin-bottom: 1.5rem; }
+    .hero-buttons { display: flex; flex-direction: column; gap: 0.8rem; }
 
     .quick-stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(2, 1fr); /* 2 colonnes sur mobile */
+      gap: 0.8rem;
     }
 
     .quick-stat-card {
       background: var(--blanc);
       border-radius: var(--radius);
-      padding: 1.25rem;
+      padding: 1rem;
       box-shadow: var(--shadow);
       text-align: center;
       border-top: 4px solid var(--vert-clair);
     }
 
-    .quick-stat-card .qs-value {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--vert-principal);
-    }
-
-    .quick-stat-card .qs-label {
-      font-size: 0.85rem;
-      color: var(--gris-moyen);
-      margin-top: 0.25rem;
-    }
-
-    /* ---------- BOUTONS ---------- */
-    .btn {
-      border: none;
-      border-radius: 999px;
-      padding: 0.6rem 1.2rem;
-      font-size: 0.92rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.1s, box-shadow 0.2s, background 0.2s;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.35rem;
-    }
-
-    .btn:active { transform: scale(0.97); }
-    .btn-primary { background: var(--vert-principal); color: var(--blanc); }
-    .btn-primary:hover { background: var(--vert-fonce); box-shadow: var(--shadow); }
-    .btn-success { background: var(--vert-clair); color: var(--blanc); }
-    .btn-success:hover { background: var(--vert-principal); box-shadow: var(--shadow); }
-    .btn-secondary { background: var(--blanc); color: var(--vert-principal); border: 2px solid var(--vert-principal); }
-    .btn-secondary:hover { background: var(--vert-tres-clair); }
-    .btn-danger { background: var(--rouge); color: var(--blanc); }
-    .btn-danger:hover { background: #b71c1c; }
-    .btn-warning { background: var(--orange); color: var(--blanc); }
-    .btn-large { padding: 1rem 2rem; font-size: 1.1rem; }
-    .btn-block { width: 100%; }
-    .btn-sm { padding: 0.35rem 0.8rem; font-size: 0.8rem; }
+    .quick-stat-card .qs-value { font-size: 1.5rem; font-weight: 700; color: var(--vert-principal); }
+    .quick-stat-card .qs-label { font-size: 0.75rem; color: var(--gris-moyen); margin-top: 0.2rem; }
 
     /* ---------- TOOLBAR / FILTRES ---------- */
     .toolbar {
       display: flex;
+      flex-direction: column; /* Empilé sur mobile */
       gap: 0.6rem;
-      flex-wrap: wrap;
-      align-items: center;
       margin-bottom: 1rem;
     }
 
     .input-search,
     .input-date,
     .input-select {
-      padding: 0.55rem 0.9rem;
+      width: 100%;
+      padding: 0.7rem 1rem;
       border: 1.5px solid var(--gris-bordure);
       border-radius: var(--radius-sm);
       font-size: 0.9rem;
       outline: none;
-      transition: border 0.2s;
       background: var(--blanc);
+      min-height: 44px;
     }
-
-    .input-search { flex: 1; min-width: 180px; max-width: 340px; }
 
     .input-search:focus,
     .input-date:focus,
-    .input-select:focus {
-      border-color: var(--vert-clair);
-      box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
-    }
+    .input-select:focus { border-color: var(--vert-clair); box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15); }
 
-    /* ---------- LISTE CLIENTS ---------- */
+    .toolbar .btn { width: 100%; margin-bottom: 0.2rem; }
+
+    /* ---------- LISTES CLIENTS ---------- */
     .liste-clients {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
     }
 
     .client-card {
       background: var(--blanc);
       border-radius: var(--radius);
-      padding: 1rem 1.1rem;
+      padding: 0.9rem;
       box-shadow: var(--shadow);
       display: flex;
       flex-direction: column;
-      gap: 0.6rem;
+      gap: 0.5rem;
       border-left: 5px solid var(--gris-bordure);
-      transition: transform 0.15s, box-shadow 0.15s;
     }
 
-    .client-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
     .client-card.visite { border-left-color: var(--vert-clair); background: var(--vert-tres-clair); }
 
     .client-card .client-name {
       font-weight: 700;
-      font-size: 1rem;
-      color: var(--gris-fonce);
+      font-size: 0.95rem;
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       gap: 0.5rem;
     }
 
-    .client-card .client-id { font-size: 0.75rem; color: var(--gris-moyen); font-weight: 400; }
+    .client-card .client-id { font-size: 0.75rem; color: var(--gris-moyen); }
     .client-card .client-meta { font-size: 0.8rem; color: var(--gris-moyen); }
-    .client-card .client-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .client-card .client-actions { display: flex; gap: 0.5rem; margin-top: 0.3rem; }
+    .client-card .client-actions .btn { flex: 1; }
 
     .visite-badge {
-      display: inline-block;
       background: var(--vert-clair);
       color: var(--blanc);
-      padding: 0.15rem 0.6rem;
+      padding: 0.2rem 0.6rem;
       border-radius: 999px;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 600;
     }
 
     /* ---------- HISTORIQUE ---------- */
     .historique-scroll {
-      max-height: 280px;
-      overflow-y: auto;
       background: var(--blanc);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       padding: 0.5rem;
+      margin-bottom: 1rem;
     }
 
     .hist-item {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.55rem 0.7rem;
+      flex-direction: column;
+      gap: 0.2rem;
+      padding: 0.6rem;
       border-bottom: 1px solid var(--gris-bordure);
-      font-size: 0.86rem;
-      flex-wrap: wrap;
+      font-size: 0.85rem;
     }
 
     .hist-item:last-child { border-bottom: none; }
-    .hist-item .hist-date { color: var(--gris-moyen); font-size: 0.78rem; white-space: nowrap; }
+    .hist-item .hist-date { color: var(--gris-moyen); font-size: 0.75rem; }
     .hist-item .hist-label { font-weight: 600; color: var(--vert-fonce); }
-    .hist-empty { text-align: center; color: var(--gris-moyen); padding: 1.5rem; font-style: italic; }
+    .hist-empty { text-align: center; color: var(--gris-moyen); padding: 1rem; font-style: italic; font-size: 0.9rem; }
 
     /* ---------- VENTES ---------- */
     .vente-layout {
-      display: grid;
-      grid-template-columns: 300px 1fr 1fr;
-      gap: 1.25rem;
-      align-items: start;
-    }
-
-    @media (max-width: 1024px) {
-      .vente-layout { grid-template-columns: 1fr; }
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
     }
 
     .vente-clients, .vente-produits, .vente-form {
@@ -363,129 +260,159 @@
     }
 
     .liste-clients-vente {
-      max-height: 420px;
+      max-height: 200px; /* Réduit pour laisser de la place */
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 0.4rem;
       margin-top: 0.5rem;
+      border: 1px solid var(--gris-bordure);
+      border-radius: var(--radius-sm);
     }
 
     .client-vente-item {
-      padding: 0.6rem 0.8rem;
-      border-radius: var(--radius-sm);
+      padding: 0.7rem;
       cursor: pointer;
-      border: 1.5px solid var(--gris-bordure);
-      transition: background 0.15s, border 0.15s;
+      border-bottom: 1px solid var(--gris-bordure);
       font-size: 0.9rem;
     }
 
-    .client-vente-item:hover { background: var(--vert-tres-clair); border-color: var(--vert-clair); }
-    .client-vente-item.selected { background: var(--vert-clair); color: var(--blanc); border-color: var(--vert-principal); font-weight: 600; }
+    .client-vente-item:last-child { border-bottom: none; }
+    .client-vente-item.selected { background: var(--vert-clair); color: var(--blanc); font-weight: 600; }
 
     .produits-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 0.6rem;
-      margin-top: 0.5rem;
-      max-height: 420px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+      max-height: 250px;
       overflow-y: auto;
+      margin-top: 0.5rem;
+      padding-right: 0.2rem;
     }
 
     .produit-btn {
       background: var(--vert-tres-clair);
       border: 2px solid var(--vert-clair);
       border-radius: var(--radius-sm);
-      padding: 0.9rem 0.6rem;
-      font-size: 0.82rem;
+      padding: 0.6rem 0.3rem;
+      font-size: 0.75rem;
       font-weight: 600;
       color: var(--vert-fonce);
-      cursor: pointer;
-      transition: background 0.15s, transform 0.1s;
       text-align: center;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .produit-btn:hover { background: var(--vert-clair); color: var(--blanc); }
     .produit-btn.selected { background: var(--vert-principal); color: var(--blanc); border-color: var(--vert-fonce); }
 
     /* ---------- FORMULAIRES ---------- */
-    .form-group { margin-bottom: 0.85rem; }
-    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--gris-fonce); margin-bottom: 0.3rem; }
+    .form-group { margin-bottom: 0.8rem; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.3rem; }
 
     .form-group input,
     .form-group select,
     .form-group textarea {
       width: 100%;
-      padding: 0.55rem 0.8rem;
+      padding: 0.7rem;
       border: 1.5px solid var(--gris-bordure);
       border-radius: var(--radius-sm);
       font-size: 0.9rem;
       font-family: inherit;
       outline: none;
-      transition: border 0.2s;
       background: var(--blanc);
+      min-height: 44px;
     }
 
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      border-color: var(--vert-clair);
-      box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
-    }
-
-    .form-group input[readonly] { background: var(--gris-clair); color: var(--gris-fonce); font-weight: 600; }
-    .total-field { background: var(--vert-tres-clair) !important; color: var(--vert-fonce) !important; font-weight: 700 !important; font-size: 1.05rem !important; }
+    .form-group input[readonly] { background: var(--gris-clair); font-weight: 600; }
+    .total-field { background: var(--vert-tres-clair) !important; color: var(--vert-fonce) !important; font-weight: 700 !important; }
 
     /* ---------- DASHBOARD ---------- */
-    .dashboard-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; }
-    .stat-card { background: var(--blanc); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow); border-top: 4px solid var(--vert-clair); text-align: center; }
-    .stat-card .stat-value { font-size: 2rem; font-weight: 700; color: var(--vert-principal); }
-    .stat-card .stat-label { font-size: 0.85rem; color: var(--gris-moyen); margin-top: 0.3rem; }
-    .dashboard-historiques { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .dashboard-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; margin-bottom: 1rem; }
+    .stat-card { background: var(--blanc); border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow); text-align: center; border-top: 4px solid var(--vert-clair); }
+    .stat-card .stat-value { font-size: 1.4rem; font-weight: 700; color: var(--vert-principal); }
+    .stat-card .stat-label { font-size: 0.75rem; color: var(--gris-moyen); margin-top: 0.2rem; }
+    .dashboard-historiques { display: flex; flex-direction: column; gap: 1rem; }
 
-    /* ---------- MODALE ---------- */
+    /* ---------- BARRE DE NAVIGATION EN BAS (MOBILE) ---------- */
+    .main-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: var(--blanc);
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-around;
+      padding: 0.4rem 0;
+      z-index: 200;
+      border-top: 1px solid var(--gris-bordure);
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--gris-moyen);
+      font-size: 0.7rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+      padding: 0.3rem;
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .nav-btn.active { color: var(--vert-principal); font-weight: 700; }
+    .nav-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+    /* ---------- MODALE (PLEIN ÉCRAN SUR MOBILE) ---------- */
     .modal-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.45);
-      z-index: 500;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: flex-end; /* S'ouvre du bas */
     }
 
     .modal-overlay.open { display: flex; }
 
     .modal {
       background: var(--blanc);
-      border-radius: var(--radius);
+      border-radius: var(--radius) var(--radius) 0 0;
       width: 100%;
-      max-width: 440px;
-      box-shadow: var(--shadow-lg);
-      overflow: hidden;
-      animation: fadeIn 0.2s ease;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.3s ease;
     }
 
-    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; background: var(--vert-principal); color: var(--blanc); }
-    .modal-header h3 { color: var(--blanc); margin: 0; font-size: 1.05rem; }
-    .modal-close { background: none; border: none; color: var(--blanc); font-size: 1.2rem; cursor: pointer; padding: 0.2rem 0.4rem; border-radius: 6px; }
-    .modal-close:hover { background: rgba(255, 255, 255, 0.2); }
-    .modal-body { padding: 1.25rem; }
-    .modal-footer { padding: 0.85rem 1.25rem 1.25rem; display: flex; gap: 0.6rem; justify-content: flex-end; flex-wrap: wrap; }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--vert-principal); color: var(--blanc); border-radius: var(--radius) var(--radius) 0 0; }
+    .modal-header h3 { color: var(--blanc); margin: 0; font-size: 1rem; }
+    .modal-close { background: none; border: none; color: var(--blanc); font-size: 1.2rem; padding: 0.5rem; }
+    
+    .modal-body { padding: 1rem; overflow-y: auto; flex: 1; }
+    .modal-footer { padding: 1rem; display: flex; gap: 0.5rem; border-top: 1px solid var(--gris-bordure); }
+    .modal-footer .btn { flex: 1; }
 
     /* ---------- TOAST ---------- */
     .toast {
       position: fixed;
-      bottom: 1.5rem;
+      bottom: 70px; /* Au-dessus de la nav */
       left: 50%;
       transform: translateX(-50%) translateY(120%);
       background: var(--vert-fonce);
       color: var(--blanc);
-      padding: 0.75rem 1.5rem;
+      padding: 0.7rem 1.2rem;
       border-radius: 999px;
-      font-size: 0.9rem;
-      font-weight: 500;
+      font-size: 0.85rem;
       box-shadow: var(--shadow-lg);
       z-index: 900;
       transition: transform 0.3s ease;
@@ -497,100 +424,147 @@
     .toast.show { transform: translateX(-50%) translateY(0); }
     .toast.error { background: var(--rouge); }
 
-    /* ---------- RESPONSIVE ---------- */
-    @media (max-width: 900px) {
-      .dashboard-historiques { grid-template-columns: 1fr; }
-    }
+    /* Masqué sur mobile (remplacé par la nav en bas) */
+    .menu-toggle { display: none; }
 
-    @media (max-width: 720px) {
-      .main-nav { display: none; width: 100%; flex-direction: column; order: 3; margin-top: 0.5rem; }
-      .main-nav.open { display: flex; }
-      .menu-toggle { display: block; }
-      .header-container { gap: 0.5rem; }
-      .hero h2 { font-size: 1.5rem; }
-      .hero-buttons { flex-direction: column; }
-      .btn-large { width: 100%; }
-      .toolbar { flex-direction: column; align-items: stretch; }
-      .input-search { max-width: none; }
-      .historique-scroll { max-height: 220px; }
-    }
+    /* ---------- TABLETTE & DESKTOP ---------- */
+    @media (min-width: 768px) {
+      html, body { overflow: auto; height: auto; }
+      .app-header { position: sticky; top: 0; }
+      .header-container { max-width: 1300px; margin: 0 auto; }
+      
+      .main-nav {
+        position: static;
+        width: auto;
+        background: none;
+        box-shadow: none;
+        border: none;
+        flex-direction: row;
+        gap: 0.3rem;
+        margin-left: auto;
+      }
+      
+      .nav-btn {
+        flex-direction: row;
+        font-size: 0.85rem;
+        background: rgba(255, 255, 255, 0.12);
+        color: var(--blanc);
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+      }
+      .nav-btn svg { display: none; }
+      .nav-btn.active { background: var(--blanc); color: var(--vert-fonce); }
 
-    @media (max-width: 420px) {
-      .logo h1 { font-size: 1rem; }
-      .app-main { padding: 0.9rem 0.6rem 2.5rem; }
-      .client-card { padding: 0.8rem; }
-      .produits-grid { grid-template-columns: repeat(2, 1fr); }
+      .app-main { max-width: 1300px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+      
+      .hero-buttons { flex-direction: row; justify-content: center; }
+      .btn-large { width: auto; }
+      .quick-stats { grid-template-columns: repeat(4, 1fr); }
+      .toolbar { flex-direction: row; flex-wrap: wrap; }
+      .toolbar .btn { width: auto; margin: 0; }
+      .input-search { max-width: 300px; }
+      
+      .vente-layout { flex-direction: row; }
+      .vente-clients { flex: 1; min-width: 250px; }
+      .vente-produits { flex: 1.5; }
+      .vente-form { flex: 1.5; }
+      
+      .liste-clients { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+      .dashboard-stats { grid-template-columns: repeat(4, 1fr); }
+      .dashboard-historiques { flex-direction: row; }
+      .dashboard-historiques > div { flex: 1; }
+      
+      .modal-overlay { align-items: center; }
+      .modal { border-radius: var(--radius); max-width: 500px; }
+      .modal-header { border-radius: var(--radius) var(--radius) 0 0; }
     }
   </style>
 </head>
 <body>
-  <!-- ========== HEADER / NAVIGATION ========== -->
+  <!-- ========== HEADER ========== -->
   <header class="app-header">
     <div class="header-container">
       <div class="logo">
         <span class="logo-icon">🌱</span>
         <h1>TAM AGRICOLE</h1>
       </div>
+      
+      <!-- Barre de navigation (en bas sur mobile, en haut sur PC) -->
       <nav class="main-nav">
-        <button class="nav-btn active" data-page="accueil">🏠 Accueil</button>
-        <button class="nav-btn" data-page="visites">👥 Visites</button>
-        <button class="nav-btn" data-page="ventes">💰 Ventes</button>
-        <button class="nav-btn" data-page="clients">📋 Clients</button>
-        <button class="nav-btn" data-page="dashboard">📊 Tableau de bord</button>
+        <button class="nav-btn active" data-page="accueil">
+          <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          Accueil
+        </button>
+        <button class="nav-btn" data-page="visites">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          Visites
+        </button>
+        <button class="nav-btn" data-page="ventes">
+          <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+          Ventes
+        </button>
+        <button class="nav-btn" data-page="clients">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+          Clients
+        </button>
+        <button class="nav-btn" data-page="dashboard">
+          <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+          Stats
+        </button>
       </nav>
-      <button class="menu-toggle" id="menuToggle">☰</button>
     </div>
   </header>
 
   <!-- ========== CONTENU PRINCIPAL ========== -->
   <main class="app-main">
-    <!-- --- PAGE ACCUEIL --- -->
+    
+    <!-- --- ACCUEIL --- -->
     <section id="page-accueil" class="page active">
       <div class="hero">
-        <h2>Bienvenue sur TAM AGRICOLE</h2>
-        <p>Gérez vos visites clients et vos ventes en toute simplicité.</p>
+        <h2>Bienvenue</h2>
+        <p>Gérez vos visites et ventes</p>
         <div class="hero-buttons">
-          <button class="btn btn-primary btn-large" data-page="visites">👥 VISITES CLIENTS</button>
+          <button class="btn btn-primary btn-large" data-page="visites">👥 VISITES</button>
           <button class="btn btn-primary btn-large" data-page="ventes">💰 VENTES</button>
         </div>
       </div>
       <div class="quick-stats" id="quickStats"></div>
     </section>
 
-    <!-- --- PAGE VISITES --- -->
+    <!-- --- VISITES --- -->
     <section id="page-visites" class="page">
-      <h2>👥 Visites clients</h2>
+      <h2>👥 Visites</h2>
       <div class="toolbar">
         <input type="text" id="searchVisites" placeholder="🔍 Rechercher un client…" class="input-search">
         <input type="date" id="filtreDateVisites" class="input-date">
-        <button class="btn btn-secondary" id="resetFiltreVisites">Réinitialiser</button>
-        <button class="btn btn-success" id="btnExportVisitesCSV">📤 Export CSV</button>
-        <button class="btn btn-secondary" id="btnSauvegardeJSON">💾 Sauvegarde JSON</button>
-        <button class="btn btn-secondary" id="btnRestaurationJSON">📥 Restauration JSON</button>
+        <button class="btn btn-secondary btn-sm" id="resetFiltreVisites">Réinitialiser</button>
+        <button class="btn btn-success btn-sm" id="btnExportVisitesCSV">📤 CSV</button>
+        <button class="btn btn-secondary btn-sm" id="btnSauvegardeJSON">💾 Sauver</button>
+        <button class="btn btn-secondary btn-sm" id="btnRestaurationJSON">📥 Restaurer</button>
       </div>
       <div id="listeVisites" class="liste-clients"></div>
-      <h3>📅 Historique des visites</h3>
+      <h3>📅 Historique</h3>
       <div class="historique-scroll" id="historiqueVisites"></div>
     </section>
 
-    <!-- --- PAGE VENTES --- -->
+    <!-- --- VENTES --- -->
     <section id="page-ventes" class="page">
       <h2>💰 Ventes</h2>
       <div class="vente-layout">
         <div class="vente-clients">
-          <h3>Sélectionner un client</h3>
+          <h3>1. Client</h3>
           <input type="text" id="searchVenteClient" placeholder="🔍 Rechercher…" class="input-search">
           <div id="listeClientsVente" class="liste-clients-vente"></div>
         </div>
         <div class="vente-produits" id="venteProduits" style="display:none;">
-          <h3>Choisir un produit</h3>
+          <h3>2. Produit</h3>
           <div class="produits-grid" id="produitsGrid"></div>
         </div>
         <div class="vente-form" id="venteForm" style="display:none;">
-          <h3>Nouvelle vente</h3>
+          <h3>3. Détails</h3>
           <form id="formVente">
             <div class="form-group">
-              <label>Produit</label>
+              <label>Produit sélectionné</label>
               <input type="text" id="venteProduit" readonly>
             </div>
             <div class="form-group">
@@ -619,39 +593,39 @@
               <input type="text" id="venteTotal" readonly class="total-field">
             </div>
             <div class="form-group">
-              <label>Date de vente</label>
+              <label>Date</label>
               <input type="date" id="venteDate" required>
             </div>
             <div class="form-group">
               <label>Observation</label>
               <textarea id="venteObservation" rows="2" placeholder="Facultatif…"></textarea>
             </div>
-            <button type="submit" class="btn btn-success btn-block">✅ ENREGISTRER LA VENTE</button>
+            <button type="submit" class="btn btn-success btn-block">✅ ENREGISTRER</button>
           </form>
         </div>
       </div>
     </section>
 
-    <!-- --- PAGE CLIENTS --- -->
+    <!-- --- CLIENTS --- -->
     <section id="page-clients" class="page">
-      <h2>📋 Gestion des clients</h2>
+      <h2>📋 Clients</h2>
       <div class="toolbar">
-        <input type="text" id="searchClients" placeholder="🔍 Rechercher un client…" class="input-search">
-        <button class="btn btn-primary" id="btnAjouterClient">➕ Ajouter un client</button>
+        <input type="text" id="searchClients" placeholder="🔍 Rechercher…" class="input-search">
+        <button class="btn btn-primary" id="btnAjouterClient">➕ Ajouter</button>
       </div>
       <div id="listeClientsGestion" class="liste-clients"></div>
     </section>
 
-    <!-- --- PAGE DASHBOARD --- -->
+    <!-- --- DASHBOARD --- -->
     <section id="page-dashboard" class="page">
-      <h2>📊 Tableau de bord</h2>
+      <h2>📊 Statistiques</h2>
       <div class="dashboard-stats" id="dashboardStats"></div>
       <div class="toolbar">
         <input type="date" id="dashFiltreDate" class="input-date">
         <select id="dashFiltreClient" class="input-select">
           <option value="">Tous les clients</option>
         </select>
-        <button class="btn btn-secondary" id="resetDashFiltres">Réinitialiser</button>
+        <button class="btn btn-secondary btn-sm" id="resetDashFiltres">Réinitialiser</button>
       </div>
       <div class="dashboard-historiques">
         <div class="hist-block">
@@ -666,7 +640,7 @@
     </section>
   </main>
 
-  <!-- ========== MODALE GÉNÉRIQUE ========== -->
+  <!-- ========== MODALE ========== -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal" id="modal">
       <div class="modal-header">
@@ -678,22 +652,20 @@
     </div>
   </div>
 
-  <!-- ========== TOAST NOTIFICATION ========== -->
+  <!-- ========== TOAST ========== -->
   <div id="toast" class="toast"></div>
 
   <script>
     /* ================================================================
-       TAM AGRICOLE – JavaScript intégré
-       Données initialisées avec les clients et produits réels
+       JAVASCRIPT INTÉGRÉ
        ================================================================ */
 
     const STORAGE_KEYS = {
-      CLIENTS: 'tam_clients_v2',
-      VISITES: 'tam_visites_v2',
-      VENTES: 'tam_ventes_v2'
+      CLIENTS: 'tam_clients_v3',
+      VISITES: 'tam_visites_v3',
+      VENTES: 'tam_ventes_v3'
     };
 
-    // Liste des produits extraite de vos factures
     const PRODUITS = [
       'FILET BLANC ANTI THRIPS (1,0X100) 11X21',
       'FILET BLANC ANTI THRIPS (1,5X100) 11X21',
@@ -728,7 +700,6 @@
       'DIVERS'
     ];
 
-    // Liste des clients extraite de vos factures (sans doublons)
     const CLIENTS_INITIAUX = [
       { id: 'CLT0234', nom: 'DOMAINE SALAH' },
       { id: 'CLT0151', nom: 'AFNANE PRIME' },
@@ -793,15 +764,11 @@
       { id: 'CLT0174', nom: 'HICHAM MORTADI' }
     ];
 
-    let clients = [];
-    let visites = [];
-    let ventes = [];
+    let clients = [], visites = [], ventes = [];
     let venteState = { clientId: null, produit: null };
     let dashFiltres = { date: '', clientId: '' };
 
-    /* ----------------------------------------------------------------
-       UTILITAIRES
-       ---------------------------------------------------------------- */
+    /* UTILS */
     function maintenant() { return new Date().toISOString(); }
     function formatDateHeure(iso) { return iso ? new Date(iso).toLocaleDateString('fr-FR') + ' ' + new Date(iso).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : ''; }
     function formatDate(iso) { return iso ? new Date(iso).toLocaleDateString('fr-FR') : ''; }
@@ -815,25 +782,17 @@
       el.textContent = message;
       el.className = 'toast show' + (type === 'error' ? ' error' : '');
       clearTimeout(el._timer);
-      el._timer = setTimeout(() => { el.className = 'toast'; }, 3200);
+      el._timer = setTimeout(() => { el.className = 'toast'; }, 3000);
     }
 
-    /* ----------------------------------------------------------------
-       PERSISTANCE
-       ---------------------------------------------------------------- */
+    /* PERSISTANCE */
     function chargerDonnees() {
       try {
-        const storedClients = localStorage.getItem(STORAGE_KEYS.CLIENTS);
-        if (storedClients) {
-          clients = JSON.parse(storedClients);
-        } else {
-          clients = [...CLIENTS_INITIAUX];
-          sauvegarder();
-        }
+        clients = JSON.parse(localStorage.getItem(STORAGE_KEYS.CLIENTS)) || [...CLIENTS_INITIAUX];
         visites = JSON.parse(localStorage.getItem(STORAGE_KEYS.VISITES)) || [];
         ventes  = JSON.parse(localStorage.getItem(STORAGE_KEYS.VENTES))  || [];
+        if(!localStorage.getItem(STORAGE_KEYS.CLIENTS)) sauvegarder();
       } catch (e) {
-        console.error('Erreur de chargement localStorage', e);
         clients = [...CLIENTS_INITIAUX]; visites = []; ventes = [];
       }
     }
@@ -844,20 +803,14 @@
       localStorage.setItem(STORAGE_KEYS.VENTES, JSON.stringify(ventes));
     }
 
-    /* ----------------------------------------------------------------
-       NAVIGATION
-       ---------------------------------------------------------------- */
+    /* NAVIGATION */
     function initNavigation() {
       document.querySelectorAll('[data-page]').forEach(btn => {
         btn.addEventListener('click', () => {
           const page = btn.dataset.page;
           if (!page) return;
           afficherPage(page);
-          document.querySelector('.main-nav').classList.remove('open');
         });
-      });
-      document.getElementById('menuToggle').addEventListener('click', () => {
-        document.querySelector('.main-nav').classList.toggle('open');
       });
     }
 
@@ -866,6 +819,9 @@
       const page = document.getElementById('page-' + pageId);
       if (page) page.classList.add('active');
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
+      
+      // Remonter en haut lors du changement de page
+      document.querySelector('.app-main').scrollTop = 0;
 
       if (pageId === 'visites')    { renderVisites(); renderHistoriqueVisites(); }
       if (pageId === 'ventes')     { renderClientsVente(); resetVenteForm(); }
@@ -874,9 +830,7 @@
       if (pageId === 'accueil')    { renderQuickStats(); }
     }
 
-    /* ----------------------------------------------------------------
-       ACCUEIL - STATS
-       ---------------------------------------------------------------- */
+    /* ACCUEIL */
     function renderQuickStats() {
       const today = dateDuJour();
       const visitesJour = visites.filter(v => v.date && v.date.slice(0, 10) === today).length;
@@ -885,18 +839,15 @@
 
       document.getElementById('quickStats').innerHTML = `
         <div class="quick-stat-card"><div class="qs-value">${clients.length}</div><div class="qs-label">Clients</div></div>
-        <div class="quick-stat-card"><div class="qs-value">${visitesJour}</div><div class="qs-label">Visites aujourd'hui</div></div>
-        <div class="quick-stat-card"><div class="qs-value">${ventesJour}</div><div class="qs-label">Ventes aujourd'hui</div></div>
-        <div class="quick-stat-card"><div class="qs-value">${formatMontant(ca)}</div><div class="qs-label">Chiffre d'affaires</div></div>
+        <div class="quick-stat-card"><div class="qs-value">${visitesJour}</div><div class="qs-label">Visites auj.</div></div>
+        <div class="quick-stat-card"><div class="qs-value">${ventesJour}</div><div class="qs-label">Ventes auj.</div></div>
+        <div class="quick-stat-card"><div class="qs-value">${formatMontant(ca)}</div><div class="qs-label">CA Total</div></div>
       `;
     }
 
-    /* ----------------------------------------------------------------
-       VISITES
-       ---------------------------------------------------------------- */
+    /* VISITES */
     function estVisiteAujourdhui(clientId) {
-      const today = dateDuJour();
-      return visites.some(v => v.clientId === clientId && v.date && v.date.slice(0, 10) === today);
+      return visites.some(v => v.clientId === clientId && v.date && v.date.slice(0, 10) === dateDuJour());
     }
 
     function renderVisites() {
@@ -912,7 +863,7 @@
         liste = liste.filter(c => idsVisitesDate.has(c.id));
       }
 
-      if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucun client à afficher.</p>'; return; }
+      if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucun client.</p>'; return; }
 
       container.innerHTML = liste.map(c => {
         const visiteAujourdhui = estVisiteAujourdhui(c.id);
@@ -923,10 +874,10 @@
           <div class="client-card ${visiteAujourdhui ? 'visite' : ''}">
             <div class="client-name">
               <span>${echapperHTML(c.nom)}</span>
-              ${visiteAujourdhui ? '<span class="visite-badge">✓ VISITÉ</span>' : ''}
+              ${visiteAujourdhui ? '<span class="visite-badge">✓</span>' : ''}
             </div>
             <div class="client-id">ID : ${echapperHTML(c.id)}</div>
-            <div class="client-meta">${derniere ? 'Dernière visite : ' + formatDateHeure(derniere.date) : 'Aucune visite enregistrée'}</div>
+            <div class="client-meta">${derniere ? 'Dernière : ' + formatDateHeure(derniere.date) : 'Aucune visite'}</div>
             <div class="client-actions">
               <button class="btn btn-success btn-sm" data-visite="${c.id}" ${visiteAujourdhui ? 'disabled style="opacity:.5"' : ''}>
                 ${visiteAujourdhui ? 'Déjà visité' : '✔ VISITÉ'}
@@ -943,13 +894,12 @@
 
     function enregistrerVisite(clientId) {
       const client = clients.find(c => c.id === clientId);
-      if (!client) return;
-      if (estVisiteAujourdhui(clientId)) { toast('Ce client a déjà été visité aujourd\'hui.', 'error'); return; }
+      if (!client || estVisiteAujourdhui(clientId)) return;
 
       visites.push({ id: 'V' + Date.now(), clientId: client.id, clientNom: client.nom, date: maintenant() });
       sauvegarder();
       renderVisites(); renderHistoriqueVisites(); renderQuickStats();
-      toast(`Visite enregistrée pour ${client.nom} ✅`);
+      toast(`Visite enregistrée ✅`);
     }
 
     function renderHistoriqueVisites() {
@@ -958,7 +908,7 @@
       let liste = visites.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
       if (filtreDate) liste = liste.filter(v => v.date && v.date.slice(0, 10) === filtreDate);
 
-      if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucune visite enregistrée.</p>'; return; }
+      if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucune visite.</p>'; return; }
 
       container.innerHTML = liste.map(v => `
         <div class="hist-item">
@@ -968,9 +918,7 @@
       `).join('');
     }
 
-    /* ----------------------------------------------------------------
-       VENTES
-       ---------------------------------------------------------------- */
+    /* VENTES */
     function renderClientsVente() {
       const search = normaliser(document.getElementById('searchVenteClient').value.trim());
       const container = document.getElementById('listeClientsVente');
@@ -981,7 +929,7 @@
 
       container.innerHTML = liste.map(c => `
         <div class="client-vente-item ${venteState.clientId === c.id ? 'selected' : ''}" data-client-vente="${c.id}">
-          ${echapperHTML(c.nom)} <span style="font-size:.75rem;opacity:.7">(${echapperHTML(c.id)})</span>
+          ${echapperHTML(c.nom)} <span style="font-size:.7rem;opacity:.7">(${echapperHTML(c.id)})</span>
         </div>
       `).join('');
 
@@ -1018,8 +966,7 @@
       venteState.produit = produit;
       document.querySelectorAll('.produit-btn').forEach(b => b.classList.toggle('selected', b.dataset.produit === produit));
 
-      const form = document.getElementById('venteForm');
-      form.style.display = 'block';
+      document.getElementById('venteForm').style.display = 'block';
       document.getElementById('venteProduit').value = produit;
       document.getElementById('venteDate').value = dateDuJour();
       document.getElementById('venteQuantite').value = '';
@@ -1027,11 +974,13 @@
       document.getElementById('venteTotal').value = '';
       document.getElementById('venteObservation').value = '';
       
-      // Auto-selection de l'unité en fonction du produit
       if (produit.includes('FILET') || produit.includes('OMBRIERE')) document.getElementById('venteUnite').value = 'M²';
       else if (produit.includes('AQUATAPE') || produit.includes('AQUADROP') || produit.includes('CINTAPE')) document.getElementById('venteUnite').value = 'ML';
       else if (produit.includes('FER') || produit.includes('CABLE') || produit.includes('PERLHUMS') || produit.includes('POWHUMUS')) document.getElementById('venteUnite').value = 'kg';
       else if (produit.includes('AGRAFES')) document.getElementById('venteUnite').value = 'Packet';
+
+      // Faire défiler jusqu'au formulaire
+      document.getElementById('venteForm').scrollIntoView({ behavior: 'smooth' });
     }
 
     function resetVenteForm() {
@@ -1043,9 +992,7 @@
     function calculerTotalVente() {
       const q = parseFloat(document.getElementById('venteQuantite').value) || 0;
       const p = parseFloat(document.getElementById('ventePrix').value) || 0;
-      const total = q * p;
-      document.getElementById('venteTotal').value = total > 0 ? formatMontant(total) : '';
-      return total;
+      document.getElementById('venteTotal').value = (q * p) > 0 ? formatMontant(q * p) : '';
     }
 
     function initVenteForm() {
@@ -1059,49 +1006,40 @@
 
     function enregistrerVente() {
       const client = clients.find(c => c.id === venteState.clientId);
-      if (!client) { toast('Veuillez sélectionner un client.', 'error'); return; }
-      if (!venteState.produit) { toast('Veuillez sélectionner un produit.', 'error'); return; }
+      if (!client || !venteState.produit) { toast('Sélection incomplete.', 'error'); return; }
 
       const quantite = parseFloat(document.getElementById('venteQuantite').value);
       const prix = parseFloat(document.getElementById('ventePrix').value);
-      const unite = document.getElementById('venteUnite').value;
       const dateVente = document.getElementById('venteDate').value;
-      const observation = document.getElementById('venteObservation').value.trim();
 
-      if (!quantite || quantite <= 0) { toast('Quantité invalide.', 'error'); return; }
-      if (!prix || prix <= 0) { toast('Prix unitaire invalide.', 'error'); return; }
-      if (!dateVente) { toast('Date de vente obligatoire.', 'error'); return; }
+      if (!quantite || quantite <= 0 || !prix || prix <= 0 || !dateVente) { toast('Vérifiez les champs.', 'error'); return; }
 
-      const montant = quantite * prix;
       ventes.push({
         id: 'S' + Date.now(),
-        clientId: client.id,
-        clientNom: client.nom,
+        clientId: client.id, clientNom: client.nom,
         produit: venteState.produit,
-        quantite, unite,
+        quantite: quantite,
+        unite: document.getElementById('venteUnite').value,
         prixUnitaire: prix,
-        montant,
+        montant: quantite * prix,
         date: dateVente + 'T' + new Date().toTimeString().slice(0, 8),
-        observation
+        observation: document.getElementById('venteObservation').value.trim()
       });
 
       sauvegarder();
-      toast(`Vente enregistrée : ${venteState.produit} – ${formatMontant(montant)} ✅`);
-
+      toast(`Vente enregistrée ✅`);
       resetVenteForm();
       renderQuickStats();
     }
 
-    /* ----------------------------------------------------------------
-       GESTION CLIENTS
-       ---------------------------------------------------------------- */
+    /* CLIENTS */
     function renderClientsGestion() {
       const search = normaliser(document.getElementById('searchClients').value.trim());
       const container = document.getElementById('listeClientsGestion');
       let liste = clients.slice().sort((a, b) => a.nom.localeCompare(b.nom));
       if (search) liste = liste.filter(c => normaliser(c.nom).includes(search));
 
-      if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucun client. Ajoutez votre premier client !</p>'; return; }
+      if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucun client.</p>'; return; }
 
       container.innerHTML = liste.map(c => `
         <div class="client-card">
@@ -1109,7 +1047,7 @@
           <div class="client-id">ID : ${echapperHTML(c.id)}</div>
           <div class="client-actions">
             <button class="btn btn-secondary btn-sm" data-modifier="${c.id}">✏️ Modifier</button>
-            <button class="btn btn-danger btn-sm" data-supprimer="${c.id}">🗑️ Supprimer</button>
+            <button class="btn btn-danger btn-sm" data-supprimer="${c.id}">🗑️ Suppr.</button>
           </div>
         </div>
       `).join('');
@@ -1120,28 +1058,22 @@
 
     function ajouterClient(nom) {
       nom = nom.trim();
-      if (!nom) { toast('Le nom du client est obligatoire.', 'error'); return false; }
-      const existe = clients.some(c => normaliser(c.nom) === normaliser(nom));
-      if (existe) { toast('Un client porte déjà ce nom.', 'error'); return false; }
+      if (!nom || clients.some(c => normaliser(c.nom) === normaliser(nom))) { toast('Nom invalide ou existant.', 'error'); return false; }
 
-      const randomId = 'CLT' + Math.floor(1000 + Math.random() * 9000);
-      
-      clients.push({ id: randomId, nom });
+      clients.push({ id: 'CLT' + Math.floor(1000 + Math.random() * 9000), nom });
       sauvegarder();
       renderClientsGestion(); renderQuickStats();
-      toast(`Client « ${nom} » ajouté (ID: ${randomId}) ✅`);
+      toast(`Client ajouté ✅`);
       return true;
     }
 
     function modifierClient(id, nouveauNom) {
-      nouveauNom = nouveauNom.trim();
-      if (!nouveauNom) { toast('Le nom ne peut pas être vide.', 'error'); return false; }
       const client = clients.find(c => c.id === id);
-      if (!client) return false;
+      if (!client || !nouveauNom.trim()) return false;
 
-      client.nom = nouveauNom;
-      visites.forEach(v => { if (v.clientId === id) v.clientNom = nouveauNom; });
-      ventes.forEach(v => { if (v.clientId === id) v.clientNom = nouveauNom; });
+      client.nom = nouveauNom.trim();
+      visites.forEach(v => { if (v.clientId === id) v.clientNom = nouveauNom.trim(); });
+      ventes.forEach(v => { if (v.clientId === id) v.clientNom = nouveauNom.trim(); });
 
       sauvegarder();
       renderClientsGestion(); renderVisites(); renderHistoriqueVisites(); renderDashboard();
@@ -1154,9 +1086,8 @@
       if (!client) return;
 
       ouvrirModale({
-        titre: 'Supprimer le client',
-        corps: `<p>Voulez-vous vraiment supprimer <strong>${echapperHTML(client.nom)}</strong> ?</p>
-                <p style="font-size:.85rem;color:#777;margin-top:.5rem;">Les visites et ventes associées seront également supprimées.</p>`,
+        titre: 'Supprimer',
+        corps: `<p>Supprimer <strong>${echapperHTML(client.nom)}</strong> et son historique ?</p>`,
         footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button>
                  <button class="btn btn-danger" id="modalConfirmerSuppr">Supprimer</button>`
       });
@@ -1177,15 +1108,11 @@
       if (!client) return;
 
       ouvrirModale({
-        titre: 'Modifier le client',
+        titre: 'Modifier',
         corps: `
           <div class="form-group">
-            <label>Nom du client</label>
+            <label>Nom</label>
             <input type="text" id="modifClientNom" value="${echapperHTML(client.nom)}">
-          </div>
-          <div class="form-group">
-            <label>Identifiant (non modifiable)</label>
-            <input type="text" value="${echapperHTML(client.id)}" readonly>
           </div>
         `,
         footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button>
@@ -1194,24 +1121,19 @@
 
       document.getElementById('modalAnnuler').addEventListener('click', fermerModale);
       document.getElementById('modalValiderModif').addEventListener('click', () => {
-        const nom = document.getElementById('modifClientNom').value;
-        if (modifierClient(id, nom)) fermerModale();
+        if (modifierClient(id, document.getElementById('modifClientNom').value)) fermerModale();
       });
     }
 
-    /* ----------------------------------------------------------------
-       DASHBOARD
-       ---------------------------------------------------------------- */
+    /* DASHBOARD */
     function renderDashboard() {
       const selectClient = document.getElementById('dashFiltreClient');
-      const clientsTries = clients.slice().sort((a, b) => a.nom.localeCompare(b.nom));
       selectClient.innerHTML = '<option value="">Tous les clients</option>' +
-        clientsTries.map(c => `<option value="${echapperHTML(c.id)}">${echapperHTML(c.nom)}</option>`).join('');
+        clients.slice().sort((a, b) => a.nom.localeCompare(b.nom)).map(c => `<option value="${echapperHTML(c.id)}">${echapperHTML(c.nom)}</option>`).join('');
 
       selectClient.value = dashFiltres.clientId || '';
       document.getElementById('dashFiltreDate').value = dashFiltres.date || '';
 
-      const today = dateDuJour();
       let ventesFiltrees = ventes.slice();
       let visitesFiltrees = visites.slice();
 
@@ -1224,42 +1146,27 @@
         visitesFiltrees = visitesFiltrees.filter(v => v.date && v.date.slice(0, 10) === dashFiltres.date);
       }
 
-      const caFiltre = ventesFiltrees.reduce((s, v) => s + (Number(v.montant) || 0), 0);
-      const visitesJour = visites.filter(v => v.date && v.date.slice(0, 10) === today).length;
-      const ventesJour = ventes.filter(v => v.date && v.date.slice(0, 10) === today).length;
-
       document.getElementById('dashboardStats').innerHTML = `
-        <div class="stat-card"><div class="stat-value">${clients.length}</div><div class="stat-label">Total clients</div></div>
-        <div class="stat-card"><div class="stat-value">${visitesJour}</div><div class="stat-label">Visites aujourd'hui</div></div>
-        <div class="stat-card"><div class="stat-value">${ventesJour}</div><div class="stat-label">Ventes aujourd'hui</div></div>
-        <div class="stat-card"><div class="stat-value">${formatMontant(caFiltre)}</div><div class="stat-label">Chiffre d'affaires${dashFiltres.date ? ' (filtré)' : ''}</div></div>
+        <div class="stat-card"><div class="stat-value">${clients.length}</div><div class="stat-label">Clients</div></div>
+        <div class="stat-card"><div class="stat-value">${visitesFiltrees.length}</div><div class="stat-label">Visites</div></div>
+        <div class="stat-card"><div class="stat-value">${ventesFiltrees.length}</div><div class="stat-label">Ventes</div></div>
+        <div class="stat-card"><div class="stat-value">${formatMontant(ventesFiltrees.reduce((s, v) => s + v.montant, 0))}</div><div class="stat-label">CA</div></div>
       `;
 
-      const histVentes = document.getElementById('histVentes');
-      let listeVentes = ventesFiltrees.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
-      if (!listeVentes.length) {
-        histVentes.innerHTML = '<p class="hist-empty">Aucune vente.</p>';
-      } else {
-        histVentes.innerHTML = listeVentes.map(v => `
-          <div class="hist-item">
-            <span><span class="hist-label">${echapperHTML(v.clientNom)}</span> – ${echapperHTML(v.produit)} (${v.quantite} ${v.unite})</span>
-            <span><strong>${formatMontant(v.montant)}</strong><span class="hist-date"> · ${formatDate(v.date)}</span></span>
-          </div>
-        `).join('');
-      }
+      document.getElementById('histVentes').innerHTML = ventesFiltrees.sort((a, b) => new Date(b.date) - new Date(a.date)).map(v => `
+        <div class="hist-item">
+          <span><span class="hist-label">${echapperHTML(v.clientNom)}</span></span>
+          <span style="font-size:0.8rem">${echapperHTML(v.produit)} (${v.quantite} ${v.unite})</span>
+          <span><strong>${formatMontant(v.montant)}</strong> <span class="hist-date">· ${formatDate(v.date)}</span></span>
+        </div>
+      `).join('') || '<p class="hist-empty">Aucune vente.</p>';
 
-      const histVisites = document.getElementById('histVisites');
-      let listeVisites = visitesFiltrees.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
-      if (!listeVisites.length) {
-        histVisites.innerHTML = '<p class="hist-empty">Aucune visite.</p>';
-      } else {
-        histVisites.innerHTML = listeVisites.map(v => `
-          <div class="hist-item">
-            <span><span class="hist-label">${echapperHTML(v.clientNom)}</span></span>
-            <span class="hist-date">${formatDateHeure(v.date)}</span>
-          </div>
-        `).join('');
-      }
+      document.getElementById('histVisites').innerHTML = visitesFiltrees.sort((a, b) => new Date(b.date) - new Date(a.date)).map(v => `
+        <div class="hist-item">
+          <span><span class="hist-label">${echapperHTML(v.clientNom)}</span></span>
+          <span class="hist-date">${formatDateHeure(v.date)}</span>
+        </div>
+      `).join('') || '<p class="hist-empty">Aucune visite.</p>';
     }
 
     function initDashboardFiltres() {
@@ -1268,9 +1175,7 @@
       document.getElementById('resetDashFiltres').addEventListener('click', () => { dashFiltres = { date: '', clientId: '' }; renderDashboard(); });
     }
 
-    /* ----------------------------------------------------------------
-       MODALE
-       ---------------------------------------------------------------- */
+    /* MODALE & EXPORT */
     function ouvrirModale({ titre, corps, footer }) {
       document.getElementById('modalTitle').innerHTML = titre || '';
       document.getElementById('modalBody').innerHTML = corps || '';
@@ -1289,63 +1194,45 @@
       });
     }
 
-    /* ----------------------------------------------------------------
-       EXPORT / IMPORT
-       ---------------------------------------------------------------- */
     function telechargerFichier(nom, contenu, mime) {
       const blob = new Blob([contenu], { type: mime || 'text/plain;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url; a.download = nom;
+      a.href = URL.createObjectURL(blob); a.download = nom;
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      URL.revokeObjectURL(url);
     }
 
     function exportCSV() {
-      let csv = '\uFEFF';
-      csv += 'TYPE;CLIENT;PRODUIT;QUANTITE;UNITE;PRIX UNITAIRE;MONTANT;DATE;OBSERVATION\n';
-      ventes.forEach(v => {
-        csv += `VENTE;${v.clientNom};${v.produit};${v.quantite};${v.unite};${v.prixUnitaire};${v.montant};${v.date};${(v.observation || '').replace(/;/g, ',')}\n`;
-      });
-      visites.forEach(v => {
-        csv += `VISITE;${v.clientNom};;;;;;${v.date};\n`;
-      });
-      telechargerFichier(`tam_agricole_export_${dateDuJour()}.csv`, csv, 'text/csv;charset=utf-8');
-      toast('Export CSV téléchargé ✅');
+      let csv = '\uFEFFTYPE;CLIENT;PRODUIT;QTE;UNITE;PRIX;MONTANT;DATE\n';
+      ventes.forEach(v => { csv += `VENTE;${v.clientNom};${v.produit};${v.quantite};${v.unite};${v.prixUnitaire};${v.montant};${v.date}\n`; });
+      visites.forEach(v => { csv += `VISITE;${v.clientNom};;;;;;${v.date}\n`; });
+      telechargerFichier(`tam_export_${dateDuJour()}.csv`, csv, 'text/csv;charset=utf-8');
+      toast('Export CSV réussi ✅');
     }
 
     function sauvegardeJSON() {
-      const data = { version: 2, date: maintenant(), clients, visites, ventes };
-      telechargerFichier(`tam_agricole_sauvegarde_${dateDuJour()}.json`, JSON.stringify(data, null, 2), 'application/json');
-      toast('Sauvegarde JSON téléchargée ✅');
+      telechargerFichier(`tam_sauvegarde_${dateDuJour()}.json`, JSON.stringify({ clients, visites, ventes }, null, 2), 'application/json');
+      toast('Sauvegarde JSON réussie ✅');
     }
 
     function restaurationJSON() {
-      const input = document.createElement('input');
-      input.type = 'file'; input.accept = '.json,application/json';
-      input.addEventListener('change', e => {
-        const file = e.target.files[0];
-        if (!file) return;
+      const input = document.createElement('input'); input.type = 'file'; input.accept = '.json';
+      input.onchange = e => {
         const reader = new FileReader();
         reader.onload = ev => {
           try {
             const data = JSON.parse(ev.target.result);
-            if (!Array.isArray(data.clients) || !Array.isArray(data.visites) || !Array.isArray(data.ventes)) throw new Error('Format invalide');
-            clients = data.clients; visites = data.visites; ventes = data.ventes;
-            sauvegarder(); rafraichirTout();
-            toast('Restauration JSON réussie ✅');
-          } catch (err) {
-            toast('Fichier JSON invalide.', 'error'); console.error(err);
-          }
+            if (data.clients && data.visites && data.ventes) {
+              clients = data.clients; visites = data.visites; ventes = data.ventes;
+              sauvegarder(); rafraichirTout(); toast('Restauration réussie ✅');
+            }
+          } catch (err) { toast('Fichier invalide.', 'error'); }
         };
-        reader.readAsText(file);
-      });
+        reader.readAsText(e.target.files[0]);
+      };
       input.click();
     }
 
-    /* ----------------------------------------------------------------
-       INITIALISATION
-       ---------------------------------------------------------------- */
+    /* INIT */
     function rafraichirTout() {
       renderQuickStats(); renderVisites(); renderHistoriqueVisites();
       renderClientsVente(); renderClientsGestion(); renderDashboard();
@@ -1367,14 +1254,13 @@
       document.getElementById('searchClients').addEventListener('input', renderClientsGestion);
       document.getElementById('btnAjouterClient').addEventListener('click', () => {
         ouvrirModale({
-          titre: 'Ajouter un client',
-          corps: `<div class="form-group"><label>Nom du client</label><input type="text" id="nouveauClientNom" placeholder="Ex : Ferme Durand"></div>`,
+          titre: 'Nouveau Client',
+          corps: `<div class="form-group"><label>Nom du client</label><input type="text" id="nouveauClientNom" placeholder="Ex: Ferme Durand"></div>`,
           footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button><button class="btn btn-success" id="modalAjouter">Ajouter</button>`
         });
         document.getElementById('modalAnnuler').addEventListener('click', fermerModale);
         document.getElementById('modalAjouter').addEventListener('click', () => {
-          const nom = document.getElementById('nouveauClientNom').value;
-          if (ajouterClient(nom)) fermerModale();
+          if (ajouterClient(document.getElementById('nouveauClientNom').value)) fermerModale();
         });
         document.getElementById('nouveauClientNom').focus();
       });
