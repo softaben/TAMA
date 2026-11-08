@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TAM AGRICOLE – Gestion commerciale</title>
+  <!-- html2pdf library for PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     /* ================================================================
        RESET & BASE (Dimensions fixes pour Mobile)
@@ -35,7 +37,7 @@
     html, body {
       height: 100%;
       width: 100%;
-      overflow: hidden; /* Empêche le défilement global */
+      overflow: hidden;
       background: var(--gris-clair);
       color: var(--gris-fonce);
       display: flex;
@@ -76,7 +78,7 @@
       flex: 1;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding: 1rem 0.8rem 80px 0.8rem; /* 80px pour laisser la place au menu */
+      padding: 1rem 0.8rem 80px 0.8rem;
       position: relative;
     }
 
@@ -217,16 +219,16 @@
     .modal-footer { padding: 1rem; display: flex; gap: 0.5rem; border-top: 1px solid var(--gris-bordure); }
     .modal-footer .btn { flex: 1; }
 
-    /* ---------- TOAST (EXACTEMENT COMME DEMANDÉ) ---------- */
+    /* ---------- TOAST ---------- */
     .toast {
       position: fixed;
-      bottom: 80px; /* Juste au-dessus du menu de navigation */
+      bottom: 80px;
       left: 50%;
       transform: translateX(-50%) translateY(20px);
-      background: #1b5e20; /* Vert foncé */
+      background: #1b5e20;
       color: #ffffff;
       padding: 12px 24px;
-      border-radius: 999px; /* Forme de pilule */
+      border-radius: 999px;
       font-size: 15px;
       font-weight: 500;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
@@ -239,11 +241,24 @@
       gap: 8px;
       white-space: nowrap;
     }
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .toast.error { background: #c62828; }
+
+    /* ---------- PDF TEMPLATE (Hidden) ---------- */
+    #pdf-template {
+      display: none;
+      padding: 20px;
+      color: #000;
+      background: #fff;
+      font-family: Arial, sans-serif;
+    }
+    #pdf-template h1 { text-align: center; color: #2e7d32; border-bottom: 2px solid #2e7d32; padding-bottom: 10px; margin-bottom: 20px; }
+    #pdf-template .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
+    #pdf-template table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
+    #pdf-template th, #pdf-template td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    #pdf-template th { background-color: #f5f5f5; color: #333; }
+    #pdf-template .total-row { font-weight: bold; text-align: right; }
+    #pdf-template .footer { margin-top: 40px; text-align: center; font-size: 11px; color: #777; }
   </style>
 </head>
 <body>
@@ -281,6 +296,7 @@
         <input type="date" id="filtreDateVisites" class="input-date">
         <button class="btn btn-secondary btn-sm" id="resetFiltreVisites">Réinitialiser</button>
         <button class="btn btn-success btn-sm" id="btnExportVisitesCSV">📤 CSV</button>
+        <button class="btn btn-primary btn-sm" id="btnExportVisitesPDF">📄 Exporter PDF</button>
       </div>
       <div id="listeVisites" class="liste-clients"></div>
       <h3>📅 Historique</h3>
@@ -412,6 +428,24 @@
   <!-- TOAST -->
   <div id="toast" class="toast"></div>
 
+  <!-- PDF TEMPLATE (Hidden) -->
+  <div id="pdf-template">
+    <h1>TAM AGRICOLE</h1>
+    <div class="info-row">
+      <span><strong>Document:</strong> <span id="pdf-type">Rapport</span></span>
+      <span><strong>Date d'édition:</strong> <span id="pdf-date"></span></span>
+    </div>
+    <div class="info-row">
+      <span><strong>Client / Filtre:</strong> <span id="pdf-client">Tous</span></span>
+    </div>
+    <table id="pdf-table">
+      <!-- Table content injected via JS -->
+    </table>
+    <div class="footer">
+      Généré par l'application TAM AGRICOLE - Gestion Commerciale
+    </div>
+  </div>
+
   <script>
     /* ================================================================
        JAVASCRIPT COMPLET
@@ -480,19 +514,13 @@
     function normaliser(str) { return (str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
     function echapperHTML(str) { const div = document.createElement('div'); div.textContent = str == null ? '' : String(str); return div.innerHTML; }
 
-    // AFFICHAGE DU TOAST STYLE VOTRE IMAGE
     function toast(message, type = 'success') {
       const el = document.getElementById('toast');
-      // Si c'est une erreur, on met un point d'exclamation, sinon un check
       const icon = type === 'error' ? '❌' : '✅';
       el.innerHTML = `<span>${message}</span> <span style="font-size:1.1em;">${icon}</span>`;
-      
       el.className = 'toast show' + (type === 'error' ? ' error' : '');
-      
       clearTimeout(el._timer);
-      el._timer = setTimeout(() => { 
-        el.className = 'toast'; 
-      }, 3000);
+      el._timer = setTimeout(() => { el.className = 'toast'; }, 3000);
     }
 
     /* PERSISTANCE */
@@ -734,9 +762,7 @@
       });
 
       sauvegarder();
-      // APPEL DU TOAST PERSONNALISÉ
       toast(`Vente enregistrée`);
-      
       resetVenteForm();
       renderQuickStats();
     }
@@ -862,11 +888,15 @@
         <div class="stat-card"><div class="stat-value">${formatMontant(ventesFiltrees.reduce((s, v) => s + v.montant, 0))}</div><div class="stat-label">CA</div></div>
       `;
 
+      // Ajout des boutons d'export PDF à côté des ventes
       document.getElementById('histVentes').innerHTML = ventesFiltrees.sort((a, b) => new Date(b.date) - new Date(a.date)).map(v => `
         <div class="hist-item">
           <span><span class="hist-label">${echapperHTML(v.clientNom)}</span></span>
           <span style="font-size:0.8rem">${echapperHTML(v.produit)} (${v.quantite} ${v.unite})</span>
-          <span><strong>${formatMontant(v.montant)}</strong> <span class="hist-date">· ${formatDate(v.date)}</span></span>
+          <span style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+            <span><strong>${formatMontant(v.montant)}</strong> <span class="hist-date">· ${formatDate(v.date)}</span></span>
+            <button class="btn btn-primary btn-sm" onclick="exportVentePDF('${v.id}')" style="min-height: 28px; padding: 0 10px; font-size: 0.7rem;">📄 PDF</button>
+          </span>
         </div>
       `).join('') || '<p class="hist-empty">Aucune vente.</p>';
 
@@ -884,7 +914,7 @@
       document.getElementById('resetDashFiltres').addEventListener('click', () => { dashFiltres = { date: '', clientId: '' }; renderDashboard(); });
     }
 
-    /* MODALE & EXPORT */
+    /* MODALE & EXPORT CSV */
     function ouvrirModale({ titre, corps, footer }) {
       document.getElementById('modalTitle').innerHTML = titre || '';
       document.getElementById('modalBody').innerHTML = corps || '';
@@ -914,6 +944,115 @@
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       toast('Export CSV réussi');
     }
+
+    /* ================================================================
+       FONCTIONNALITÉ PDF (html2pdf)
+       ================================================================ */
+       
+    // 1. Exporter une vente spécifique
+    window.exportVentePDF = function(venteId) {
+      const vente = ventes.find(v => v.id === venteId);
+      if (!vente) return;
+
+      // Remplir le template HTML caché
+      document.getElementById('pdf-type').textContent = 'Fiche de Vente';
+      document.getElementById('pdf-date').textContent = formatDateHeure(maintenant());
+      document.getElementById('pdf-client').textContent = vente.clientNom;
+
+      document.getElementById('pdf-table').innerHTML = `
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th>Quantité</th>
+            <th>Unité</th>
+            <th>Prix Unitaire</th>
+            <th>Total</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>${echapperHTML(vente.produit)}</td>
+            <td>${vente.quantite}</td>
+            <td>${vente.unite}</td>
+            <td>${formatMontant(vente.prixUnitaire)}</td>
+            <td><strong>${formatMontant(vente.montant)}</strong></td>
+            <td>${formatDate(vente.date)}</td>
+          </tr>
+        </tbody>
+      `;
+
+      // Générer le PDF
+      const element = document.getElementById('pdf-template');
+      element.style.display = 'block'; // Rendre visible temporairement pour la capture
+      
+      const opt = {
+        margin:       10,
+        filename:     `Vente_${vente.clientNom.replace(/[^a-zA-Z0-9]/g, '_')}_${formatDate(vente.date).replace(/\//g, '-')}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(element).save().then(() => {
+        element.style.display = 'none'; // Cacher à nouveau
+        toast('PDF téléchargé');
+      });
+    };
+
+    // 2. Exporter la liste des visites filtrées
+    document.getElementById('btnExportVisitesPDF').addEventListener('click', () => {
+      const filtreDate = document.getElementById('filtreDateVisites').value;
+      let liste = visites.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      if (filtreDate) {
+        liste = liste.filter(v => v.date && v.date.slice(0, 10) === filtreDate);
+        document.getElementById('pdf-client').textContent = `Date: ${formatDate(filtreDate)}`;
+      } else {
+        document.getElementById('pdf-client').textContent = 'Toutes les visites';
+      }
+
+      if (!liste.length) {
+        toast('Aucune visite à exporter', 'error');
+        return;
+      }
+
+      document.getElementById('pdf-type').textContent = 'Rapport des Visites';
+      document.getElementById('pdf-date').textContent = formatDateHeure(maintenant());
+
+      document.getElementById('pdf-table').innerHTML = `
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Date et Heure</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${liste.map(v => `
+            <tr>
+              <td>${echapperHTML(v.clientNom)}</td>
+              <td>${formatDateHeure(v.date)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      `;
+
+      const element = document.getElementById('pdf-template');
+      element.style.display = 'block';
+      
+      const opt = {
+        margin:       10,
+        filename:     `Visites_${dateDuJour()}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(element).save().then(() => {
+        element.style.display = 'none';
+        toast('PDF téléchargé');
+      });
+    });
 
     /* INIT */
     function rafraichirTout() {
