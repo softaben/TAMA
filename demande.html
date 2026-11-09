@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Demande de Sortie de Caisse - TAMA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Tahoma, sans-serif;
+            background: linear-gradient(135deg, #eef2ee 0%, #e8f0dc 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a2a1a;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(26, 58, 26, 0.15);
+            overflow: hidden;
+            border: 2px solid #c9a227;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a3a1a, #2d4a2d);
+            color: #fff;
+            padding: 24px 20px;
+            text-align: center;
+            border-bottom: 3px solid #c9a227;
+        }
+        .header-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #c9a227, #e8c547);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 12px;
+            border: 2px solid #c9a227;
+        }
+        .header h1 {
+            font-size: 19px;
+            color: #e8c547;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .header p {
+            font-size: 12px;
+            color: #a8c4a8;
+            letter-spacing: 0.5px;
+        }
+        .form-body {
+            padding: 24px 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: #2d4a2d;
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+        }
+        .form-group label .req {
+            color: #dc2626;
+            margin-left: 2px;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #d4e0c8;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            font-family: inherit;
+            background: #f9fbf6;
+            transition: all 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .form-group select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232d4a2d' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 18px;
+            padding-right: 42px;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #c9a227;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.15);
+        }
+        .form-group input.code-input {
+            text-align: center;
+            letter-spacing: 8px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+        .form-group .hint {
+            font-size: 11px;
+            color: #7a8a7a;
+            margin-top: 6px;
+        }
+        .amount-input {
+            position: relative;
+        }
+        .amount-input input {
+            padding-right: 55px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .amount-input .currency {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            font-weight: 700;
+            color: #c9a227;
+            pointer-events: none;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #2d4a2d, #1a3a1a);
+            color: #e8c547;
+            border: 2px solid #c9a227;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+        }
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1a3a1a;
+            color: #fff;
+            padding: 14px 24px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 100;
+            border-left: 4px solid #c9a227;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            max-width: 90%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        .toast.error {
+            background: #991b1b;
+            border-left-color: #fca5a5;
+        }
+        .success-screen {
+            padding: 40px 20px;
+            text-align: center;
+            display: none;
+        }
+        .success-screen.show {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #dcf5c4, #a3d977);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 44px;
+            margin: 0 auto 20px;
+            border: 3px solid #7cb342;
+        }
+        .success-screen h2 {
+            color: #2d4a2d;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .success-screen p {
+            color: #5a6b5a;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .btn-new {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #c9a227, #e8c547);
+            color: #1a3a1a;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-new:active {
+            transform: scale(0.97);
+        }
+        .info-banner {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border-left: 4px solid #dc2626;
+            padding: 12px 14px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 12px;
+            color: #991b1b;
+            font-weight: 600;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .code-error {
+            color: #dc2626;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 8px;
+            display: none;
+            align-items: center;
+            gap: 6px;
+        }
+        .code-error.show {
+            display: flex;
+            animation: shake 0.4s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+        .form-group input.code-invalid {
+            border-color: #dc2626 !important;
+            background: #fef2f2 !important;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15) !important;
+        }
+        .form-group input.code-valid {
+            border-color: #7cb342 !important;
+            background: #f0f9e8 !important;
+            box-shadow: 0 0 0 3px rgba(124, 179, 66, 0.15) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="formContainer">
+        <div class="header">
+            <div class="header-icon">📤</div>
+            <h1>TAMA - Sortie de Caisse</h1>
+            <p>Demande de sortie d'argent de la caisse</p>
+        </div>
+        <div class="form-body">
+            <div class="info-banner">
+                <span>⚠️</span>
+                <span>Cette demande sera soumise à l'approbation de la direction avant tout paiement.</span>
+            </div>
+            <form id="requestForm" onsubmit="submitRequest(event)">
+
+                <div class="form-group">
+                    <label>Employé demandeur <span class="req">*</span></label>
+                    <select id="workerSelect" required onchange="resetCodeState()">
+                        <option value="">-- Sélectionnez votre nom --</option>
+                        <option value="Med Ajerar">Med Ajerar</option>
+                        <option value="Mokhtar Montant">Mokhtar Montant</option>
+                        <option value="Aziz Sahraoui">Aziz Sahraoui</option>
+                        <option value="Employé 4">Employé 4</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Code personnel <span class="req">*</span></label>
+                    <input type="password" id="workerCode" class="code-input" placeholder="••••" maxlength="12" autocomplete="off" required oninput="validateCodeLive()">
+                    <div class="hint">🔒 Entrez le code secret qui vous a été fourni par la direction.</div>
+                    <div class="code-error" id="codeError">❌ Code incorrect — vérifiez auprès de la direction</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Montant à sortir de la caisse <span class="req">*</span></label>
+                    <div class="amount-input">
+                        <input type="number" id="amount" placeholder="0.00" min="1" step="0.01" required>
+                        <span class="currency">DH</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Motif de la sortie <span class="req">*</span></label>
+                    <textarea id="reason" placeholder="Ex: Achat fournisseur, carburant, frais de transport..." required></textarea>
+                    <div class="hint">Expliquez pourquoi l'argent doit sortir de la caisse.</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Objet / Destination du montant <span class="req">*</span></label>
+                    <textarea id="purpose" placeholder="Ex: Paiement facture n°..., achat urgent de..., remboursement..." required></textarea>
+                    <div class="hint">Précisez à quoi servira exactement cet argent.</div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    📤 Envoyer la demande
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="success-screen" id="successScreen">
+        <div class="success-icon">✅</div>
+        <h2>Demande de sortie envoyée</h2>
+        <p>Votre demande de sortie de caisse a bien été transmise à la direction. Vous serez notifié dès qu'elle sera traitée.</p>
+        <button class="btn-new" onclick="resetForm()">➕ Nouvelle demande</button>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAzetUtAuLilj2OzAfEdMo7zFvFUFu7EQE",
+            authDomain: "tama-b4f63.firebaseapp.com",
+            databaseURL: "https://tama-b4f63-default-rtdb.firebaseio.com",
+            projectId: "tama-b4f63",
+            storageBucket: "tama-b4f63.firebasestorage.app",
+            messagingSenderId: "14758669505",
+            appId: "1:14758669505:web:10e6338fedcf61c0f1b840"
+        };
+
+        let db = null;
+        let firebaseReady = false;
+
+        // ============================================================
+        // 🔐 CODES SECRETS PAR EMPLOYÉ
+        // ============================================================
+        // ⚠️ IMPORTANT : Modifiez ces codes avec vos propres codes secrets !
+        // Chaque employé doit connaître UNIQUEMENT son propre code.
+        const EMPLOYEE_CODES = {
+            "Med Ajerar":       "A2024",   // ← Changez ce code
+            "Mokhtar Montant":  "M2024",   // ← Changez ce code
+            "Aziz Sahraoui":    "S2024",   // ← Changez ce code
+            "Employé 4":        "E2024"    // ← Changez ce code
+        };
+
+        // ============================================================
+        // Toast
+        // ============================================================
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast show' + (type === 'error' ? ' error' : '');
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(() => {
+                t.className = 'toast';
+            }, 3500);
+        }
+
+        // ============================================================
+        // Validation du code en direct
+        // ============================================================
+        function validateCodeLive() {
+            const worker = document.getElementById('workerSelect').value;
+            const codeInput = document.getElementById('workerCode');
+            const codeError = document.getElementById('codeError');
+            const code = codeInput.value;
+
+            // Retirer les anciennes classes
+            codeInput.classList.remove('code-invalid', 'code-valid');
+            codeError.classList.remove('show');
+
+            if (!worker || code.length === 0) return;
+
+            const expected = EMPLOYEE_CODES[worker];
+            if (!expected) return; // employé sans code défini → on ne bloque pas ici
+
+            // Vérifier uniquement si la longueur correspond (évite de griller le code trop tôt)
+            if (code.length === expected.length) {
+                if (code === expected) {
+                    codeInput.classList.add('code-valid');
+                } else {
+                    codeInput.classList.add('code-invalid');
+                    codeError.classList.add('show');
+                }
+            }
+        }
+
+        // ============================================================
+        // Reset l'état du code quand on change d'employé
+        // ============================================================
+        function resetCodeState() {
+            const codeInput = document.getElementById('workerCode');
+            const codeError = document.getElementById('codeError');
+            codeInput.value = '';
+            codeInput.classList.remove('code-invalid', 'code-valid');
+            codeError.classList.remove('show');
+        }
+
+        // ============================================================
+        // Vérification finale du code
+        // ============================================================
+        function verifyCode(worker, code) {
+            const expected = EMPLOYEE_CODES[worker];
+            if (!expected) {
+                // Aucun code défini pour cet employé → autoriser quand même (à ajuster selon votre besoin)
+                return false;
+            }
+            return code === expected;
+        }
+
+        // ============================================================
+        // Firebase
+        // ============================================================
+        async function initFirebase() {
+            try {
+                const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js");
+                const { getDatabase, ref, push, set } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js");
+
+                const app = initializeApp(firebaseConfig);
+                db = getDatabase(app);
+                window._fbRef = ref;
+                window._fbPush = push;
+                window._fbSet = set;
+
+                firebaseReady = true;
+                console.log('✅ Firebase ready');
+            } catch (e) {
+                console.error('❌ Firebase init error:', e);
+                showToast('Erreur de connexion à la base de données', 'error');
+            }
+        }
+
+        // ============================================================
+        // Soumettre la demande
+        // ============================================================
+        async function submitRequest(event) {
+            event.preventDefault();
+
+            const workerName = document.getElementById('workerSelect').value;
+            const code = document.getElementById('workerCode').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const reason = document.getElementById('reason').value.trim();
+            const purpose = document.getElementById('purpose').value.trim();
+
+            // Validations
+            if (!workerName) {
+                showToast('Veuillez sélectionner votre nom', 'error');
+                return;
+            }
+
+            // ⛔ VÉRIFICATION DU CODE — BLOQUANT
+            if (!verifyCode(workerName, code)) {
+                const codeInput = document.getElementById('workerCode');
+                const codeError = document.getElementById('codeError');
+                codeInput.classList.add('code-invalid');
+                codeError.classList.add('show');
+                showToast('❌ Code incorrect — demande non créée', 'error');
+                return;
+            }
+
+            if (!amount || amount <= 0) {
+                showToast('Veuillez saisir un montant valide', 'error');
+                return;
+            }
+            if (!reason) {
+                showToast('Veuillez indiquer le motif de la sortie', 'error');
+                return;
+            }
+            if (!purpose) {
+                showToast('Veuillez indiquer l\'objet du montant', 'error');
+                return;
+            }
+
+            if (!firebaseReady || !db) {
+                showToast('Connexion en cours... Veuillez réessayer dans un instant', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Envoi en cours...';
+
+            try {
+                const requestId = 'SORTIE-' + Date.now();
+                const requestsRef = window._fbRef(db, 'partner_requests/' + requestId);
+
+                // ✅ Le code N'EST PAS enregistré dans Firebase (sécurité)
+                await window._fbSet(requestsRef, {
+                    id: requestId,
+                    type: 'sortie_caisse',
+                    workerName: workerName,
+                    amount: Number(amount),
+                    reason: reason,
+                    purpose: purpose,
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                });
+
+                document.getElementById('formContainer').style.display = 'none';
+                document.getElementById('successScreen').classList.add('show');
+                showToast('✅ Demande de sortie envoyée avec succès');
+
+            } catch (e) {
+                console.error('❌ Submit error:', e);
+                showToast('Échec de l\'envoi: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '📤 Envoyer la demande';
+            }
+        }
+
+        // ============================================================
+        // Reset
+        // ============================================================
+        function resetForm() {
+            document.getElementById('requestForm').reset();
+            resetCodeState();
+            document.getElementById('successScreen').classList.remove('show');
+            document.getElementById('formContainer').style.display = 'block';
+            document.getElementById('workerSelect').focus();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initFirebase();
+        });
+    </script>
+</body>
+</html>
