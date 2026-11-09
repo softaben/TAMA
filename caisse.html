@@ -5,18 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#1a3a1a">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>TAMA Caisse</title>
+<title>TAMA Caisse & Demandes</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow-x:hidden}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#eef2ee;color:#1a2a1a;padding-bottom:80px}
 
+/* ================= HEADER ================= */
 .header{background:linear-gradient(135deg,#1a3a1a,#2d4a2d);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #c9a227;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,.15)}
 .header-left{display:flex;align-items:center;gap:10px}
 .header-icon{width:38px;height:38px;background:linear-gradient(135deg,#c9a227,#e8c547);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;border:2px solid #c9a227}
 .header-icon img{width:100%;height:100%;object-fit:cover}
-.header h1{color:#e8c547;font-size:17px;letter-spacing:1px}
+.header h1{color:#e8c547;font-size:16px;letter-spacing:1px}
 .header small{color:#a8c4a8;font-size:9px;letter-spacing:1px;display:block}
+.header-right{display:flex;gap:6px;align-items:center}
+.badge-role{background:rgba(201,162,39,.25);color:#e8c547;padding:5px 10px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:.5px;border:1px solid #c9a227}
+.badge-role.caissier{background:rgba(124,179,66,.3);color:#dcf5c4;border-color:#7cb342}
 
 #loader{position:fixed;inset:0;background:linear-gradient(135deg,#1a3a1a,#2d4a2d);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;color:#e8c547;transition:opacity .4s}
 #loader.hidden{opacity:0;pointer-events:none}
@@ -81,8 +85,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .tbl tfoot td{padding:10px 8px;font-weight:800;color:#1a3a1a;font-size:11px}
 .tbl tfoot td.num{text-align:right;font-variant-numeric:tabular-nums}
 .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.tbl-scroll::-webkit-scrollbar{height:5px}
-.tbl-scroll::-webkit-scrollbar-thumb{background:#c9a227;border-radius:3px}
 
 .empty{text-align:center;padding:60px 20px;color:#7a8a7a}
 .empty .icon{font-size:60px;margin-bottom:15px;opacity:.4}
@@ -94,7 +96,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .filter-btn.active{background:linear-gradient(135deg,#2d4a2d,#1a3a1a);color:#e8c547;border-color:#c9a227}
 .filter-btn:active{transform:scale(.95)}
 
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #e8f0dc;display:grid;grid-template-columns:repeat(5,1fr);z-index:60;box-shadow:0 -4px 20px rgba(26,58,26,.08);padding-bottom:env(safe-area-inset-bottom)}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #e8f0dc;display:grid;z-index:60;box-shadow:0 -4px 20px rgba(26,58,26,.08);padding-bottom:env(safe-area-inset-bottom)}
 .nav-btn{background:none;border:none;padding:12px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#7a8a7a;font-size:10px;font-weight:700;letter-spacing:.3px;position:relative}
 .nav-btn .ic{font-size:20px;line-height:1;transition:.2s}
 .nav-btn.active{color:#1a3a1a}
@@ -108,9 +110,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .form-group label{display:block;font-size:12px;color:#2d4a2d;margin-bottom:7px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
 .form-group label .req{color:#dc2626}
 .form-group input,.form-group select,.form-group textarea{width:100%;padding:14px;border:2px solid #d4e0c8;border-radius:12px;font-size:16px;outline:none;font-family:inherit;background:#f9fbf6;-webkit-appearance:none;transition:.2s}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#c9a227;background:#fff}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#c9a227;background:#fff;box-shadow:0 0 0 3px rgba(201,162,39,.15)}
 .form-group textarea{resize:vertical;min-height:70px}
 .form-group small{color:#7a8a7a;font-size:11px;margin-top:4px;display:block}
+.form-group input.code-input{text-align:center;letter-spacing:8px;font-size:20px;font-weight:700}
+.form-group input.code-invalid{border-color:#dc2626 !important;background:#fef2f2 !important;box-shadow:0 0 0 3px rgba(220,38,38,.15) !important}
+.form-group input.code-valid{border-color:#7cb342 !important;background:#f0f9e8 !important;box-shadow:0 0 0 3px rgba(124,179,66,.15) !important}
+.code-error{color:#dc2626;font-size:12px;font-weight:700;margin-top:8px;display:none;align-items:center;gap:6px}
+.code-error.show{display:flex;animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+.amount-input{position:relative}
+.amount-input input{padding-right:55px;font-size:20px;font-weight:700}
+.amount-input .currency{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:700;color:#c9a227;pointer-events:none}
 
 .upload-zone{border:3px dashed #c9a227;border-radius:12px;padding:20px;text-align:center;background:#fef9e8;cursor:pointer;transition:.2s}
 .upload-zone:hover{background:#fde68a}
@@ -148,6 +160,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .info-banner{background:linear-gradient(135deg,#f0f9e8,#dcf5c4);border-left:4px solid #7cb342;padding:12px 14px;border-radius:10px;margin-bottom:15px;font-size:13px;color:#3d6b3d;font-weight:600;display:flex;gap:8px;align-items:center}
 .info-banner.danger{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-left-color:#dc2626;color:#991b1b}
 .info-banner.edit{background:linear-gradient(135deg,#fef9e8,#fde68a);border-left-color:#c9a227;color:#78350f}
+.info-banner.warning{background:linear-gradient(135deg,#fef9e8,#fde68a);border-left-color:#c9a227;color:#78350f}
 
 .btn{padding:14px 20px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:.2s;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn:active{transform:scale(.98)}
@@ -209,9 +222,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .pdf-opt{padding:12px;border:2px solid #d4e0c8;background:#f9fbf6;border-radius:10px;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#2d4a2d;transition:.2s}
 .pdf-opt:hover,.pdf-opt.selected{border-color:#c9a227;background:#fef9e8;color:#92400e}
 
-/* ============================================================ */
-/* ============ VISIONNEUSE JUSTIFICATIF ===================== */
-/* ============================================================ */
 .proof-viewer{width:95vw;max-width:95vw;max-height:95vh;background:#1a1a1a;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;position:relative}
 .proof-viewer-head{padding:12px 16px;background:linear-gradient(135deg,#1a3a1a,#2d4a2d);color:#fff;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #c9a227;flex-wrap:wrap;gap:8px}
 .proof-viewer-head h3{font-size:14px;color:#e8c547;flex:1;min-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -221,12 +231,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .proof-viewer-head .btn-open-tab{background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff}
 .proof-viewer-body{flex:1;overflow-y:auto;overflow-x:hidden;display:block;padding:10px;-webkit-overflow-scrolling:touch}
 .proof-viewer-body img{max-width:100%;max-height:80vh;object-fit:contain;background:#fff;border-radius:4px;display:block;margin:auto}
-.proof-viewer-body iframe{width:100%;height:80vh;border:none;background:#fff;border-radius:4px}
 .pdf-fallback{color:#fff;text-align:center;padding:30px 20px;font-size:14px;line-height:1.6}
 .pdf-fallback .ic{font-size:60px;display:block;margin-bottom:15px}
-.pdf-fallback .btn{margin-top:15px}
-
-/* ✅ Affichage PDF multi-pages via PDF.js */
 .pdf-pages-wrap{display:flex;flex-direction:column;gap:12px;align-items:center;width:100%}
 .pdf-pages-wrap canvas{width:100%;max-width:100%;height:auto;background:#fff;border-radius:6px;box-shadow:0 2px 12px rgba(0,0,0,.5);display:block}
 .pdf-page-wrapper{position:relative;width:100%}
@@ -235,37 +241,48 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .pdf-loading{color:#e8c547;text-align:center;padding:40px 20px;font-size:14px;font-weight:700}
 .pdf-loading .spinner-sm{width:36px;height:36px;border:4px solid rgba(201,162,39,.2);border-top-color:#c9a227;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 15px}
 
-/* EDIT MODE banner */
 .edit-banner{background:linear-gradient(135deg,#fef9e8,#fde68a);border:2px solid #c9a227;border-radius:12px;padding:14px;margin-bottom:15px;font-size:13px;color:#78350f;font-weight:700;display:flex;align-items:center;gap:10px}
 .edit-banner .ic{font-size:22px}
 
-/* ============================================================ */
-/* ============ PRINT — UN BON PAR FEUILLE A4 ================== */
-/* ============================================================ */
-.print-bon{display:none}
+/* ================= DEMANDES CARDS ================= */
+.req-card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(26,58,26,.06);border-left:4px solid #e07c24;display:flex;flex-direction:column;gap:8px;cursor:pointer}
+.req-card.approved{border-left-color:#7cb342}
+.req-card.rejected{border-left-color:#dc2626;opacity:.7}
+.req-header{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.req-name{font-size:14px;font-weight:800;color:#1a3a1a}
+.req-amount{font-size:16px;font-weight:800;color:#b91c1c;white-space:nowrap}
+.req-body{font-size:12px;color:#5a6b5a;line-height:1.5}
+.req-body strong{color:#2d4a2d}
+.req-footer{display:flex;justify-content:space-between;align-items:center;margin-top:4px;gap:8px;flex-wrap:wrap}
+.req-date{font-size:11px;color:#7a8a7a}
+.req-status{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.req-status.pending{background:#fef9e8;color:#78350f;border:1px solid #c9a227}
+.req-status.approved{background:#dcf5c4;color:#3d6b3d;border:1px solid #7cb342}
+.req-status.rejected{background:#fee2e2;color:#b91c1c;border:1px solid #dc2626}
+.req-actions{display:flex;gap:8px;margin-top:6px}
+.req-actions .btn{padding:8px;font-size:12px;flex:1}
 
+.login-wrap{max-width:380px;margin:40px auto;text-align:center;padding:20px}
+.login-icon{width:80px;height:80px;background:linear-gradient(135deg,#c9a227,#e8c547);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 20px;border:3px solid #1a3a1a;box-shadow:0 10px 30px rgba(201,162,39,.3)}
+.login-wrap h2{color:#1a3a1a;font-size:20px;margin-bottom:8px}
+.login-wrap p{color:#5a6b5a;font-size:13px;margin-bottom:24px;line-height:1.5}
+
+.success-screen{padding:40px 20px;text-align:center;display:none}
+.success-screen.show{display:block;animation:fadeIn .4s}
+.success-icon{width:80px;height:80px;background:linear-gradient(135deg,#dcf5c4,#a3d977);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 20px;border:3px solid #7cb342}
+.success-screen h2{color:#2d4a2d;font-size:20px;margin-bottom:10px}
+.success-screen p{color:#5a6b5a;font-size:14px;line-height:1.6;margin-bottom:24px}
+.btn-new{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;background:linear-gradient(135deg,#c9a227,#e8c547);color:#1a3a1a;border:none;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer}
+.btn-new:active{transform:scale(.97)}
+
+.print-bon{display:none}
 @media print{
   @page{size:A4 portrait;margin:0}
   html,body{background:#fff !important;padding:0 !important;margin:0 !important;width:210mm;height:297mm;overflow:visible}
-
   body>*:not(.print-bon){display:none !important}
   .print-bon{display:block !important;width:210mm;color:#000;font-family:'Courier New',monospace;font-size:12px;line-height:1.4;box-sizing:border-box;margin:0;padding:0}
-
-  .print-bon .bon-copy{
-    width:210mm;
-    height:297mm;
-    padding:15mm 18mm 12mm 18mm;
-    box-sizing:border-box;
-    position:relative;
-    overflow:hidden;
-    background:#fff;
-    page-break-inside:avoid;
-    page-break-after:always;
-    display:flex;
-    flex-direction:column;
-  }
+  .print-bon .bon-copy{width:210mm;height:297mm;padding:15mm 18mm 12mm 18mm;box-sizing:border-box;position:relative;overflow:hidden;background:#fff;page-break-after:always;display:flex;flex-direction:column}
   .print-bon .bon-copy:last-child{page-break-after:auto}
-
   .print-bon .bon-logo{text-align:center;margin-bottom:8px}
   .print-bon .bon-logo img{max-height:70px;max-width:180px;object-fit:contain}
   .print-bon .bon-logo .emoji{font-size:54px;line-height:1}
@@ -278,12 +295,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   .print-bon .line strong{font-weight:700;text-align:right}
   .print-bon .line span:first-child{color:#333;flex-shrink:0;font-weight:600}
   .print-bon .notes{margin-top:10px;padding:8px;border:1px dashed #000;font-size:12px}
-
   .print-bon .bon-proof{margin-top:12px;padding:10px;border:1px dashed #000;display:flex;align-items:center;gap:12px;font-size:12px}
   .print-bon .bon-proof img{width:45mm;height:45mm;object-fit:cover;border:1px solid #000;border-radius:3px}
-  .print-bon .bon-proof .txt{flex:1;font-weight:700;font-size:12px}
-  .print-bon .bon-proof .txt small{display:block;font-weight:400;color:#333;margin-top:3px;font-size:10px}
-
   .print-bon .signature{margin-top:auto;padding-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:40px;font-size:12px}
   .print-bon .sig-box{text-align:center}
   .print-bon .sig-box .role{font-weight:800;font-size:11px;margin-bottom:5px;text-transform:uppercase;letter-spacing:.8px}
@@ -314,11 +327,110 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         <small id="hUserLabel">Service Caisse</small>
       </div>
     </div>
+    <div class="header-right">
+      <span class="badge-role" id="roleBadge">👤 Employé</span>
+    </div>
   </header>
 
   <main class="main">
 
-    <div class="page active" id="page-dashboard">
+    <!-- ============================================================ -->
+    <!-- ============ VUE EMPLOYÉ - DEMANDE ========================= -->
+    <!-- ============================================================ -->
+    <div class="page active" id="page-demande">
+      <div class="sec-title">📤 Demande de sortie de caisse</div>
+      <div class="info-banner danger">
+        <span>⚠️</span>
+        <span>Votre demande sera soumise à l'approbation de la direction.</span>
+      </div>
+
+      <div id="demandeForm">
+        <div class="form-card">
+          <div class="form-group">
+            <label>Employé demandeur <span class="req">*</span></label>
+            <select id="dWorker" onchange="resetDemandeCode()">
+              <option value="">-- Sélectionnez votre nom --</option>
+              <option value="Med Ajerar">Med Ajerar</option>
+              <option value="Mokhtar Montant">Mokhtar Montant</option>
+              <option value="Aziz Sahraoui">Aziz Sahraoui</option>
+              <option value="Employé 4">Employé 4</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Code personnel <span class="req">*</span></label>
+            <input type="password" id="dCode" class="code-input" placeholder="••••" maxlength="12" autocomplete="off" oninput="validateDemandeCodeLive()">
+            <div class="hint" style="font-size:11px;color:#7a8a7a;margin-top:6px">🔒 Code fourni par la direction</div>
+            <div class="code-error" id="dCodeError">❌ Code incorrect — vérifiez auprès de la direction</div>
+          </div>
+
+          <div class="form-group">
+            <label>Montant à sortir <span class="req">*</span></label>
+            <div class="amount-input">
+              <input type="number" id="dAmount" placeholder="0.00" min="1" step="0.01">
+              <span class="currency">DH</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Motif de la sortie <span class="req">*</span></label>
+            <textarea id="dReason" placeholder="Ex: Achat fournisseur, carburant, frais de transport..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Objet / Destination <span class="req">*</span></label>
+            <textarea id="dPurpose" placeholder="Ex: Paiement facture n°..., achat urgent de..."></textarea>
+          </div>
+
+          <button class="btn btn-primary" id="dSubmitBtn" onclick="submitDemande()">📤 Envoyer la demande</button>
+        </div>
+      </div>
+
+      <div class="success-screen" id="demandeSuccess">
+        <div class="success-icon">✅</div>
+        <h2>Demande envoyée</h2>
+        <p>Votre demande de sortie a bien été transmise. Vous pouvez suivre son état dans l'onglet <strong>Suivi</strong>.</p>
+        <button class="btn-new" onclick="resetDemandeForm()">➕ Nouvelle demande</button>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ============ VUE EMPLOYÉ - SUIVI =========================== -->
+    <!-- ============================================================ -->
+    <div class="page" id="page-suivi">
+      <div class="sec-title">🔍 Suivi de mes demandes</div>
+      <div class="info-banner">
+        <span>💡</span>
+        <span>Consultez l'état de vos demandes envoyées</span>
+      </div>
+      <div class="filters">
+        <button class="filter-btn active" onclick="setSuiviFilter(this,'all')">Toutes</button>
+        <button class="filter-btn" onclick="setSuiviFilter(this,'pending')">⏳ En attente</button>
+        <button class="filter-btn" onclick="setSuiviFilter(this,'approved')">✅ Approuvées</button>
+        <button class="filter-btn" onclick="setSuiviFilter(this,'rejected')">❌ Refusées</button>
+      </div>
+      <div id="suiviList"></div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ============ VUE CAISSIER - LOGIN ========================== -->
+    <!-- ============================================================ -->
+    <div class="page" id="page-login">
+      <div class="login-wrap">
+        <div class="login-icon">🔐</div>
+        <h2>Accès Caissier</h2>
+        <p>Entrez le mot de passe pour accéder à la gestion de la caisse et traiter les demandes.</p>
+        <div class="form-group">
+          <input type="password" id="caissierPwd" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')loginCaissier()" style="text-align:center;font-size:18px">
+        </div>
+        <button class="btn btn-primary" onclick="loginCaissier()">🔓 Se connecter</button>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ============ VUE CAISSIER - DASHBOARD ====================== -->
+    <!-- ============================================================ -->
+    <div class="page" id="page-dashboard">
       <div class="solde-card">
         <div class="lbl">💰 Solde en caisse</div>
         <div class="amount" id="soldeCaisse">0 <small>DH</small></div>
@@ -328,6 +440,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         <div class="mini-stat in"><small>📥 Entrées du jour</small><div class="val" id="statEntrees">0 DH</div></div>
         <div class="mini-stat out"><small>📤 Sorties du jour</small><div class="val" id="statSorties">0 DH</div></div>
       </div>
+      <div class="sec-title">📥 Demandes en attente</div>
+      <div id="dashboardDemandes"></div>
       <div class="sec-title">📋 Dernières opérations</div>
       <div class="filters">
         <button class="filter-btn active" data-f="today" onclick="setFilter(this,'today')">Aujourd'hui</button>
@@ -339,6 +453,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <div id="txList"></div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- ============ VUE CAISSIER - NOUVELLE OP =================== -->
+    <!-- ============================================================ -->
     <div class="page" id="page-nouvelle">
       <div class="sec-title" id="formPageTitle">➕ Nouvelle opération</div>
 
@@ -418,6 +535,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       </div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- ============ VUE CAISSIER - HISTORIQUE ===================== -->
+    <!-- ============================================================ -->
     <div class="page" id="page-historique">
       <div class="sec-title">📚 Historique complet</div>
       <div class="form-card" style="margin-bottom:15px;padding:14px">
@@ -435,6 +555,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <div id="historiqueList"></div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- ============ VUE CAISSIER - STATS ========================== -->
+    <!-- ============================================================ -->
     <div class="page" id="page-stats">
       <div class="sec-title">📊 Statistiques</div>
       <div class="solde-card" style="background:linear-gradient(135deg,#2d4a2d,#1a3a1a)">
@@ -451,6 +574,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <div id="topMotifs"></div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- ============ VUE CAISSIER - PARAMÈTRES ===================== -->
+    <!-- ============================================================ -->
     <div class="page" id="page-parametres">
       <div class="sec-title">⚙️ Paramètres</div>
       <div class="form-card">
@@ -485,15 +611,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
   </main>
 
-  <nav class="bottom-nav">
-    <button class="nav-btn active" data-page="dashboard" onclick="navigate('dashboard')"><span class="ic">🏠</span><span>Accueil</span></button>
-    <button class="nav-btn" data-page="historique" onclick="navigate('historique')"><span class="ic">📚</span><span>Histo.</span></button>
-    <button class="nav-btn center" data-page="nouvelle" onclick="startNewTransaction()"><span class="ic">➕</span><span>Nouveau</span></button>
-    <button class="nav-btn" data-page="stats" onclick="navigate('stats')"><span class="ic">📊</span><span>Stats</span></button>
-    <button class="nav-btn" data-page="parametres" onclick="navigate('parametres')"><span class="ic">⚙️</span><span>Params</span></button>
-  </nav>
+  <nav class="bottom-nav" id="bottomNav"></nav>
 </div>
 
+<!-- ============================================================ -->
+<!-- ============ MODALS ======================================== -->
+<!-- ============================================================ -->
 <div class="modal" id="modal">
   <div class="modal-box">
     <div class="modal-head"><h3 id="modalTitle">Détails</h3><button onclick="closeModal()">✕</button></div>
@@ -599,13 +722,16 @@ window.dispatchEvent(new Event('firebase-ready'));
 // ==================== ÉTAT GLOBAL ===========================
 // ============================================================
 let transactions = [];
-let currentPage = 'dashboard';
+let partnerRequests = [];
+let currentRole = 'employe'; // 'employe' | 'caissier'
+let currentPage = 'demande';
 let currentFilter = 'today';
 let currentType = 'entree';
 let fbReady = false;
 let listenersAttached = false;
 let pendingPrintId = null;
 let pendingPrintTx = null;
+let suiviFilter = 'all';
 
 let currentProof = null;
 let existingProofId = null;
@@ -618,7 +744,6 @@ let currentProofBlobUrl = null;
 let editingTxId = null;
 
 let settings = { caissierNom: 'Caissier', societeNom: 'TAMA', sousTitre: 'Gestion de Caisse', logo: '' };
-const currentUser = { uid: 'caissier-local', email: 'caisse@tama.ma' };
 const PERSONNES_SUGGESTIONS = ['Caissier', 'Client', 'Fournisseur', 'Direction'];
 const MOTIFS_SUGGESTIONS_SORTIE = ['Achat fournisseur', 'Carburant', 'Frais transport', 'Salaire', 'Versement banque'];
 let pdfTypeFilter = 'all';
@@ -626,6 +751,17 @@ let pdfTypeFilter = 'all';
 const MAX_IMAGE_DIM = 800;
 const MAX_IMAGE_QUALITY = 0.7;
 const MAX_PDF_SIZE = 2 * 1024 * 1024;
+
+// ============================================================
+// 🔐 SÉCURITÉ — À CHANGER !
+// ============================================================
+const EMPLOYEE_CODES = {
+    "Med Ajerar":       "A2024",
+    "Mokhtar Montant":  "M2024",
+    "Aziz Sahraoui":    "S2024",
+    "Employé 4":        "E2024"
+};
+const CAISSIER_PASSWORD = "TAMA2024";
 
 // ============================================================
 // ==================== FORMATAGE =============================
@@ -639,10 +775,6 @@ function formatBytes(b){
   if(b < 1024*1024) return (b/1024).toFixed(1) + ' Ko';
   return (b/(1024*1024)).toFixed(2) + ' Mo';
 }
-
-// ============================================================
-// ============ UTILITAIRE DATA URI → BLOB ====================
-// ============================================================
 function dataURLtoBlob(dataURL){
   try {
     const parts = dataURL.split(',');
@@ -653,10 +785,7 @@ function dataURLtoBlob(dataURL){
     const u8arr = new Uint8Array(n);
     while(n--){ u8arr[n] = bstr.charCodeAt(n); }
     return new Blob([u8arr], { type: mime });
-  } catch(e){
-    console.error('dataURLtoBlob error:', e);
-    return null;
-  }
+  } catch(e){ console.error('dataURLtoBlob:', e); return null; }
 }
 function cleanupProofBlob(){
   if(currentProofBlobUrl){
@@ -702,17 +831,46 @@ function escapeAttr(str){
   if(!str) return '';
   return String(str).replace(/'/g, '&#39;').replace(/"/g, '&quot;');
 }
+function getLocalDateTime(){
+  const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 16);
+}
 
 // ============================================================
 // ==================== NAVIGATION ============================
 // ============================================================
+function buildNav(){
+  const nav = document.getElementById('bottomNav');
+  if(currentRole === 'employe'){
+    nav.innerHTML = `
+      <button class="nav-btn ${currentPage==='demande'?'active':''}" onclick="navigate('demande')"><span class="ic">📤</span><span>Demande</span></button>
+      <button class="nav-btn ${currentPage==='suivi'?'active':''}" onclick="navigate('suivi')"><span class="ic">🔍</span><span>Suivi</span></button>
+      <button class="nav-btn center" onclick="navigate('login')"><span class="ic">🔐</span><span>Caisse</span></button>
+    `;
+    nav.style.gridTemplateColumns = 'repeat(3,1fr)';
+  } else {
+    nav.innerHTML = `
+      <button class="nav-btn ${currentPage==='dashboard'?'active':''}" onclick="navigate('dashboard')"><span class="ic">🏠</span><span>Accueil</span></button>
+      <button class="nav-btn ${currentPage==='historique'?'active':''}" onclick="navigate('historique')"><span class="ic">📚</span><span>Histo.</span></button>
+      <button class="nav-btn center ${currentPage==='nouvelle'?'active':''}" onclick="startNewTransaction()"><span class="ic">➕</span><span>Nouveau</span></button>
+      <button class="nav-btn ${currentPage==='stats'?'active':''}" onclick="navigate('stats')"><span class="ic">📊</span><span>Stats</span></button>
+      <button class="nav-btn" onclick="logoutCaissier()"><span class="ic">🚪</span><span>Sortir</span></button>
+    `;
+    nav.style.gridTemplateColumns = 'repeat(5,1fr)';
+  }
+}
+
 function navigate(page){
+  const caissierPages = ['dashboard','nouvelle','historique','stats','parametres'];
+  if(caissierPages.includes(page) && currentRole !== 'caissier'){
+    toast('Accès réservé au caissier', 'error');
+    page = 'login';
+  }
   currentPage = page;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  const btn = document.querySelector(`.nav-btn[data-page="${page}"]`);
-  if(btn) btn.classList.add('active');
+  const el = document.getElementById('page-' + page);
+  if(el) el.classList.add('active');
+  buildNav();
   window.scrollTo({top:0, behavior:'smooth'});
   refresh();
 }
@@ -724,6 +882,240 @@ function startNewTransaction(){
   }
   resetForm();
   navigate('nouvelle');
+}
+
+// ============================================================
+// ==================== LOGIN CAISSIER ========================
+// ============================================================
+function loginCaissier(){
+  const pwd = document.getElementById('caissierPwd').value;
+  if(pwd === CAISSIER_PASSWORD){
+    currentRole = 'caissier';
+    document.getElementById('caissierPwd').value = '';
+    document.getElementById('roleBadge').textContent = '🔓 Caissier';
+    document.getElementById('roleBadge').className = 'badge-role caissier';
+    document.getElementById('hUserLabel').textContent = 'Espace Caissier';
+    toast('✅ Connexion réussie');
+    navigate('dashboard');
+  } else {
+    toast('❌ Mot de passe incorrect', 'error');
+    document.getElementById('caissierPwd').value = '';
+  }
+}
+function logoutCaissier(){
+  if(!confirm('Se déconnecter de l\'espace caissier ?')) return;
+  currentRole = 'employe';
+  document.getElementById('roleBadge').textContent = '👤 Employé';
+  document.getElementById('roleBadge').className = 'badge-role';
+  document.getElementById('hUserLabel').textContent = 'Service Caisse';
+  toast('👋 Déconnecté');
+  navigate('demande');
+}
+
+// ============================================================
+// ==================== EMPLOYÉ - DEMANDE ====================
+// ============================================================
+function resetDemandeCode(){
+  document.getElementById('dCode').value = '';
+  document.getElementById('dCode').classList.remove('code-invalid','code-valid');
+  document.getElementById('dCodeError').classList.remove('show');
+}
+function validateDemandeCodeLive(){
+  const worker = document.getElementById('dWorker').value;
+  const codeInput = document.getElementById('dCode');
+  const codeError = document.getElementById('dCodeError');
+  const code = codeInput.value;
+  codeInput.classList.remove('code-invalid','code-valid');
+  codeError.classList.remove('show');
+  if(!worker || code.length === 0) return;
+  const expected = EMPLOYEE_CODES[worker];
+  if(!expected) return;
+  if(code.length === expected.length){
+    if(code === expected) codeInput.classList.add('code-valid');
+    else { codeInput.classList.add('code-invalid'); codeError.classList.add('show'); }
+  }
+}
+function verifyCode(worker, code){
+  const expected = EMPLOYEE_CODES[worker];
+  if(!expected) return false;
+  return code === expected;
+}
+async function submitDemande(){
+  const worker = document.getElementById('dWorker').value;
+  const code = document.getElementById('dCode').value;
+  const amount = parseFloat(document.getElementById('dAmount').value);
+  const reason = document.getElementById('dReason').value.trim();
+  const purpose = document.getElementById('dPurpose').value.trim();
+
+  if(!worker){ toast('Sélectionnez votre nom', 'error'); return; }
+  if(!verifyCode(worker, code)){
+    document.getElementById('dCode').classList.add('code-invalid');
+    document.getElementById('dCodeError').classList.add('show');
+    toast('❌ Code incorrect — demande non créée', 'error');
+    return;
+  }
+  if(!amount || amount <= 0){ toast('Montant invalide', 'error'); return; }
+  if(!reason){ toast('Motif obligatoire', 'error'); return; }
+  if(!purpose){ toast('Objet obligatoire', 'error'); return; }
+
+  if(!fbReady || !window.db){ toast('Connexion en cours...', 'error'); return; }
+
+  const btn = document.getElementById('dSubmitBtn');
+  btn.disabled = true; btn.textContent = '⏳ Envoi...';
+
+  try {
+    const id = 'SORTIE-' + Date.now();
+    await window.fbSet(window.fbRef(window.db, 'partner_requests/' + id), {
+      id, type: 'sortie_caisse',
+      workerName: worker,
+      amount: Number(amount),
+      reason, purpose,
+      status: 'pending',
+      createdAt: new Date().toISOString()
+    });
+    document.getElementById('demandeForm').style.display = 'none';
+    document.getElementById('demandeSuccess').classList.add('show');
+    toast('✅ Demande envoyée');
+  } catch(e){
+    toast('Erreur: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = '📤 Envoyer la demande';
+  }
+}
+function resetDemandeForm(){
+  document.getElementById('dWorker').value = '';
+  resetDemandeCode();
+  document.getElementById('dAmount').value = '';
+  document.getElementById('dReason').value = '';
+  document.getElementById('dPurpose').value = '';
+  document.getElementById('demandeForm').style.display = 'block';
+  document.getElementById('demandeSuccess').classList.remove('show');
+}
+
+// ============================================================
+// ==================== EMPLOYÉ - SUIVI =======================
+// ============================================================
+function setSuiviFilter(btn, f){
+  document.querySelectorAll('#page-suivi .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  suiviFilter = f;
+  renderSuivi();
+}
+function renderSuivi(){
+  const el = document.getElementById('suiviList');
+  let list = [...partnerRequests];
+  if(suiviFilter !== 'all') list = list.filter(r => r.status === suiviFilter);
+  list.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  if(!list.length){
+    el.innerHTML = '<div class="empty"><div class="icon">📭</div><h3>Aucune demande</h3><p style="font-size:12px;margin-top:5px">Vos demandes apparaîtront ici</p></div>';
+    return;
+  }
+  el.innerHTML = list.map(r => {
+    const statusLabels = { pending:'⏳ En attente', approved:'✅ Approuvée', rejected:'❌ Refusée' };
+    return `<div class="req-card ${r.status}" onclick="viewDemande('${r.id}')">
+      <div class="req-header">
+        <div class="req-name">👤 ${escapeHtml(r.workerName)}</div>
+        <div class="req-amount">${fmtMontant(r.amount)} DH</div>
+      </div>
+      <div class="req-body"><strong>Motif:</strong> ${escapeHtml(r.reason)}</div>
+      <div class="req-footer">
+        <div class="req-date">${formatDate(r.createdAt)}</div>
+        <div class="req-status ${r.status}">${statusLabels[r.status]}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// ==================== CAISSIER - DEMANDES ===================
+// ============================================================
+function renderDashboardDemandes(){
+  const el = document.getElementById('dashboardDemandes');
+  const pending = partnerRequests.filter(r => r.status === 'pending').sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  if(!pending.length){
+    el.innerHTML = '<div style="padding:14px;background:#f0f9e8;border-left:4px solid #7cb342;border-radius:10px;font-size:13px;color:#3d6b3d;font-weight:600;text-align:center">✅ Aucune demande en attente</div>';
+    return;
+  }
+  el.innerHTML = pending.slice(0, 3).map(r => `
+    <div class="req-card" onclick="viewDemande('${r.id}')">
+      <div class="req-header">
+        <div class="req-name">👤 ${escapeHtml(r.workerName)}</div>
+        <div class="req-amount">${fmtMontant(r.amount)} DH</div>
+      </div>
+      <div class="req-body"><strong>Motif:</strong> ${escapeHtml(r.reason)}</div>
+      <div class="req-actions">
+        <button class="btn btn-success" onclick="event.stopPropagation();approveDemande('${r.id}')">✅ Approuver</button>
+        <button class="btn btn-danger" onclick="event.stopPropagation();rejectDemande('${r.id}')">❌ Refuser</button>
+      </div>
+    </div>
+  `).join('') + (pending.length > 3 ? `<button class="btn btn-secondary" onclick="navigate('historique')" style="margin-top:5px">Voir les ${pending.length - 3} autres</button>` : '');
+}
+
+async function approveDemande(id){
+  const r = partnerRequests.find(x => x.id === id);
+  if(!r) return;
+  if(!confirm(`Approuver la demande de ${r.workerName} pour ${fmtMontantDH(r.amount)} ?\n\nUne sortie de caisse sera créée automatiquement.`)) return;
+  try {
+    const txId = 'TX-' + Date.now();
+    const numero = 'RET-' + new Date().getFullYear() + '-' + String(transactions.length + 1).padStart(4, '0');
+    const tx = {
+      id: txId, numero, type: 'sortie',
+      montant: Number(r.amount),
+      personne: r.workerName,
+      motif: r.reason,
+      beneficiaire: '',
+      mode: 'Espèce',
+      reference: '',
+      notes: 'Objet: ' + r.purpose + ' | Demande #' + r.id,
+      date: new Date().toISOString(),
+      createdAt: new Date().toISOString()
+    };
+    await window.fbSet(window.fbRef(window.db, 'caisse/transactions/' + txId), tx);
+    await window.fbUpdate(window.fbRef(window.db, 'partner_requests/' + id), {
+      status: 'approved',
+      approvedAt: new Date().toISOString(),
+      transactionId: txId
+    });
+    toast('✅ Demande approuvée et sortie créée');
+  } catch(e){
+    toast('Erreur: ' + e.message, 'error');
+  }
+}
+async function rejectDemande(id){
+  const r = partnerRequests.find(x => x.id === id);
+  if(!r) return;
+  if(!confirm(`Refuser la demande de ${r.workerName} pour ${fmtMontantDH(r.amount)} ?`)) return;
+  try {
+    await window.fbUpdate(window.fbRef(window.db, 'partner_requests/' + id), {
+      status: 'rejected',
+      rejectedAt: new Date().toISOString()
+    });
+    toast('❌ Demande refusée');
+  } catch(e){
+    toast('Erreur: ' + e.message, 'error');
+  }
+}
+
+function viewDemande(id){
+  const r = partnerRequests.find(x => x.id === id);
+  if(!r) return;
+  const statusLabels = { pending:'⏳ En attente', approved:'✅ Approuvée', rejected:'❌ Refusée' };
+  const body = `
+    <div class="detail-row"><span class="lbl">Employé</span><span class="val">${escapeHtml(r.workerName)}</span></div>
+    <div class="detail-row"><span class="lbl">Montant</span><span class="val" style="color:#b91c1c">${fmtMontantDH(r.amount)}</span></div>
+    <div class="detail-row"><span class="lbl">Motif</span><span class="val">${escapeHtml(r.reason)}</span></div>
+    <div class="detail-row"><span class="lbl">Objet</span><span class="val">${escapeHtml(r.purpose)}</span></div>
+    <div class="detail-row"><span class="lbl">Date</span><span class="val">${formatDate(r.createdAt)}</span></div>
+    <div class="detail-row"><span class="lbl">Statut</span><span class="val">${statusLabels[r.status]}</span></div>
+    ${r.approvedAt ? `<div class="detail-row"><span class="lbl">Approuvée le</span><span class="val">${formatDate(r.approvedAt)}</span></div>` : ''}
+    ${r.rejectedAt ? `<div class="detail-row"><span class="lbl">Refusée le</span><span class="val">${formatDate(r.rejectedAt)}</span></div>` : ''}
+  `;
+  const foot = currentRole === 'caissier' && r.status === 'pending'
+    ? `<button class="btn btn-secondary" onclick="closeModal()">Fermer</button>
+       <button class="btn btn-danger" onclick="closeModal();rejectDemande('${r.id}')">❌ Refuser</button>
+       <button class="btn btn-success" onclick="closeModal();approveDemande('${r.id}')">✅ Approuver</button>`
+    : `<button class="btn btn-secondary" onclick="closeModal()">Fermer</button>`;
+  openModal('Détail de la demande', body, foot);
 }
 
 // ============================================================
@@ -752,6 +1144,12 @@ function initListeners(){
     transactions = data ? Object.values(data) : [];
     refresh();
   }, err => console.error('❌ tx:', err));
+
+  window.fbOnValue(window.fbRef(window.db, 'partner_requests'), snap => {
+    const data = snap.val();
+    partnerRequests = data ? Object.values(data) : [];
+    refresh();
+  }, err => console.error('❌ requests:', err));
 }
 
 // ============================================================
@@ -793,8 +1191,6 @@ function resetLogo(){
 // ==================== SETTINGS ==============================
 // ============================================================
 function applySettingsUI(){
-  const hUser = document.getElementById('hUserLabel');
-  if(hUser) hUser.textContent = settings.caissierNom || 'Service Caisse';
   const pCaissier = document.getElementById('pCaissierNom');
   const pSociete = document.getElementById('pSocieteNom');
   const pSous = document.getElementById('pSousTitre');
@@ -890,9 +1286,7 @@ function renderProofPreview(){
 
   if(currentProof){
     const isImg = currentProof.type.startsWith('image/');
-    const thumb = isImg
-      ? `<img src="${currentProof.data}" alt="Proof">`
-      : `<div class="pdf-ico">📄</div>`;
+    const thumb = isImg ? `<img src="${currentProof.data}" alt="Proof">` : `<div class="pdf-ico">📄</div>`;
     wrap.innerHTML = `
       <div class="upload-preview">
         ${thumb}
@@ -909,9 +1303,7 @@ function renderProofPreview(){
   if(existingProofData){
     const p = existingProofData;
     const isImg = (p.type || '').startsWith('image/');
-    const thumb = isImg
-      ? `<img src="${p.data}" alt="Proof">`
-      : `<div class="pdf-ico">📄</div>`;
+    const thumb = isImg ? `<img src="${p.data}" alt="Proof">` : `<div class="pdf-ico">📄</div>`;
     wrap.innerHTML = `
       <div class="upload-preview">
         ${thumb}
@@ -931,15 +1323,10 @@ function renderProofPreview(){
   wrap.innerHTML = '';
 }
 
-function removeProof(){
-  currentProof = null;
-  renderProofPreview();
-}
+function removeProof(){ currentProof = null; renderProofPreview(); }
 function removeExistingProof(){
   if(!confirm('Supprimer le justificatif existant ?')) return;
-  existingProofId = null;
-  existingProofData = null;
-  renderProofPreview();
+  existingProofId = null; existingProofData = null; renderProofPreview();
 }
 
 // ============================================================
@@ -949,24 +1336,19 @@ function downloadProof(proofId, name){
   window.fbOnValue(window.fbRef(window.db, 'caisse/proofs/' + proofId), snap => {
     const proof = snap.val();
     if(!proof){ toast('Justificatif introuvable', 'error'); return; }
-
     const a = document.createElement('a');
     a.href = proof.data;
     a.download = name || proof.name || ('justificatif_' + proofId);
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-
     toast('📥 Téléchargement de ' + (name || proof.name || 'justificatif'));
   }, { onlyOnce: true });
 }
-
 function downloadCurrentProof(){
   if(!currentViewerProofId){ toast('Aucun justificatif', 'error'); return; }
   downloadProof(currentViewerProofId, currentViewerProofName);
 }
-
-// ✅ Ouvrir le PDF dans un nouvel onglet (Blob URL)
 function openCurrentProofInTab(){
   if(!currentProofBlobUrl){ toast('Aucun fichier à ouvrir', 'warning'); return; }
   const w = window.open(currentProofBlobUrl, '_blank');
@@ -974,21 +1356,17 @@ function openCurrentProofInTab(){
 }
 
 // ============================================================
-// ============ VISIONNEUSE (PDF.js — TOUTES PAGES) ===========
+// ============ VISIONNEUSE (PDF.js) ==========================
 // ============================================================
 function viewProof(proofId, name){
   const body = document.getElementById('proofViewerBody');
   const title = document.getElementById('proofViewerTitle');
   const openTabBtn = document.getElementById('proofOpenTabBtn');
   title.textContent = '📎 ' + (name || 'Justificatif');
-
   currentViewerProofId = proofId;
   currentViewerProofName = name || '';
   openTabBtn.style.display = 'none';
-
   cleanupProofBlob();
-
-  // Loader
   body.innerHTML = '<div class="pdf-loading"><div class="spinner-sm"></div>Chargement du justificatif...</div>';
 
   window.fbOnValue(window.fbRef(window.db, 'caisse/proofs/' + proofId), snap => {
@@ -997,17 +1375,13 @@ function viewProof(proofId, name){
       body.innerHTML = '<div class="pdf-fallback"><span class="ic">❌</span>Justificatif introuvable</div>';
       return;
     }
-
     const type = proof.type || '';
     const data = proof.data || '';
-
     if(type.startsWith('image/')){
       body.innerHTML = `<img src="${data}" alt="">`;
-
     } else if(type === 'application/pdf'){
       openTabBtn.style.display = 'flex';
       renderPdfAllPages(data, body, proof.name || name || 'document.pdf');
-
     } else {
       body.innerHTML = '<div class="pdf-fallback"><span class="ic">📎</span>Format non affichable<br><small>' + escapeHtml(type) + '</small></div>';
     }
@@ -1016,42 +1390,32 @@ function viewProof(proofId, name){
   document.getElementById('proofViewerModal').classList.add('show');
 }
 
-// ✅ Rend TOUTES les pages d'un PDF via PDF.js
 async function renderPdfAllPages(dataUrl, container, filename){
   try {
     if(!window.pdfjsLib){
       container.innerHTML = '<div class="pdf-fallback"><span class="ic">❌</span>PDF.js non chargé<br><small>Vérifiez votre connexion</small></div>';
       return;
     }
-    // Configurer le worker
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-    // Convertir le Data URL en Uint8Array
     const base64 = dataUrl.split(',')[1];
     const binary = atob(base64);
     const bytes = new Uint8Array(binary.length);
     for(let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
 
-    // Créer aussi un Blob URL pour le bouton "Ouvrir"
     const blob = new Blob([bytes], { type: 'application/pdf' });
     currentProofBlobUrl = URL.createObjectURL(blob);
 
-    // Charger le PDF
     const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
     const totalPages = pdf.numPages;
 
-    // Préparer le container
     container.innerHTML = `
       <div class="pdf-pages-info">📄 ${totalPages} page(s) — ${escapeHtml(filename)}</div>
       <div class="pdf-pages-wrap" id="pdfPagesWrap"></div>
     `;
     const wrap = document.getElementById('pdfPagesWrap');
-
-    // Calculer la largeur d'affichage
     const containerWidth = container.clientWidth - 20;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    // Rendre chaque page
     for(let pageNum = 1; pageNum <= totalPages; pageNum++){
       const page = await pdf.getPage(pageNum);
       const viewportBase = page.getViewport({ scale: 1 });
@@ -1078,10 +1442,8 @@ async function renderPdfAllPages(dataUrl, container, filename){
       const ctx = canvas.getContext('2d');
       ctx.fillStyle = '#fff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-
       await page.render({ canvasContext: ctx, viewport }).promise;
     }
-
   } catch(e){
     console.error('PDF render error:', e);
     container.innerHTML = `
@@ -1134,6 +1496,7 @@ function refresh(){
   if(currentPage === 'dashboard') renderDashboard();
   if(currentPage === 'historique') renderHistorique();
   if(currentPage === 'stats') renderStats();
+  if(currentPage === 'suivi') renderSuivi();
 }
 
 function renderDashboard(){
@@ -1148,6 +1511,8 @@ function renderDashboard(){
 
   document.getElementById('statEntrees').textContent = fmtMontant(entrees) + ' DH';
   document.getElementById('statSorties').textContent = fmtMontant(sorties) + ' DH';
+
+  renderDashboardDemandes();
 
   const list = filterTransactions(transactions)
     .sort((a,b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
@@ -1279,7 +1644,7 @@ function renderStats(){
 }
 
 // ============================================================
-// ==================== FORM ==================================
+// ==================== FORMULAIRE OPÉRATION ==================
 // ============================================================
 function selectType(type){
   currentType = type;
@@ -1298,17 +1663,19 @@ function selectType(type){
 }
 function setMontant(v){ document.getElementById('fMontant').value = v; }
 function updateSuggestions(){
-  document.getElementById('personSuggestions').innerHTML = PERSONNES_SUGGESTIONS.map(p =>
+  const ps = document.getElementById('personSuggestions');
+  if(ps) ps.innerHTML = PERSONNES_SUGGESTIONS.map(p =>
     `<button type="button" onclick="document.getElementById('fPersonne').value='${p}'">${p}</button>`
   ).join('');
   if(currentType === 'sortie'){
-    document.getElementById('motifSuggestions').innerHTML = MOTIFS_SUGGESTIONS_SORTIE.map(m =>
+    const ms = document.getElementById('motifSuggestions');
+    if(ms) ms.innerHTML = MOTIFS_SUGGESTIONS_SORTIE.map(m =>
       `<button type="button" onclick="document.getElementById('fMotif').value='${m}'">${m}</button>`
     ).join('');
   }
 }
 function setFilter(btn, filter){
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#page-dashboard .filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   currentFilter = filter;
   renderDashboard();
@@ -1328,13 +1695,7 @@ function resetForm(){
   existingProofId = null;
   existingProofData = null;
   renderProofPreview();
-
   if(editingTxId) exitEditMode();
-}
-
-function getLocalDateTime(){
-  const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-  return d.toISOString().slice(0, 16);
 }
 
 function resetHistoriqueFilters(){
@@ -1349,7 +1710,6 @@ function resetHistoriqueFilters(){
 // ============================================================
 function enterEditMode(tx){
   editingTxId = tx.id;
-
   document.getElementById('editBanner').style.display = 'flex';
   document.getElementById('editBannerNum').textContent = 'N° ' + tx.numero;
   document.getElementById('formPageTitle').innerHTML = '✏️ Modifier l\'opération';
@@ -1357,7 +1717,6 @@ function enterEditMode(tx){
   document.getElementById('btnCancelEdit').style.display = 'flex';
 
   selectType(tx.type);
-
   document.getElementById('fMontant').value = tx.montant || '';
   document.getElementById('fPersonne').value = tx.personne || '';
   document.getElementById('fDate').value = toLocalInputValue(tx.date || tx.createdAt);
@@ -1386,9 +1745,7 @@ function enterEditMode(tx){
   }
 
   navigate('nouvelle');
-  window.scrollTo({top:0, behavior:'smooth'});
 }
-
 function exitEditMode(){
   editingTxId = null;
   document.getElementById('editBanner').style.display = 'none';
@@ -1396,13 +1753,11 @@ function exitEditMode(){
   document.getElementById('btnSave').innerHTML = '💾 Enregistrer & Voir le bon';
   document.getElementById('btnCancelEdit').style.display = 'none';
 }
-
 function cancelEdit(){
   if(!confirm('Annuler les modifications ?')) return;
   resetForm();
   navigate('historique');
 }
-
 function toLocalInputValue(iso){
   if(!iso) return getLocalDateTime();
   const d = new Date(iso); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
@@ -1410,9 +1765,10 @@ function toLocalInputValue(iso){
 }
 
 // ============================================================
-// ============ SAVE (création OU modification) ================
+// ============ SAVE ==========================================
 // ============================================================
 async function saveTransaction(){
+  if(currentRole !== 'caissier'){ toast('Accès refusé', 'error'); return; }
   const montant = parseFloat(document.getElementById('fMontant').value);
   const personne = document.getElementById('fPersonne').value.trim();
   const dateVal = document.getElementById('fDate').value;
@@ -1427,19 +1783,20 @@ async function saveTransaction(){
     txData = { type: 'entree', montant: Number(montant), personne, motif: 'Dépôt', beneficiaire: '', mode: 'Espèce', reference: '', notes: noteEntree, date: new Date(dateVal).toISOString() };
   } else {
     const motif = document.getElementById('fMotif').value.trim();
-    const beneficiaire = document.getElementById('fBeneficiaire').value.trim();
-    const mode = document.getElementById('fMode').value;
-    const reference = document.getElementById('fReference').value.trim();
-    const notes = document.getElementById('fNotes').value.trim();
     if(!motif){ toast('Motif obligatoire pour un retrait', 'error'); return; }
-
     const txsForSolde = editingTxId ? transactions.filter(t => t.id !== editingTxId) : transactions;
     const solde = txsForSolde.reduce((s, t) => s + (t.type === 'entree' ? Number(t.montant || 0) : -Number(t.montant || 0)), 0);
     if(montant > solde){
       if(!confirm(`⚠️ Retrait (${fmtMontantDH(montant)}) > Solde disponible (${fmtMontantDH(solde)})\n\nContinuer quand même ?`)) return;
     }
-
-    txData = { type: 'sortie', montant: Number(montant), personne, motif, beneficiaire, mode, reference, notes, date: new Date(dateVal).toISOString() };
+    txData = {
+      type: 'sortie', montant: Number(montant), personne, motif,
+      beneficiaire: document.getElementById('fBeneficiaire').value.trim(),
+      mode: document.getElementById('fMode').value,
+      reference: document.getElementById('fReference').value.trim(),
+      notes: document.getElementById('fNotes').value.trim(),
+      date: new Date(dateVal).toISOString()
+    };
   }
 
   const btn = document.getElementById('btnSave');
@@ -1479,9 +1836,7 @@ async function saveTransaction(){
       const original = transactions.find(t => t.id === editingTxId);
       const updates = {
         ...txData,
-        proofId: proofId,
-        proofName: proofName,
-        proofType: proofType,
+        proofId, proofName, proofType,
         updatedAt: new Date().toISOString()
       };
       await window.fbUpdate(window.fbRef(window.db, 'caisse/transactions/' + editingTxId), updates);
@@ -1490,21 +1845,13 @@ async function saveTransaction(){
     } else {
       const id = 'TX-' + Date.now();
       const numero = (currentType === 'entree' ? 'DEP-' : 'RET-') + new Date().getFullYear() + '-' + String(transactions.length + 1).padStart(4, '0');
-      tx = {
-        id, numero, ...txData,
-        proofId: proofId,
-        proofName: proofName,
-        proofType: proofType,
-        createdAt: new Date().toISOString()
-      };
+      tx = { id, numero, ...txData, proofId, proofName, proofType, createdAt: new Date().toISOString() };
       await window.fbSet(window.fbRef(window.db, 'caisse/transactions/' + id), tx);
       toast(currentType === 'entree' ? '✅ Dépôt enregistré' : '✅ Retrait enregistré');
     }
 
-    const wasEditing = !!editingTxId;
-    if(wasEditing) exitEditMode();
+    if(editingTxId) exitEditMode();
     resetForm();
-
     setTimeout(() => previewBon(tx), 300);
   } catch(e){
     toast('Erreur: ' + e.message, 'error');
@@ -1528,8 +1875,7 @@ function previewBon(txOrId){
 
   if(t.proofId){
     window.fbOnValue(window.fbRef(window.db, 'caisse/proofs/' + t.proofId), snap => {
-      const proof = snap.val();
-      document.getElementById('previewContainer').innerHTML = buildBonHTML(t, isIn, proof);
+      document.getElementById('previewContainer').innerHTML = buildBonHTML(t, isIn, snap.val());
       document.getElementById('previewModal').classList.add('show');
     }, { onlyOnce: true });
   } else {
@@ -1545,14 +1891,11 @@ function buildBonHTML(t, isIn, proof){
     lignesSupp += `<div class="line"><span>Mode :</span><strong>${escapeHtml(t.mode || 'Espèce')}</strong></div>`;
     if(t.reference) lignesSupp += `<div class="line"><span>Référence :</span><strong>${escapeHtml(t.reference)}</strong></div>`;
   }
-
   const personRole = isIn ? 'Déposant' : 'Personne qui prend l\'argent';
   const personName = t.personne || '—';
-
   const logoHTML = settings.logo
     ? `<div class="bon-logo"><img src="${settings.logo}" alt="Logo"></div>`
     : `<div class="bon-logo"><span class="emoji">🌾</span></div>`;
-
   const socNom = settings.societeNom || 'TAMA';
   const socSous = settings.sousTitre || 'Gestion de Caisse';
 
@@ -1588,20 +1931,17 @@ function buildBonHTML(t, isIn, proof){
   `;
 }
 
-// ✅ UN SEUL bon par feuille A4
 function printBon(txOrId){
   let t;
   if(typeof txOrId === 'object' && txOrId !== null) t = txOrId;
   else t = transactions.find(x => x.id === txOrId);
   if(!t){ toast('Opération introuvable', 'error'); return; }
   const isIn = t.type === 'entree';
-
   const doPrint = (proof) => {
-    const bon = buildBonCopy(t, isIn, proof, 'first');
-    document.getElementById('printBon').innerHTML = bon;
+    const cleanHTML = buildBonHTML(t, isIn, proof).replace('class="bon-paper"', '');
+    document.getElementById('printBon').innerHTML = `<div class="bon-copy">${cleanHTML}</div>`;
     setTimeout(() => window.print(), 250);
   };
-
   if(t.proofId){
     window.fbOnValue(window.fbRef(window.db, 'caisse/proofs/' + t.proofId), snap => {
       doPrint(snap.val());
@@ -1609,11 +1949,6 @@ function printBon(txOrId){
   } else {
     doPrint(null);
   }
-}
-
-function buildBonCopy(t, isIn, proof, className){
-  const cleanHTML = buildBonHTML(t, isIn, proof).replace('class="bon-paper"', '');
-  return `<div class="bon-copy ${className}">${cleanHTML}</div>`;
 }
 
 function confirmPrint(){
@@ -1663,9 +1998,7 @@ function viewTransaction(id){
   const body = `
     <div style="text-align:center;margin-bottom:20px;padding:18px;background:linear-gradient(135deg,${isIn ? '#f0f9e8,#dcf5c4' : '#fef2f2,#fee2e2'});border-radius:14px">
       <div style="font-size:36px;margin-bottom:5px">${isIn ? '📥' : '📤'}</div>
-      <div style="font-size:26px;font-weight:800;color:${isIn ? '#558b2f' : '#b91c1c'}">
-        ${isIn ? '+' : '-'} ${fmtMontant(t.montant)} DH
-      </div>
+      <div style="font-size:26px;font-weight:800;color:${isIn ? '#558b2f' : '#b91c1c'}">${isIn ? '+' : '-'} ${fmtMontant(t.montant)} DH</div>
       <div style="font-size:12px;color:#5a6b5a;font-weight:700;margin-top:5px">${t.numero}</div>
     </div>
     ${details}
@@ -1682,6 +2015,7 @@ function viewTransaction(id){
 }
 
 async function deleteTransaction(id){
+  if(currentRole !== 'caissier'){ toast('Accès refusé', 'error'); return; }
   const t = transactions.find(x => x.id === id);
   if(!t) return;
   if(!confirm(`Supprimer ${t.numero} ?\n\n${t.motif} — ${fmtMontantDH(t.montant)}`)) return;
@@ -1735,10 +2069,6 @@ function exportCSV(){
 // ==================== PDF EXPORT ============================
 // ============================================================
 function openPdfDialog(){
-  const from = document.getElementById('hDateFrom').value;
-  const to = document.getElementById('hDateTo').value;
-  if(from) document.getElementById('pdfDateFrom').value = from;
-  if(to) document.getElementById('pdfDateTo').value = to;
   updatePdfInfo();
   document.getElementById('pdfModal').classList.add('show');
 }
@@ -1758,7 +2088,6 @@ function setPdfPeriod(period){
     to = `${ly}-${String(lm+1).padStart(2,'0')}-${String(lastDay).padStart(2,'0')}`;
   }
   else if(period === 'year'){ from = `${y}-01-01`; to = todayStr(); }
-  else if(period === 'all'){ from = ''; to = ''; }
   document.getElementById('pdfDateFrom').value = from;
   document.getElementById('pdfDateTo').value = to;
   updatePdfInfo();
@@ -1957,7 +2286,7 @@ window.addEventListener('firebase-ready', () => {
     document.getElementById('fDate').value = getLocalDateTime();
     selectType('entree');
     initListeners();
-    updateSuggestions();
+    buildNav();
     hideLoader();
   }, 600);
 });
