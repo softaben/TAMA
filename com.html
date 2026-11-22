@@ -1149,7 +1149,7 @@ const INVENTAIRE = [
   ]}
 ];
 
-const CLIENTS_INITIAUX = [
+const CLIENTS_DEFAUT = [
   { id: 'CLT0234', nom: 'DOMAINE SALAH' }, { id: 'CLT0151', nom: 'AFNANE PRIME' },
   { id: 'CLT0178', nom: 'TOULOUT ABDERRAHIM' }, { id: 'CLT0153', nom: 'FRESHBROTHERS' },
   { id: 'CLT0182', nom: 'OUGRAICH LAHCEN' }, { id: 'CLT0116', nom: 'AGRI-ERROUIDA' },
@@ -1313,6 +1313,9 @@ async function doSignup(name, email, password) {
       email: email,
       createdAt: Date.now()
     });
+    // Initialise la liste de clients personnelle du nouveau commercial
+    // avec les clients par défaut
+    await initialiserClientsParDefaut(cred.user.uid);
   } catch (e) {
     setLoginLoading(false);
     let msg = 'Erreur lors de la création';
@@ -1321,6 +1324,16 @@ async function doSignup(name, email, password) {
     else if (e.code === 'auth/weak-password') msg = 'Mot de passe trop faible (min. 6 caractères)';
     else msg = e.message || msg;
     showLoginError(msg);
+  }
+}
+
+async function initialiserClientsParDefaut(uid) {
+  const clientsRef = fb.ref(fb.db, 'users/' + uid + '/clients');
+  const snap = await fb.get(clientsRef);
+  if (!snap.exists()) {
+    const obj = {};
+    CLIENTS_DEFAUT.forEach(c => { obj[c.id] = c; });
+    await fb.set(clientsRef, obj);
   }
 }
 
@@ -1351,26 +1364,21 @@ function initLoginForms() {
   });
 }
 
-/* ==================== FIREBASE SYNC (données privées par commercial) ==================== */
+/* ==================== FIREBASE SYNC (tout est privé par commercial) ==================== */
 function setupFirebaseListeners() {
   unsubscribers.forEach(fn => { try { fn(); } catch(e){} });
   unsubscribers = [];
 
   const uid = currentUser.uid;
+  const base = 'users/' + uid;
 
-  // CLIENTS — PARTAGÉS (communs à tous les commerciaux)
-  const unsubClients = fb.onValue(fb.ref(fb.db, 'clients'), snap => {
+  // CLIENTS — PRIVÉS (sous users/{uid}/clients)
+  const unsubClients = fb.onValue(fb.ref(fb.db, base + '/clients'), snap => {
     const data = snap.val() || {};
     const arr = Object.values(data).map(c => ({ id: c.id, nom: c.nom }));
     if (arr.length === 0) {
-      const initRef = fb.ref(fb.db, 'clients');
-      fb.get(initRef).then(s => {
-        if (!s.exists()) {
-          const obj = {};
-          CLIENTS_INITIAUX.forEach(c => { obj[c.id] = c; });
-          fb.set(initRef, obj);
-        }
-      });
+      // Initialise une seule fois avec les clients par défaut
+      initialiserClientsParDefaut(uid);
     } else {
       clients = arr.sort((a, b) => a.nom.localeCompare(b.nom));
     }
@@ -1378,8 +1386,8 @@ function setupFirebaseListeners() {
   });
   unsubscribers.push(unsubClients);
 
-  // VISITES — PRIVÉES (sous users/{uid}/visites)
-  const unsubVisites = fb.onValue(fb.ref(fb.db, 'users/' + uid + '/visites'), snap => {
+  // VISITES — PRIVÉES
+  const unsubVisites = fb.onValue(fb.ref(fb.db, base + '/visites'), snap => {
     const data = snap.val() || {};
     visites = Object.values(data);
     if (currentPage === 'visites') { renderVisites(); renderHistoriqueVisites(); }
@@ -1387,14 +1395,14 @@ function setupFirebaseListeners() {
   unsubscribers.push(unsubVisites);
 
   // VENTES — PRIVÉES
-  const unsubVentes = fb.onValue(fb.ref(fb.db, 'users/' + uid + '/ventes'), snap => {
+  const unsubVentes = fb.onValue(fb.ref(fb.db, base + '/ventes'), snap => {
     const data = snap.val() || {};
     ventes = Object.values(data);
   });
   unsubscribers.push(unsubVentes);
 
   // CONTACTS — PRIVÉS
-  const unsubContacts = fb.onValue(fb.ref(fb.db, 'users/' + uid + '/contacts'), snap => {
+  const unsubContacts = fb.onValue(fb.ref(fb.db, base + '/contacts'), snap => {
     const data = snap.val() || {};
     contacts = Object.values(data);
     if (currentPage === 'contacts') renderContacts();
@@ -1402,7 +1410,7 @@ function setupFirebaseListeners() {
   unsubscribers.push(unsubContacts);
 
   // DEMANDES — PRIVÉES
-  const unsubDemandes = fb.onValue(fb.ref(fb.db, 'users/' + uid + '/demandes'), snap => {
+  const unsubDemandes = fb.onValue(fb.ref(fb.db, base + '/demandes'), snap => {
     const data = snap.val() || {};
     demandes = Object.values(data);
     if (currentPage === 'demandes') renderDemandes();
@@ -1550,7 +1558,6 @@ function enregistrerVisite(clientId) {
       date: new Date().toISOString()
     };
     try {
-      // Sous users/{uid}/visites → données privées
       await fb.set(fb.ref(fb.db, 'users/' + currentUser.uid + '/visites/' + newVisite.id), newVisite);
       fermerModale();
       toast('Visite enregistrée');
@@ -1701,7 +1708,6 @@ function ouvrirModaleNouvelleDemande() {
     };
 
     try {
-      // Sous users/{uid}/demandes → données privées
       await fb.set(fb.ref(fb.db, 'users/' + currentUser.uid + '/demandes/' + newDemande.id), newDemande);
       fermerModale();
       toast('Demande envoyée');
@@ -1797,7 +1803,6 @@ function ouvrirModaleAjouterContact() {
       date: new Date().toISOString()
     };
     try {
-      // Sous users/{uid}/contacts → données privées
       await fb.set(fb.ref(fb.db, 'users/' + currentUser.uid + '/contacts/' + newContact.id), newContact);
       fermerModale();
       toast('Contact enregistré');
@@ -2022,7 +2027,6 @@ function initVenteForm() {
       date: dateVente + 'T' + new Date().toTimeString().slice(0, 8)
     };
     try {
-      // Sous users/{uid}/ventes → données privées
       await fb.set(fb.ref(fb.db, 'users/' + currentUser.uid + '/ventes/' + newVente.id), newVente);
       toast('Vente enregistrée');
       resetVenteForm();
@@ -2032,7 +2036,7 @@ function initVenteForm() {
   });
 }
 
-/* ==================== CLIENTS ==================== */
+/* ==================== CLIENTS (privés) ==================== */
 function renderClientsGestion() {
   const search = normaliser(document.getElementById('searchClients').value.trim());
   const container = document.getElementById('listeClientsGestion');
@@ -2060,7 +2064,8 @@ function ajouterClient(nom) {
   nom = nom.trim();
   if (!nom || clients.some(c => normaliser(c.nom) === normaliser(nom))) { toast('Nom invalide ou existant', 'error'); return false; }
   const id = 'CLT' + Math.floor(1000 + Math.random() * 9000);
-  fb.set(fb.ref(fb.db, 'clients/' + id), { id, nom }).then(() => {
+  // Sous users/{uid}/clients → données privées
+  fb.set(fb.ref(fb.db, 'users/' + currentUser.uid + '/clients/' + id), { id, nom }).then(() => {
     toast('Client ajouté');
   }).catch(() => toast('Erreur', 'error'));
   return true;
@@ -2068,7 +2073,7 @@ function ajouterClient(nom) {
 
 function modifierClient(id, nouveauNom) {
   if (!nouveauNom.trim()) return false;
-  fb.update(fb.ref(fb.db, 'clients/' + id), { nom: nouveauNom.trim() }).then(() => {
+  fb.update(fb.ref(fb.db, 'users/' + currentUser.uid + '/clients/' + id), { nom: nouveauNom.trim() }).then(() => {
     toast('Client modifié');
   }).catch(() => toast('Erreur', 'error'));
   return true;
@@ -2086,7 +2091,7 @@ function supprimerClient(id) {
   document.getElementById('modalAnnuler').addEventListener('click', fermerModale);
   document.getElementById('modalConfirmerSuppr').addEventListener('click', async () => {
     try {
-      await fb.remove(fb.ref(fb.db, 'clients/' + id));
+      await fb.remove(fb.ref(fb.db, 'users/' + currentUser.uid + '/clients/' + id));
       fermerModale();
       toast('Client supprimé');
     } catch (e) { toast('Erreur', 'error'); }
