@@ -41,17 +41,17 @@
   --green: #0f7b6c;
   --green-bg: #e6f3f1;
 
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
 
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
 
-  --header-h: 52px;
-  --nav-h: 60px;
+  --header-h: 56px;
+  --nav-h: 70px;
 }
 
 body.dark-mode {
@@ -75,7 +75,6 @@ body.dark-mode {
 }
 body.dark-mode .logo-icon { background: #e9e9e7; color: #191919; }
 body.dark-mode .btn-success { background: #e9e9e7; color: #191919; }
-body.dark-mode .btn-success:hover:not(:disabled) { background: #fff; }
 body.dark-mode .toast { background: #e9e9e7; color: #191919; }
 
 html, body {
@@ -85,7 +84,7 @@ html, body {
   display: flex; flex-direction: column;
   overscroll-behavior: none;
   -webkit-user-select: none; user-select: none;
-  font-size: 15px;
+  font-size: 16px;
   transition: background 0.2s, color 0.2s;
 }
 
@@ -100,7 +99,7 @@ html, body {
   border-bottom: 1px solid var(--border-light);
 }
 .header-container {
-  width: 100%; padding: 0 12px;
+  width: 100%; padding: 0 14px;
   display: flex; align-items: center; justify-content: space-between;
   gap: 8px;
 }
@@ -109,7 +108,7 @@ html, body {
   display: none;
   align-items: center;
   justify-content: center;
-  width: 36px; height: 36px;
+  width: 40px; height: 40px;
   background: transparent;
   border: none;
   border-radius: var(--radius-md);
@@ -119,12 +118,11 @@ html, body {
   flex-shrink: 0;
   padding: 0;
 }
-.btn-back:hover { background: var(--bg-hover); }
 .btn-back:active { background: var(--bg-active); }
 .btn-back svg {
-  width: 20px; height: 20px;
+  width: 22px; height: 22px;
   stroke: currentColor;
-  stroke-width: 2;
+  stroke-width: 2.2;
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -132,22 +130,21 @@ html, body {
 .btn-back.visible { display: flex; }
 
 .logo {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 0.9rem; font-weight: 600;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 1rem; font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: -0.1px;
+  letter-spacing: -0.2px;
   flex: 1;
   justify-content: flex-start;
-  transition: opacity 0.2s;
 }
 .logo.with-back { justify-content: center; }
 .logo-icon {
-  width: 26px; height: 26px;
+  width: 32px; height: 32px;
   display: flex; align-items: center; justify-content: center;
   background: var(--text-primary);
   color: #fff;
-  border-radius: 6px;
-  font-size: 0.85rem;
+  border-radius: 8px;
+  font-size: 1rem;
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -156,7 +153,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px; height: 36px;
+  width: 40px; height: 40px;
   background: transparent;
   border: none;
   border-radius: var(--radius-md);
@@ -166,17 +163,13 @@ html, body {
   flex-shrink: 0;
   padding: 0;
 }
-.btn-theme:hover { background: var(--bg-hover); }
 .btn-theme:active { background: var(--bg-active); }
-.btn-theme svg {
-  width: 20px; height: 20px;
-  fill: currentColor;
-}
+.btn-theme svg { width: 22px; height: 22px; fill: currentColor; }
 
 /* ==================== MAIN ==================== */
 .app-main {
   flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
-  padding: 16px 16px calc(var(--nav-h) + var(--safe-bottom) + 24px);
+  padding: 20px 16px calc(var(--nav-h) + var(--safe-bottom) + 30px);
   scrollbar-width: none; -ms-overflow-style: none;
   background: var(--bg-app);
 }
@@ -187,229 +180,247 @@ html, body {
 
 /* ==================== TYPO ==================== */
 h2 {
-  font-size: 1.4rem; font-weight: 700;
+  font-size: 1.6rem; font-weight: 800;
   color: var(--text-primary);
-  margin-bottom: 16px; letter-spacing: -0.4px;
+  margin-bottom: 20px; letter-spacing: -0.6px;
 }
 h3 {
-  font-size: 0.72rem; font-weight: 600;
+  font-size: 0.8rem; font-weight: 700;
   color: var(--text-secondary);
-  margin: 20px 0 8px;
+  margin: 24px 0 10px;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.8px;
 }
 
 /* ==================== BUTTONS ==================== */
 .btn {
   border: none; border-radius: var(--radius-md);
-  padding: 9px 14px; font-size: 0.88rem; font-weight: 500;
+  padding: 14px 18px; font-size: 1rem; font-weight: 600;
   cursor: pointer;
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  min-height: 38px;
-  transition: background 0.12s, border-color 0.12s, opacity 0.12s;
-  letter-spacing: -0.1px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 50px;
+  transition: background 0.12s, border-color 0.12s, opacity 0.12s, transform 0.1s;
+  letter-spacing: -0.2px;
   -webkit-user-select: none; user-select: none;
 }
-.btn:active:not(:disabled) { opacity: 0.7; }
+.btn:active:not(:disabled) { transform: scale(0.97); opacity: 0.85; }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .btn-primary { background: var(--accent); color: #fff; }
-.btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
 .btn-success { background: var(--text-primary); color: #fff; }
-.btn-success:hover:not(:disabled) { background: #000; }
-.btn-secondary { background: transparent; color: var(--text-primary); border: 1px solid var(--border-medium); }
-.btn-secondary:hover:not(:disabled) { background: var(--bg-hover); }
-.btn-danger { background: transparent; color: var(--red); border: 1px solid var(--border-medium); }
-.btn-danger:hover:not(:disabled) { background: var(--red-bg); }
-
-.btn-large {
-  padding: 12px 16px; font-size: 0.92rem;
-  width: 100%; min-height: 46px;
-  border-radius: var(--radius-md);
-  justify-content: flex-start;
-}
+.btn-secondary { background: var(--bg-sidebar); color: var(--text-primary); border: 1.5px solid var(--border-medium); }
+.btn-danger { background: transparent; color: var(--red); border: 1.5px solid var(--border-medium); }
 .btn-block { width: 100%; }
-.btn-sm { padding: 5px 10px; font-size: 0.78rem; min-height: 30px; border-radius: var(--radius-sm); font-weight: 500; }
+.btn-sm { padding: 8px 12px; font-size: 0.85rem; min-height: 36px; border-radius: var(--radius-sm); font-weight: 600; }
 
-/* ==================== HERO ==================== */
+/* ==================== HERO (Accueil) ==================== */
 .hero {
   background: var(--bg-sidebar);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
   padding: 28px 20px;
   margin-bottom: 20px;
+  text-align: center;
 }
-.hero h2 { font-size: 1.6rem; margin-bottom: 4px; }
-.hero p { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px; }
-.hero-buttons { display: flex; flex-direction: column; gap: 8px; }
-.hero-buttons .btn {
-  background: var(--bg-app);
-  color: var(--text-primary);
-  border: 1px solid var(--border-medium);
-  font-weight: 500;
-  text-align: left;
-  font-size: 0.92rem;
-}
-.hero-buttons .btn:hover:not(:disabled) { background: var(--bg-hover); }
+.hero h2 { font-size: 1.8rem; margin-bottom: 8px; }
+.hero p { font-size: 1rem; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5; }
 
-/* ==================== TOOLBAR / INPUTS ==================== */
-.toolbar { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.menu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.menu-card {
+  background: var(--bg-app);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 20px 14px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, transform 0.1s;
+  min-height: 110px;
+  text-align: center;
+}
+.menu-card:active { transform: scale(0.96); background: var(--bg-hover); }
+.menu-card .menu-emoji { font-size: 2rem; line-height: 1; }
+.menu-card .menu-label {
+  font-size: 0.95rem; font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.2px;
+}
+.menu-card .menu-sub {
+  font-size: 0.75rem; color: var(--text-tertiary);
+  font-weight: 500;
+}
+.menu-card.accent { border-color: var(--accent); background: var(--accent-bg); }
+.menu-card.accent .menu-label { color: var(--accent); }
+
+/* ==================== TOOLBAR ==================== */
+.toolbar {
+  display: flex; flex-direction: column; gap: 10px;
+  margin-bottom: 20px;
+}
+.toolbar .btn { width: 100%; }
 
 .input-search, .input-date, .input-select,
 .form-group input, .form-group select, .form-group textarea {
-  width: 100%; padding: 8px 12px;
-  border: 1px solid var(--border-medium);
+  width: 100%; padding: 12px 16px;
+  border: 1.5px solid var(--border-medium);
   border-radius: var(--radius-md);
   font-size: 16px;
   outline: none;
   background: var(--bg-input);
-  min-height: 38px;
+  min-height: 48px;
   color: var(--text-primary);
   transition: border-color 0.15s, box-shadow 0.15s;
   -webkit-appearance: none; appearance: none;
-  font-weight: 400;
+  font-weight: 500;
 }
 .input-search:focus, .input-date:focus, .input-select:focus,
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-bg);
+  box-shadow: 0 0 0 4px var(--accent-bg);
 }
-.input-search::placeholder { color: var(--text-tertiary); }
+.input-search::placeholder { color: var(--text-tertiary); font-weight: 400; }
 
 .input-select, .form-group select {
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236b6b6b' stroke-width='3'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6b6b' stroke-width='3'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 32px;
+  background-position: right 14px center;
+  padding-right: 40px;
 }
 .input-search {
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239b9a97' stroke-width='2.5' stroke-linecap='round'%3e%3ccircle cx='11' cy='11' r='7'/%3e%3cpath d='m21 21-4.35-4.35'/%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239b9a97' stroke-width='2.5' stroke-linecap='round'%3e%3ccircle cx='11' cy='11' r='7'/%3e%3cpath d='m21 21-4.35-4.35'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
-  background-position: 12px center;
-  padding-left: 34px;
+  background-position: 14px center;
+  padding-left: 42px;
 }
-.toolbar .btn { width: 100%; }
 
-/* ==================== LISTES ==================== */
+/* ==================== LISTES CLIENTS ==================== */
 .liste-clients {
   display: flex; flex-direction: column;
-  border: 1px solid var(--border-light);
+  border: 1.5px solid var(--border-light);
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--bg-app);
 }
 .client-card {
   background: var(--bg-app);
-  padding: 12px 14px;
-  display: flex; flex-direction: column; gap: 4px;
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 6px;
   border-bottom: 1px solid var(--border-light);
   transition: background 0.12s;
 }
 .client-card:last-child { border-bottom: none; }
-.client-card:hover { background: var(--bg-hover); }
+.client-card:active { background: var(--bg-hover); }
 .client-card.visite { background: var(--bg-sidebar); }
 .client-card .client-name {
-  font-weight: 600; font-size: 0.92rem;
+  font-weight: 700; font-size: 1rem;
   display: flex; justify-content: space-between; align-items: center;
   gap: 8px; color: var(--text-primary);
 }
 .client-card .client-id {
-  font-size: 0.72rem; color: var(--text-tertiary);
+  font-size: 0.75rem; color: var(--text-tertiary);
   font-family: 'SF Mono', 'Courier New', monospace;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.3px;
 }
-.client-card .client-meta { font-size: 0.78rem; color: var(--text-secondary); }
-.client-card .client-actions { display: flex; gap: 6px; margin-top: 8px; }
+.client-card .client-meta { font-size: 0.82rem; color: var(--text-secondary); }
+.client-card .client-actions { display: flex; gap: 8px; margin-top: 10px; }
 .client-card .client-actions .btn { flex: 1; }
 
 .visite-badge {
   background: var(--green-bg);
   color: var(--green);
-  padding: 2px 8px;
-  border-radius: var(--radius-sm);
-  font-size: 0.68rem; font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.72rem; font-weight: 700;
 }
 
 /* ==================== HISTORIQUE ==================== */
 .historique-scroll {
   background: var(--bg-app);
-  border: 1px solid var(--border-light);
+  border: 1.5px solid var(--border-light);
   border-radius: var(--radius-lg);
   overflow: hidden;
   margin-bottom: 16px;
 }
 .hist-item {
-  display: flex; flex-direction: column; gap: 2px;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border-light);
-  font-size: 0.85rem;
-}
-.hist-item:last-child { border-bottom: none; }
-.hist-item .hist-date { color: var(--text-tertiary); font-size: 0.72rem; }
-.hist-item .hist-label { font-weight: 500; color: var(--text-primary); font-size: 0.88rem; }
-.hist-empty { text-align: center; color: var(--text-tertiary); padding: 24px 16px; font-size: 0.85rem; }
-
-/* ==================== VENTES ==================== */
-.vente-layout { display: flex; flex-direction: column; gap: 12px; }
-.vente-clients, .vente-produits, .vente-form {
-  background: var(--bg-app);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  padding: 14px;
-}
-.liste-clients-vente {
-  max-height: 220px; overflow-y: auto;
-  display: flex; flex-direction: column;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  margin-top: 8px;
-}
-.client-vente-item {
-  padding: 10px 12px; cursor: pointer;
+  display: flex; flex-direction: column; gap: 3px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--border-light);
   font-size: 0.88rem;
+}
+.hist-item:last-child { border-bottom: none; }
+.hist-item .hist-date { color: var(--text-tertiary); font-size: 0.75rem; }
+.hist-item .hist-label { font-weight: 600; color: var(--text-primary); font-size: 0.92rem; }
+.hist-empty { text-align: center; color: var(--text-tertiary); padding: 32px 16px; font-size: 0.9rem; }
+
+/* ==================== VENTES ==================== */
+.vente-layout { display: flex; flex-direction: column; gap: 14px; }
+.vente-clients, .vente-produits, .vente-form {
+  background: var(--bg-app);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+}
+.liste-clients-vente {
+  max-height: 240px; overflow-y: auto;
+  display: flex; flex-direction: column;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  margin-top: 10px;
+}
+.client-vente-item {
+  padding: 14px 16px; cursor: pointer;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 0.92rem;
+  font-weight: 500;
   transition: background 0.12s;
 }
 .client-vente-item:last-child { border-bottom: none; }
-.client-vente-item:hover { background: var(--bg-hover); }
-.client-vente-item.selected { background: var(--accent-bg); color: var(--accent); font-weight: 500; }
+.client-vente-item:active { background: var(--bg-hover); }
+.client-vente-item.selected { background: var(--accent-bg); color: var(--accent); font-weight: 700; }
 
 .produits-grid {
   display: grid; grid-template-columns: repeat(2, 1fr);
-  gap: 6px; max-height: 320px; overflow-y: auto;
-  margin-top: 8px;
+  gap: 8px; max-height: 340px; overflow-y: auto;
+  margin-top: 10px;
 }
 .produit-btn {
   background: var(--bg-app);
-  border: 1px solid var(--border-medium);
+  border: 1.5px solid var(--border-medium);
   border-radius: var(--radius-md);
-  padding: 10px 8px;
-  font-size: 0.72rem;
-  font-weight: 400;
+  padding: 14px 10px;
+  font-size: 0.78rem;
+  font-weight: 500;
   color: var(--text-primary);
   text-align: center;
-  min-height: 64px;
+  min-height: 72px;
   display: flex; align-items: center; justify-content: center;
-  line-height: 1.35;
+  line-height: 1.4;
   transition: all 0.12s; cursor: pointer;
 }
-.produit-btn:hover { background: var(--bg-hover); }
-.produit-btn.selected { background: var(--accent-bg); color: var(--accent); border-color: var(--accent); font-weight: 500; }
+.produit-btn:active { background: var(--bg-hover); }
+.produit-btn.selected { background: var(--accent-bg); color: var(--accent); border-color: var(--accent); font-weight: 700; }
 
 /* ==================== FORMS ==================== */
-.form-group { margin-bottom: 12px; }
+.form-group { margin-bottom: 16px; }
 .form-group label {
-  display: block; font-size: 0.75rem;
-  font-weight: 500;
-  margin-bottom: 6px;
+  display: block; font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 8px;
   color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
 }
 .form-group input[readonly] { background: var(--bg-sidebar); color: var(--text-secondary); }
 .total-field {
   background: var(--accent-bg) !important;
   color: var(--accent) !important;
-  font-weight: 600 !important;
+  font-weight: 800 !important;
   border-color: var(--accent) !important;
+  font-size: 1.1rem !important;
 }
 
 /* ==================== NAV ==================== */
@@ -418,28 +429,29 @@ h3 {
   height: calc(var(--nav-h) + var(--safe-bottom));
   padding-bottom: var(--safe-bottom);
   background: var(--bg-app);
-  border-top: 1px solid var(--border-light);
+  border-top: 1.5px solid var(--border-light);
   display: flex; justify-content: space-around; align-items: center;
   z-index: 200;
   padding-left: var(--safe-left); padding-right: var(--safe-right);
 }
 .nav-btn {
   background: none; border: none;
-  color: var(--text-secondary);
-  font-size: 0.68rem; font-weight: 500;
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  flex: 1; cursor: pointer; padding: 6px 4px;
+  color: var(--text-tertiary);
+  font-size: 0.7rem; font-weight: 600;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  flex: 1; cursor: pointer; padding: 8px 4px;
   transition: color 0.12s;
+  letter-spacing: -0.1px;
 }
 .nav-btn:active { opacity: 0.6; }
-.nav-btn.active { color: var(--text-primary); font-weight: 600; }
-.nav-btn svg { width: 20px; height: 20px; fill: currentColor; transition: transform 0.15s; }
-.nav-btn.active svg { transform: scale(1.05); }
+.nav-btn.active { color: var(--text-primary); font-weight: 800; }
+.nav-btn svg { width: 24px; height: 24px; fill: currentColor; transition: transform 0.15s; }
+.nav-btn.active svg { transform: scale(1.1); }
 
 /* ==================== MODAL ==================== */
 .modal-overlay {
   display: none; position: fixed; inset: 0;
-  background: rgba(15, 15, 15, 0.4);
+  background: rgba(15, 15, 15, 0.5);
   z-index: 1000; align-items: flex-end; padding: 0;
 }
 .modal-overlay.open { display: flex; }
@@ -450,41 +462,41 @@ h3 {
   display: flex; flex-direction: column;
   animation: slideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1);
   padding-bottom: var(--safe-bottom);
-  border-top: 1px solid var(--border-light);
+  border-top: 1.5px solid var(--border-light);
 }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 .modal-header {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 16px 20px 12px;
-  border-bottom: 1px solid var(--border-light);
+  padding: 20px 20px 14px;
+  border-bottom: 1.5px solid var(--border-light);
 }
 .modal-header h3 {
   color: var(--text-primary);
-  margin: 0; font-size: 0.98rem;
-  font-weight: 600;
+  margin: 0; font-size: 1.1rem;
+  font-weight: 800;
   text-transform: none;
 }
 .modal-close {
   background: none; border: none;
   color: var(--text-secondary);
-  font-size: 1.1rem;
-  width: 28px; height: 28px;
+  font-size: 1.3rem;
+  width: 36px; height: 36px;
   border-radius: var(--radius-sm);
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   transition: background 0.12s;
 }
-.modal-close:hover { background: var(--bg-hover); }
+.modal-close:active { background: var(--bg-hover); }
 .modal-body {
   padding: 20px; overflow-y: auto; flex: 1;
   color: var(--text-primary);
-  font-size: 0.88rem;
-  line-height: 1.5;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 .modal-footer {
-  padding: 12px 20px;
-  display: flex; gap: 8px;
-  border-top: 1px solid var(--border-light);
+  padding: 16px 20px;
+  display: flex; gap: 10px;
+  border-top: 1.5px solid var(--border-light);
 }
 .modal-footer .btn { flex: 1; }
 
@@ -495,11 +507,11 @@ h3 {
   left: 50%; transform: translateX(-50%) translateY(-10px);
   background: var(--text-primary);
   color: #fff;
-  padding: 10px 16px;
+  padding: 12px 18px;
   border-radius: var(--radius-md);
-  font-size: 0.84rem;
-  font-weight: 500;
-  box-shadow: 0 4px 16px rgba(15, 15, 15, 0.15);
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 6px 20px rgba(15, 15, 15, 0.2);
   z-index: 9999;
   opacity: 0; pointer-events: none;
   transition: opacity 0.2s, transform 0.2s;
@@ -542,66 +554,74 @@ h3 {
 /* ==================== CONTACTS ==================== */
 .contact-list {
   display: flex; flex-direction: column;
-  border: 1px solid var(--border-light);
+  border: 1.5px solid var(--border-light);
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--bg-app);
 }
 .contact-item {
-  padding: 12px 14px;
+  padding: 16px;
   border-bottom: 1px solid var(--border-light);
-  display: flex; flex-direction: column; gap: 3px;
+  display: flex; flex-direction: column; gap: 5px;
 }
 .contact-item:last-child { border-bottom: none; }
 .contact-item .contact-nom {
-  font-weight: 600; font-size: 0.92rem;
+  font-weight: 700; font-size: 1rem;
   display: flex; justify-content: space-between; align-items: center;
 }
 .contact-item .contact-date {
-  font-size: 0.72rem; color: var(--text-tertiary);
+  font-size: 0.75rem; color: var(--text-tertiary);
   font-family: 'SF Mono', 'Courier New', monospace;
 }
 .contact-item .contact-note {
-  font-size: 0.82rem; color: var(--text-secondary);
+  font-size: 0.88rem; color: var(--text-secondary);
   background: var(--bg-sidebar);
-  padding: 6px 10px; border-radius: var(--radius-sm);
-  margin-top: 4px;
+  padding: 10px 12px; border-radius: var(--radius-sm);
+  margin-top: 6px;
   white-space: pre-wrap; word-break: break-word;
+  line-height: 1.5;
 }
 .contact-item .contact-actions {
-  display: flex; gap: 6px; margin-top: 6px;
+  display: flex; gap: 8px; margin-top: 10px;
 }
 .contact-item .contact-actions .btn { flex: 1; }
 
 /* ==================== PRODUITS / INVENTAIRE ==================== */
 .famille-section {
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 .famille-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 14px;
+  padding: 16px;
   background: var(--bg-sidebar);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
-  font-weight: 600;
-  font-size: 0.82rem;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.95rem;
   color: var(--text-primary);
   cursor: pointer;
   user-select: none;
+  transition: background 0.12s;
 }
+.famille-header:active { background: var(--bg-hover); }
+.famille-header.open { border-radius: var(--radius-md) var(--radius-md) 0 0; }
 .famille-header .famille-count {
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   color: var(--text-tertiary);
-  font-weight: 500;
+  font-weight: 600;
+  background: var(--bg-app);
+  padding: 2px 10px;
+  border-radius: 10px;
 }
 .famille-header .chevron {
   transition: transform 0.2s;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   color: var(--text-tertiary);
+  margin-left: 4px;
 }
-.famille-header.collapsed .chevron { transform: rotate(-90deg); }
+.famille-header.open .chevron { transform: rotate(180deg); }
 .famille-body {
-  border: 1px solid var(--border-light);
+  border: 1.5px solid var(--border-light);
   border-top: none;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   overflow: hidden;
@@ -610,34 +630,35 @@ h3 {
 .famille-body.collapsed { display: none; }
 
 .produit-item {
-  display: flex; flex-direction: column; gap: 2px;
-  padding: 10px 14px;
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--border-light);
-  font-size: 0.84rem;
+  font-size: 0.9rem;
 }
 .produit-item:last-child { border-bottom: none; }
 .produit-item .produit-nom {
-  font-weight: 500; color: var(--text-primary);
-  font-size: 0.86rem;
-  line-height: 1.35;
+  font-weight: 600; color: var(--text-primary);
+  font-size: 0.92rem;
+  line-height: 1.4;
 }
 .produit-item .produit-details {
-  display: flex; flex-wrap: wrap; gap: 6px 12px;
-  font-size: 0.72rem;
+  display: flex; flex-wrap: wrap; gap: 6px 14px;
+  font-size: 0.78rem;
   color: var(--text-secondary);
-  margin-top: 2px;
+  margin-top: 4px;
+  align-items: center;
 }
 .produit-item .produit-ref {
   font-family: 'SF Mono', 'Courier New', monospace;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   color: var(--text-tertiary);
   letter-spacing: 0.2px;
 }
-.produit-item .badge-stock {
-  padding: 1px 7px;
-  border-radius: 4px;
-  font-size: 0.66rem;
-  font-weight: 600;
+.badge-stock {
+  padding: 2px 10px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 .badge-ok { background: var(--green-bg); color: var(--green); }
 .badge-zero { background: var(--bg-hover); color: var(--text-tertiary); }
@@ -688,76 +709,102 @@ h3 {
   <!-- ACCUEIL -->
   <section id="page-accueil" class="page active">
     <div class="hero">
-      <h2>Bienvenue</h2>
-      <p>Gérez vos visites et ventes</p>
-      <div class="hero-buttons">
-        <button class="btn btn-large" data-page="visites">👥 Visites</button>
-        <button class="btn btn-large" data-page="ventes">💰 Ventes</button>
-        <button class="btn btn-large" data-page="contacts">📞 Contactés</button>
-        <button class="btn btn-large" data-page="produits">📦 Produits</button>
+      <h2>👋 Bienvenue</h2>
+      <p>Que voulez-vous faire aujourd'hui ?</p>
+    </div>
+
+    <div class="menu-grid">
+      <div class="menu-card" data-page="visites">
+        <div class="menu-emoji">👥</div>
+        <div class="menu-label">Visites</div>
+        <div class="menu-sub">Clients à visiter</div>
+      </div>
+      <div class="menu-card accent" data-page="ventes">
+        <div class="menu-emoji">💰</div>
+        <div class="menu-label">Nouvelle vente</div>
+        <div class="menu-sub">Enregistrer</div>
+      </div>
+      <div class="menu-card" data-page="contacts">
+        <div class="menu-emoji">📞</div>
+        <div class="menu-label">Contactés</div>
+        <div class="menu-sub">Appels téléphoniques</div>
+      </div>
+      <div class="menu-card" data-page="produits">
+        <div class="menu-emoji">📦</div>
+        <div class="menu-label">Produits</div>
+        <div class="menu-sub">Stock & inventaire</div>
+      </div>
+      <div class="menu-card" data-page="clients" style="grid-column: 1 / -1;">
+        <div class="menu-emoji">👤</div>
+        <div class="menu-label">Gérer les clients</div>
+        <div class="menu-sub">Ajouter, modifier, supprimer</div>
       </div>
     </div>
   </section>
 
   <!-- VISITES -->
   <section id="page-visites" class="page">
-    <h2>Visites</h2>
+    <h2>👥 Visites</h2>
     <div class="toolbar">
-      <input type="text" id="searchVisites" placeholder="Rechercher un client…" class="input-search">
+      <input type="text" id="searchVisites" placeholder="🔍 Rechercher un client…" class="input-search">
       <input type="date" id="filtreDateVisites" class="input-date">
-      <button class="btn btn-secondary btn-sm" id="resetFiltreVisites">Réinitialiser</button>
-      <button class="btn btn-secondary btn-sm" id="btnExportVisitesCSV">📤 CSV</button>
-      <button class="btn btn-secondary btn-sm" id="btnExportVisitesPDF">📄 PDF</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-secondary btn-sm" id="resetFiltreVisites" style="flex:1;">↻ Réinitialiser</button>
+        <button class="btn btn-secondary btn-sm" id="btnExportVisitesCSV" style="flex:1;">📤 CSV</button>
+        <button class="btn btn-secondary btn-sm" id="btnExportVisitesPDF" style="flex:1;">📄 PDF</button>
+      </div>
     </div>
     <div id="listeVisites" class="liste-clients"></div>
-    <h3>Historique</h3>
+    <h3>📅 Historique des visites</h3>
     <div class="historique-scroll" id="historiqueVisites"></div>
   </section>
 
   <!-- CONTACTS -->
   <section id="page-contacts" class="page">
-    <h2>Contactés</h2>
+    <h2>📞 Contactés</h2>
     <div class="toolbar">
-      <input type="text" id="searchContacts" placeholder="Rechercher un client…" class="input-search">
+      <input type="text" id="searchContacts" placeholder="🔍 Rechercher un client…" class="input-search">
       <input type="date" id="filtreDateContacts" class="input-date">
-      <button class="btn btn-secondary btn-sm" id="resetFiltreContacts">Réinitialiser</button>
-      <button class="btn btn-secondary btn-sm" id="btnPrintContacts">🖨️ Imprimer le rapport</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-secondary btn-sm" id="resetFiltreContacts" style="flex:1;">↻ Réinitialiser</button>
+        <button class="btn btn-secondary btn-sm" id="btnPrintContacts" style="flex:1;">🖨️ Imprimer</button>
+      </div>
     </div>
     <div id="listeContacts" class="contact-list"></div>
   </section>
 
   <!-- PRODUITS -->
   <section id="page-produits" class="page">
-    <h2>Produits</h2>
+    <h2>📦 Produits</h2>
     <div class="toolbar">
-      <input type="text" id="searchProduits" placeholder="Rechercher un produit…" class="input-search">
+      <input type="text" id="searchProduits" placeholder="🔍 Rechercher un produit…" class="input-search">
     </div>
     <div id="listeProduits"></div>
   </section>
 
   <!-- VENTES -->
   <section id="page-ventes" class="page">
-    <h2>Ventes</h2>
+    <h2>💰 Nouvelle vente</h2>
     <div class="vente-layout">
       <div class="vente-clients">
-        <h3>1. Client</h3>
-        <input type="text" id="searchVenteClient" placeholder="Rechercher…" class="input-search">
+        <h3>1️⃣ Choisir le client</h3>
+        <input type="text" id="searchVenteClient" placeholder="🔍 Rechercher…" class="input-search">
         <div id="listeClientsVente" class="liste-clients-vente"></div>
       </div>
       <div class="vente-produits" id="venteProduits" style="display:none;">
-        <h3>2. Produit</h3>
+        <h3>2️⃣ Choisir le produit</h3>
         <div class="produits-grid" id="produitsGrid"></div>
       </div>
       <div class="vente-form" id="venteForm" style="display:none;">
-        <h3>3. Détails</h3>
+        <h3>3️⃣ Détails de la vente</h3>
         <form id="formVente">
           <div class="form-group">
-            <label>Produit</label>
+            <label>Produit sélectionné</label>
             <input type="text" id="venteProduit" readonly>
           </div>
           <div class="form-group">
             <label>Quantité</label>
-            <input type="number" id="venteQuantite" min="0.01" step="0.01" inputmode="decimal" required>
+            <input type="number" id="venteQuantite" min="0.01" step="0.01" inputmode="decimal" placeholder="0" required>
           </div>
           <div class="form-group">
             <label>Unité</label>
@@ -771,17 +818,17 @@ h3 {
           </div>
           <div class="form-group">
             <label>Prix unitaire (DH)</label>
-            <input type="number" id="ventePrix" min="0" step="0.01" inputmode="decimal" required>
+            <input type="number" id="ventePrix" min="0" step="0.01" inputmode="decimal" placeholder="0.00" required>
           </div>
           <div class="form-group">
             <label>Montant total</label>
-            <input type="text" id="venteTotal" readonly class="total-field">
+            <input type="text" id="venteTotal" readonly class="total-field" placeholder="0 DH">
           </div>
           <div class="form-group">
             <label>Date</label>
             <input type="date" id="venteDate" required>
           </div>
-          <button type="submit" class="btn btn-success btn-block">Enregistrer la vente</button>
+          <button type="submit" class="btn btn-success btn-block" style="font-size:1.05rem; min-height:56px;">✓ Enregistrer la vente</button>
         </form>
       </div>
     </div>
@@ -789,10 +836,10 @@ h3 {
 
   <!-- CLIENTS -->
   <section id="page-clients" class="page">
-    <h2>Clients</h2>
+    <h2>👤 Clients</h2>
     <div class="toolbar">
-      <input type="text" id="searchClients" placeholder="Rechercher…" class="input-search">
-      <button class="btn btn-primary" id="btnAjouterClient">+ Ajouter</button>
+      <input type="text" id="searchClients" placeholder="🔍 Rechercher…" class="input-search">
+      <button class="btn btn-primary" id="btnAjouterClient">➕ Ajouter un client</button>
     </div>
     <div id="listeClientsGestion" class="liste-clients"></div>
   </section>
@@ -808,6 +855,10 @@ h3 {
     <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
     Visites
   </button>
+  <button class="nav-btn" data-page="ventes">
+    <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+    Ventes
+  </button>
   <button class="nav-btn" data-page="contacts">
     <svg viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
     Contactés
@@ -815,14 +866,6 @@ h3 {
   <button class="nav-btn" data-page="produits">
     <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 12 7.4l3.38 4.6L17 10.83 14.92 8H20v6z"/></svg>
     Produits
-  </button>
-  <button class="nav-btn" data-page="ventes">
-    <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-    Ventes
-  </button>
-  <button class="nav-btn" data-page="clients">
-    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-    Clients
   </button>
 </nav>
 
@@ -914,7 +957,6 @@ const INVENTAIRE = [
   ]}
 ];
 
-/* Aplatir pour la vente */
 const PRODUITS = INVENTAIRE.flatMap(f => f.produits.map(p => p.nom));
 
 const CLIENTS_INITIAUX = [
@@ -954,7 +996,7 @@ const CLIENTS_INITIAUX = [
 let clients = [], visites = [], ventes = [], contacts = [];
 let venteState = { clientId: null, produit: null };
 let currentPage = 'accueil';
-let famillesOuvertes = {}; // état des accordéons
+let famillesOuvertes = {};
 
 /* ==================== THÈME ==================== */
 function appliquerTheme(theme) {
@@ -1079,7 +1121,6 @@ function renderProduits() {
   const container = document.getElementById('listeProduits');
   const search = normaliser(document.getElementById('searchProduits').value.trim());
 
-  // Filtrer les produits si recherche
   let famillesFiltrees = INVENTAIRE.map(f => {
     if (!search) return f;
     const produits = f.produits.filter(p =>
@@ -1093,17 +1134,16 @@ function renderProduits() {
     return;
   }
 
-  // Si recherche active, tout ouvrir
   if (search) {
     famillesFiltrees.forEach(f => famillesOuvertes[f.famille] = true);
   }
 
   container.innerHTML = famillesFiltrees.map(f => {
-    const ouvert = famillesOuvertes[f.famille] !== false; // ouvert par défaut
+    const ouvert = famillesOuvertes[f.famille] !== false;
     const nb = f.produits.length;
     return `
       <div class="famille-section">
-        <div class="famille-header ${ouvert ? '' : 'collapsed'}" data-famille="${echapperHTML(f.famille)}">
+        <div class="famille-header ${ouvert ? 'open' : ''}" data-famille="${echapperHTML(f.famille)}">
           <span>${echapperHTML(f.famille)}</span>
           <span style="display:flex; align-items:center; gap:8px;">
             <span class="famille-count">${nb}</span>
@@ -1136,7 +1176,7 @@ function renderProduits() {
       const fam = h.dataset.famille;
       famillesOuvertes[fam] = famillesOuvertes[fam] === false ? true : false;
       const body = h.nextElementSibling;
-      h.classList.toggle('collapsed');
+      h.classList.toggle('open');
       body.classList.toggle('collapsed');
     });
   });
@@ -1173,7 +1213,7 @@ function renderVisites() {
         <div class="client-meta">${derniere ? 'Dernière : ' + formatDateHeure(derniere.date) : 'Aucune visite'}</div>
         <div class="client-actions">
           <button class="btn btn-secondary btn-sm" data-visite="${c.id}" ${visiteAujourdhui ? 'disabled' : ''}>
-            ${visiteAujourdhui ? 'Déjà visité' : 'Marquer visite'}
+            ${visiteAujourdhui ? '✓ Déjà visité' : '📍 Marquer visite'}
           </button>
         </div>
       </div>
@@ -1193,19 +1233,19 @@ function enregistrerVisite(clientId) {
     titre: 'Confirmer la visite',
     corps: `
       <div style="padding: 4px 0;">
-        <p style="font-size:0.86rem; color:var(--text-secondary); margin-bottom:14px;">Voulez-vous confirmer la visite pour :</p>
-        <p style="font-size:1.05rem; font-weight:600; color:var(--text-primary); margin-bottom:4px;">
+        <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:16px;">Voulez-vous confirmer la visite pour :</p>
+        <p style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin-bottom:6px;">
           ${echapperHTML(client.nom)}
         </p>
-        <p style="font-size:0.74rem; color:var(--text-tertiary); font-family:'SF Mono',monospace; letter-spacing:0.3px; margin-bottom:16px;">${echapperHTML(client.id)}</p>
-        <p style="font-size:0.82rem; color:var(--text-secondary); padding:8px 12px; background:var(--bg-sidebar); border-radius:6px; display:inline-block;">
-          ${new Date().toLocaleDateString('fr-FR')} · ${new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+        <p style="font-size:0.78rem; color:var(--text-tertiary); font-family:'SF Mono',monospace; letter-spacing:0.3px; margin-bottom:18px;">${echapperHTML(client.id)}</p>
+        <p style="font-size:0.9rem; color:var(--text-secondary); padding:10px 14px; background:var(--bg-sidebar); border-radius:8px; display:inline-block;">
+          📅 ${new Date().toLocaleDateString('fr-FR')} · ${new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
         </p>
       </div>
     `,
     footer: `
       <button class="btn btn-secondary" id="modalAnnulerVisite">Annuler</button>
-      <button class="btn btn-primary" id="modalConfirmerVisite">Confirmer la visite</button>
+      <button class="btn btn-primary" id="modalConfirmerVisite">✓ Confirmer</button>
     `
   });
 
@@ -1262,8 +1302,8 @@ function renderContacts() {
         <div class="contact-date">${formatDateHeure(c.date)}</div>
         <div class="contact-note">${echapperHTML(c.note)}</div>
         <div class="contact-actions">
-          <button class="btn btn-secondary btn-sm" data-modifier-contact="${c.id}">Modifier</button>
-          <button class="btn btn-danger btn-sm" data-supprimer-contact="${c.id}">Supprimer</button>
+          <button class="btn btn-secondary btn-sm" data-modifier-contact="${c.id}">✏️ Modifier</button>
+          <button class="btn btn-danger btn-sm" data-supprimer-contact="${c.id}">🗑️ Supprimer</button>
         </div>
       </div>
     `).join('');
@@ -1283,7 +1323,7 @@ function renderContacts() {
   addBtn.id = 'btnAjouterContact';
   addBtn.className = 'btn btn-primary btn-block';
   addBtn.style.marginTop = '16px';
-  addBtn.textContent = '+ Ajouter un contact';
+  addBtn.innerHTML = '➕ Ajouter un contact';
   addBtn.addEventListener('click', ouvrirModaleAjouterContact);
   container.after(addBtn);
 }
@@ -1293,20 +1333,20 @@ function ouvrirModaleAjouterContact() {
     .map(c => `<option value="${c.id}">${echapperHTML(c.nom)} (${echapperHTML(c.id)})</option>`).join('');
 
   ouvrirModale({
-    titre: 'Nouveau contact téléphonique',
+    titre: 'Nouveau contact',
     corps: `
       <div class="form-group">
         <label>Client</label>
         <select id="contactClientSelect">${options}</select>
       </div>
       <div class="form-group">
-        <label>Note</label>
-        <textarea id="contactNote" rows="3" placeholder="Détails de l'appel…" style="resize:vertical;"></textarea>
+        <label>Note / Détails de l'appel</label>
+        <textarea id="contactNote" rows="4" placeholder="Ex: Appelé pour relance commande…" style="resize:vertical;"></textarea>
       </div>
     `,
     footer: `
       <button class="btn btn-secondary" id="modalAnnulerContact">Annuler</button>
-      <button class="btn btn-primary" id="modalValiderContact">Enregistrer</button>
+      <button class="btn btn-primary" id="modalValiderContact">✓ Enregistrer</button>
     `
   });
 
@@ -1341,12 +1381,12 @@ function ouvrirModaleModifierContact(contactId) {
     corps: `
       <div class="form-group">
         <label>Note</label>
-        <textarea id="modifContactNote" rows="3" style="resize:vertical;">${echapperHTML(contact.note)}</textarea>
+        <textarea id="modifContactNote" rows="4" style="resize:vertical;">${echapperHTML(contact.note)}</textarea>
       </div>
     `,
     footer: `
       <button class="btn btn-secondary" id="modalAnnulerModifContact">Annuler</button>
-      <button class="btn btn-primary" id="modalValiderModifContact">Enregistrer</button>
+      <button class="btn btn-primary" id="modalValiderModifContact">✓ Enregistrer</button>
     `
   });
 
@@ -1368,10 +1408,10 @@ function supprimerContact(contactId) {
 
   ouvrirModale({
     titre: 'Supprimer le contact',
-    corps: `<p style="color:var(--text-primary);">Voulez-vous vraiment supprimer ce contact ?</p>`,
+    corps: `<p style="color:var(--text-primary); font-size:1rem;">Voulez-vous vraiment supprimer ce contact ?</p>`,
     footer: `
       <button class="btn btn-secondary" id="modalAnnulerSupprContact">Annuler</button>
-      <button class="btn btn-danger" id="modalConfirmerSupprContact">Supprimer</button>
+      <button class="btn btn-danger" id="modalConfirmerSupprContact">🗑️ Supprimer</button>
     `
   });
 
@@ -1437,7 +1477,7 @@ function renderClientsVente() {
 
   container.innerHTML = liste.map(c => `
     <div class="client-vente-item ${venteState.clientId === c.id ? 'selected' : ''}" data-client-vente="${c.id}">
-      ${echapperHTML(c.nom)} <span style="font-size:.7rem;color:var(--text-tertiary);">${echapperHTML(c.id)}</span>
+      ${echapperHTML(c.nom)} <span style="font-size:.72rem;color:var(--text-tertiary);">${echapperHTML(c.id)}</span>
     </div>
   `).join('');
 
@@ -1551,8 +1591,8 @@ function renderClientsGestion() {
       <div class="client-name"><span>${echapperHTML(c.nom)}</span></div>
       <div class="client-id">${echapperHTML(c.id)}</div>
       <div class="client-actions">
-        <button class="btn btn-secondary btn-sm" data-modifier="${c.id}">Modifier</button>
-        <button class="btn btn-danger btn-sm" data-supprimer="${c.id}">Supprimer</button>
+        <button class="btn btn-secondary btn-sm" data-modifier="${c.id}">✏️ Modifier</button>
+        <button class="btn btn-danger btn-sm" data-supprimer="${c.id}">🗑️ Supprimer</button>
       </div>
     </div>
   `).join('');
@@ -1593,9 +1633,9 @@ function supprimerClient(id) {
 
   ouvrirModale({
     titre: 'Supprimer le client',
-    corps: `<p style="color:var(--text-primary);">Voulez-vous vraiment supprimer <strong>${echapperHTML(client.nom)}</strong> ainsi que tout son historique de visites, ventes et contacts ? Cette action est irréversible.</p>`,
+    corps: `<p style="color:var(--text-primary); font-size:1rem;">Voulez-vous vraiment supprimer <strong>${echapperHTML(client.nom)}</strong> ainsi que tout son historique (visites, ventes, contacts) ? Cette action est irréversible.</p>`,
     footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button>
-             <button class="btn btn-danger" id="modalConfirmerSuppr">Supprimer</button>`
+             <button class="btn btn-danger" id="modalConfirmerSuppr">🗑️ Supprimer</button>`
   });
 
   document.getElementById('modalAnnuler').addEventListener('click', fermerModale);
@@ -1624,7 +1664,7 @@ function ouvrirModaleModifierClient(id) {
       </div>
     `,
     footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button>
-             <button class="btn btn-primary" id="modalValiderModif">Enregistrer</button>`
+             <button class="btn btn-primary" id="modalValiderModif">✓ Enregistrer</button>`
   });
 
   document.getElementById('modalAnnuler').addEventListener('click', fermerModale);
@@ -1736,7 +1776,7 @@ function initClients() {
     ouvrirModale({
       titre: 'Nouveau client',
       corps: `<div class="form-group"><label>Nom du client</label><input type="text" id="nouveauClientNom" placeholder="Ex: Ferme Durand"></div>`,
-      footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button><button class="btn btn-primary" id="modalAjouter">Ajouter</button>`
+      footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button><button class="btn btn-primary" id="modalAjouter">✓ Ajouter</button>`
     });
     document.getElementById('modalAnnuler').addEventListener('click', fermerModale);
     document.getElementById('modalAjouter').addEventListener('click', () => {
