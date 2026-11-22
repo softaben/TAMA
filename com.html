@@ -213,7 +213,7 @@ h3 {
 .btn-block { width: 100%; }
 .btn-sm { padding: 8px 12px; font-size: 0.85rem; min-height: 36px; border-radius: var(--radius-sm); font-weight: 600; }
 
-/* ==================== HERO (Accueil) ==================== */
+/* ==================== HERO ==================== */
 .hero {
   background: var(--bg-sidebar);
   border: 1px solid var(--border-light);
@@ -386,7 +386,6 @@ h3 {
 .client-vente-item:active { background: var(--bg-hover); }
 .client-vente-item.selected { background: var(--accent-bg); color: var(--accent); font-weight: 700; }
 
-/* Familles pour la vente */
 .familles-vente-grid {
   display: grid; grid-template-columns: 1fr 1fr;
   gap: 8px; margin-top: 10px;
@@ -764,8 +763,8 @@ h3 {
       </div>
       <div class="menu-card" data-page="produits">
         <div class="menu-emoji">📦</div>
-        <div class="menu-label">Produits</div>
-        <div class="menu-sub">Stock & inventaire</div>
+        <div class="menu-label">طلبات خاصة</div>
+        <div class="menu-sub">Commandes spéciales</div>
       </div>
       <div class="menu-card" data-page="clients" style="grid-column: 1 / -1;">
         <div class="menu-emoji">👤</div>
@@ -806,9 +805,9 @@ h3 {
     <div id="listeContacts" class="contact-list"></div>
   </section>
 
-  <!-- PRODUITS -->
+  <!-- PRODUITS / طلبات خاصة -->
   <section id="page-produits" class="page">
-    <h2>📦 Produits</h2>
+    <h2>📦 طلبات خاصة</h2>
     <div class="toolbar">
       <input type="text" id="searchProduits" placeholder="🔍 Rechercher un produit…" class="input-search">
     </div>
@@ -820,26 +819,22 @@ h3 {
     <h2>💰 Nouvelle vente</h2>
     <div class="vente-layout">
 
-      <!-- Étape 1 : Client -->
       <div class="vente-clients">
         <h3>1️⃣ Choisir le client</h3>
         <input type="text" id="searchVenteClient" placeholder="🔍 Rechercher…" class="input-search">
         <div id="listeClientsVente" class="liste-clients-vente"></div>
       </div>
 
-      <!-- Étape 2 : Famille -->
       <div class="vente-produits" id="venteFamilles" style="display:none;">
         <h3>2️⃣ Choisir la famille</h3>
         <div class="familles-vente-grid" id="famillesGrid"></div>
       </div>
 
-      <!-- Étape 3 : Produit -->
       <div class="vente-produits" id="venteProduits" style="display:none;">
         <h3>3️⃣ Choisir le produit</h3>
         <div class="produits-grid" id="produitsGrid"></div>
       </div>
 
-      <!-- Étape 4 : Détails -->
       <div class="vente-form" id="venteForm" style="display:none;">
         <h3>4️⃣ Détails de la vente</h3>
         <form id="formVente">
@@ -910,7 +905,7 @@ h3 {
   </button>
   <button class="nav-btn" data-page="produits">
     <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 12 7.4l3.38 4.6L17 10.83 14.92 8H20v6z"/></svg>
-    Produits
+    طلبات خاصة
   </button>
 </nav>
 
@@ -951,7 +946,6 @@ const STORAGE_KEYS = {
   THEME: 'tam_theme_v1'
 };
 
-/* ==================== INVENTAIRE ==================== */
 const INVENTAIRE = [
   { famille: 'Câbles & Ficelles', produits: [
     { ref: 'CABL00015', nom: 'FICELLE NOIR 1000', qte: 1660, si: 970 },
@@ -1270,7 +1264,7 @@ function renderHistoriqueVisites() {
   `).join('');
 }
 
-/* ==================== PRODUITS / INVENTAIRE ==================== */
+/* ==================== PRODUITS / طلبات خاصة ==================== */
 function renderProduits() {
   const container = document.getElementById('listeProduits');
   const search = normaliser(document.getElementById('searchProduits').value.trim());
