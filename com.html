@@ -1,1103 +1,1742 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TAM AGRICOLE – Gestion commerciale</title>
-  <!-- html2pdf library for PDF generation -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <style>
-    /* ================================================================
-       RESET & BASE (Dimensions fixes pour Mobile)
-       ================================================================ */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-      font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#1b5e20">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TAM AGRICOLE">
+<title>TAM AGRICOLE – Gestion commerciale</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+/* ================================================================
+   RESET & TOKENS (Design System)
+   ================================================================ */
+*, *::before, *::after {
+  margin: 0; padding: 0; box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-    :root {
-      --vert-fonce: #1b5e20;
-      --vert-principal: #2e7d32;
-      --vert-clair: #4caf50;
-      --vert-tres-clair: #e8f5e9;
-      --gris-fonce: #333;
-      --gris-moyen: #777;
-      --gris-clair: #f5f5f5;
-      --gris-bordure: #ddd;
-      --blanc: #fff;
-      --rouge: #c62828;
-      --radius: 12px;
-      --radius-sm: 8px;
-      --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
+:root {
+  /* Palette verte agricole pro */
+  --vert-900: #0d3d12;
+  --vert-800: #1b5e20;
+  --vert-700: #2e7d32;
+  --vert-600: #388e3c;
+  --vert-500: #4caf50;
+  --vert-400: #66bb6a;
+  --vert-300: #a5d6a7;
+  --vert-100: #e8f5e9;
+  --vert-50:  #f1f8f2;
 
-    html, body {
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-      background: var(--gris-clair);
-      color: var(--gris-fonce);
-      display: flex;
-      flex-direction: column;
-    }
+  /* Neutres */
+  --ink-900: #0f172a;
+  --ink-800: #1e293b;
+  --ink-700: #334155;
+  --ink-500: #64748b;
+  --ink-400: #94a3b8;
+  --ink-300: #cbd5e1;
+  --ink-200: #e2e8f0;
+  --ink-100: #f1f5f9;
+  --ink-50:  #f8fafc;
+  --blanc: #ffffff;
 
-    /* ---------- HEADER FIXE ---------- */
-    .app-header {
-      flex-shrink: 0;
-      background: var(--vert-principal);
-      color: var(--blanc);
-      box-shadow: var(--shadow);
-      z-index: 100;
-      height: 56px;
-      display: flex;
-      align-items: center;
-    }
+  /* Accents */
+  --rouge: #dc2626;
+  --rouge-clair: #fee2e2;
+  --orange: #ea580c;
+  --bleu: #0284c7;
 
-    .header-container {
-      width: 100%;
-      padding: 0 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+  /* Radius */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-full: 999px;
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 1.1rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
+  /* Shadows (multi-layer iOS style) */
+  --shadow-xs: 0 1px 2px rgba(15,23,42,.06);
+  --shadow-sm: 0 1px 3px rgba(15,23,42,.08), 0 1px 2px rgba(15,23,42,.04);
+  --shadow-md: 0 4px 12px rgba(15,23,42,.08), 0 2px 4px rgba(15,23,42,.04);
+  --shadow-lg: 0 10px 24px rgba(15,23,42,.10), 0 4px 8px rgba(15,23,42,.05);
+  --shadow-xl: 0 20px 40px rgba(15,23,42,.15), 0 8px 16px rgba(15,23,42,.08);
 
-    /* ---------- MAIN (ZONE DÉFILANTE) ---------- */
-    .app-main {
-      flex: 1;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      padding: 1rem 0.8rem 80px 0.8rem;
-      position: relative;
-    }
+  /* Safe Areas (iPhone notch / Dynamic Island) */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
 
-    .page { display: none; animation: fadeIn 0.2s ease; }
-    .page.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+  /* Layout */
+  --header-h: 60px;
+  --nav-h: 68px;
+}
 
-    h2 { font-size: 1.3rem; color: var(--vert-fonce); margin-bottom: 0.8rem; }
-    h3 { font-size: 1rem; color: var(--vert-principal); margin: 1rem 0 0.5rem; }
+/* ================================================================
+   BODY
+   ================================================================ */
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--ink-100);
+  color: var(--ink-900);
+  display: flex;
+  flex-direction: column;
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
 
-    /* ---------- BOUTONS ---------- */
-    .btn {
-      border: none; border-radius: 999px; padding: 0.7rem 1.2rem;
-      font-size: 0.9rem; font-weight: 600; cursor: pointer;
-      display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;
-      min-height: 42px; transition: transform 0.1s;
-    }
-    .btn:active { transform: scale(0.96); }
-    .btn-primary { background: var(--vert-principal); color: var(--blanc); }
-    .btn-success { background: var(--vert-clair); color: var(--blanc); }
-    .btn-secondary { background: var(--blanc); color: var(--vert-principal); border: 2px solid var(--vert-principal); }
-    .btn-danger { background: var(--rouge); color: var(--blanc); }
-    .btn-large { padding: 1rem; font-size: 1rem; width: 100%; }
-    .btn-block { width: 100%; }
-    .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; min-height: 36px; }
+/* ================================================================
+   HEADER (iOS style, glass effect)
+   ================================================================ */
+.app-header {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--vert-800) 0%, var(--vert-600) 100%);
+  color: var(--blanc);
+  height: calc(var(--header-h) + var(--safe-top));
+  padding-top: var(--safe-top);
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 100;
+  box-shadow: 0 1px 0 rgba(255,255,255,.08) inset, 0 4px 20px rgba(27,94,32,.25);
+}
 
-    /* ---------- ACCUEIL ---------- */
-    .hero {
-      background: linear-gradient(135deg, var(--vert-principal), var(--vert-clair));
-      color: var(--blanc); border-radius: var(--radius); padding: 2rem 1rem;
-      text-align: center; box-shadow: var(--shadow); margin-bottom: 1.2rem;
-    }
-    .hero h2 { color: var(--blanc); font-size: 1.5rem; margin-bottom: 0.5rem; }
-    .hero p { font-size: 0.95rem; opacity: 0.95; margin-bottom: 1.5rem; }
-    .hero-buttons { display: flex; flex-direction: column; gap: 0.8rem; }
+.app-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at top right, rgba(255,255,255,.15), transparent 60%);
+  pointer-events: none;
+}
 
-    .quick-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
-    .quick-stat-card { background: var(--blanc); border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow); text-align: center; border-top: 4px solid var(--vert-clair); }
-    .quick-stat-card .qs-value { font-size: 1.5rem; font-weight: 700; color: var(--vert-principal); }
-    .quick-stat-card .qs-label { font-size: 0.75rem; color: var(--gris-moyen); margin-top: 0.2rem; }
+.header-container {
+  width: 100%;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
 
-    /* ---------- TOOLBAR / FILTRES ---------- */
-    .toolbar { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1rem; }
-    .input-search, .input-date, .input-select {
-      width: 100%; padding: 0.7rem 1rem; border: 1.5px solid var(--gris-bordure);
-      border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; background: var(--blanc); min-height: 44px;
-    }
-    .toolbar .btn { width: 100%; margin-bottom: 0.2rem; }
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
 
-    /* ---------- LISTES CLIENTS ---------- */
-    .liste-clients { display: flex; flex-direction: column; gap: 0.6rem; }
-    .client-card {
-      background: var(--blanc); border-radius: var(--radius); padding: 0.9rem;
-      box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 0.5rem;
-      border-left: 5px solid var(--gris-bordure);
-    }
-    .client-card.visite { border-left-color: var(--vert-clair); background: var(--vert-tres-clair); }
-    .client-card .client-name { font-weight: 700; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
-    .client-card .client-id { font-size: 0.75rem; color: var(--gris-moyen); }
-    .client-card .client-meta { font-size: 0.8rem; color: var(--gris-moyen); }
-    .client-card .client-actions { display: flex; gap: 0.5rem; margin-top: 0.3rem; }
-    .client-card .client-actions .btn { flex: 1; }
-    .visite-badge { background: var(--vert-clair); color: var(--blanc); padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.7rem; font-weight: 600; }
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,.18);
+  border-radius: 50%;
+  font-size: 1.1rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
 
-    /* ---------- HISTORIQUE ---------- */
-    .historique-scroll { background: var(--blanc); border-radius: var(--radius); box-shadow: var(--shadow); padding: 0.5rem; margin-bottom: 1rem; }
-    .hist-item { display: flex; flex-direction: column; gap: 0.2rem; padding: 0.6rem; border-bottom: 1px solid var(--gris-bordure); font-size: 0.85rem; }
-    .hist-item:last-child { border-bottom: none; }
-    .hist-item .hist-date { color: var(--gris-moyen); font-size: 0.75rem; }
-    .hist-item .hist-label { font-weight: 600; color: var(--vert-fonce); }
-    .hist-empty { text-align: center; color: var(--gris-moyen); padding: 1rem; font-size: 0.9rem; }
+/* ================================================================
+   MAIN (scrollable area)
+   ================================================================ */
+.app-main {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 16px calc(var(--nav-h) + var(--safe-bottom) + 20px);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
 
-    /* ---------- VENTES ---------- */
-    .vente-layout { display: flex; flex-direction: column; gap: 1rem; }
-    .vente-clients, .vente-produits, .vente-form { background: var(--blanc); border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow); }
-    
-    .liste-clients-vente { max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; border: 1px solid var(--gris-bordure); border-radius: var(--radius-sm); margin-top: 0.5rem; }
-    .client-vente-item { padding: 0.7rem; cursor: pointer; border-bottom: 1px solid var(--gris-bordure); font-size: 0.9rem; }
-    .client-vente-item:last-child { border-bottom: none; }
-    .client-vente-item.selected { background: var(--vert-clair); color: var(--blanc); font-weight: 600; }
+.app-main::-webkit-scrollbar { display: none; }
 
-    .produits-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; max-height: 250px; overflow-y: auto; margin-top: 0.5rem; }
-    .produit-btn {
-      background: var(--vert-tres-clair); border: 2px solid var(--vert-clair); border-radius: var(--radius-sm);
-      padding: 0.6rem 0.3rem; font-size: 0.75rem; font-weight: 600; color: var(--vert-fonce);
-      text-align: center; min-height: 60px; display: flex; align-items: center; justify-content: center;
-    }
-    .produit-btn.selected { background: var(--vert-principal); color: var(--blanc); border-color: var(--vert-fonce); }
+.page { display: none; animation: pageIn .3s cubic-bezier(.4,0,.2,1); }
+.page.active { display: block; }
 
-    /* ---------- FORMULAIRES ---------- */
-    .form-group { margin-bottom: 0.8rem; }
-    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.3rem; }
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%; padding: 0.7rem; border: 1.5px solid var(--gris-bordure);
-      border-radius: var(--radius-sm); font-size: 0.9rem; outline: none; background: var(--blanc); min-height: 44px;
-    }
-    .form-group input[readonly] { background: var(--gris-clair); font-weight: 600; }
-    .total-field { background: var(--vert-tres-clair) !important; color: var(--vert-fonce) !important; font-weight: 700 !important; }
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-    /* ---------- DASHBOARD ---------- */
-    .dashboard-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; margin-bottom: 1rem; }
-    .stat-card { background: var(--blanc); border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow); text-align: center; border-top: 4px solid var(--vert-clair); }
-    .stat-card .stat-value { font-size: 1.4rem; font-weight: 700; color: var(--vert-principal); }
-    .stat-card .stat-label { font-size: 0.75rem; color: var(--gris-moyen); margin-top: 0.2rem; }
-    .dashboard-historiques { display: flex; flex-direction: column; gap: 1rem; }
+/* ================================================================
+   TYPOGRAPHY
+   ================================================================ */
+h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--vert-800);
+  margin-bottom: 16px;
+  letter-spacing: -0.3px;
+}
 
-    /* ---------- BARRE DE NAVIGATION EN BAS ---------- */
-    .main-nav {
-      position: fixed; bottom: 0; left: 0; width: 100%; height: 65px;
-      background: var(--blanc); box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-      display: flex; justify-content: space-around; align-items: center;
-      z-index: 200; border-top: 1px solid var(--gris-bordure);
-    }
-    .nav-btn {
-      background: none; border: none; color: var(--gris-moyen);
-      font-size: 0.7rem; display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
-      flex: 1; cursor: pointer; padding: 0.3rem;
-    }
-    .nav-btn.active { color: var(--vert-principal); font-weight: 700; }
-    .nav-btn svg { width: 22px; height: 22px; fill: currentColor; }
+h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--vert-700);
+  margin: 20px 0 10px;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
 
-    /* ---------- MODALE ---------- */
-    .modal-overlay {
-      display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5);
-      z-index: 1000; align-items: flex-end;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--blanc); border-radius: var(--radius) var(--radius) 0 0;
-      width: 100%; max-height: 90vh; display: flex; flex-direction: column;
-      animation: slideUp 0.3s ease;
-    }
-    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--vert-principal); color: var(--blanc); border-radius: var(--radius) var(--radius) 0 0; }
-    .modal-header h3 { color: var(--blanc); margin: 0; font-size: 1rem; }
-    .modal-close { background: none; border: none; color: var(--blanc); font-size: 1.2rem; padding: 0.5rem; }
-    .modal-body { padding: 1rem; overflow-y: auto; flex: 1; }
-    .modal-footer { padding: 1rem; display: flex; gap: 0.5rem; border-top: 1px solid var(--gris-bordure); }
-    .modal-footer .btn { flex: 1; }
+/* ================================================================
+   BUTTONS (iOS-like)
+   ================================================================ */
+.btn {
+  border: none;
+  border-radius: var(--r-md);
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  transition: transform 0.15s cubic-bezier(.4,0,.2,1), box-shadow 0.2s, opacity 0.2s;
+  letter-spacing: 0.2px;
+  -webkit-user-select: none;
+  user-select: none;
+}
 
-    /* ---------- TOAST ---------- */
-    .toast {
-      position: fixed;
-      bottom: 80px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: #1b5e20;
-      color: #ffffff;
-      padding: 12px 24px;
-      border-radius: 999px;
-      font-size: 15px;
-      font-weight: 500;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-      z-index: 9999;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s, transform 0.3s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      white-space: nowrap;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .toast.error { background: #c62828; }
+.btn:active:not(:disabled) { transform: scale(0.97); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* ---------- PDF TEMPLATE (Hidden) ---------- */
-    #pdf-template {
-      display: none;
-      padding: 20px;
-      color: #000;
-      background: #fff;
-      font-family: Arial, sans-serif;
-    }
-    #pdf-template h1 { text-align: center; color: #2e7d32; border-bottom: 2px solid #2e7d32; padding-bottom: 10px; margin-bottom: 20px; }
-    #pdf-template .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
-    #pdf-template table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
-    #pdf-template th, #pdf-template td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    #pdf-template th { background-color: #f5f5f5; color: #333; }
-    #pdf-template .total-row { font-weight: bold; text-align: right; }
-    #pdf-template .footer { margin-top: 40px; text-align: center; font-size: 11px; color: #777; }
-  </style>
+.btn-primary {
+  background: linear-gradient(135deg, var(--vert-700), var(--vert-500));
+  color: var(--blanc);
+  box-shadow: 0 4px 14px rgba(46,125,50,.35), 0 1px 0 rgba(255,255,255,.15) inset;
+}
+.btn-primary:active { box-shadow: 0 2px 8px rgba(46,125,50,.3); }
+
+.btn-success {
+  background: linear-gradient(135deg, var(--vert-600), var(--vert-400));
+  color: var(--blanc);
+  box-shadow: 0 4px 14px rgba(76,175,80,.3), 0 1px 0 rgba(255,255,255,.15) inset;
+}
+
+.btn-secondary {
+  background: var(--blanc);
+  color: var(--vert-700);
+  border: 1.5px solid var(--vert-300);
+  box-shadow: var(--shadow-xs);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, var(--rouge), #ef4444);
+  color: var(--blanc);
+  box-shadow: 0 4px 14px rgba(220,38,38,.3);
+}
+
+.btn-large { padding: 16px 20px; font-size: 1rem; width: 100%; min-height: 54px; border-radius: var(--r-lg); }
+.btn-block { width: 100%; }
+.btn-sm { padding: 8px 14px; font-size: 0.82rem; min-height: 38px; border-radius: var(--r-sm); }
+
+/* ================================================================
+   HERO (accueil)
+   ================================================================ */
+.hero {
+  background: linear-gradient(135deg, var(--vert-800) 0%, var(--vert-600) 55%, var(--vert-500) 100%);
+  color: var(--blanc);
+  border-radius: var(--r-xl);
+  padding: 32px 22px;
+  text-align: center;
+  box-shadow: 0 12px 32px rgba(27,94,32,.28);
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -30%;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(255,255,255,.18), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '🌱';
+  position: absolute;
+  bottom: -20px; right: 10px;
+  font-size: 120px;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+.hero h2 {
+  color: var(--blanc);
+  font-size: 1.7rem;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero p {
+  font-size: 0.95rem;
+  opacity: 0.92;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-buttons .btn {
+  background: rgba(255,255,255,.98);
+  color: var(--vert-800);
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,.15);
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+.hero-buttons .btn:active { background: rgba(255,255,255,.85); }
+
+/* ================================================================
+   QUICK STATS
+   ================================================================ */
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.quick-stat-card {
+  background: var(--blanc);
+  border-radius: var(--r-lg);
+  padding: 18px 16px;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  border: 1px solid var(--ink-100);
+  position: relative;
+  overflow: hidden;
+}
+
+.quick-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--vert-500), var(--vert-300));
+}
+
+.quick-stat-card .qs-value {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--vert-800);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+.quick-stat-card .qs-label {
+  font-size: 0.72rem;
+  color: var(--ink-500);
+  margin-top: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ================================================================
+   TOOLBAR & INPUTS
+   ================================================================ */
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.input-search, .input-date, .input-select, .form-group input, .form-group select, .form-group textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid var(--ink-200);
+  border-radius: var(--r-md);
+  font-size: 16px; /* prevents iOS zoom */
+  outline: none;
+  background: var(--blanc);
+  min-height: 50px;
+  color: var(--ink-900);
+  transition: border-color .2s, box-shadow .2s;
+  -webkit-appearance: none;
+  appearance: none;
+  font-weight: 500;
+}
+
+.input-search:focus, .input-date:focus, .input-select:focus,
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  border-color: var(--vert-500);
+  box-shadow: 0 0 0 4px rgba(76,175,80,.15);
+}
+
+.input-select, .form-group select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='3'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+.input-search {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round'%3e%3ccircle cx='11' cy='11' r='7'/%3e%3cpath d='m21 21-4.35-4.35'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: 16px center;
+  padding-left: 46px;
+}
+
+.toolbar .btn { width: 100%; margin-bottom: 2px; }
+
+/* ================================================================
+   CLIENT CARDS
+   ================================================================ */
+.liste-clients {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.client-card {
+  background: var(--blanc);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid var(--ink-100);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.client-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 4px;
+  background: var(--ink-300);
+}
+
+.client-card.visite {
+  background: linear-gradient(135deg, var(--vert-50), var(--blanc));
+  border-color: var(--vert-300);
+}
+
+.client-card.visite::before {
+  background: linear-gradient(180deg, var(--vert-500), var(--vert-700));
+}
+
+.client-card .client-name {
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--ink-900);
+  letter-spacing: -0.2px;
+}
+
+.client-card .client-id {
+  font-size: 0.75rem;
+  color: var(--ink-500);
+  font-weight: 600;
+  font-family: 'SF Mono', 'Courier New', monospace;
+  letter-spacing: 0.5px;
+}
+
+.client-card .client-meta {
+  font-size: 0.82rem;
+  color: var(--ink-500);
+  font-weight: 500;
+}
+
+.client-card .client-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.client-card .client-actions .btn { flex: 1; }
+
+.visite-badge {
+  background: linear-gradient(135deg, var(--vert-500), var(--vert-600));
+  color: var(--blanc);
+  padding: 4px 10px;
+  border-radius: var(--r-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(76,175,80,.3);
+  letter-spacing: 0.3px;
+}
+
+/* ================================================================
+   HISTORIQUE
+   ================================================================ */
+.historique-scroll {
+  background: var(--blanc);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 4px;
+  margin-bottom: 16px;
+  border: 1px solid var(--ink-100);
+  overflow: hidden;
+}
+
+.hist-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--ink-100);
+  font-size: 0.88rem;
+}
+.hist-item:last-child { border-bottom: none; }
+
+.hist-item .hist-date {
+  color: var(--ink-500);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.hist-item .hist-label {
+  font-weight: 700;
+  color: var(--vert-800);
+}
+
+.hist-empty {
+  text-align: center;
+  color: var(--ink-400);
+  padding: 28px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* ================================================================
+   VENTES
+   ================================================================ */
+.vente-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.vente-clients, .vente-produits, .vente-form {
+  background: var(--blanc);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--ink-100);
+}
+
+.liste-clients-vente {
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  border: 1.5px solid var(--ink-200);
+  border-radius: var(--r-md);
+  margin-top: 10px;
+  background: var(--ink-50);
+}
+
+.client-vente-item {
+  padding: 13px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--ink-100);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background .2s;
+}
+.client-vente-item:last-child { border-bottom: none; }
+.client-vente-item:active { background: var(--ink-100); }
+.client-vente-item.selected {
+  background: linear-gradient(135deg, var(--vert-600), var(--vert-500));
+  color: var(--blanc);
+  font-weight: 700;
+}
+
+.produits-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+  margin-top: 10px;
+  padding: 4px;
+}
+
+.produit-btn {
+  background: var(--vert-50);
+  border: 1.5px solid var(--vert-300);
+  border-radius: var(--r-md);
+  padding: 12px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--vert-800);
+  text-align: center;
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.3;
+  transition: all .2s;
+  cursor: pointer;
+}
+.produit-btn:active { transform: scale(0.97); }
+.produit-btn.selected {
+  background: linear-gradient(135deg, var(--vert-700), var(--vert-500));
+  color: var(--blanc);
+  border-color: var(--vert-800);
+  box-shadow: 0 4px 12px rgba(46,125,50,.3);
+}
+
+/* ================================================================
+   FORMS
+   ================================================================ */
+.form-group { margin-bottom: 14px; }
+
+.form-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--ink-700);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.form-group input[readonly] {
+  background: var(--ink-100);
+  font-weight: 600;
+  color: var(--ink-700);
+}
+
+.total-field {
+  background: linear-gradient(135deg, var(--vert-50), var(--vert-100)) !important;
+  color: var(--vert-800) !important;
+  font-weight: 800 !important;
+  font-size: 1.05rem !important;
+  border-color: var(--vert-300) !important;
+}
+
+/* ================================================================
+   DASHBOARD
+   ================================================================ */
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background: var(--blanc);
+  border-radius: var(--r-lg);
+  padding: 18px 14px;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  border: 1px solid var(--ink-100);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--vert-500), var(--vert-300));
+}
+
+.stat-card .stat-value {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--vert-800);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+.stat-card .stat-label {
+  font-size: 0.72rem;
+  color: var(--ink-500);
+  margin-top: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dashboard-historiques {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ================================================================
+   BOTTOM NAVIGATION (iOS style)
+   ================================================================ */
+.main-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: calc(var(--nav-h) + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: rgba(255,255,255,.92);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-top: 1px solid rgba(0,0,0,.06);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 200;
+  padding-left: var(--safe-left);
+  padding-right: var(--safe-right);
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  color: var(--ink-500);
+  font-size: 0.68rem;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  cursor: pointer;
+  padding: 8px 4px;
+  transition: color .2s, transform .15s;
+  letter-spacing: 0.2px;
+}
+
+.nav-btn:active { transform: scale(0.92); }
+
+.nav-btn.active {
+  color: var(--vert-700);
+  font-weight: 700;
+}
+
+.nav-btn.active svg {
+  filter: drop-shadow(0 2px 6px rgba(46,125,50,.35));
+}
+
+.nav-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  transition: transform .2s;
+}
+
+/* ================================================================
+   MODAL / BOTTOM SHEET
+   ================================================================ */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15,23,42,.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1000;
+  align-items: flex-end;
+  padding: 0;
+  animation: fadeIn .25s;
+}
+
+.modal-overlay.open { display: flex; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: var(--blanc);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp .35s cubic-bezier(.32,.72,0,1);
+  padding-bottom: var(--safe-bottom);
+  box-shadow: 0 -10px 40px rgba(0,0,0,.2);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 20px 12px;
+  border-bottom: 1px solid var(--ink-100);
+  position: relative;
+}
+
+.modal-header::before {
+  content: '';
+  position: absolute;
+  top: 8px; left: 50%;
+  transform: translateX(-50%);
+  width: 40px; height: 4px;
+  background: var(--ink-300);
+  border-radius: var(--r-full);
+}
+
+.modal-header h3 {
+  color: var(--ink-900);
+  margin: 8px 0 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: -0.2px;
+  opacity: 1;
+}
+
+.modal-close {
+  background: var(--ink-100);
+  border: none;
+  color: var(--ink-700);
+  font-size: 1rem;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background .2s;
+  font-weight: 700;
+}
+.modal-close:active { background: var(--ink-200); }
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: 16px 20px;
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid var(--ink-100);
+}
+
+.modal-footer .btn { flex: 1; }
+
+/* ================================================================
+   TOAST (iOS style)
+   ================================================================ */
+.toast {
+  position: fixed;
+  top: calc(var(--safe-top) + var(--header-h) + 16px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--ink-900);
+  color: var(--blanc);
+  padding: 14px 22px;
+  border-radius: var(--r-full);
+  font-size: 0.92rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-xl);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s, transform .3s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 90vw;
+  white-space: nowrap;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.error { background: linear-gradient(135deg, #b91c1c, #dc2626); }
+
+/* ================================================================
+   PDF TEMPLATE
+   ================================================================ */
+#pdf-template {
+  display: none;
+  padding: 20px;
+  color: #000;
+  background: #fff;
+  font-family: Arial, sans-serif;
+}
+#pdf-template h1 { text-align: center; color: #2e7d32; border-bottom: 2px solid #2e7d32; padding-bottom: 10px; margin-bottom: 20px; }
+#pdf-template .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
+#pdf-template table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
+#pdf-template th, #pdf-template td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+#pdf-template th { background-color: #f5f5f5; color: #333; }
+#pdf-template .footer { margin-top: 40px; text-align: center; font-size: 11px; color: #777; }
+
+/* ================================================================
+   DARK MODE (auto)
+   ================================================================ */
+@media (prefers-color-scheme: dark) {
+  html, body { background: #0f172a; color: #f1f5f9; }
+  .client-card, .historique-scroll, .quick-stat-card, .stat-card,
+  .vente-clients, .vente-produits, .vente-form, .modal {
+    background: #1e293b;
+    border-color: #334155;
+    color: #f1f5f9;
+  }
+  .input-search, .input-date, .input-select, .form-group input, .form-group select, .form-group textarea {
+    background: #1e293b;
+    border-color: #334155;
+    color: #f1f5f9;
+  }
+  .main-nav { background: rgba(30,41,59,.92); border-color: rgba(255,255,255,.06); }
+  .modal-header { border-color: #334155; }
+  .modal-footer { border-color: #334155; }
+  h2 { color: var(--vert-300); }
+  .client-card .client-name { color: #f1f5f9; }
+  .client-card.visite { background: linear-gradient(135deg, #1a3a1e, #1e293b); }
+}
+</style>
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header class="app-header">
-    <div class="header-container">
-      <div class="logo">
-        <span>🌱</span> TAM AGRICOLE
-      </div>
-    </div>
-  </header>
-
-  <!-- MAIN -->
-  <main class="app-main">
-    
-    <!-- ACCUEIL -->
-    <section id="page-accueil" class="page active">
-      <div class="hero">
-        <h2>Bienvenue</h2>
-        <p>Gérez vos visites et ventes</p>
-        <div class="hero-buttons">
-          <button class="btn btn-primary btn-large" data-page="visites">👥 VISITES</button>
-          <button class="btn btn-primary btn-large" data-page="ventes">💰 VENTES</button>
-        </div>
-      </div>
-      <div class="quick-stats" id="quickStats"></div>
-    </section>
-
-    <!-- VISITES -->
-    <section id="page-visites" class="page">
-      <h2>👥 Visites</h2>
-      <div class="toolbar">
-        <input type="text" id="searchVisites" placeholder="🔍 Rechercher un client…" class="input-search">
-        <input type="date" id="filtreDateVisites" class="input-date">
-        <button class="btn btn-secondary btn-sm" id="resetFiltreVisites">Réinitialiser</button>
-        <button class="btn btn-success btn-sm" id="btnExportVisitesCSV">📤 CSV</button>
-        <button class="btn btn-primary btn-sm" id="btnExportVisitesPDF">📄 Exporter PDF</button>
-      </div>
-      <div id="listeVisites" class="liste-clients"></div>
-      <h3>📅 Historique</h3>
-      <div class="historique-scroll" id="historiqueVisites"></div>
-    </section>
-
-    <!-- VENTES -->
-    <section id="page-ventes" class="page">
-      <h2>💰 Ventes</h2>
-      <div class="vente-layout">
-        <div class="vente-clients">
-          <h3>1. Client</h3>
-          <input type="text" id="searchVenteClient" placeholder="🔍 Rechercher…" class="input-search">
-          <div id="listeClientsVente" class="liste-clients-vente"></div>
-        </div>
-        <div class="vente-produits" id="venteProduits" style="display:none;">
-          <h3>2. Produit</h3>
-          <div class="produits-grid" id="produitsGrid"></div>
-        </div>
-        <div class="vente-form" id="venteForm" style="display:none;">
-          <h3>3. Détails</h3>
-          <form id="formVente">
-            <div class="form-group">
-              <label>Produit</label>
-              <input type="text" id="venteProduit" readonly>
-            </div>
-            <div class="form-group">
-              <label>Quantité</label>
-              <input type="number" id="venteQuantite" min="0.01" step="0.01" required>
-            </div>
-            <div class="form-group">
-              <label>Unité</label>
-              <select id="venteUnite">
-                <option value="kg">kg</option>
-                <option value="ML">ML</option>
-                <option value="M²">M²</option>
-                <option value="Packet">Packet</option>
-                <option value="unité">unité</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Prix unitaire (DH)</label>
-              <input type="number" id="ventePrix" min="0" step="0.01" required>
-            </div>
-            <div class="form-group">
-              <label>Montant total</label>
-              <input type="text" id="venteTotal" readonly class="total-field">
-            </div>
-            <div class="form-group">
-              <label>Date</label>
-              <input type="date" id="venteDate" required>
-            </div>
-            <button type="submit" class="btn btn-success btn-block">✅ ENREGISTRER LA VENTE</button>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <!-- CLIENTS -->
-    <section id="page-clients" class="page">
-      <h2>📋 Clients</h2>
-      <div class="toolbar">
-        <input type="text" id="searchClients" placeholder="🔍 Rechercher…" class="input-search">
-        <button class="btn btn-primary" id="btnAjouterClient">➕ Ajouter</button>
-      </div>
-      <div id="listeClientsGestion" class="liste-clients"></div>
-    </section>
-
-    <!-- DASHBOARD -->
-    <section id="page-dashboard" class="page">
-      <h2>📊 Statistiques</h2>
-      <div class="dashboard-stats" id="dashboardStats"></div>
-      <div class="toolbar">
-        <input type="date" id="dashFiltreDate" class="input-date">
-        <select id="dashFiltreClient" class="input-select">
-          <option value="">Tous les clients</option>
-        </select>
-        <button class="btn btn-secondary btn-sm" id="resetDashFiltres">Réinitialiser</button>
-      </div>
-      <div class="dashboard-historiques">
-        <div>
-          <h3>📅 Ventes récentes</h3>
-          <div class="historique-scroll" id="histVentes"></div>
-        </div>
-        <div>
-          <h3>👥 Visites récentes</h3>
-          <div class="historique-scroll" id="histVisites"></div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- NAVIGATION EN BAS -->
-  <nav class="main-nav">
-    <button class="nav-btn active" data-page="accueil">
-      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      Accueil
-    </button>
-    <button class="nav-btn" data-page="visites">
-      <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-      Visites
-    </button>
-    <button class="nav-btn" data-page="ventes">
-      <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-      Ventes
-    </button>
-    <button class="nav-btn" data-page="clients">
-      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-      Clients
-    </button>
-    <button class="nav-btn" data-page="dashboard">
-      <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
-      Stats
-    </button>
-  </nav>
-
-  <!-- MODALE -->
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal" id="modal">
-      <div class="modal-header">
-        <h3 id="modalTitle"></h3>
-        <button class="modal-close" id="modalClose">✕</button>
-      </div>
-      <div class="modal-body" id="modalBody"></div>
-      <div class="modal-footer" id="modalFooter"></div>
+<!-- HEADER -->
+<header class="app-header">
+  <div class="header-container">
+    <div class="logo">
+      <span class="logo-icon">🌱</span>
+      TAM AGRICOLE
     </div>
   </div>
+</header>
 
-  <!-- TOAST -->
-  <div id="toast" class="toast"></div>
-
-  <!-- PDF TEMPLATE (Hidden) -->
-  <div id="pdf-template">
-    <h1>TAM AGRICOLE</h1>
-    <div class="info-row">
-      <span><strong>Document:</strong> <span id="pdf-type">Rapport</span></span>
-      <span><strong>Date d'édition:</strong> <span id="pdf-date"></span></span>
+<!-- MAIN -->
+<main class="app-main">
+  
+  <!-- ACCUEIL -->
+  <section id="page-accueil" class="page active">
+    <div class="hero">
+      <h2>Bienvenue</h2>
+      <p>Gérez vos visites et ventes</p>
+      <div class="hero-buttons">
+        <button class="btn btn-large" data-page="visites">👥 VISITES</button>
+        <button class="btn btn-large" data-page="ventes">💰 VENTES</button>
+      </div>
     </div>
-    <div class="info-row">
-      <span><strong>Client / Filtre:</strong> <span id="pdf-client">Tous</span></span>
+    <div class="quick-stats" id="quickStats"></div>
+  </section>
+
+  <!-- VISITES -->
+  <section id="page-visites" class="page">
+    <h2>👥 Visites</h2>
+    <div class="toolbar">
+      <input type="text" id="searchVisites" placeholder="Rechercher un client…" class="input-search">
+      <input type="date" id="filtreDateVisites" class="input-date">
+      <button class="btn btn-secondary btn-sm" id="resetFiltreVisites">Réinitialiser</button>
+      <button class="btn btn-success btn-sm" id="btnExportVisitesCSV">📤 CSV</button>
+      <button class="btn btn-primary btn-sm" id="btnExportVisitesPDF">📄 Exporter PDF</button>
     </div>
-    <table id="pdf-table">
-      <!-- Table content injected via JS -->
-    </table>
-    <div class="footer">
-      Généré par l'application TAM AGRICOLE - Gestion Commerciale
-    </div>
-  </div>
+    <div id="listeVisites" class="liste-clients"></div>
+    <h3>📅 Historique</h3>
+    <div class="historique-scroll" id="historiqueVisites"></div>
+  </section>
 
-  <script>
-    /* ================================================================
-       JAVASCRIPT COMPLET
-       ================================================================ */
-    const STORAGE_KEYS = { CLIENTS: 'tam_clients_v3', VISITES: 'tam_visites_v3', VENTES: 'tam_ventes_v3' };
-
-    const PRODUITS = [
-      'FILET BLANC ANTI THRIPS (1,0X100) 11X21', 'FILET BLANC ANTI THRIPS (1,5X100) 11X21',
-      'FILET BLANC ANTI THRIPS (2,0X100) 11X21', 'FILET BLANC ANTI THRIPS (3,0X100) 11X21',
-      'FILET BLANC ANTI THRIPS (4,0X100) 11X21', 'FILET BLANC ANTI THRIPS (5,0X100) 11X21',
-      'FILET BLANC ANTI THRIPS (6,0X100) 11X21', 'FILET OMBRIERE 50% ARGENTE',
-      'AQUATAPE 8 MIL 10 CM', 'AQUATAPE 8 MIL 20 CM', 'AQUATAPE 8 MILL 15 CM',
-      'AQUADROP 12 MIL 20 CM 1.3 L', 'CINTAPE 8 MIL 20 CM',
-      'FIL DE FER 12', 'FIL DE FER 16', 'FIL DE FER 18', 'FIL DE FER 21',
-      'FIL DE FER GALVA N 12 Ø 1,80 MM', 'FIL DE FER GALVA N 18 D 3,40 MM ESPAGNE',
-      'FIL DE FER GALVA N 21 Ø 4,90 MM', 'FIL D\'ACIER GALVANISE JP 16 D 2,50MM',
-      'CABLE D\'ACIER GALVA. TRESSE D 2*2,5', 'CABLE D\'ACIER GALVA. TRESSE D 2*3 6.00 MM',
-      'CABLE D\'ACIER GALVA. TRESSE D 3*3 6.40 MM', 'CABLE D\'ACIER GALVA. TRESSE D 3X3,8 MM',
-      'AGRAFES GALVANISE A-18', 'PERLHUMS EN 20 KG', 'POWHUMUS 20 KG', 'DIVERS'
-    ];
-
-    const CLIENTS_INITIAUX = [
-      { id: 'CLT0234', nom: 'DOMAINE SALAH' }, { id: 'CLT0151', nom: 'AFNANE PRIME' },
-      { id: 'CLT0178', nom: 'TOULOUT ABDERRAHIM' }, { id: 'CLT0153', nom: 'FRESHBROTHERS' },
-      { id: 'CLT0182', nom: 'OUGRAICH LAHCEN' }, { id: 'CLT0116', nom: 'AGRI-ERROUIDA' },
-      { id: 'CLT0146', nom: 'COOPERATIVE SAFAA AGRI' }, { id: 'CLT0158', nom: 'DOMAINE BALLAT TAGOT' },
-      { id: 'CLT0243', nom: 'BASSATINE PRIM' }, { id: 'CLT0173', nom: 'DOMAINE L\'EST' },
-      { id: 'CLT0074', nom: 'BRAHIM HEMMAD' }, { id: 'CLT0117', nom: 'AGYAD AGRICULTURE SARL' },
-      { id: 'CLT0170', nom: 'STE ESOMA' }, { id: 'CLT0101', nom: 'AFRICA TRAVAUX AGRICOLES' },
-      { id: 'CLT0237', nom: 'JAOUDA GREEN' }, { id: 'CLT0239', nom: 'SOUSS BERRIES' },
-      { id: 'CLT0238', nom: 'GREEN BENZ GOLD' }, { id: 'CLT0154', nom: 'DOMAINE BOUANAS' },
-      { id: 'CLT0207', nom: 'LB INNOV SARL' }, { id: 'CLT0227', nom: 'DOMAINE AFOULKI' },
-      { id: 'CLT0232', nom: 'GOLDEN PLANT' }, { id: 'CLT0247', nom: 'LOUFANI HASSAN' },
-      { id: 'CLT0240', nom: 'ABDESLAM HAJJAJ' }, { id: 'CLT0184', nom: 'TOUZANI AGRICULTURE' },
-      { id: 'CLT0250', nom: 'ANNAKHIL FERME' }, { id: 'CLT0245', nom: 'AGRI KOUR' },
-      { id: 'CLT0248', nom: 'TBH AGRICOLE' }, { id: 'CLT0215', nom: 'VERGENAIM AGRI' },
-      { id: 'CLT0032', nom: 'BOUMALEK ABDELKBIR' }, { id: 'CLT0122', nom: 'MOHAMMED ESSADKAOUI' },
-      { id: 'CLT0257', nom: 'PREMIUM HARVEST' }, { id: 'CLT0262', nom: 'DOMAINE LB FRESH' },
-      { id: 'CLT0246', nom: 'KARAM GREEN AGRI' }, { id: 'CLT0256', nom: 'MUSTAPHA AIT GOUZAL' },
-      { id: 'CLT0214', nom: 'MAKAREM AGRICOLE REP BEN SALAH' }, { id: 'CLT0259', nom: 'ANSAR PRIM' },
-      { id: 'CLT0260', nom: 'Ste ANSAR PRIM SARL' }, { id: 'CLT0261', nom: 'KAMABRO SARL' },
-      { id: 'CLT0213', nom: 'PEPPER WORLD' }, { id: 'CLT0200', nom: 'BACHIR ZYANE' },
-      { id: 'CLT0242', nom: 'HAJ OUAADI MOHAMED' }, { id: 'CLT0263', nom: 'SAID OUTAIBI' },
-      { id: 'CLT0220', nom: 'AHMED AHFAY' }, { id: 'CLT0187', nom: 'AIT GOUZAL AHMED' },
-      { id: 'CLT0219', nom: 'SOLUTION AGRICOLE DU SOUSS' }, { id: 'CLT0251', nom: 'ABDERRAHIM GOUSKAR' },
-      { id: 'CLT0208', nom: 'REHIL AGRICOLE SARL AU' }, { id: 'CLT0268', nom: 'ABDELKBIR EL HIF' },
-      { id: 'CLT0270', nom: 'LAHSEN OUAADDI' }, { id: 'CLT0271', nom: 'DOMAINE AYOUR' },
-      { id: 'CLT0272', nom: 'FAST TRAVAUX' }, { id: 'CLT0273', nom: 'GREEN SABOR' },
-      { id: 'CLT0276', nom: 'BELAARIBI SAID' }, { id: 'CLT0183', nom: 'RACHID LOUFANI' },
-      { id: 'CLT0230', nom: 'OULHINTE ABDELLAH' }, { id: 'CLT0265', nom: 'SAFAR PRIM' },
-      { id: 'CLT0186', nom: 'OUBAYROUK RACHID' }, { id: 'CLT0241', nom: 'FADILI AZZEDINE 2' },
-      { id: 'CLT0222', nom: 'DOMAINE OUBLAID' }, { id: 'CLT0223', nom: 'AGROPOLE' },
-      { id: 'CLT0174', nom: 'HICHAM MORTADI' }
-    ];
-
-    let clients = [], visites = [], ventes = [];
-    let venteState = { clientId: null, produit: null };
-    let dashFiltres = { date: '', clientId: '' };
-
-    /* UTILS */
-    function maintenant() { return new Date().toISOString(); }
-    function formatDateHeure(iso) { return iso ? new Date(iso).toLocaleDateString('fr-FR') + ' ' + new Date(iso).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : ''; }
-    function formatDate(iso) { return iso ? new Date(iso).toLocaleDateString('fr-FR') : ''; }
-    function dateDuJour() { return new Date().toISOString().slice(0, 10); }
-    function formatMontant(n) { return new Intl.NumberFormat('fr-FR').format(n) + ' DH'; }
-    function normaliser(str) { return (str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
-    function echapperHTML(str) { const div = document.createElement('div'); div.textContent = str == null ? '' : String(str); return div.innerHTML; }
-
-    function toast(message, type = 'success') {
-      const el = document.getElementById('toast');
-      const icon = type === 'error' ? '❌' : '✅';
-      el.innerHTML = `<span>${message}</span> <span style="font-size:1.1em;">${icon}</span>`;
-      el.className = 'toast show' + (type === 'error' ? ' error' : '');
-      clearTimeout(el._timer);
-      el._timer = setTimeout(() => { el.className = 'toast'; }, 3000);
-    }
-
-    /* PERSISTANCE */
-    function chargerDonnees() {
-      try {
-        clients = JSON.parse(localStorage.getItem(STORAGE_KEYS.CLIENTS)) || [...CLIENTS_INITIAUX];
-        visites = JSON.parse(localStorage.getItem(STORAGE_KEYS.VISITES)) || [];
-        ventes  = JSON.parse(localStorage.getItem(STORAGE_KEYS.VENTES))  || [];
-        if(!localStorage.getItem(STORAGE_KEYS.CLIENTS)) sauvegarder();
-      } catch (e) {
-        clients = [...CLIENTS_INITIAUX]; visites = []; ventes = [];
-      }
-    }
-
-    function sauvegarder() {
-      localStorage.setItem(STORAGE_KEYS.CLIENTS, JSON.stringify(clients));
-      localStorage.setItem(STORAGE_KEYS.VISITES, JSON.stringify(visites));
-      localStorage.setItem(STORAGE_KEYS.VENTES, JSON.stringify(ventes));
-    }
-
-    /* NAVIGATION */
-    function initNavigation() {
-      document.querySelectorAll('[data-page]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const page = btn.dataset.page;
-          if (!page) return;
-          afficherPage(page);
-        });
-      });
-    }
-
-    function afficherPage(pageId) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      const page = document.getElementById('page-' + pageId);
-      if (page) page.classList.add('active');
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
-      
-      document.querySelector('.app-main').scrollTop = 0;
-
-      if (pageId === 'visites')    { renderVisites(); renderHistoriqueVisites(); }
-      if (pageId === 'ventes')     { renderClientsVente(); resetVenteForm(); }
-      if (pageId === 'clients')    { renderClientsGestion(); }
-      if (pageId === 'dashboard')  { renderDashboard(); }
-      if (pageId === 'accueil')    { renderQuickStats(); }
-    }
-
-    /* ACCUEIL */
-    function renderQuickStats() {
-      const today = dateDuJour();
-      const visitesJour = visites.filter(v => v.date && v.date.slice(0, 10) === today).length;
-      const ventesJour = ventes.filter(v => v.date && v.date.slice(0, 10) === today).length;
-      const ca = ventes.reduce((s, v) => s + (Number(v.montant) || 0), 0);
-
-      document.getElementById('quickStats').innerHTML = `
-        <div class="quick-stat-card"><div class="qs-value">${clients.length}</div><div class="qs-label">Clients</div></div>
-        <div class="quick-stat-card"><div class="qs-value">${visitesJour}</div><div class="qs-label">Visites auj.</div></div>
-        <div class="quick-stat-card"><div class="qs-value">${ventesJour}</div><div class="qs-label">Ventes auj.</div></div>
-        <div class="quick-stat-card"><div class="qs-value">${formatMontant(ca)}</div><div class="qs-label">CA Total</div></div>
-      `;
-    }
-
-    /* VISITES */
-    function estVisiteAujourdhui(clientId) {
-      return visites.some(v => v.clientId === clientId && v.date && v.date.slice(0, 10) === dateDuJour());
-    }
-
-    function renderVisites() {
-      const search = normaliser(document.getElementById('searchVisites').value.trim());
-      const filtreDate = document.getElementById('filtreDateVisites').value;
-      const container = document.getElementById('listeVisites');
-
-      let liste = clients.slice().sort((a, b) => a.nom.localeCompare(b.nom));
-      if (search) liste = liste.filter(c => normaliser(c.nom).includes(search));
-
-      if (filtreDate) {
-        const idsVisitesDate = new Set(visites.filter(v => v.date && v.date.slice(0, 10) === filtreDate).map(v => v.clientId));
-        liste = liste.filter(c => idsVisitesDate.has(c.id));
-      }
-
-      if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucun client.</p>'; return; }
-
-      container.innerHTML = liste.map(c => {
-        const visiteAujourdhui = estVisiteAujourdhui(c.id);
-        const dernieres = visites.filter(v => v.clientId === c.id).sort((a, b) => new Date(b.date) - new Date(a.date));
-        const derniere = dernieres[0];
-
-        return `
-          <div class="client-card ${visiteAujourdhui ? 'visite' : ''}">
-            <div class="client-name">
-              <span>${echapperHTML(c.nom)}</span>
-              ${visiteAujourdhui ? '<span class="visite-badge">✓</span>' : ''}
-            </div>
-            <div class="client-id">ID : ${echapperHTML(c.id)}</div>
-            <div class="client-meta">${derniere ? 'Dernière : ' + formatDateHeure(derniere.date) : 'Aucune visite'}</div>
-            <div class="client-actions">
-              <button class="btn btn-success btn-sm" data-visite="${c.id}" ${visiteAujourdhui ? 'disabled style="opacity:.5"' : ''}>
-                ${visiteAujourdhui ? 'Déjà visité' : '✔ VISITÉ'}
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      container.querySelectorAll('[data-visite]').forEach(btn => {
-        btn.addEventListener('click', () => enregistrerVisite(btn.dataset.visite));
-      });
-    }
-
-    function enregistrerVisite(clientId) {
-      const client = clients.find(c => c.id === clientId);
-      if (!client || estVisiteAujourdhui(clientId)) return;
-
-      visites.push({ id: 'V' + Date.now(), clientId: client.id, clientNom: client.nom, date: maintenant() });
-      sauvegarder();
-      renderVisites(); renderHistoriqueVisites(); renderQuickStats();
-      toast(`Visite enregistrée`);
-    }
-
-    function renderHistoriqueVisites() {
-      const container = document.getElementById('historiqueVisites');
-      const filtreDate = document.getElementById('filtreDateVisites').value;
-      let liste = visites.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
-      if (filtreDate) liste = liste.filter(v => v.date && v.date.slice(0, 10) === filtreDate);
-
-      if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucune visite.</p>'; return; }
-
-      container.innerHTML = liste.map(v => `
-        <div class="hist-item">
-          <span><span class="hist-label">${echapperHTML(v.clientNom)}</span></span>
-          <span class="hist-date">${formatDateHeure(v.date)}</span>
-        </div>
-      `).join('');
-    }
-
-    /* VENTES */
-    function renderClientsVente() {
-      const search = normaliser(document.getElementById('searchVenteClient').value.trim());
-      const container = document.getElementById('listeClientsVente');
-      let liste = clients.slice().sort((a, b) => a.nom.localeCompare(b.nom));
-      if (search) liste = liste.filter(c => normaliser(c.nom).includes(search));
-
-      if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucun client.</p>'; return; }
-
-      container.innerHTML = liste.map(c => `
-        <div class="client-vente-item ${venteState.clientId === c.id ? 'selected' : ''}" data-client-vente="${c.id}">
-          ${echapperHTML(c.nom)} <span style="font-size:.7rem;opacity:.7">(${echapperHTML(c.id)})</span>
-        </div>
-      `).join('');
-
-      container.querySelectorAll('[data-client-vente]').forEach(el => {
-        el.addEventListener('click', () => selectionnerClientVente(el.dataset.clientVente));
-      });
-    }
-
-    function selectionnerClientVente(clientId) {
-      venteState.clientId = clientId;
-      venteState.produit = null;
-      document.querySelectorAll('#listeClientsVente .client-vente-item').forEach(el => {
-        el.classList.toggle('selected', el.dataset.clientVente === clientId);
-      });
-      document.getElementById('venteProduits').style.display = 'block';
-      renderProduitsVente();
-      document.getElementById('venteForm').style.display = 'none';
-      document.getElementById('venteProduits').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function renderProduitsVente() {
-      const grid = document.getElementById('produitsGrid');
-      grid.innerHTML = PRODUITS.map(p => `
-        <button type="button" class="produit-btn ${venteState.produit === p ? 'selected' : ''}" data-produit="${echapperHTML(p)}">
-          ${echapperHTML(p)}
-        </button>
-      `).join('');
-
-      grid.querySelectorAll('[data-produit]').forEach(btn => {
-        btn.addEventListener('click', () => selectionnerProduit(btn.dataset.produit));
-      });
-    }
-
-    function selectionnerProduit(produit) {
-      venteState.produit = produit;
-      document.querySelectorAll('.produit-btn').forEach(b => b.classList.toggle('selected', b.dataset.produit === produit));
-
-      document.getElementById('venteForm').style.display = 'block';
-      document.getElementById('venteProduit').value = produit;
-      document.getElementById('venteDate').value = dateDuJour();
-      document.getElementById('venteQuantite').value = '';
-      document.getElementById('ventePrix').value = '';
-      document.getElementById('venteTotal').value = '';
-      
-      if (produit.includes('FILET') || produit.includes('OMBRIERE')) document.getElementById('venteUnite').value = 'M²';
-      else if (produit.includes('AQUATAPE') || produit.includes('AQUADROP') || produit.includes('CINTAPE')) document.getElementById('venteUnite').value = 'ML';
-      else if (produit.includes('FER') || produit.includes('CABLE') || produit.includes('PERLHUMS') || produit.includes('POWHUMUS')) document.getElementById('venteUnite').value = 'kg';
-      else if (produit.includes('AGRAFES')) document.getElementById('venteUnite').value = 'Packet';
-
-      document.getElementById('venteForm').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function resetVenteForm() {
-      venteState.produit = null;
-      document.getElementById('venteProduits').style.display = 'none';
-      document.getElementById('venteForm').style.display = 'none';
-    }
-
-    function calculerTotalVente() {
-      const q = parseFloat(document.getElementById('venteQuantite').value) || 0;
-      const p = parseFloat(document.getElementById('ventePrix').value) || 0;
-      document.getElementById('venteTotal').value = (q * p) > 0 ? formatMontant(q * p) : '';
-    }
-
-    function initVenteForm() {
-      document.getElementById('venteQuantite').addEventListener('input', calculerTotalVente);
-      document.getElementById('ventePrix').addEventListener('input', calculerTotalVente);
-      document.getElementById('formVente').addEventListener('submit', e => {
-        e.preventDefault();
-        enregistrerVente();
-      });
-    }
-
-    function enregistrerVente() {
-      const client = clients.find(c => c.id === venteState.clientId);
-      if (!client || !venteState.produit) { toast('Sélection incomplète', 'error'); return; }
-
-      const quantite = parseFloat(document.getElementById('venteQuantite').value);
-      const prix = parseFloat(document.getElementById('ventePrix').value);
-      const dateVente = document.getElementById('venteDate').value;
-
-      if (!quantite || quantite <= 0 || !prix || prix <= 0 || !dateVente) { toast('Vérifiez les champs', 'error'); return; }
-
-      ventes.push({
-        id: 'S' + Date.now(),
-        clientId: client.id, clientNom: client.nom,
-        produit: venteState.produit,
-        quantite: quantite,
-        unite: document.getElementById('venteUnite').value,
-        prixUnitaire: prix,
-        montant: quantite * prix,
-        date: dateVente + 'T' + new Date().toTimeString().slice(0, 8)
-      });
-
-      sauvegarder();
-      toast(`Vente enregistrée`);
-      resetVenteForm();
-      renderQuickStats();
-    }
-
-    /* CLIENTS */
-    function renderClientsGestion() {
-      const search = normaliser(document.getElementById('searchClients').value.trim());
-      const container = document.getElementById('listeClientsGestion');
-      let liste = clients.slice().sort((a, b) => a.nom.localeCompare(b.nom));
-      if (search) liste = liste.filter(c => normaliser(c.nom).includes(search));
-
-      if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucun client.</p>'; return; }
-
-      container.innerHTML = liste.map(c => `
-        <div class="client-card">
-          <div class="client-name"><span>${echapperHTML(c.nom)}</span></div>
-          <div class="client-id">ID : ${echapperHTML(c.id)}</div>
-          <div class="client-actions">
-            <button class="btn btn-secondary btn-sm" data-modifier="${c.id}">✏️ Modifier</button>
-            <button class="btn btn-danger btn-sm" data-supprimer="${c.id}">🗑️ Suppr.</button>
-          </div>
-        </div>
-      `).join('');
-
-      container.querySelectorAll('[data-modifier]').forEach(btn => btn.addEventListener('click', () => ouvrirModaleModifierClient(btn.dataset.modifier)));
-      container.querySelectorAll('[data-supprimer]').forEach(btn => btn.addEventListener('click', () => supprimerClient(btn.dataset.supprimer)));
-    }
-
-    function ajouterClient(nom) {
-      nom = nom.trim();
-      if (!nom || clients.some(c => normaliser(c.nom) === normaliser(nom))) { toast('Nom invalide ou existant', 'error'); return false; }
-
-      clients.push({ id: 'CLT' + Math.floor(1000 + Math.random() * 9000), nom });
-      sauvegarder();
-      renderClientsGestion(); renderQuickStats();
-      toast(`Client ajouté`);
-      return true;
-    }
-
-    function modifierClient(id, nouveauNom) {
-      const client = clients.find(c => c.id === id);
-      if (!client || !nouveauNom.trim()) return false;
-
-      client.nom = nouveauNom.trim();
-      visites.forEach(v => { if (v.clientId === id) v.clientNom = nouveauNom.trim(); });
-      ventes.forEach(v => { if (v.clientId === id) v.clientNom = nouveauNom.trim(); });
-
-      sauvegarder();
-      renderClientsGestion(); renderVisites(); renderHistoriqueVisites(); renderDashboard();
-      toast(`Client modifié`);
-      return true;
-    }
-
-    function supprimerClient(id) {
-      const client = clients.find(c => c.id === id);
-      if (!client) return;
-
-      ouvrirModale({
-        titre: 'Supprimer',
-        corps: `<p>Supprimer <strong>${echapperHTML(client.nom)}</strong> et son historique ?</p>`,
-        footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button>
-                 <button class="btn btn-danger" id="modalConfirmerSuppr">Supprimer</button>`
-      });
-
-      document.getElementById('modalAnnuler').addEventListener('click', fermerModale);
-      document.getElementById('modalConfirmerSuppr').addEventListener('click', () => {
-        clients = clients.filter(c => c.id !== id);
-        visites = visites.filter(v => v.clientId !== id);
-        ventes  = ventes.filter(v => v.clientId !== id);
-        sauvegarder();
-        fermerModale(); renderClientsGestion(); renderVisites(); renderQuickStats(); renderDashboard();
-        toast('Client supprimé');
-      });
-    }
-
-    function ouvrirModaleModifierClient(id) {
-      const client = clients.find(c => c.id === id);
-      if (!client) return;
-
-      ouvrirModale({
-        titre: 'Modifier',
-        corps: `
+  <!-- VENTES -->
+  <section id="page-ventes" class="page">
+    <h2>💰 Ventes</h2>
+    <div class="vente-layout">
+      <div class="vente-clients">
+        <h3>1. Client</h3>
+        <input type="text" id="searchVenteClient" placeholder="Rechercher…" class="input-search">
+        <div id="listeClientsVente" class="liste-clients-vente"></div>
+      </div>
+      <div class="vente-produits" id="venteProduits" style="display:none;">
+        <h3>2. Produit</h3>
+        <div class="produits-grid" id="produitsGrid"></div>
+      </div>
+      <div class="vente-form" id="venteForm" style="display:none;">
+        <h3>3. Détails</h3>
+        <form id="formVente">
           <div class="form-group">
-            <label>Nom</label>
-            <input type="text" id="modifClientNom" value="${echapperHTML(client.nom)}">
+            <label>Produit</label>
+            <input type="text" id="venteProduit" readonly>
           </div>
-        `,
-        footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button>
-                 <button class="btn btn-success" id="modalValiderModif">Enregistrer</button>`
-      });
+          <div class="form-group">
+            <label>Quantité</label>
+            <input type="number" id="venteQuantite" min="0.01" step="0.01" inputmode="decimal" required>
+          </div>
+          <div class="form-group">
+            <label>Unité</label>
+            <select id="venteUnite">
+              <option value="kg">kg</option>
+              <option value="ML">ML</option>
+              <option value="M²">M²</option>
+              <option value="Packet">Packet</option>
+              <option value="unité">unité</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Prix unitaire (DH)</label>
+            <input type="number" id="ventePrix" min="0" step="0.01" inputmode="decimal" required>
+          </div>
+          <div class="form-group">
+            <label>Montant total</label>
+            <input type="text" id="venteTotal" readonly class="total-field">
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="venteDate" required>
+          </div>
+          <button type="submit" class="btn btn-success btn-block">✅ ENREGISTRER LA VENTE</button>
+        </form>
+      </div>
+    </div>
+  </section>
 
-      document.getElementById('modalAnnuler').addEventListener('click', fermerModale);
-      document.getElementById('modalValiderModif').addEventListener('click', () => {
-        if (modifierClient(id, document.getElementById('modifClientNom').value)) fermerModale();
-      });
-    }
+  <!-- CLIENTS -->
+  <section id="page-clients" class="page">
+    <h2>📋 Clients</h2>
+    <div class="toolbar">
+      <input type="text" id="searchClients" placeholder="Rechercher…" class="input-search">
+      <button class="btn btn-primary" id="btnAjouterClient">➕ Ajouter</button>
+    </div>
+    <div id="listeClientsGestion" class="liste-clients"></div>
+  </section>
 
-    /* DASHBOARD */
-    function renderDashboard() {
-      const selectClient = document.getElementById('dashFiltreClient');
-      selectClient.innerHTML = '<option value="">Tous les clients</option>' +
-        clients.slice().sort((a, b) => a.nom.localeCompare(b.nom)).map(c => `<option value="${echapperHTML(c.id)}">${echapperHTML(c.nom)}</option>`).join('');
+  <!-- DASHBOARD -->
+  <section id="page-dashboard" class="page">
+    <h2>📊 Statistiques</h2>
+    <div class="dashboard-stats" id="dashboardStats"></div>
+    <div class="toolbar">
+      <input type="date" id="dashFiltreDate" class="input-date">
+      <select id="dashFiltreClient" class="input-select">
+        <option value="">Tous les clients</option>
+      </select>
+      <button class="btn btn-secondary btn-sm" id="resetDashFiltres">Réinitialiser</button>
+    </div>
+    <div class="dashboard-historiques">
+      <div>
+        <h3>📅 Ventes récentes</h3>
+        <div class="historique-scroll" id="histVentes"></div>
+      </div>
+      <div>
+        <h3>👥 Visites récentes</h3>
+        <div class="historique-scroll" id="histVisites"></div>
+      </div>
+    </div>
+  </section>
+</main>
 
-      selectClient.value = dashFiltres.clientId || '';
-      document.getElementById('dashFiltreDate').value = dashFiltres.date || '';
+<!-- NAVIGATION -->
+<nav class="main-nav">
+  <button class="nav-btn active" data-page="accueil">
+    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    Accueil
+  </button>
+  <button class="nav-btn" data-page="visites">
+    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    Visites
+  </button>
+  <button class="nav-btn" data-page="ventes">
+    <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+    Ventes
+  </button>
+  <button class="nav-btn" data-page="clients">
+    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+    Clients
+  </button>
+  <button class="nav-btn" data-page="dashboard">
+    <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+    Stats
+  </button>
+</nav>
 
-      let ventesFiltrees = ventes.slice();
-      let visitesFiltrees = visites.slice();
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle"></h3>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer" id="modalFooter"></div>
+  </div>
+</div>
 
-      if (dashFiltres.clientId) {
-        ventesFiltrees = ventesFiltrees.filter(v => v.clientId === dashFiltres.clientId);
-        visitesFiltrees = visitesFiltrees.filter(v => v.clientId === dashFiltres.clientId);
-      }
-      if (dashFiltres.date) {
-        ventesFiltrees = ventesFiltrees.filter(v => v.date && v.date.slice(0, 10) === dashFiltres.date);
-        visitesFiltrees = visitesFiltrees.filter(v => v.date && v.date.slice(0, 10) === dashFiltres.date);
-      }
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
 
-      document.getElementById('dashboardStats').innerHTML = `
-        <div class="stat-card"><div class="stat-value">${clients.length}</div><div class="stat-label">Clients</div></div>
-        <div class="stat-card"><div class="stat-value">${visitesFiltrees.length}</div><div class="stat-label">Visites</div></div>
-        <div class="stat-card"><div class="stat-value">${ventesFiltrees.length}</div><div class="stat-label">Ventes</div></div>
-        <div class="stat-card"><div class="stat-value">${formatMontant(ventesFiltrees.reduce((s, v) => s + v.montant, 0))}</div><div class="stat-label">CA</div></div>
-      `;
+<!-- PDF TEMPLATE -->
+<div id="pdf-template">
+  <h1>TAM AGRICOLE</h1>
+  <div class="info-row">
+    <span><strong>Document:</strong> <span id="pdf-type">Rapport</span></span>
+    <span><strong>Date d'édition:</strong> <span id="pdf-date"></span></span>
+  </div>
+  <div class="info-row">
+    <span><strong>Client / Filtre:</strong> <span id="pdf-client">Tous</span></span>
+  </div>
+  <table id="pdf-table"></table>
+  <div class="footer">Généré par l'application TAM AGRICOLE - Gestion Commerciale</div>
+</div>
 
-      // Ajout des boutons d'export PDF à côté des ventes
-      document.getElementById('histVentes').innerHTML = ventesFiltrees.sort((a, b) => new Date(b.date) - new Date(a.date)).map(v => `
-        <div class="hist-item">
-          <span><span class="hist-label">${echapperHTML(v.clientNom)}</span></span>
-          <span style="font-size:0.8rem">${echapperHTML(v.produit)} (${v.quantite} ${v.unite})</span>
-          <span style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-            <span><strong>${formatMontant(v.montant)}</strong> <span class="hist-date">· ${formatDate(v.date)}</span></span>
-            <button class="btn btn-primary btn-sm" onclick="exportVentePDF('${v.id}')" style="min-height: 28px; padding: 0 10px; font-size: 0.7rem;">📄 PDF</button>
-          </span>
-        </div>
-      `).join('') || '<p class="hist-empty">Aucune vente.</p>';
+<script>
+/* ================================================================
+   JAVASCRIPT (identique à votre version + modale de confirmation visite)
+   ================================================================ */
+const STORAGE_KEYS = { CLIENTS: 'tam_clients_v3', VISITES: 'tam_visites_v3', VENTES: 'tam_ventes_v3' };
 
-      document.getElementById('histVisites').innerHTML = visitesFiltrees.sort((a, b) => new Date(b.date) - new Date(a.date)).map(v => `
-        <div class="hist-item">
-          <span><span class="hist-label">${echapperHTML(v.clientNom)}</span></span>
-          <span class="hist-date">${formatDateHeure(v.date)}</span>
-        </div>
-      `).join('') || '<p class="hist-empty">Aucune visite.</p>';
-    }
+const PRODUITS = [
+  'FILET BLANC ANTI THRIPS (1,0X100) 11X21', 'FILET BLANC ANTI THRIPS (1,5X100) 11X21',
+  'FILET BLANC ANTI THRIPS (2,0X100) 11X21', 'FILET BLANC ANTI THRIPS (3,0X100) 11X21',
+  'FILET BLANC ANTI THRIPS (4,0X100) 11X21', 'FILET BLANC ANTI THRIPS (5,0X100) 11X21',
+  'FILET BLANC ANTI THRIPS (6,0X100) 11X21', 'FILET OMBRIERE 50% ARGENTE',
+  'AQUATAPE 8 MIL 10 CM', 'AQUATAPE 8 MIL 20 CM', 'AQUATAPE 8 MILL 15 CM',
+  'AQUADROP 12 MIL 20 CM 1.3 L', 'CINTAPE 8 MIL 20 CM',
+  'FIL DE FER 12', 'FIL DE FER 16', 'FIL DE FER 18', 'FIL DE FER 21',
+  'FIL DE FER GALVA N 12 Ø 1,80 MM', 'FIL DE FER GALVA N 18 D 3,40 MM ESPAGNE',
+  'FIL DE FER GALVA N 21 Ø 4,90 MM', 'FIL D\'ACIER GALVANISE JP 16 D 2,50MM',
+  'CABLE D\'ACIER GALVA. TRESSE D 2*2,5', 'CABLE D\'ACIER GALVA. TRESSE D 2*3 6.00 MM',
+  'CABLE D\'ACIER GALVA. TRESSE D 3*3 6.40 MM', 'CABLE D\'ACIER GALVA. TRESSE D 3X3,8 MM',
+  'AGRAFES GALVANISE A-18', 'PERLHUMS EN 20 KG', 'POWHUMUS 20 KG', 'DIVERS'
+];
 
-    function initDashboardFiltres() {
-      document.getElementById('dashFiltreDate').addEventListener('change', e => { dashFiltres.date = e.target.value; renderDashboard(); });
-      document.getElementById('dashFiltreClient').addEventListener('change', e => { dashFiltres.clientId = e.target.value; renderDashboard(); });
-      document.getElementById('resetDashFiltres').addEventListener('click', () => { dashFiltres = { date: '', clientId: '' }; renderDashboard(); });
-    }
+const CLIENTS_INITIAUX = [
+  { id: 'CLT0234', nom: 'DOMAINE SALAH' }, { id: 'CLT0151', nom: 'AFNANE PRIME' },
+  { id: 'CLT0178', nom: 'TOULOUT ABDERRAHIM' }, { id: 'CLT0153', nom: 'FRESHBROTHERS' },
+  { id: 'CLT0182', nom: 'OUGRAICH LAHCEN' }, { id: 'CLT0116', nom: 'AGRI-ERROUIDA' },
+  { id: 'CLT0146', nom: 'COOPERATIVE SAFAA AGRI' }, { id: 'CLT0158', nom: 'DOMAINE BALLAT TAGOT' },
+  { id: 'CLT0243', nom: 'BASSATINE PRIM' }, { id: 'CLT0173', nom: 'DOMAINE L\'EST' },
+  { id: 'CLT0074', nom: 'BRAHIM HEMMAD' }, { id: 'CLT0117', nom: 'AGYAD AGRICULTURE SARL' },
+  { id: 'CLT0170', nom: 'STE ESOMA' }, { id: 'CLT0101', nom: 'AFRICA TRAVAUX AGRICOLES' },
+  { id: 'CLT0237', nom: 'JAOUDA GREEN' }, { id: 'CLT0239', nom: 'SOUSS BERRIES' },
+  { id: 'CLT0238', nom: 'GREEN BENZ GOLD' }, { id: 'CLT0154', nom: 'DOMAINE BOUANAS' },
+  { id: 'CLT0207', nom: 'LB INNOV SARL' }, { id: 'CLT0227', nom: 'DOMAINE AFOULKI' },
+  { id: 'CLT0232', nom: 'GOLDEN PLANT' }, { id: 'CLT0247', nom: 'LOUFANI HASSAN' },
+  { id: 'CLT0240', nom: 'ABDESLAM HAJJAJ' }, { id: 'CLT0184', nom: 'TOUZANI AGRICULTURE' },
+  { id: 'CLT0250', nom: 'ANNAKHIL FERME' }, { id: 'CLT0245', nom: 'AGRI KOUR' },
+  { id: 'CLT0248', nom: 'TBH AGRICOLE' }, { id: 'CLT0215', nom: 'VERGENAIM AGRI' },
+  { id: 'CLT0032', nom: 'BOUMALEK ABDELKBIR' }, { id: 'CLT0122', nom: 'MOHAMMED ESSADKAOUI' },
+  { id: 'CLT0257', nom: 'PREMIUM HARVEST' }, { id: 'CLT0262', nom: 'DOMAINE LB FRESH' },
+  { id: 'CLT0246', nom: 'KARAM GREEN AGRI' }, { id: 'CLT0256', nom: 'MUSTAPHA AIT GOUZAL' },
+  { id: 'CLT0214', nom: 'MAKAREM AGRICOLE REP BEN SALAH' }, { id: 'CLT0259', nom: 'ANSAR PRIM' },
+  { id: 'CLT0260', nom: 'Ste ANSAR PRIM SARL' }, { id: 'CLT0261', nom: 'KAMABRO SARL' },
+  { id: 'CLT0213', nom: 'PEPPER WORLD' }, { id: 'CLT0200', nom: 'BACHIR ZYANE' },
+  { id: 'CLT0242', nom: 'HAJ OUAADI MOHAMED' }, { id: 'CLT0263', nom: 'SAID OUTAIBI' },
+  { id: 'CLT0220', nom: 'AHMED AHFAY' }, { id: 'CLT0187', nom: 'AIT GOUZAL AHMED' },
+  { id: 'CLT0219', nom: 'SOLUTION AGRICOLE DU SOUSS' }, { id: 'CLT0251', nom: 'ABDERRAHIM GOUSKAR' },
+  { id: 'CLT0208', nom: 'REHIL AGRICOLE SARL AU' }, { id: 'CLT0268', nom: 'ABDELKBIR EL HIF' },
+  { id: 'CLT0270', nom: 'LAHSEN OUAADDI' }, { id: 'CLT0271', nom: 'DOMAINE AYOUR' },
+  { id: 'CLT0272', nom: 'FAST TRAVAUX' }, { id: 'CLT0273', nom: 'GREEN SABOR' },
+  { id: 'CLT0276', nom: 'BELAARIBI SAID' }, { id: 'CLT0183', nom: 'RACHID LOUFANI' },
+  { id: 'CLT0230', nom: 'OULHINTE ABDELLAH' }, { id: 'CLT0265', nom: 'SAFAR PRIM' },
+  { id: 'CLT0186', nom: 'OUBAYROUK RACHID' }, { id: 'CLT0241', nom: 'FADILI AZZEDINE 2' },
+  { id: 'CLT0222', nom: 'DOMAINE OUBLAID' }, { id: 'CLT0223', nom: 'AGROPOLE' },
+  { id: 'CLT0174', nom: 'HICHAM MORTADI' }
+];
 
-    /* MODALE & EXPORT CSV */
-    function ouvrirModale({ titre, corps, footer }) {
-      document.getElementById('modalTitle').innerHTML = titre || '';
-      document.getElementById('modalBody').innerHTML = corps || '';
-      document.getElementById('modalFooter').innerHTML = footer || '';
-      document.getElementById('modalOverlay').classList.add('open');
-    }
+let clients = [], visites = [], ventes = [];
+let venteState = { clientId: null, produit: null };
+let dashFiltres = { date: '', clientId: '' };
 
-    function fermerModale() {
-      document.getElementById('modalOverlay').classList.remove('open');
-    }
+function maintenant() { return new Date().toISOString(); }
+function formatDateHeure(iso) { return iso ? new Date(iso).toLocaleDateString('fr-FR') + ' ' + new Date(iso).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : ''; }
+function formatDate(iso) { return iso ? new Date(iso).toLocaleDateString('fr-FR') : ''; }
+function dateDuJour() { return new Date().toISOString().slice(0, 10); }
+function formatMontant(n) { return new Intl.NumberFormat('fr-FR').format(n) + ' DH'; }
+function normaliser(str) { return (str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+function echapperHTML(str) { const div = document.createElement('div'); div.textContent = str == null ? '' : String(str); return div.innerHTML; }
 
-    function initModale() {
-      document.getElementById('modalClose').addEventListener('click', fermerModale);
-      document.getElementById('modalOverlay').addEventListener('click', e => {
-        if (e.target === document.getElementById('modalOverlay')) fermerModale();
-      });
-    }
+function toast(message, type = 'success') {
+  const el = document.getElementById('toast');
+  const icon = type === 'error' ? '❌' : '✅';
+  el.innerHTML = `<span>${message}</span><span style="font-size:1.1em;">${icon}</span>`;
+  el.className = 'toast show' + (type === 'error' ? ' error' : '');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => { el.className = 'toast'; }, 2800);
+}
 
-    function exportCSV() {
-      let csv = '\uFEFFTYPE;CLIENT;PRODUIT;QTE;UNITE;PRIX;MONTANT;DATE\n';
-      ventes.forEach(v => { csv += `VENTE;${v.clientNom};${v.produit};${v.quantite};${v.unite};${v.prixUnitaire};${v.montant};${v.date}\n`; });
-      visites.forEach(v => { csv += `VISITE;${v.clientNom};;;;;;${v.date}\n`; });
-      
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob); a.download = `tam_export_${dateDuJour()}.csv`;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      toast('Export CSV réussi');
-    }
+function chargerDonnees() {
+  try {
+    clients = JSON.parse(localStorage.getItem(STORAGE_KEYS.CLIENTS)) || [...CLIENTS_INITIAUX];
+    visites = JSON.parse(localStorage.getItem(STORAGE_KEYS.VISITES)) || [];
+    ventes  = JSON.parse(localStorage.getItem(STORAGE_KEYS.VENTES))  || [];
+    if(!localStorage.getItem(STORAGE_KEYS.CLIENTS)) sauvegarder();
+  } catch (e) {
+    clients = [...CLIENTS_INITIAUX]; visites = []; ventes = [];
+  }
+}
 
-    /* ================================================================
-       FONCTIONNALITÉ PDF (html2pdf)
-       ================================================================ */
-       
-    // 1. Exporter une vente spécifique
-    window.exportVentePDF = function(venteId) {
-      const vente = ventes.find(v => v.id === venteId);
-      if (!vente) return;
+function sauvegarder() {
+  localStorage.setItem(STORAGE_KEYS.CLIENTS, JSON.stringify(clients));
+  localStorage.setItem(STORAGE_KEYS.VISITES, JSON.stringify(visites));
+  localStorage.setItem(STORAGE_KEYS.VENTES, JSON.stringify(ventes));
+}
 
-      // Remplir le template HTML caché
-      document.getElementById('pdf-type').textContent = 'Fiche de Vente';
-      document.getElementById('pdf-date').textContent = formatDateHeure(maintenant());
-      document.getElementById('pdf-client').textContent = vente.clientNom;
-
-      document.getElementById('pdf-table').innerHTML = `
-        <thead>
-          <tr>
-            <th>Produit</th>
-            <th>Quantité</th>
-            <th>Unité</th>
-            <th>Prix Unitaire</th>
-            <th>Total</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>${echapperHTML(vente.produit)}</td>
-            <td>${vente.quantite}</td>
-            <td>${vente.unite}</td>
-            <td>${formatMontant(vente.prixUnitaire)}</td>
-            <td><strong>${formatMontant(vente.montant)}</strong></td>
-            <td>${formatDate(vente.date)}</td>
-          </tr>
-        </tbody>
-      `;
-
-      // Générer le PDF
-      const element = document.getElementById('pdf-template');
-      element.style.display = 'block'; // Rendre visible temporairement pour la capture
-      
-      const opt = {
-        margin:       10,
-        filename:     `Vente_${vente.clientNom.replace(/[^a-zA-Z0-9]/g, '_')}_${formatDate(vente.date).replace(/\//g, '-')}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
-
-      html2pdf().set(opt).from(element).save().then(() => {
-        element.style.display = 'none'; // Cacher à nouveau
-        toast('PDF téléchargé');
-      });
-    };
-
-    // 2. Exporter la liste des visites filtrées
-    document.getElementById('btnExportVisitesPDF').addEventListener('click', () => {
-      const filtreDate = document.getElementById('filtreDateVisites').value;
-      let liste = visites.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
-      
-      if (filtreDate) {
-        liste = liste.filter(v => v.date && v.date.slice(0, 10) === filtreDate);
-        document.getElementById('pdf-client').textContent = `Date: ${formatDate(filtreDate)}`;
-      } else {
-        document.getElementById('pdf-client').textContent = 'Toutes les visites';
-      }
-
-      if (!liste.length) {
-        toast('Aucune visite à exporter', 'error');
-        return;
-      }
-
-      document.getElementById('pdf-type').textContent = 'Rapport des Visites';
-      document.getElementById('pdf-date').textContent = formatDateHeure(maintenant());
-
-      document.getElementById('pdf-table').innerHTML = `
-        <thead>
-          <tr>
-            <th>Client</th>
-            <th>Date et Heure</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${liste.map(v => `
-            <tr>
-              <td>${echapperHTML(v.clientNom)}</td>
-              <td>${formatDateHeure(v.date)}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      `;
-
-      const element = document.getElementById('pdf-template');
-      element.style.display = 'block';
-      
-      const opt = {
-        margin:       10,
-        filename:     `Visites_${dateDuJour()}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
-
-      html2pdf().set(opt).from(element).save().then(() => {
-        element.style.display = 'none';
-        toast('PDF téléchargé');
-      });
+function initNavigation() {
+  document.querySelectorAll('[data-page]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const page = btn.dataset.page;
+      if (!page) return;
+      afficherPage(page);
     });
+  });
+}
 
-    /* INIT */
-    function rafraichirTout() {
-      renderQuickStats(); renderVisites(); renderHistoriqueVisites();
-      renderClientsVente(); renderClientsGestion(); renderDashboard();
-    }
+function afficherPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('page-' + pageId);
+  if (page) page.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
+  document.querySelector('.app-main').scrollTop = 0;
 
-    function initVisitesFiltres() {
-      document.getElementById('searchVisites').addEventListener('input', renderVisites);
-      document.getElementById('filtreDateVisites').addEventListener('change', () => { renderVisites(); renderHistoriqueVisites(); });
-      document.getElementById('resetFiltreVisites').addEventListener('click', () => {
-        document.getElementById('searchVisites').value = ''; document.getElementById('filtreDateVisites').value = '';
-        renderVisites(); renderHistoriqueVisites();
-      });
-      document.getElementById('btnExportVisitesCSV').addEventListener('click', exportCSV);
-    }
+  if (pageId === 'visites')    { renderVisites(); renderHistoriqueVisites(); }
+  if (pageId === 'ventes')     { renderClientsVente(); resetVenteForm(); }
+  if (pageId === 'clients')    { renderClientsGestion(); }
+  if (pageId === 'dashboard')  { renderDashboard(); }
+  if (pageId === 'accueil')    { renderQuickStats(); }
+}
 
-    function initClients() {
-      document.getElementById('searchClients').addEventListener('input', renderClientsGestion);
-      document.getElementById('btnAjouterClient').addEventListener('click', () => {
-        ouvrirModale({
-          titre: 'Nouveau Client',
-          corps: `<div class="form-group"><label>Nom du client</label><input type="text" id="nouveauClientNom" placeholder="Ex: Ferme Durand"></div>`,
-          footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button><button class="btn btn-success" id="modalAjouter">Ajouter</button>`
-        });
-        document.getElementById('modalAnnuler').addEventListener('click', fermerModale);
-        document.getElementById('modalAjouter').addEventListener('click', () => {
-          if (ajouterClient(document.getElementById('nouveauClientNom').value)) fermerModale();
-        });
-        document.getElementById('nouveauClientNom').focus();
-      });
-    }
+function renderQuickStats() {
+  const today = dateDuJour();
+  const visitesJour = visites.filter(v => v.date && v.date.slice(0, 10) === today).length;
+  const ventesJour = ventes.filter(v => v.date && v.date.slice(0, 10) === today).length;
+  const ca = ventes.reduce((s, v) => s + (Number(v.montant) || 0), 0);
 
-    function initVentesRecherche() {
-      document.getElementById('searchVenteClient').addEventListener('input', renderClientsVente);
-    }
+  document.getElementById('quickStats').innerHTML = `
+    <div class="quick-stat-card"><div class="qs-value">${clients.length}</div><div class="qs-label">Clients</div></div>
+    <div class="quick-stat-card"><div class="qs-value">${visitesJour}</div><div class="qs-label">Visites auj.</div></div>
+    <div class="quick-stat-card"><div class="qs-value">${ventesJour}</div><div class="qs-label">Ventes auj.</div></div>
+    <div class="quick-stat-card"><div class="qs-value">${formatMontant(ca)}</div><div class="qs-label">CA Total</div></div>
+  `;
+}
 
-    function init() {
-      chargerDonnees();
-      initNavigation(); initModale(); initVisitesFiltres();
-      initVenteForm(); initClients(); initVentesRecherche(); initDashboardFiltres();
-      afficherPage('accueil'); renderQuickStats(); renderDashboard();
-    }
+function estVisiteAujourdhui(clientId) {
+  return visites.some(v => v.clientId === clientId && v.date && v.date.slice(0, 10) === dateDuJour());
+}
 
-    document.addEventListener('DOMContentLoaded', init);
-  </script>
+function renderVisites() {
+  const search = normaliser(document.getElementById('searchVisites').value.trim());
+  const filtreDate = document.getElementById('filtreDateVisites').value;
+  const container = document.getElementById('listeVisites');
+
+  let liste = clients.slice().sort((a, b) => a.nom.localeCompare(b.nom));
+  if (search) liste = liste.filter(c => normaliser(c.nom).includes(search));
+
+  if (filtreDate) {
+    const idsVisitesDate = new Set(visites.filter(v => v.date && v.date.slice(0, 10) === filtreDate).map(v => v.clientId));
+    liste = liste.filter(c => idsVisitesDate.has(c.id));
+  }
+
+  if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucun client.</p>'; return; }
+
+  container.innerHTML = liste.map(c => {
+    const visiteAujourdhui = estVisiteAujourdhui(c.id);
+    const dernieres = visites.filter(v => v.clientId === c.id).sort((a, b) => new Date(b.date) - new Date(a.date));
+    const derniere = dernieres[0];
+
+    return `
+      <div class="client-card ${visiteAujourdhui ? 'visite' : ''}">
+        <div class="client-name">
+          <span>${echapperHTML(c.nom)}</span>
+          ${visiteAujourdhui ? '<span class="visite-badge">✓ VISITÉ</span>' : ''}
+        </div>
+        <div class="client-id">ID : ${echapperHTML(c.id)}</div>
+        <div class="client-meta">${derniere ? 'Dernière visite : ' + formatDateHeure(derniere.date) : 'Aucune visite enregistrée'}</div>
+        <div class="client-actions">
+          <button class="btn btn-success btn-sm" data-visite="${c.id}" ${visiteAujourdhui ? 'disabled' : ''}>
+            ${visiteAujourdhui ? '✓ Déjà visité' : '✔ Marquer visite'}
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.querySelectorAll('[data-visite]').forEach(btn => {
+    btn.addEventListener('click', () => enregistrerVisite(btn.dataset.visite));
+  });
+}
+
+/* ============================================================
+   ✅ CONFIRMATION AVANT D'ENREGISTRER LA VISITE
+   ============================================================ */
+function enregistrerVisite(clientId) {
+  const client = clients.find(c => c.id === clientId);
+  if (!client || estVisiteAujourdhui(clientId)) return;
+
+  ouvrirModale({
+    titre: 'Confirmer la visite',
+    corps: `
+      <div style="text-align:center; padding: 0.5rem 0;">
+        <div style="width:64px; height:64px; margin:0 auto 16px; background:linear-gradient(135deg,#e8f5e9,#c8e6c9); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.8rem;">✓</div>
+        <p style="font-size:0.95rem; color:var(--ink-500); margin-bottom:12px; font-weight:500;">Voulez-vous confirmer la visite pour :</p>
+        <p style="font-size:1.15rem; font-weight:800; color:var(--vert-800); margin-bottom:6px; letter-spacing:-0.3px;">
+          ${echapperHTML(client.nom)}
+        </p>
+        <p style="font-size:0.78rem; color:var(--ink-500); font-weight:600; font-family:'SF Mono',monospace; letter-spacing:0.5px;">ID : ${echapperHTML(client.id)}</p>
+        <div style="margin-top:16px; padding:10px 14px; background:var(--ink-50); border-radius:var(--r-md); display:inline-block;">
+          <p style="font-size:0.85rem; color:var(--ink-700); font-weight:600;">
+            📅 ${new Date().toLocaleDateString('fr-FR')} · ${new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+          </p>
+        </div>
+      </div>
+    `,
+    footer: `
+      <button class="btn btn-secondary" id="modalAnnulerVisite">Annuler</button>
+      <button class="btn btn-success" id="modalConfirmerVisite">✓ Confirmer</button>
+    `
+  });
+
+  document.getElementById('modalAnnulerVisite').addEventListener('click', fermerModale);
+  document.getElementById('modalConfirmerVisite').addEventListener('click', () => {
+    visites.push({
+      id: 'V' + Date.now(),
+      clientId: client.id,
+      clientNom: client.nom,
+      date: maintenant()
+    });
+    sauvegarder();
+    fermerModale();
+    renderVisites();
+    renderHistoriqueVisites();
+    renderQuickStats();
+    toast(`Visite confirmée`);
+  });
+}
+
+function renderHistoriqueVisites() {
+  const container = document.getElementById('historiqueVisites');
+  const filtreDate = document.getElementById('filtreDateVisites').value;
+  let liste = visites.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+  if (filtreDate) liste = liste.filter(v => v.date && v.date.slice(0, 10) === filtreDate);
+
+  if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucune visite enregistrée.</p>'; return; }
+
+  container.innerHTML = liste.map(v => `
+    <div class="hist-item">
+      <span class="hist-label">${echapperHTML(v.clientNom)}</span>
+      <span class="hist-date">${formatDateHeure(v.date)}</span>
+    </div>
+  `).join('');
+}
+
+function renderClientsVente() {
+  const search = normaliser(document.getElementById('searchVenteClient').value.trim());
+  const container = document.getElementById('listeClientsVente');
+  let liste = clients.slice().sort((a, b) => a.nom.localeCompare(b.nom));
+  if (search) liste = liste.filter(c => normaliser(c.nom).includes(search));
+
+  if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucun client.</p>'; return; }
+
+  container.innerHTML = liste.map(c => `
+    <div class="client-vente-item ${venteState.clientId === c.id ? 'selected' : ''}" data-client-vente="${c.id}">
+      ${echapperHTML(c.nom)} <span style="font-size:.72rem;opacity:.7;">(${echapperHTML(c.id)})</span>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('[data-client-vente]').forEach(el => {
+    el.addEventListener('click', () => selectionnerClientVente(el.dataset.clientVente));
+  });
+}
+
+function selectionnerClientVente(clientId) {
+  venteState.clientId = clientId;
+  venteState.produit = null;
+  document.querySelectorAll('#listeClientsVente .client-vente-item').forEach(el => {
+    el.classList.toggle('selected', el.dataset.clientVente === clientId);
+  });
+  document.getElementById('venteProduits').style.display = 'block';
+  renderProduitsVente();
+  document.getElementById('venteForm').style.display = 'none';
+  document.getElementById('venteProduits').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function renderProduitsVente() {
+  const grid = document.getElementById('produitsGrid');
+  grid.innerHTML = PRODUITS.map(p => `
+    <button type="button" class="produit-btn ${venteState.produit === p ? 'selected' : ''}" data-produit="${echapperHTML(p)}">
+      ${echapperHTML(p)}
+    </button>
+  `).join('');
+
+  grid.querySelectorAll('[data-produit]').forEach(btn => {
+    btn.addEventListener('click', () => selectionnerProduit(btn.dataset.produit));
+  });
+}
+
+function selectionnerProduit(produit) {
+  venteState.produit = produit;
+  document.querySelectorAll('.produit-btn').forEach(b => b.classList.toggle('selected', b.dataset.produit === produit));
+
+  document.getElementById('venteForm').style.display = 'block';
+  document.getElementById('venteProduit').value = produit;
+  document.getElementById('venteDate').value = dateDuJour();
+  document.getElementById('venteQuantite').value = '';
+  document.getElementById('ventePrix').value = '';
+  document.getElementById('venteTotal').value = '';
+  
+  if (produit.includes('FILET') || produit.includes('OMBRIERE')) document.getElementById('venteUnite').value = 'M²';
+  else if (produit.includes('AQUATAPE') || produit.includes('AQUADROP') || produit.includes('CINTAPE')) document.getElementById('venteUnite').value = 'ML';
+  else if (produit.includes('FER') || produit.includes('CABLE') || produit.includes('PERLHUMS') || produit.includes('POWHUMUS')) document.getElementById('venteUnite').value = 'kg';
+  else if (produit.includes('AGRAFES')) document.getElementById('venteUnite').value = 'Packet';
+
+  document.getElementById('venteForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function resetVenteForm() {
+  venteState.produit = null;
+  document.getElementById('venteProduits').style.display = 'none';
+  document.getElementById('venteForm').style.display = 'none';
+}
+
+function calculerTotalVente() {
+  const q = parseFloat(document.getElementById('venteQuantite').value) || 0;
+  const p = parseFloat(document.getElementById('ventePrix').value) || 0;
+  document.getElementById('venteTotal').value = (q * p) > 0 ? formatMontant(q * p) : '';
+}
+
+function initVenteForm() {
+  document.getElementById('venteQuantite').addEventListener('input', calculerTotalVente);
+  document.getElementById('ventePrix').addEventListener('input', calculerTotalVente);
+  document.getElementById('formVente').addEventListener('submit', e => {
+    e.preventDefault();
+    enregistrerVente();
+  });
+}
+
+function enregistrerVente() {
+  const client = clients.find(c => c.id === venteState.clientId);
+  if (!client || !venteState.produit) { toast('Sélection incomplète', 'error'); return; }
+
+  const quantite = parseFloat(document.getElementById('venteQuantite').value);
+  const prix = parseFloat(document.getElementById('ventePrix').value);
+  const dateVente = document.getElementById('venteDate').value;
+
+  if (!quantite || quantite <= 0 || !prix || prix <= 0 || !dateVente) { toast('Vérifiez les champs', 'error'); return; }
+
+  ventes.push({
+    id: 'S' + Date.now(),
+    clientId: client.id, clientNom: client.nom,
+    produit: venteState.produit,
+    quantite: quantite,
+    unite: document.getElementById('venteUnite').value,
+    prixUnitaire: prix,
+    montant: quantite * prix,
+    date: dateVente + 'T' + new Date().toTimeString().slice(0, 8)
+  });
+
+  sauvegarder();
+  toast(`Vente enregistrée`);
+  resetVenteForm();
+  renderQuickStats();
+}
+
+function renderClientsGestion() {
+  const search = normaliser(document.getElementById('searchClients').value.trim());
+  const container = document.getElementById('listeClientsGestion');
+  let liste = clients.slice().sort((a, b) => a.nom.localeCompare(b.nom));
+  if (search) liste = liste.filter(c => normaliser(c.nom).includes(search));
+
+  if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucun client.</p>'; return; }
+
+  container.innerHTML = liste.map(c => `
+    <div class="client-card">
+      <div class="client-name"><span>${echapperHTML(c.nom)}</span></div>
+      <div class="client-id">ID : ${echapperHTML(c.id)}</div>
+      <div class="client-actions">
+        <button class="btn btn-secondary btn-sm" data-modifier="${c.id}">✏️ Modifier</button>
+        <button class="btn btn-danger btn-sm" data-supprimer="${c.id}">🗑️ Supprimer</button>
+      </div>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('[data-modifier]').forEach(btn => btn.addEventListener('click', () => ouvrirModaleModifierClient(btn.dataset.modifier)));
+  container.querySelectorAll('[data-supprimer]').forEach(btn => btn.addEventListener('click', () => supprimerClient(btn.dataset.supprimer)));
+}
+
+function ajouterClient(nom) {
+  nom = nom.trim();
+  if (!nom || clients.some(c => normaliser(c.nom) === normaliser(nom))) { toast('Nom invalide ou existant', 'error'); return false; }
+
+  clients.push({ id: 'CLT' + Math.floor(1000 + Math.random() * 9000), nom });
+  sauvegarder();
+  renderClientsGestion(); renderQuickStats();
+  toast(`Client ajouté`);
+  return true;
+}
+
+function modifierClient(id, nouveauNom) {
+  const client = clients.find(c => c.id === id);
+  if (!client || !nouveauNom.trim()) return false;
+
+  client.nom = nouveauNom.trim();
+  visites.forEach(v => { if (v.clientId === id) v.clientNom = nouveauNom.trim(); });
+  ventes.forEach(v => { if (v.clientId === id) v.clientNom = nouveauNom.trim(); });
+
+  sauvegarder();
+  renderClientsGestion(); renderVisites(); renderHistoriqueVisites(); renderDashboard();
+  toast(`Client modifié`);
+  return true;
+}
+
+function supprimerClient(id) {
+  const client = clients.find(c => c.id === id);
+  if (!client) return;
+
+  ouvrirModale({
+    titre: 'Supprimer le client',
+    corps: `<p style="font-size:0.95rem; line-height:1.5;">Voulez-vous vraiment supprimer <strong>${echapperHTML(client.nom)}</strong> ainsi que tout son historique de visites et ventes ? Cette action est irréversible.</p>`,
+    footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button>
+             <button class="btn btn-danger" id="modalConfirmerSuppr">Supprimer</button>`
+  });
+
+  document.getElementById('modalAnnuler').addEventListener('click', fermerModale);
+  document.getElementById('modalConfirmerSuppr').addEventListener('click', () => {
+    clients = clients.filter(c => c.id !== id);
+    visites = visites.filter(v => v.clientId !== id);
+    ventes  = ventes.filter(v => v.clientId !== id);
+    sauvegarder();
+    fermerModale(); renderClientsGestion(); renderVisites(); renderQuickStats(); renderDashboard();
+    toast('Client supprimé');
+  });
+}
+
+function ouvrirModaleModifierClient(id) {
+  const client = clients.find(c => c.id === id);
+  if (!client) return;
+
+  ouvrirModale({
+    titre: 'Modifier le client',
+    corps: `
+      <div class="form-group">
+        <label>Nom du client</label>
+        <input type="text" id="modifClientNom" value="${echapperHTML(client.nom)}">
+      </div>
+    `,
+    footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button>
+             <button class="btn btn-success" id="modalValiderModif">Enregistrer</button>`
+  });
+
+  document.getElementById('modalAnnuler').addEventListener('click', fermerModale);
+  document.getElementById('modalValiderModif').addEventListener('click', () => {
+    if (modifierClient(id, document.getElementById('modifClientNom').value)) fermerModale();
+  });
+}
+
+function renderDashboard() {
+  const selectClient = document.getElementById('dashFiltreClient');
+  selectClient.innerHTML = '<option value="">Tous les clients</option>' +
+    clients.slice().sort((a, b) => a.nom.localeCompare(b.nom)).map(c => `<option value="${echapperHTML(c.id)}">${echapperHTML(c.nom)}</option>`).join('');
+
+  selectClient.value = dashFiltres.clientId || '';
+  document.getElementById('dashFiltreDate').value = dashFiltres.date || '';
+
+  let ventesFiltrees = ventes.slice();
+  let visitesFiltrees = visites.slice();
+
+  if (dashFiltres.clientId) {
+    ventesFiltrees = ventesFiltrees.filter(v => v.clientId === dashFiltres.clientId);
+    visitesFiltrees = visitesFiltrees.filter(v => v.clientId === dashFiltres.clientId);
+  }
+  if (dashFiltres.date) {
+    ventesFiltrees = ventesFiltrees.filter(v => v.date && v.date.slice(0, 10) === dashFiltres.date);
+    visitesFiltrees = visitesFiltrees.filter(v => v.date && v.date.slice(0, 10) === dashFiltres.date);
+  }
+
+  document.getElementById('dashboardStats').innerHTML = `
+    <div class="stat-card"><div class="stat-value">${clients.length}</div><div class="stat-label">Clients</div></div>
+    <div class="stat-card"><div class="stat-value">${visitesFiltrees.length}</div><div class="stat-label">Visites</div></div>
+    <div class="stat-card"><div class="stat-value">${ventesFiltrees.length}</div><div class="stat-label">Ventes</div></div>
+    <div class="stat-card"><div class="stat-value">${formatMontant(ventesFiltrees.reduce((s, v) => s + v.montant, 0))}</div><div class="stat-label">CA</div></div>
+  `;
+
+  document.getElementById('histVentes').innerHTML = ventesFiltrees.sort((a, b) => new Date(b.date) - new Date(a.date)).map(v => `
+    <div class="hist-item">
+      <span class="hist-label">${echapperHTML(v.clientNom)}</span>
+      <span style="font-size:0.82rem; color:var(--ink-600);">${echapperHTML(v.produit)} (${v.quantite} ${v.unite})</span>
+      <span style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-top:4px;">
+        <span><strong style="color:var(--vert-800);">${formatMontant(v.montant)}</strong> <span class="hist-date">· ${formatDate(v.date)}</span></span>
+        <button class="btn btn-primary btn-sm" onclick="exportVentePDF('${v.id}')" style="min-height: 32px; padding: 0 12px; font-size: 0.72rem;">📄 PDF</button>
+      </span>
+    </div>
+  `).join('') || '<p class="hist-empty">Aucune vente.</p>';
+
+  document.getElementById('histVisites').innerHTML = visitesFiltrees.sort((a, b) => new Date(b.date) - new Date(a.date)).map(v => `
+    <div class="hist-item">
+      <span class="hist-label">${echapperHTML(v.clientNom)}</span>
+      <span class="hist-date">${formatDateHeure(v.date)}</span>
+    </div>
+  `).join('') || '<p class="hist-empty">Aucune visite.</p>';
+}
+
+function initDashboardFiltres() {
+  document.getElementById('dashFiltreDate').addEventListener('change', e => { dashFiltres.date = e.target.value; renderDashboard(); });
+  document.getElementById('dashFiltreClient').addEventListener('change', e => { dashFiltres.clientId = e.target.value; renderDashboard(); });
+  document.getElementById('resetDashFiltres').addEventListener('click', () => { dashFiltres = { date: '', clientId: '' }; renderDashboard(); });
+}
+
+function ouvrirModale({ titre, corps, footer }) {
+  document.getElementById('modalTitle').innerHTML = titre || '';
+  document.getElementById('modalBody').innerHTML = corps || '';
+  document.getElementById('modalFooter').innerHTML = footer || '';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function fermerModale() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function initModale() {
+  document.getElementById('modalClose').addEventListener('click', fermerModale);
+  document.getElementById('modalOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('modalOverlay')) fermerModale();
+  });
+}
+
+function exportCSV() {
+  let csv = '\uFEFFTYPE;CLIENT;PRODUIT;QTE;UNITE;PRIX;MONTANT;DATE\n';
+  ventes.forEach(v => { csv += `VENTE;${v.clientNom};${v.produit};${v.quantite};${v.unite};${v.prixUnitaire};${v.montant};${v.date}\n`; });
+  visites.forEach(v => { csv += `VISITE;${v.clientNom};;;;;;${v.date}\n`; });
+  
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = `tam_export_${dateDuJour()}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  toast('Export CSV réussi');
+}
+
+window.exportVentePDF = function(venteId) {
+  const vente = ventes.find(v => v.id === venteId);
+  if (!vente) return;
+
+  document.getElementById('pdf-type').textContent = 'Fiche de Vente';
+  document.getElementById('pdf-date').textContent = formatDateHeure(maintenant());
+  document.getElementById('pdf-client').textContent = vente.clientNom;
+
+  document.getElementById('pdf-table').innerHTML = `
+    <thead><tr><th>Produit</th><th>Quantité</th><th>Unité</th><th>Prix Unitaire</th><th>Total</th><th>Date</th></tr></thead>
+    <tbody><tr>
+      <td>${echapperHTML(vente.produit)}</td><td>${vente.quantite}</td><td>${vente.unite}</td>
+      <td>${formatMontant(vente.prixUnitaire)}</td><td><strong>${formatMontant(vente.montant)}</strong></td><td>${formatDate(vente.date)}</td>
+    </tr></tbody>
+  `;
+
+  const element = document.getElementById('pdf-template');
+  element.style.display = 'block';
+  html2pdf().set({
+    margin: 10,
+    filename: `Vente_${vente.clientNom.replace(/[^a-zA-Z0-9]/g, '_')}_${formatDate(vente.date).replace(/\//g, '-')}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  }).from(element).save().then(() => {
+    element.style.display = 'none';
+    toast('PDF téléchargé');
+  });
+};
+
+document.getElementById('btnExportVisitesPDF').addEventListener('click', () => {
+  const filtreDate = document.getElementById('filtreDateVisites').value;
+  let liste = visites.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  if (filtreDate) {
+    liste = liste.filter(v => v.date && v.date.slice(0, 10) === filtreDate);
+    document.getElementById('pdf-client').textContent = `Date: ${formatDate(filtreDate)}`;
+  } else {
+    document.getElementById('pdf-client').textContent = 'Toutes les visites';
+  }
+
+  if (!liste.length) { toast('Aucune visite à exporter', 'error'); return; }
+
+  document.getElementById('pdf-type').textContent = 'Rapport des Visites';
+  document.getElementById('pdf-date').textContent = formatDateHeure(maintenant());
+
+  document.getElementById('pdf-table').innerHTML = `
+    <thead><tr><th>Client</th><th>Date et Heure</th></tr></thead>
+    <tbody>${liste.map(v => `<tr><td>${echapperHTML(v.clientNom)}</td><td>${formatDateHeure(v.date)}</td></tr>`).join('')}</tbody>
+  `;
+
+  const element = document.getElementById('pdf-template');
+  element.style.display = 'block';
+  html2pdf().set({
+    margin: 10,
+    filename: `Visites_${dateDuJour()}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  }).from(element).save().then(() => {
+    element.style.display = 'none';
+    toast('PDF téléchargé');
+  });
+});
+
+function initVisitesFiltres() {
+  document.getElementById('searchVisites').addEventListener('input', renderVisites);
+  document.getElementById('filtreDateVisites').addEventListener('change', () => { renderVisites(); renderHistoriqueVisites(); });
+  document.getElementById('resetFiltreVisites').addEventListener('click', () => {
+    document.getElementById('searchVisites').value = ''; document.getElementById('filtreDateVisites').value = '';
+    renderVisites(); renderHistoriqueVisites();
+  });
+  document.getElementById('btnExportVisitesCSV').addEventListener('click', exportCSV);
+}
+
+function initClients() {
+  document.getElementById('searchClients').addEventListener('input', renderClientsGestion);
+  document.getElementById('btnAjouterClient').addEventListener('click', () => {
+    ouvrirModale({
+      titre: 'Nouveau client',
+      corps: `<div class="form-group"><label>Nom du client</label><input type="text" id="nouveauClientNom" placeholder="Ex: Ferme Durand"></div>`,
+      footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button><button class="btn btn-success" id="modalAjouter">Ajouter</button>`
+    });
+    document.getElementById('modalAnnuler').addEventListener('click', fermerModale);
+    document.getElementById('modalAjouter').addEventListener('click', () => {
+      if (ajouterClient(document.getElementById('nouveauClientNom').value)) fermerModale();
+    });
+    setTimeout(() => document.getElementById('nouveauClientNom').focus(), 300);
+  });
+}
+
+function initVentesRecherche() {
+  document.getElementById('searchVenteClient').addEventListener('input', renderClientsVente);
+}
+
+function init() {
+  chargerDonnees();
+  initNavigation(); initModale(); initVisitesFiltres();
+  initVenteForm(); initClients(); initVentesRecherche(); initDashboardFiltres();
+  afficherPage('accueil'); renderQuickStats(); renderDashboard();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
