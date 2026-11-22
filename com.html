@@ -1351,11 +1351,14 @@ function initLoginForms() {
   });
 }
 
-/* ==================== FIREBASE SYNC ==================== */
+/* ==================== FIREBASE SYNC (données privées par commercial) ==================== */
 function setupFirebaseListeners() {
   unsubscribers.forEach(fn => { try { fn(); } catch(e){} });
   unsubscribers = [];
 
+  const uid = currentUser.uid;
+
+  // CLIENTS — PARTAGÉS (communs à tous les commerciaux)
   const unsubClients = fb.onValue(fb.ref(fb.db, 'clients'), snap => {
     const data = snap.val() || {};
     const arr = Object.values(data).map(c => ({ id: c.id, nom: c.nom }));
@@ -1375,34 +1378,36 @@ function setupFirebaseListeners() {
   });
   unsubscribers.push(unsubClients);
 
-  const unsubVisites = fb.onValue(fb.ref(fb.db, 'visites'), snap => {
+  // VISITES — PRIVÉES (sous users/{uid}/visites)
+  const unsubVisites = fb.onValue(fb.ref(fb.db, 'users/' + uid + '/visites'), snap => {
     const data = snap.val() || {};
     visites = Object.values(data);
     if (currentPage === 'visites') { renderVisites(); renderHistoriqueVisites(); }
   });
   unsubscribers.push(unsubVisites);
 
-  const unsubVentes = fb.onValue(fb.ref(fb.db, 'ventes'), snap => {
+  // VENTES — PRIVÉES
+  const unsubVentes = fb.onValue(fb.ref(fb.db, 'users/' + uid + '/ventes'), snap => {
     const data = snap.val() || {};
     ventes = Object.values(data);
   });
   unsubscribers.push(unsubVentes);
 
-  const unsubContacts = fb.onValue(fb.ref(fb.db, 'contacts'), snap => {
+  // CONTACTS — PRIVÉS
+  const unsubContacts = fb.onValue(fb.ref(fb.db, 'users/' + uid + '/contacts'), snap => {
     const data = snap.val() || {};
     contacts = Object.values(data);
     if (currentPage === 'contacts') renderContacts();
   });
   unsubscribers.push(unsubContacts);
 
-  if (currentUser) {
-    const unsubDemandes = fb.onValue(fb.ref(fb.db, 'demandes'), snap => {
-      const data = snap.val() || {};
-      demandes = Object.values(data).filter(d => d.uid === currentUser.uid);
-      if (currentPage === 'demandes') renderDemandes();
-    });
-    unsubscribers.push(unsubDemandes);
-  }
+  // DEMANDES — PRIVÉES
+  const unsubDemandes = fb.onValue(fb.ref(fb.db, 'users/' + uid + '/demandes'), snap => {
+    const data = snap.val() || {};
+    demandes = Object.values(data);
+    if (currentPage === 'demandes') renderDemandes();
+  });
+  unsubscribers.push(unsubDemandes);
 }
 
 function renderCurrentPage() {
@@ -1540,12 +1545,13 @@ function enregistrerVisite(clientId) {
       id: 'V' + Date.now(),
       clientId: client.id,
       clientNom: client.nom,
-      uid: currentUser ? currentUser.uid : null,
-      commercial: currentUser ? (currentUser.displayName || currentUser.email) : null,
+      uid: currentUser.uid,
+      commercial: currentUser.displayName || currentUser.email,
       date: new Date().toISOString()
     };
     try {
-      await fb.set(fb.ref(fb.db, 'visites/' + newVisite.id), newVisite);
+      // Sous users/{uid}/visites → données privées
+      await fb.set(fb.ref(fb.db, 'users/' + currentUser.uid + '/visites/' + newVisite.id), newVisite);
       fermerModale();
       toast('Visite enregistrée');
     } catch (e) {
@@ -1565,12 +1571,12 @@ function renderHistoriqueVisites() {
   container.innerHTML = liste.map(v => `
     <div class="hist-item">
       <span class="hist-label">${echapperHTML(v.clientNom)}</span>
-      <span class="hist-date">${formatDateHeure(v.date)}${v.commercial ? ' · ' + echapperHTML(v.commercial) : ''}</span>
+      <span class="hist-date">${formatDateHeure(v.date)}</span>
     </div>
   `).join('');
 }
 
-/* ==================== DEMANDES SPÉCIALES (message libre) ==================== */
+/* ==================== DEMANDES SPÉCIALES ==================== */
 function renderDemandes() {
   const search = normaliser(document.getElementById('searchDemandes').value.trim());
   const filtreDate = document.getElementById('filtreDateDemandes').value;
@@ -1621,7 +1627,7 @@ async function toggleStatutDemande(demandeId) {
   const d = demandes.find(x => x.id === demandeId);
   if (!d) return;
   try {
-    await fb.update(fb.ref(fb.db, 'demandes/' + demandeId), {
+    await fb.update(fb.ref(fb.db, 'users/' + currentUser.uid + '/demandes/' + demandeId), {
       statut: d.statut === 'traite' ? 'en_attente' : 'traite'
     });
     toast(d.statut === 'traite' ? 'Remise en attente' : 'Demande traitée');
@@ -1642,7 +1648,7 @@ function supprimerDemande(demandeId) {
   document.getElementById('modalAnnulerSupprDemande').addEventListener('click', fermerModale);
   document.getElementById('modalConfirmerSupprDemande').addEventListener('click', async () => {
     try {
-      await fb.remove(fb.ref(fb.db, 'demandes/' + demandeId));
+      await fb.remove(fb.ref(fb.db, 'users/' + currentUser.uid + '/demandes/' + demandeId));
       fermerModale();
       toast('Demande supprimée');
     } catch (e) {
@@ -1695,7 +1701,8 @@ function ouvrirModaleNouvelleDemande() {
     };
 
     try {
-      await fb.set(fb.ref(fb.db, 'demandes/' + newDemande.id), newDemande);
+      // Sous users/{uid}/demandes → données privées
+      await fb.set(fb.ref(fb.db, 'users/' + currentUser.uid + '/demandes/' + newDemande.id), newDemande);
       fermerModale();
       toast('Demande envoyée');
     } catch (e) {
@@ -1722,7 +1729,7 @@ function renderContacts() {
         <div class="contact-nom">
           <span>${echapperHTML(c.clientNom)}</span>
         </div>
-        <div class="contact-date">${formatDateHeure(c.date)}${c.commercial ? ' · ' + echapperHTML(c.commercial) : ''}</div>
+        <div class="contact-date">${formatDateHeure(c.date)}</div>
         <div class="contact-note">${echapperHTML(c.note)}</div>
         <div class="contact-actions">
           <button class="btn btn-secondary btn-sm" data-modifier-contact="${c.id}">✏️ Modifier</button>
@@ -1785,12 +1792,13 @@ function ouvrirModaleAjouterContact() {
       clientId: client.id,
       clientNom: client.nom,
       note: note,
-      uid: currentUser ? currentUser.uid : null,
-      commercial: currentUser ? (currentUser.displayName || currentUser.email) : null,
+      uid: currentUser.uid,
+      commercial: currentUser.displayName || currentUser.email,
       date: new Date().toISOString()
     };
     try {
-      await fb.set(fb.ref(fb.db, 'contacts/' + newContact.id), newContact);
+      // Sous users/{uid}/contacts → données privées
+      await fb.set(fb.ref(fb.db, 'users/' + currentUser.uid + '/contacts/' + newContact.id), newContact);
       fermerModale();
       toast('Contact enregistré');
     } catch (e) {
@@ -1822,7 +1830,7 @@ function ouvrirModaleModifierContact(contactId) {
     const newNote = document.getElementById('modifContactNote').value.trim();
     if (!newNote) { toast('La note ne peut pas être vide', 'error'); return; }
     try {
-      await fb.update(fb.ref(fb.db, 'contacts/' + contactId), { note: newNote });
+      await fb.update(fb.ref(fb.db, 'users/' + currentUser.uid + '/contacts/' + contactId), { note: newNote });
       fermerModale();
       toast('Contact modifié');
     } catch (e) {
@@ -1843,7 +1851,7 @@ function supprimerContact(contactId) {
   document.getElementById('modalAnnulerSupprContact').addEventListener('click', fermerModale);
   document.getElementById('modalConfirmerSupprContact').addEventListener('click', async () => {
     try {
-      await fb.remove(fb.ref(fb.db, 'contacts/' + contactId));
+      await fb.remove(fb.ref(fb.db, 'users/' + currentUser.uid + '/contacts/' + contactId));
       fermerModale();
       toast('Contact supprimé');
     } catch (e) {
@@ -2009,12 +2017,13 @@ function initVenteForm() {
       unite: document.getElementById('venteUnite').value,
       prixUnitaire: prix,
       montant: quantite * prix,
-      uid: currentUser ? currentUser.uid : null,
-      commercial: currentUser ? (currentUser.displayName || currentUser.email) : null,
+      uid: currentUser.uid,
+      commercial: currentUser.displayName || currentUser.email,
       date: dateVente + 'T' + new Date().toTimeString().slice(0, 8)
     };
     try {
-      await fb.set(fb.ref(fb.db, 'ventes/' + newVente.id), newVente);
+      // Sous users/{uid}/ventes → données privées
+      await fb.set(fb.ref(fb.db, 'users/' + currentUser.uid + '/ventes/' + newVente.id), newVente);
       toast('Vente enregistrée');
       resetVenteForm();
     } catch (e) {
