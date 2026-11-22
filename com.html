@@ -54,6 +54,31 @@
   --nav-h: 60px;
 }
 
+/* Thème sombre manuel */
+body.dark-mode {
+  --bg-app: #191919;
+  --bg-sidebar: #202020;
+  --bg-hover: #2a2a2a;
+  --bg-active: #303030;
+  --bg-input: #252525;
+  --text-primary: #e9e9e7;
+  --text-secondary: #9b9a97;
+  --text-tertiary: #6b6b6b;
+  --border-light: #2f2f2f;
+  --border-medium: #3a3a3a;
+  --accent: #4a9eff;
+  --accent-hover: #6bb0ff;
+  --accent-bg: #1a2c3f;
+  --green: #4ec9b0;
+  --green-bg: #1a2e2a;
+  --red: #ff6b6b;
+  --red-bg: #2a1a1a;
+}
+body.dark-mode .logo-icon { background: #e9e9e7; color: #191919; }
+body.dark-mode .btn-success { background: #e9e9e7; color: #191919; }
+body.dark-mode .btn-success:hover:not(:disabled) { background: #fff; }
+body.dark-mode .toast { background: #e9e9e7; color: #191919; }
+
 html, body {
   height: 100%; width: 100%; overflow: hidden;
   background: var(--bg-app);
@@ -62,6 +87,7 @@ html, body {
   overscroll-behavior: none;
   -webkit-user-select: none; user-select: none;
   font-size: 15px;
+  transition: background 0.2s, color 0.2s;
 }
 
 /* ==================== HEADER ==================== */
@@ -80,7 +106,6 @@ html, body {
   gap: 8px;
 }
 
-/* ← Bouton retour */
 .btn-back {
   display: none;
   align-items: center;
@@ -107,7 +132,6 @@ html, body {
 }
 .btn-back.visible { display: flex; }
 
-/* Logo */
 .logo {
   display: flex; align-items: center; gap: 8px;
   font-size: 0.9rem; font-weight: 600;
@@ -117,9 +141,7 @@ html, body {
   justify-content: flex-start;
   transition: opacity 0.2s;
 }
-.logo.with-back {
-  justify-content: center;
-}
+.logo.with-back { justify-content: center; }
 .logo-icon {
   width: 26px; height: 26px;
   display: flex; align-items: center; justify-content: center;
@@ -131,7 +153,28 @@ html, body {
   flex-shrink: 0;
 }
 
-/* Espace réservé à droite (équilibre visuel) */
+/* Bouton de thème */
+.btn-theme {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background 0.12s;
+  flex-shrink: 0;
+  padding: 0;
+}
+.btn-theme:hover { background: var(--bg-hover); }
+.btn-theme:active { background: var(--bg-active); }
+.btn-theme svg {
+  width: 20px; height: 20px;
+  fill: currentColor;
+}
+
 .header-spacer {
   width: 36px; height: 36px;
   flex-shrink: 0;
@@ -179,30 +222,13 @@ h3 {
 .btn:active:not(:disabled) { opacity: 0.7; }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.btn-primary {
-  background: var(--accent);
-  color: #fff;
-}
+.btn-primary { background: var(--accent); color: #fff; }
 .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
-
-.btn-success {
-  background: var(--text-primary);
-  color: #fff;
-}
+.btn-success { background: var(--text-primary); color: #fff; }
 .btn-success:hover:not(:disabled) { background: #000; }
-
-.btn-secondary {
-  background: transparent;
-  color: var(--text-primary);
-  border: 1px solid var(--border-medium);
-}
+.btn-secondary { background: transparent; color: var(--text-primary); border: 1px solid var(--border-medium); }
 .btn-secondary:hover:not(:disabled) { background: var(--bg-hover); }
-
-.btn-danger {
-  background: transparent;
-  color: var(--red);
-  border: 1px solid var(--border-medium);
-}
+.btn-danger { background: transparent; color: var(--red); border: 1px solid var(--border-medium); }
 .btn-danger:hover:not(:disabled) { background: var(--red-bg); }
 
 .btn-large {
@@ -212,11 +238,7 @@ h3 {
   justify-content: flex-start;
 }
 .btn-block { width: 100%; }
-.btn-sm {
-  padding: 5px 10px; font-size: 0.78rem;
-  min-height: 30px; border-radius: var(--radius-sm);
-  font-weight: 500;
-}
+.btn-sm { padding: 5px 10px; font-size: 0.78rem; min-height: 30px; border-radius: var(--radius-sm); font-weight: 500; }
 
 /* ==================== HERO ==================== */
 .hero {
@@ -226,18 +248,9 @@ h3 {
   padding: 28px 20px;
   margin-bottom: 20px;
 }
-.hero h2 {
-  font-size: 1.6rem;
-  margin-bottom: 4px;
-}
-.hero p {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  margin-bottom: 20px;
-}
-.hero-buttons {
-  display: flex; flex-direction: column; gap: 8px;
-}
+.hero h2 { font-size: 1.6rem; margin-bottom: 4px; }
+.hero p { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px; }
+.hero-buttons { display: flex; flex-direction: column; gap: 8px; }
 .hero-buttons .btn {
   background: var(--bg-app);
   color: var(--text-primary);
@@ -246,15 +259,10 @@ h3 {
   text-align: left;
   font-size: 0.92rem;
 }
-.hero-buttons .btn:hover:not(:disabled) {
-  background: var(--bg-hover);
-}
+.hero-buttons .btn:hover:not(:disabled) { background: var(--bg-hover); }
 
 /* ==================== TOOLBAR / INPUTS ==================== */
-.toolbar {
-  display: flex; flex-direction: column; gap: 8px;
-  margin-bottom: 16px;
-}
+.toolbar { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
 
 .input-search, .input-date, .input-select,
 .form-group input, .form-group select, .form-group textarea {
@@ -309,7 +317,6 @@ h3 {
 .client-card:last-child { border-bottom: none; }
 .client-card:hover { background: var(--bg-hover); }
 .client-card.visite { background: var(--bg-sidebar); }
-
 .client-card .client-name {
   font-weight: 600; font-size: 0.92rem;
   display: flex; justify-content: space-between; align-items: center;
@@ -320,12 +327,8 @@ h3 {
   font-family: 'SF Mono', 'Courier New', monospace;
   letter-spacing: 0.2px;
 }
-.client-card .client-meta {
-  font-size: 0.78rem; color: var(--text-secondary);
-}
-.client-card .client-actions {
-  display: flex; gap: 6px; margin-top: 8px;
-}
+.client-card .client-meta { font-size: 0.78rem; color: var(--text-secondary); }
+.client-card .client-actions { display: flex; gap: 6px; margin-top: 8px; }
 .client-card .client-actions .btn { flex: 1; }
 
 .visite-badge {
@@ -334,7 +337,6 @@ h3 {
   padding: 2px 8px;
   border-radius: var(--radius-sm);
   font-size: 0.68rem; font-weight: 600;
-  letter-spacing: 0.1px;
 }
 
 /* ==================== HISTORIQUE ==================== */
@@ -352,22 +354,12 @@ h3 {
   font-size: 0.85rem;
 }
 .hist-item:last-child { border-bottom: none; }
-.hist-item .hist-date {
-  color: var(--text-tertiary); font-size: 0.72rem;
-}
-.hist-item .hist-label {
-  font-weight: 500; color: var(--text-primary);
-  font-size: 0.88rem;
-}
-.hist-empty {
-  text-align: center; color: var(--text-tertiary);
-  padding: 24px 16px; font-size: 0.85rem;
-}
+.hist-item .hist-date { color: var(--text-tertiary); font-size: 0.72rem; }
+.hist-item .hist-label { font-weight: 500; color: var(--text-primary); font-size: 0.88rem; }
+.hist-empty { text-align: center; color: var(--text-tertiary); padding: 24px 16px; font-size: 0.85rem; }
 
 /* ==================== VENTES ==================== */
-.vente-layout {
-  display: flex; flex-direction: column; gap: 12px;
-}
+.vente-layout { display: flex; flex-direction: column; gap: 12px; }
 .vente-clients, .vente-produits, .vente-form {
   background: var(--bg-app);
   border: 1px solid var(--border-light);
@@ -389,11 +381,7 @@ h3 {
 }
 .client-vente-item:last-child { border-bottom: none; }
 .client-vente-item:hover { background: var(--bg-hover); }
-.client-vente-item.selected {
-  background: var(--accent-bg);
-  color: var(--accent);
-  font-weight: 500;
-}
+.client-vente-item.selected { background: var(--accent-bg); color: var(--accent); font-weight: 500; }
 
 .produits-grid {
   display: grid; grid-template-columns: repeat(2, 1fr);
@@ -415,12 +403,7 @@ h3 {
   transition: all 0.12s; cursor: pointer;
 }
 .produit-btn:hover { background: var(--bg-hover); }
-.produit-btn.selected {
-  background: var(--accent-bg);
-  color: var(--accent);
-  border-color: var(--accent);
-  font-weight: 500;
-}
+.produit-btn.selected { background: var(--accent-bg); color: var(--accent); border-color: var(--accent); font-weight: 500; }
 
 /* ==================== FORMS ==================== */
 .form-group { margin-bottom: 12px; }
@@ -430,10 +413,7 @@ h3 {
   margin-bottom: 6px;
   color: var(--text-secondary);
 }
-.form-group input[readonly] {
-  background: var(--bg-sidebar);
-  color: var(--text-secondary);
-}
+.form-group input[readonly] { background: var(--bg-sidebar); color: var(--text-secondary); }
 .total-field {
   background: var(--accent-bg) !important;
   color: var(--accent) !important;
@@ -459,15 +439,10 @@ h3 {
   display: flex; flex-direction: column; align-items: center; gap: 3px;
   flex: 1; cursor: pointer; padding: 6px 4px;
   transition: color 0.12s;
-  letter-spacing: 0;
 }
 .nav-btn:active { opacity: 0.6; }
 .nav-btn.active { color: var(--text-primary); font-weight: 600; }
-.nav-btn svg {
-  width: 20px; height: 20px;
-  fill: currentColor;
-  transition: transform 0.15s;
-}
+.nav-btn svg { width: 20px; height: 20px; fill: currentColor; transition: transform 0.15s; }
 .nav-btn.active svg { transform: scale(1.05); }
 
 /* ==================== MODAL ==================== */
@@ -477,7 +452,6 @@ h3 {
   z-index: 1000; align-items: flex-end; padding: 0;
 }
 .modal-overlay.open { display: flex; }
-
 .modal {
   background: var(--bg-app);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
@@ -487,10 +461,7 @@ h3 {
   padding-bottom: var(--safe-bottom);
   border-top: 1px solid var(--border-light);
 }
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
-}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 .modal-header {
   display: flex; justify-content: space-between; align-items: center;
   padding: 16px 20px 12px;
@@ -501,7 +472,6 @@ h3 {
   margin: 0; font-size: 0.98rem;
   font-weight: 600;
   text-transform: none;
-  letter-spacing: -0.1px;
 }
 .modal-close {
   background: none; border: none;
@@ -512,7 +482,6 @@ h3 {
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   transition: background 0.12s;
-  font-weight: 400;
 }
 .modal-close:hover { background: var(--bg-hover); }
 .modal-body {
@@ -576,45 +545,10 @@ h3 {
   border: 1px solid #e9e9e7;
   padding: 8px; text-align: left;
 }
-#pdf-template th {
-  background: #f7f6f3;
-  color: #37352f; font-weight: 600;
-}
-#pdf-template .footer {
-  margin-top: 40px; text-align: center;
-  font-size: 11px; color: #9b9a97;
-}
+#pdf-template th { background: #f7f6f3; color: #37352f; font-weight: 600; }
+#pdf-template .footer { margin-top: 40px; text-align: center; font-size: 11px; color: #9b9a97; }
 
-/* ==================== DARK MODE ==================== */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-app: #191919;
-    --bg-sidebar: #202020;
-    --bg-hover: #2a2a2a;
-    --bg-active: #303030;
-    --bg-input: #252525;
-    --text-primary: #e9e9e7;
-    --text-secondary: #9b9a97;
-    --text-tertiary: #6b6b6b;
-    --border-light: #2f2f2f;
-    --border-medium: #3a3a3a;
-    --accent: #4a9eff;
-    --accent-hover: #6bb0ff;
-    --accent-bg: #1a2c3f;
-    --green: #4ec9b0;
-    --green-bg: #1a2e2a;
-    --red: #ff6b6b;
-    --red-bg: #2a1a1a;
-  }
-  .logo-icon { background: #e9e9e7; color: #191919; }
-  .btn-success { background: #e9e9e7; color: #191919; }
-  .btn-success:hover:not(:disabled) { background: #fff; }
-  .toast { background: #e9e9e7; color: #191919; }
-  .produit-btn { background: var(--bg-app); color: var(--text-primary); }
-  .produit-btn:hover { background: var(--bg-hover); }
-}
-
-/* ==================== CONTACTS PAGE (nouveau) ==================== */
+/* ==================== CONTACTS PAGE ==================== */
 .contact-list {
   display: flex; flex-direction: column;
   border: 1px solid var(--border-light);
@@ -647,11 +581,30 @@ h3 {
   display: flex; gap: 6px; margin-top: 6px;
 }
 .contact-item .contact-actions .btn { flex: 1; }
+
+/* ==================== PRINT STYLES ==================== */
+@media print {
+  body * { visibility: hidden; }
+  #pdf-template, #pdf-template * { visibility: visible; }
+  #pdf-template {
+    display: block !important;
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%;
+    padding: 20px;
+    background: #fff;
+    color: #000;
+  }
+  #pdf-template h1 { color: #000; border-bottom: 2px solid #000; }
+  #pdf-template th { background: #eee; color: #000; }
+  #pdf-template th, #pdf-template td { border: 1px solid #999; }
+  #pdf-template .info-row, #pdf-template .footer { color: #333; }
+}
 </style>
 </head>
 <body>
 
-<!-- ========== HEADER avec bouton retour ========== -->
+<!-- ========== HEADER ========== -->
 <header class="app-header">
   <div class="header-container">
     <button class="btn-back" id="btnBack" aria-label="Retour">
@@ -663,7 +616,9 @@ h3 {
       <span class="logo-icon">T</span>
       TAM AGRICOLE
     </div>
-    <div class="header-spacer" id="headerSpacer"></div>
+    <button class="btn-theme" id="btnTheme" aria-label="Changer de thème">
+      <svg id="themeIcon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/><circle cx="12" cy="12" r="3"/></svg>
+    </button>
   </div>
 </header>
 
@@ -697,13 +652,14 @@ h3 {
     <div class="historique-scroll" id="historiqueVisites"></div>
   </section>
 
-  <!-- CONTACTS (nouveau) -->
+  <!-- CONTACTS -->
   <section id="page-contacts" class="page">
     <h2>Contactés</h2>
     <div class="toolbar">
       <input type="text" id="searchContacts" placeholder="Rechercher un client…" class="input-search">
       <input type="date" id="filtreDateContacts" class="input-date">
       <button class="btn btn-secondary btn-sm" id="resetFiltreContacts">Réinitialiser</button>
+      <button class="btn btn-secondary btn-sm" id="btnPrintContacts">🖨️ Imprimer le rapport</button>
     </div>
     <div id="listeContacts" class="contact-list"></div>
   </section>
@@ -824,7 +780,13 @@ h3 {
 </div>
 
 <script>
-const STORAGE_KEYS = { CLIENTS: 'tam_clients_v3', VISITES: 'tam_visites_v3', VENTES: 'tam_ventes_v3', CONTACTS: 'tam_contacts_v1' };
+const STORAGE_KEYS = { 
+  CLIENTS: 'tam_clients_v3', 
+  VISITES: 'tam_visites_v3', 
+  VENTES: 'tam_ventes_v3', 
+  CONTACTS: 'tam_contacts_v1',
+  THEME: 'tam_theme_v1'
+};
 
 const PRODUITS = [
   'FILET BLANC ANTI THRIPS (1,0X100) 11X21', 'FILET BLANC ANTI THRIPS (1,5X100) 11X21',
@@ -879,6 +841,42 @@ let clients = [], visites = [], ventes = [], contacts = [];
 let venteState = { clientId: null, produit: null };
 let currentPage = 'accueil';
 
+/* ==================== THÈME ==================== */
+function appliquerTheme(theme) {
+  const body = document.body;
+  const icon = document.getElementById('themeIcon');
+  if (theme === 'dark') {
+    body.classList.add('dark-mode');
+    // Icône soleil pour indiquer qu'on peut passer en clair
+    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+  } else {
+    body.classList.remove('dark-mode');
+    // Icône lune pour indiquer qu'on peut passer en sombre
+    icon.innerHTML = '<path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/><circle cx="12" cy="12" r="3"/>';
+  }
+  localStorage.setItem(STORAGE_KEYS.THEME, theme);
+}
+
+function basculerTheme() {
+  const isDark = document.body.classList.contains('dark-mode');
+  appliquerTheme(isDark ? 'light' : 'dark');
+}
+
+function initTheme() {
+  const saved = localStorage.getItem(STORAGE_KEYS.THEME);
+  if (saved === 'dark') {
+    appliquerTheme('dark');
+  } else if (saved === 'light') {
+    appliquerTheme('light');
+  } else {
+    // Suit la préférence système par défaut
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    appliquerTheme(prefersDark ? 'dark' : 'light');
+  }
+  document.getElementById('btnTheme').addEventListener('click', basculerTheme);
+}
+
+/* ==================== UTILITAIRES ==================== */
 function maintenant() { return new Date().toISOString(); }
 function formatDateHeure(iso) {
   if (!iso) return '';
@@ -900,6 +898,7 @@ function toast(message, type = 'success') {
   el._timer = setTimeout(() => { el.className = 'toast'; }, 2400);
 }
 
+/* ==================== DONNÉES ==================== */
 function chargerDonnees() {
   try {
     clients = JSON.parse(localStorage.getItem(STORAGE_KEYS.CLIENTS)) || [...CLIENTS_INITIAUX];
@@ -929,7 +928,6 @@ function initNavigation() {
     });
   });
 
-  // Bouton retour
   document.getElementById('btnBack').addEventListener('click', () => {
     afficherPage('accueil');
   });
@@ -944,19 +942,15 @@ function afficherPage(pageId) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
   document.querySelector('.app-main').scrollTop = 0;
 
-  // Mise à jour du bouton retour
   const btnBack = document.getElementById('btnBack');
   const logo = document.getElementById('logoHeader');
-  const spacer = document.getElementById('headerSpacer');
 
   if (pageId === 'accueil') {
     btnBack.classList.remove('visible');
     logo.classList.remove('with-back');
-    spacer.classList.remove('visible');
   } else {
     btnBack.classList.add('visible');
     logo.classList.add('with-back');
-    spacer.classList.add('visible');
   }
 
   if (pageId === 'visites')   { renderVisites(); renderHistoriqueVisites(); }
@@ -1012,7 +1006,6 @@ function renderVisites() {
   });
 }
 
-/* ==================== CONFIRMATION VISITE ==================== */
 function enregistrerVisite(clientId) {
   const client = clients.find(c => c.id === clientId);
   if (!client || estVisiteAujourdhui(clientId)) return;
@@ -1069,7 +1062,7 @@ function renderHistoriqueVisites() {
   `).join('');
 }
 
-/* ==================== CONTACTS (nouveau) ==================== */
+/* ==================== CONTACTS ==================== */
 function renderContacts() {
   const search = normaliser(document.getElementById('searchContacts').value.trim());
   const filtreDate = document.getElementById('filtreDateContacts').value;
@@ -1104,7 +1097,6 @@ function renderContacts() {
     });
   }
 
-  // Bouton d'ajout en bas de page (en dehors de la liste pour qu'il soit toujours visible)
   const existingBtn = document.getElementById('btnAjouterContact');
   if (existingBtn) existingBtn.remove();
 
@@ -1212,6 +1204,48 @@ function supprimerContact(contactId) {
     renderContacts();
     toast('Contact supprimé');
   });
+}
+
+/* ==================== IMPRESSION RAPPORT CONTACTS ==================== */
+function imprimerRapportContacts() {
+  const search = normaliser(document.getElementById('searchContacts').value.trim());
+  const filtreDate = document.getElementById('filtreDateContacts').value;
+
+  let liste = contacts.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+  if (search) liste = liste.filter(c => normaliser(c.clientNom).includes(search));
+  if (filtreDate) liste = liste.filter(c => c.date && c.date.slice(0, 10) === filtreDate);
+
+  if (!liste.length) { toast('Aucun contact à imprimer', 'error'); return; }
+
+  document.getElementById('pdf-type').textContent = 'Rapport des Contacts Téléphoniques';
+  document.getElementById('pdf-date').textContent = formatDateHeure(maintenant());
+  
+  let filtreTexte = 'Tous les contacts';
+  if (filtreDate) filtreTexte = `Date: ${formatDate(filtreDate)}`;
+  if (search) filtreTexte += (filtreDate ? ' · ' : '') + `Recherche: "${document.getElementById('searchContacts').value}"`;
+  document.getElementById('pdf-client').textContent = filtreTexte;
+
+  document.getElementById('pdf-table').innerHTML = `
+    <thead>
+      <tr>
+        <th style="width:30%;">Client</th>
+        <th style="width:22%;">Date</th>
+        <th>Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${liste.map(c => `
+        <tr>
+          <td>${echapperHTML(c.clientNom)}</td>
+          <td>${formatDateHeure(c.date)}</td>
+          <td>${echapperHTML(c.note).replace(/\n/g, '<br>')}</td>
+        </tr>
+      `).join('')}
+    </tbody>
+  `;
+
+  // Impression via la boîte de dialogue du navigateur
+  window.print();
 }
 
 /* ==================== VENTES ==================== */
@@ -1440,7 +1474,7 @@ function initModale() {
   });
 }
 
-/* ==================== EXPORT ==================== */
+/* ==================== EXPORT CSV ==================== */
 function exportCSV() {
   let csv = '\uFEFFTYPE;CLIENT;PRODUIT;QTE;UNITE;PRIX;MONTANT;DATE\n';
   ventes.forEach(v => { csv += `VENTE;${v.clientNom};${v.produit};${v.quantite};${v.unite};${v.prixUnitaire};${v.montant};${v.date}\n`; });
@@ -1454,6 +1488,7 @@ function exportCSV() {
   toast('Export CSV réussi');
 }
 
+/* ==================== EXPORT PDF VISITES ==================== */
 document.getElementById('btnExportVisitesPDF').addEventListener('click', () => {
   const filtreDate = document.getElementById('filtreDateVisites').value;
   let liste = visites.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -1510,6 +1545,7 @@ function initContactsFiltres() {
     document.getElementById('filtreDateContacts').value = '';
     renderContacts();
   });
+  document.getElementById('btnPrintContacts').addEventListener('click', imprimerRapportContacts);
 }
 
 function initClients() {
@@ -1533,6 +1569,7 @@ function initVentesRecherche() {
 }
 
 function init() {
+  initTheme();
   chargerDonnees();
   initNavigation(); initModale(); initVisitesFiltres();
   initContactsFiltres();
