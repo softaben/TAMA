@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="TAM AGRICOLE">
-<title>TAM AGRICOLE – Gestion commerciale</title>
+<title>TAM AGRICOLE – Espace Commercial</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 *, *::before, *::after {
@@ -166,6 +166,23 @@ html, body {
 .btn-theme:active { background: var(--bg-active); }
 .btn-theme svg { width: 22px; height: 22px; fill: currentColor; }
 
+.btn-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px; height: 40px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.12s;
+  flex-shrink: 0;
+  padding: 0;
+}
+.btn-logout:active { background: var(--bg-active); }
+.btn-logout svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
 /* ==================== MAIN ==================== */
 .app-main {
   flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
@@ -213,17 +230,104 @@ h3 {
 .btn-block { width: 100%; }
 .btn-sm { padding: 8px 12px; font-size: 0.85rem; min-height: 36px; border-radius: var(--radius-sm); font-weight: 600; }
 
+/* ==================== LOGIN ==================== */
+#login-screen {
+  position: fixed; inset: 0;
+  background: var(--bg-app);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  z-index: 5000;
+  overflow-y: auto;
+}
+.login-box {
+  width: 100%; max-width: 400px;
+  background: var(--bg-app);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+}
+.login-logo {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  margin-bottom: 28px;
+}
+.login-logo .logo-icon {
+  width: 56px; height: 56px;
+  font-size: 1.6rem;
+  border-radius: 14px;
+}
+.login-logo h1 {
+  font-size: 1.4rem; font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+.login-logo p {
+  font-size: 0.85rem; color: var(--text-secondary);
+  text-align: center;
+}
+.login-tabs {
+  display: flex; gap: 6px;
+  background: var(--bg-sidebar);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+}
+.login-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 10px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.login-tab.active {
+  background: var(--bg-app);
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.login-form .form-group { margin-bottom: 14px; }
+.login-error {
+  background: var(--red-bg);
+  color: var(--red);
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+  display: none;
+}
+.login-error.show { display: block; }
+.login-loading {
+  display: none;
+  text-align: center;
+  padding: 20px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
 /* ==================== HERO ==================== */
 .hero {
   background: var(--bg-sidebar);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
-  padding: 28px 20px;
+  padding: 24px 20px;
   margin-bottom: 20px;
-  text-align: center;
 }
-.hero h2 { font-size: 1.8rem; margin-bottom: 8px; }
-.hero p { font-size: 1rem; color: var(--text-secondary); margin-bottom: 0; line-height: 1.5; }
+.hero h2 { font-size: 1.5rem; margin-bottom: 4px; }
+.hero p { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 0; line-height: 1.5; }
+.hero-user {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 10px;
+  padding: 4px 10px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
 
 .menu-grid {
   display: grid;
@@ -800,6 +904,55 @@ h3 {
 </head>
 <body>
 
+<!-- ========== LOGIN SCREEN ========== -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="logo-icon">T</div>
+      <h1>TAM AGRICOLE</h1>
+      <p>Espace Commercial</p>
+    </div>
+
+    <div class="login-tabs">
+      <button class="login-tab active" data-login-tab="signin">Connexion</button>
+      <button class="login-tab" data-login-tab="signup">Créer un compte</button>
+    </div>
+
+    <div class="login-error" id="loginError"></div>
+    <div class="login-loading" id="loginLoading">⏳ Chargement…</div>
+
+    <!-- Formulaire Connexion -->
+    <form class="login-form" id="formSignin">
+      <div class="form-group">
+        <label>Email ou nom d'utilisateur</label>
+        <input type="text" id="signinEmail" placeholder="exemple@mail.com" autocomplete="username" required>
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" id="signinPassword" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top:8px;">Se connecter</button>
+    </form>
+
+    <!-- Formulaire Inscription -->
+    <form class="login-form" id="formSignup" style="display:none;">
+      <div class="form-group">
+        <label>Nom complet</label>
+        <input type="text" id="signupName" placeholder="Ex: Hassan Alami" autocomplete="name" required>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="signupEmail" placeholder="exemple@mail.com" autocomplete="email" required>
+      </div>
+      <div class="form-group">
+        <label>Mot de passe (min. 6 caractères)</label>
+        <input type="password" id="signupPassword" placeholder="••••••••" autocomplete="new-password" minlength="6" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top:8px;">Créer mon compte</button>
+    </form>
+  </div>
+</div>
+
 <!-- ========== HEADER ========== -->
 <header class="app-header">
   <div class="header-container">
@@ -815,6 +968,9 @@ h3 {
     <button class="btn-theme" id="btnTheme" aria-label="Changer de thème">
       <svg id="themeIcon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/><circle cx="12" cy="12" r="3"/></svg>
     </button>
+    <button class="btn-logout" id="btnLogout" aria-label="Déconnexion" title="Déconnexion">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+    </button>
   </div>
 </header>
 
@@ -825,6 +981,7 @@ h3 {
     <div class="hero">
       <h2>👋 Bienvenue</h2>
       <p>Que voulez-vous faire aujourd'hui ?</p>
+      <div class="hero-user" id="heroUser">👤 Commercial</div>
     </div>
 
     <div class="menu-grid">
@@ -891,11 +1048,10 @@ h3 {
   <section id="page-demandes" class="page">
     <h2>📝 Demandes spéciales</h2>
     <div class="tabs">
-      <button class="tab-btn active" data-tab="demandes">📋 Demandes</button>
+      <button class="tab-btn active" data-tab="demandes">📋 Mes demandes</button>
       <button class="tab-btn" data-tab="catalogue">📦 Catalogue</button>
     </div>
 
-    <!-- Onglet Demandes -->
     <div id="tab-demandes">
       <div class="toolbar">
         <input type="text" id="searchDemandes" placeholder="🔍 Rechercher une demande…" class="input-search">
@@ -905,7 +1061,6 @@ h3 {
       <div id="listeDemandes" class="demande-list"></div>
     </div>
 
-    <!-- Onglet Catalogue -->
     <div id="tab-catalogue" style="display:none;">
       <div class="toolbar">
         <input type="text" id="searchProduits" placeholder="🔍 Rechercher un produit…" class="input-search">
@@ -918,23 +1073,19 @@ h3 {
   <section id="page-ventes" class="page">
     <h2>💰 Nouvelle vente</h2>
     <div class="vente-layout">
-
       <div class="vente-clients">
         <h3>1️⃣ Choisir le client</h3>
         <input type="text" id="searchVenteClient" placeholder="🔍 Rechercher…" class="input-search">
         <div id="listeClientsVente" class="liste-clients-vente"></div>
       </div>
-
       <div class="vente-produits" id="venteFamilles" style="display:none;">
         <h3>2️⃣ Choisir la famille</h3>
         <div class="familles-vente-grid" id="famillesGrid"></div>
       </div>
-
       <div class="vente-produits" id="venteProduits" style="display:none;">
         <h3>3️⃣ Choisir le produit</h3>
         <div class="produits-grid" id="produitsGrid"></div>
       </div>
-
       <div class="vente-form" id="venteForm" style="display:none;">
         <h3>4️⃣ Détails de la vente</h3>
         <form id="formVente">
@@ -1037,15 +1188,46 @@ h3 {
   <div class="footer">Généré par TAM AGRICOLE – Gestion Commerciale</div>
 </div>
 
-<script>
-const STORAGE_KEYS = { 
-  CLIENTS: 'tam_clients_v3', 
-  VISITES: 'tam_visites_v3', 
-  VENTES: 'tam_ventes_v3', 
-  CONTACTS: 'tam_contacts_v1',
-  DEMANDES: 'tam_demandes_v1',
-  THEME: 'tam_theme_v1'
+<!-- Firebase SDK (v9 modular via CDN) -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+import {
+  getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  signOut, onAuthStateChanged, updateProfile
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getDatabase, ref, onValue, set, push, remove, update, serverTimestamp, get
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAzetUtAuLilj2OzAfEdMo7zFvFUFu7EQE",
+  authDomain: "tama-b4f63.firebaseapp.com",
+  databaseURL: "https://tama-b4f63-default-rtdb.firebaseio.com",
+  projectId: "tama-b4f63",
+  storageBucket: "tama-b4f63.firebasestorage.app",
+  messagingSenderId: "14758669505",
+  appId: "1:14758669505:web:10e6338fedcf61c0f1b840",
+  measurementId: "G-R90Y08QBR1"
 };
+
+const firebaseApp = initializeApp(firebaseConfig);
+try { getAnalytics(firebaseApp); } catch(e) { console.warn('Analytics indisponible', e); }
+const auth = getAuth(firebaseApp);
+const db = getDatabase(firebaseApp);
+
+// Expose pour le script principal
+window.__tam = { auth, db, fb: {
+  ref, onValue, set, push, remove, update, serverTimestamp, get,
+  signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut,
+  onAuthStateChanged, updateProfile
+}};
+window.dispatchEvent(new Event('firebase-ready'));
+</script>
+
+<script>
+/* ==================== ÉTAT GLOBAL ==================== */
+const STORAGE_KEYS = { THEME: 'tam_theme_v1' };
 
 const INVENTAIRE = [
   { famille: 'Câbles & Ficelles', produits: [
@@ -1136,6 +1318,9 @@ let venteState = { clientId: null, famille: null, produit: null };
 let currentPage = 'accueil';
 let famillesOuvertes = {};
 let currentTab = 'demandes';
+let currentUser = null;
+let fb = null; // Firebase helpers
+let unsubscribers = [];
 
 /* ==================== THÈME ==================== */
 function appliquerTheme(theme) {
@@ -1150,12 +1335,10 @@ function appliquerTheme(theme) {
   }
   localStorage.setItem(STORAGE_KEYS.THEME, theme);
 }
-
 function basculerTheme() {
   const isDark = document.body.classList.contains('dark-mode');
   appliquerTheme(isDark ? 'light' : 'dark');
 }
-
 function initTheme() {
   const saved = localStorage.getItem(STORAGE_KEYS.THEME);
   if (saved === 'dark') appliquerTheme('dark');
@@ -1168,7 +1351,6 @@ function initTheme() {
 }
 
 /* ==================== UTILITAIRES ==================== */
-function maintenant() { return new Date().toISOString(); }
 function formatDateHeure(iso) {
   if (!iso) return '';
   const d = new Date(iso);
@@ -1183,7 +1365,6 @@ function formatNombre(n) {
 }
 function normaliser(str) { return (str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
 function echapperHTML(str) { const div = document.createElement('div'); div.textContent = str == null ? '' : String(str); return div.innerHTML; }
-
 function toast(message, type = 'success') {
   const el = document.getElementById('toast');
   const icon = type === 'error' ? '✕' : '✓';
@@ -1193,26 +1374,186 @@ function toast(message, type = 'success') {
   el._timer = setTimeout(() => { el.className = 'toast'; }, 2400);
 }
 
-/* ==================== DONNÉES ==================== */
-function chargerDonnees() {
+/* ==================== AUTHENTIFICATION ==================== */
+function showLogin() {
+  document.getElementById('login-screen').style.display = 'flex';
+}
+function hideLogin() {
+  document.getElementById('login-screen').style.display = 'none';
+}
+function showLoginError(msg) {
+  const el = document.getElementById('loginError');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 5000);
+}
+function setLoginLoading(on) {
+  document.getElementById('loginLoading').style.display = on ? 'block' : 'none';
+  document.getElementById('formSignin').style.display = on ? 'none' : (currentLoginTab === 'signin' ? 'block' : 'none');
+  document.getElementById('formSignup').style.display = on ? 'none' : (currentLoginTab === 'signup' ? 'block' : 'none');
+}
+let currentLoginTab = 'signin';
+
+function initLoginTabs() {
+  document.querySelectorAll('[data-login-tab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentLoginTab = btn.dataset.loginTab;
+      document.querySelectorAll('[data-login-tab]').forEach(b => b.classList.toggle('active', b === btn));
+      document.getElementById('formSignin').style.display = currentLoginTab === 'signin' ? 'block' : 'none';
+      document.getElementById('formSignup').style.display = currentLoginTab === 'signup' ? 'block' : 'none';
+      document.getElementById('loginError').classList.remove('show');
+    });
+  });
+}
+
+/* Convertit un "username" en email fictif si ce n'est pas un email */
+function identifiantVersEmail(id) {
+  id = id.trim();
+  if (id.includes('@')) return id;
+  // Username -> email synthétique
+  return id.toLowerCase().replace(/[^a-z0-9._-]/g, '') + '@tam-agricole.local';
+}
+
+async function doSignin(emailOrUser, password) {
+  const email = identifiantVersEmail(emailOrUser);
   try {
-    clients = JSON.parse(localStorage.getItem(STORAGE_KEYS.CLIENTS)) || [...CLIENTS_INITIAUX];
-    visites = JSON.parse(localStorage.getItem(STORAGE_KEYS.VISITES)) || [];
-    ventes  = JSON.parse(localStorage.getItem(STORAGE_KEYS.VENTES))  || [];
-    contacts = JSON.parse(localStorage.getItem(STORAGE_KEYS.CONTACTS)) || [];
-    demandes = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEMANDES)) || [];
-    if (!localStorage.getItem(STORAGE_KEYS.CLIENTS)) sauvegarder();
+    setLoginLoading(true);
+    await fb.signInWithEmailAndPassword(fb.auth, email, password);
+    // L'écouteur onAuthStateChanged prendra le relais
   } catch (e) {
-    clients = [...CLIENTS_INITIAUX]; visites = []; ventes = []; contacts = []; demandes = [];
+    setLoginLoading(false);
+    let msg = 'Erreur de connexion';
+    if (e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found') {
+      msg = 'Email/identifiant ou mot de passe incorrect';
+    } else if (e.code === 'auth/invalid-email') {
+      msg = 'Identifiant invalide';
+    } else if (e.code === 'auth/too-many-requests') {
+      msg = 'Trop de tentatives, réessayez plus tard';
+    } else {
+      msg = e.message || msg;
+    }
+    showLoginError(msg);
   }
 }
 
-function sauvegarder() {
-  localStorage.setItem(STORAGE_KEYS.CLIENTS, JSON.stringify(clients));
-  localStorage.setItem(STORAGE_KEYS.VISITES, JSON.stringify(visites));
-  localStorage.setItem(STORAGE_KEYS.VENTES, JSON.stringify(ventes));
-  localStorage.setItem(STORAGE_KEYS.CONTACTS, JSON.stringify(contacts));
-  localStorage.setItem(STORAGE_KEYS.DEMANDES, JSON.stringify(demandes));
+async function doSignup(name, email, password) {
+  try {
+    setLoginLoading(true);
+    const cred = await fb.createUserWithEmailAndPassword(fb.auth, email, password);
+    // Enregistre le nom d'affichage + profil dans la Realtime DB
+    await fb.updateProfile(cred.user, { displayName: name });
+    await fb.set(fb.ref(fb.db, 'users/' + cred.user.uid), {
+      uid: cred.user.uid,
+      nom: name,
+      email: email,
+      createdAt: Date.now()
+    });
+  } catch (e) {
+    setLoginLoading(false);
+    let msg = 'Erreur lors de la création';
+    if (e.code === 'auth/email-already-in-use') msg = 'Cet email est déjà utilisé';
+    else if (e.code === 'auth/invalid-email') msg = 'Email invalide';
+    else if (e.code === 'auth/weak-password') msg = 'Mot de passe trop faible (min. 6 caractères)';
+    else msg = e.message || msg;
+    showLoginError(msg);
+  }
+}
+
+function initLoginForms() {
+  document.getElementById('formSignin').addEventListener('submit', e => {
+    e.preventDefault();
+    doSignin(
+      document.getElementById('signinEmail').value,
+      document.getElementById('signinPassword').value
+    );
+  });
+  document.getElementById('formSignup').addEventListener('submit', e => {
+    e.preventDefault();
+    doSignup(
+      document.getElementById('signupName').value,
+      document.getElementById('signupEmail').value,
+      document.getElementById('signupPassword').value
+    );
+  });
+  document.getElementById('btnLogout').addEventListener('click', async () => {
+    if (!confirm('Voulez-vous vraiment vous déconnecter ?')) return;
+    try {
+      await fb.signOut(fb.auth);
+      toast('Déconnecté');
+    } catch (e) {
+      toast('Erreur de déconnexion', 'error');
+    }
+  });
+}
+
+/* ==================== FIREBASE SYNC ==================== */
+function setupFirebaseListeners() {
+  // Arrête les anciens listeners
+  unsubscribers.forEach(fn => { try { fn(); } catch(e){} });
+  unsubscribers = [];
+
+  // Clients
+  const unsubClients = fb.onValue(fb.ref(fb.db, 'clients'), snap => {
+    const data = snap.val() || {};
+    const arr = Object.values(data).map(c => ({ id: c.id, nom: c.nom }));
+    if (arr.length === 0) {
+      // Initialise avec les clients par défaut (une seule fois)
+      const initRef = fb.ref(fb.db, 'clients');
+      fb.get(initRef).then(s => {
+        if (!s.exists()) {
+          const obj = {};
+          CLIENTS_INITIAUX.forEach(c => { obj[c.id] = c; });
+          fb.set(initRef, obj);
+        }
+      });
+    } else {
+      clients = arr.sort((a, b) => a.nom.localeCompare(b.nom));
+    }
+    renderCurrentPage();
+  });
+  unsubscribers.push(unsubClients);
+
+  // Visites
+  const unsubVisites = fb.onValue(fb.ref(fb.db, 'visites'), snap => {
+    const data = snap.val() || {};
+    visites = Object.values(data);
+    if (currentPage === 'visites') { renderVisites(); renderHistoriqueVisites(); }
+  });
+  unsubscribers.push(unsubVisites);
+
+  // Ventes
+  const unsubVentes = fb.onValue(fb.ref(fb.db, 'ventes'), snap => {
+    const data = snap.val() || {};
+    ventes = Object.values(data);
+  });
+  unsubscribers.push(unsubVentes);
+
+  // Contacts
+  const unsubContacts = fb.onValue(fb.ref(fb.db, 'contacts'), snap => {
+    const data = snap.val() || {};
+    contacts = Object.values(data);
+    if (currentPage === 'contacts') renderContacts();
+  });
+  unsubscribers.push(unsubContacts);
+
+  // Demandes (uniquement celles du commercial connecté)
+  if (currentUser) {
+    const unsubDemandes = fb.onValue(fb.ref(fb.db, 'demandes'), snap => {
+      const data = snap.val() || {};
+      demandes = Object.values(data).filter(d => d.uid === currentUser.uid);
+      if (currentPage === 'demandes') renderDemandes();
+    });
+    unsubscribers.push(unsubDemandes);
+  }
+}
+
+function renderCurrentPage() {
+  if (currentPage === 'accueil') { /* rien à re-render */ }
+  else if (currentPage === 'visites') { renderVisites(); renderHistoriqueVisites(); }
+  else if (currentPage === 'contacts') { renderContacts(); }
+  else if (currentPage === 'demandes') { if (currentTab === 'demandes') renderDemandes(); else renderProduits(); }
+  else if (currentPage === 'ventes') { renderClientsVente(); }
+  else if (currentPage === 'clients') { renderClientsGestion(); }
 }
 
 /* ==================== NAVIGATION ==================== */
@@ -1248,9 +1589,7 @@ function afficherPage(pageId) {
 
   if (pageId === 'visites')   { renderVisites(); renderHistoriqueVisites(); }
   if (pageId === 'contacts')  { renderContacts(); }
-  if (pageId === 'demandes')  { 
-    switcherTab(currentTab); 
-  }
+  if (pageId === 'demandes')  { switcherTab(currentTab); }
   if (pageId === 'ventes')    { renderClientsVente(); resetVenteForm(); }
   if (pageId === 'clients')   { renderClientsGestion(); }
 }
@@ -1339,18 +1678,22 @@ function enregistrerVisite(clientId) {
   });
 
   document.getElementById('modalAnnulerVisite').addEventListener('click', fermerModale);
-  document.getElementById('modalConfirmerVisite').addEventListener('click', () => {
-    visites.push({
+  document.getElementById('modalConfirmerVisite').addEventListener('click', async () => {
+    const newVisite = {
       id: 'V' + Date.now(),
       clientId: client.id,
       clientNom: client.nom,
-      date: maintenant()
-    });
-    sauvegarder();
-    fermerModale();
-    renderVisites();
-    renderHistoriqueVisites();
-    toast('Visite enregistrée');
+      uid: currentUser ? currentUser.uid : null,
+      commercial: currentUser ? (currentUser.displayName || currentUser.email) : null,
+      date: new Date().toISOString()
+    };
+    try {
+      await fb.set(fb.ref(fb.db, 'visites/' + newVisite.id), newVisite);
+      fermerModale();
+      toast('Visite enregistrée');
+    } catch (e) {
+      toast('Erreur d\'enregistrement', 'error');
+    }
   });
 }
 
@@ -1365,7 +1708,7 @@ function renderHistoriqueVisites() {
   container.innerHTML = liste.map(v => `
     <div class="hist-item">
       <span class="hist-label">${echapperHTML(v.clientNom)}</span>
-      <span class="hist-date">${formatDateHeure(v.date)}</span>
+      <span class="hist-date">${formatDateHeure(v.date)}${v.commercial ? ' · ' + echapperHTML(v.commercial) : ''}</span>
     </div>
   `).join('');
 }
@@ -1376,7 +1719,6 @@ function switcherTab(tab) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
   document.getElementById('tab-demandes').style.display = tab === 'demandes' ? 'block' : 'none';
   document.getElementById('tab-catalogue').style.display = tab === 'catalogue' ? 'block' : 'none';
-  
   if (tab === 'demandes') renderDemandes();
   if (tab === 'catalogue') renderProduits();
 }
@@ -1418,7 +1760,6 @@ function renderDemandes() {
         <div class="demande-produit">📦 ${echapperHTML(d.produit)}</div>
         <div class="demande-details">
           <span><strong>Quantité:</strong> ${formatNombre(d.quantite)} ${echapperHTML(d.unite)}</span>
-          ${d.commercial ? `<span><strong>Commercial:</strong> ${echapperHTML(d.commercial)}</span>` : ''}
         </div>
         ${d.note ? `<div class="demande-note">${echapperHTML(d.note)}</div>` : ''}
         <div class="demande-actions">
@@ -1439,19 +1780,20 @@ function renderDemandes() {
   });
 }
 
-function toggleStatutDemande(demandeId) {
+async function toggleStatutDemande(demandeId) {
   const d = demandes.find(x => x.id === demandeId);
   if (!d) return;
-  d.statut = d.statut === 'traite' ? 'en_attente' : 'traite';
-  sauvegarder();
-  renderDemandes();
-  toast(d.statut === 'traite' ? 'Demande traitée' : 'Remise en attente');
+  try {
+    await fb.update(fb.ref(fb.db, 'demandes/' + demandeId), {
+      statut: d.statut === 'traite' ? 'en_attente' : 'traite'
+    });
+    toast(d.statut === 'traite' ? 'Remise en attente' : 'Demande traitée');
+  } catch (e) {
+    toast('Erreur', 'error');
+  }
 }
 
 function supprimerDemande(demandeId) {
-  const d = demandes.find(x => x.id === demandeId);
-  if (!d) return;
-
   ouvrirModale({
     titre: 'Supprimer la demande',
     corps: `<p style="color:var(--text-primary); font-size:1rem;">Voulez-vous vraiment supprimer cette demande ?</p>`,
@@ -1460,23 +1802,22 @@ function supprimerDemande(demandeId) {
       <button class="btn btn-danger" id="modalConfirmerSupprDemande">🗑️ Supprimer</button>
     `
   });
-
   document.getElementById('modalAnnulerSupprDemande').addEventListener('click', fermerModale);
-  document.getElementById('modalConfirmerSupprDemande').addEventListener('click', () => {
-    demandes = demandes.filter(x => x.id !== demandeId);
-    sauvegarder();
-    fermerModale();
-    renderDemandes();
-    toast('Demande supprimée');
+  document.getElementById('modalConfirmerSupprDemande').addEventListener('click', async () => {
+    try {
+      await fb.remove(fb.ref(fb.db, 'demandes/' + demandeId));
+      fermerModale();
+      toast('Demande supprimée');
+    } catch (e) {
+      toast('Erreur', 'error');
+    }
   });
 }
 
 function ouvrirModaleNouvelleDemande() {
-  // Options clients
   const optionsClients = clients.slice().sort((a,b) => a.nom.localeCompare(b.nom))
     .map(c => `<option value="${c.id}">${echapperHTML(c.nom)} (${echapperHTML(c.id)})</option>`).join('');
 
-  // Options produits (tous, groupés par famille)
   let optionsProduits = '<option value="">— Sélectionner un produit —</option>';
   INVENTAIRE.forEach(f => {
     optionsProduits += `<optgroup label="${echapperHTML(f.famille)}">`;
@@ -1489,10 +1830,6 @@ function ouvrirModaleNouvelleDemande() {
   ouvrirModale({
     titre: '📝 Nouvelle demande spéciale',
     corps: `
-      <div class="form-group">
-        <label>Commercial</label>
-        <input type="text" id="demandeCommercial" placeholder="Votre nom">
-      </div>
       <div class="form-group">
         <label>Client</label>
         <select id="demandeClientSelect">${optionsClients}</select>
@@ -1526,8 +1863,7 @@ function ouvrirModaleNouvelleDemande() {
   });
 
   document.getElementById('modalAnnulerDemande').addEventListener('click', fermerModale);
-  document.getElementById('modalValiderDemande').addEventListener('click', () => {
-    const commercial = document.getElementById('demandeCommercial').value.trim();
+  document.getElementById('modalValiderDemande').addEventListener('click', async () => {
     const clientId = document.getElementById('demandeClientSelect').value;
     const produitSelect = document.getElementById('demandeProduitSelect');
     const produit = produitSelect.value;
@@ -1535,17 +1871,17 @@ function ouvrirModaleNouvelleDemande() {
     const quantite = parseFloat(document.getElementById('demandeQuantite').value);
     const unite = document.getElementById('demandeUnite').value;
     const note = document.getElementById('demandeNote').value.trim();
-
     const client = clients.find(c => c.id === clientId);
 
-    if (!commercial) { toast('Indiquez votre nom', 'error'); return; }
     if (!client) { toast('Sélectionnez un client', 'error'); return; }
     if (!produit) { toast('Sélectionnez un produit', 'error'); return; }
     if (!quantite || quantite <= 0) { toast('Quantité invalide', 'error'); return; }
 
-    demandes.push({
+    const newDemande = {
       id: 'D' + Date.now(),
-      commercial: commercial,
+      uid: currentUser.uid,
+      commercial: currentUser.displayName || currentUser.email,
+      commercialEmail: currentUser.email,
       clientId: client.id,
       clientNom: client.nom,
       produit: produit,
@@ -1554,16 +1890,18 @@ function ouvrirModaleNouvelleDemande() {
       unite: unite,
       note: note,
       statut: 'en_attente',
-      date: maintenant()
-    });
+      date: new Date().toISOString()
+    };
 
-    sauvegarder();
-    fermerModale();
-    switcherTab('demandes');
-    toast('Demande enregistrée');
+    try {
+      await fb.set(fb.ref(fb.db, 'demandes/' + newDemande.id), newDemande);
+      fermerModale();
+      switcherTab('demandes');
+      toast('Demande envoyée');
+    } catch (e) {
+      toast('Erreur d\'envoi', 'error');
+    }
   });
-
-  setTimeout(() => document.getElementById('demandeCommercial').focus(), 300);
 }
 
 /* ==================== PRODUITS / CATALOGUE ==================== */
@@ -1583,10 +1921,7 @@ function renderProduits() {
     container.innerHTML = '<p class="hist-empty">Aucun produit trouvé.</p>';
     return;
   }
-
-  if (search) {
-    famillesFiltrees.forEach(f => famillesOuvertes[f.famille] = true);
-  }
+  if (search) famillesFiltrees.forEach(f => famillesOuvertes[f.famille] = true);
 
   container.innerHTML = famillesFiltrees.map(f => {
     const ouvert = famillesOuvertes[f.famille] !== false;
@@ -1650,7 +1985,7 @@ function renderContacts() {
         <div class="contact-nom">
           <span>${echapperHTML(c.clientNom)}</span>
         </div>
-        <div class="contact-date">${formatDateHeure(c.date)}</div>
+        <div class="contact-date">${formatDateHeure(c.date)}${c.commercial ? ' · ' + echapperHTML(c.commercial) : ''}</div>
         <div class="contact-note">${echapperHTML(c.note)}</div>
         <div class="contact-actions">
           <button class="btn btn-secondary btn-sm" data-modifier-contact="${c.id}">✏️ Modifier</button>
@@ -1669,7 +2004,6 @@ function renderContacts() {
 
   const existingBtn = document.getElementById('btnAjouterContact');
   if (existingBtn) existingBtn.remove();
-
   const addBtn = document.createElement('button');
   addBtn.id = 'btnAjouterContact';
   addBtn.className = 'btn btn-primary btn-block';
@@ -1702,24 +2036,29 @@ function ouvrirModaleAjouterContact() {
   });
 
   document.getElementById('modalAnnulerContact').addEventListener('click', fermerModale);
-  document.getElementById('modalValiderContact').addEventListener('click', () => {
+  document.getElementById('modalValiderContact').addEventListener('click', async () => {
     const clientId = document.getElementById('contactClientSelect').value;
     const note = document.getElementById('contactNote').value.trim();
     const client = clients.find(c => c.id === clientId);
     if (!client) { toast('Sélectionnez un client', 'error'); return; }
     if (!note) { toast('Ajoutez une note', 'error'); return; }
 
-    contacts.push({
+    const newContact = {
       id: 'C' + Date.now(),
       clientId: client.id,
       clientNom: client.nom,
       note: note,
-      date: maintenant()
-    });
-    sauvegarder();
-    fermerModale();
-    renderContacts();
-    toast('Contact enregistré');
+      uid: currentUser ? currentUser.uid : null,
+      commercial: currentUser ? (currentUser.displayName || currentUser.email) : null,
+      date: new Date().toISOString()
+    };
+    try {
+      await fb.set(fb.ref(fb.db, 'contacts/' + newContact.id), newContact);
+      fermerModale();
+      toast('Contact enregistré');
+    } catch (e) {
+      toast('Erreur', 'error');
+    }
   });
 }
 
@@ -1742,21 +2081,20 @@ function ouvrirModaleModifierContact(contactId) {
   });
 
   document.getElementById('modalAnnulerModifContact').addEventListener('click', fermerModale);
-  document.getElementById('modalValiderModifContact').addEventListener('click', () => {
+  document.getElementById('modalValiderModifContact').addEventListener('click', async () => {
     const newNote = document.getElementById('modifContactNote').value.trim();
     if (!newNote) { toast('La note ne peut pas être vide', 'error'); return; }
-    contact.note = newNote;
-    sauvegarder();
-    fermerModale();
-    renderContacts();
-    toast('Contact modifié');
+    try {
+      await fb.update(fb.ref(fb.db, 'contacts/' + contactId), { note: newNote });
+      fermerModale();
+      toast('Contact modifié');
+    } catch (e) {
+      toast('Erreur', 'error');
+    }
   });
 }
 
 function supprimerContact(contactId) {
-  const contact = contacts.find(c => c.id === contactId);
-  if (!contact) return;
-
   ouvrirModale({
     titre: 'Supprimer le contact',
     corps: `<p style="color:var(--text-primary); font-size:1rem;">Voulez-vous vraiment supprimer ce contact ?</p>`,
@@ -1765,14 +2103,15 @@ function supprimerContact(contactId) {
       <button class="btn btn-danger" id="modalConfirmerSupprContact">🗑️ Supprimer</button>
     `
   });
-
   document.getElementById('modalAnnulerSupprContact').addEventListener('click', fermerModale);
-  document.getElementById('modalConfirmerSupprContact').addEventListener('click', () => {
-    contacts = contacts.filter(c => c.id !== contactId);
-    sauvegarder();
-    fermerModale();
-    renderContacts();
-    toast('Contact supprimé');
+  document.getElementById('modalConfirmerSupprContact').addEventListener('click', async () => {
+    try {
+      await fb.remove(fb.ref(fb.db, 'contacts/' + contactId));
+      fermerModale();
+      toast('Contact supprimé');
+    } catch (e) {
+      toast('Erreur', 'error');
+    }
   });
 }
 
@@ -1787,21 +2126,14 @@ function imprimerRapportContacts() {
   if (!liste.length) { toast('Aucun contact à imprimer', 'error'); return; }
 
   document.getElementById('pdf-type').textContent = 'Rapport des Contacts Téléphoniques';
-  document.getElementById('pdf-date').textContent = formatDateHeure(maintenant());
+  document.getElementById('pdf-date').textContent = formatDateHeure(new Date().toISOString());
 
   let filtreTexte = 'Tous les contacts';
   if (filtreDate) filtreTexte = `Date: ${formatDate(filtreDate)}`;
-  if (search) filtreTexte += (filtreDate ? ' · ' : '') + `Recherche: "${document.getElementById('searchContacts').value}"`;
   document.getElementById('pdf-client').textContent = filtreTexte;
 
   document.getElementById('pdf-table').innerHTML = `
-    <thead>
-      <tr>
-        <th style="width:30%;">Client</th>
-        <th style="width:22%;">Date</th>
-        <th>Note</th>
-      </tr>
-    </thead>
+    <thead><tr><th style="width:30%;">Client</th><th style="width:22%;">Date</th><th>Note</th></tr></thead>
     <tbody>
       ${liste.map(c => `
         <tr>
@@ -1812,7 +2144,6 @@ function imprimerRapportContacts() {
       `).join('')}
     </tbody>
   `;
-
   window.print();
 }
 
@@ -1840,11 +2171,9 @@ function selectionnerClientVente(clientId) {
   venteState.clientId = clientId;
   venteState.famille = null;
   venteState.produit = null;
-
   document.querySelectorAll('#listeClientsVente .client-vente-item').forEach(el => {
     el.classList.toggle('selected', el.dataset.clientVente === clientId);
   });
-
   document.getElementById('venteFamilles').style.display = 'block';
   document.getElementById('venteProduits').style.display = 'none';
   document.getElementById('venteForm').style.display = 'none';
@@ -1869,14 +2198,11 @@ function renderFamillesVente() {
 function selectionnerFamilleVente(famille) {
   venteState.famille = famille;
   venteState.produit = null;
-
   document.querySelectorAll('.famille-vente-btn').forEach(b => {
     b.classList.toggle('selected', b.dataset.familleVente === famille);
   });
-
   const familleObj = INVENTAIRE.find(f => f.famille === famille);
   if (!familleObj) return;
-
   document.getElementById('venteProduits').style.display = 'block';
   document.getElementById('venteForm').style.display = 'none';
   renderProduitsVente(familleObj.produits);
@@ -1890,7 +2216,6 @@ function renderProduitsVente(produits) {
       ${echapperHTML(p.nom)}
     </button>
   `).join('');
-
   grid.querySelectorAll('[data-produit]').forEach(btn => {
     btn.addEventListener('click', () => selectionnerProduit(btn.dataset.produit));
   });
@@ -1899,19 +2224,16 @@ function renderProduitsVente(produits) {
 function selectionnerProduit(produit) {
   venteState.produit = produit;
   document.querySelectorAll('.produit-btn').forEach(b => b.classList.toggle('selected', b.dataset.produit === produit));
-
   document.getElementById('venteForm').style.display = 'block';
   document.getElementById('venteProduit').value = produit;
   document.getElementById('venteDate').value = dateDuJour();
   document.getElementById('venteQuantite').value = '';
   document.getElementById('ventePrix').value = '';
   document.getElementById('venteTotal').value = '';
-
   if (produit.includes('FILET') || produit.includes('OMBRIERE')) document.getElementById('venteUnite').value = 'M²';
   else if (produit.includes('AQUATAPE') || produit.includes('AQUADROP') || produit.includes('CINTAPE')) document.getElementById('venteUnite').value = 'ML';
   else if (produit.includes('FER') || produit.includes('CABLE') || produit.includes('PERLHUMS') || produit.includes('POWHUMUS')) document.getElementById('venteUnite').value = 'kg';
   else if (produit.includes('AGRAFES')) document.getElementById('venteUnite').value = 'Packet';
-
   document.getElementById('venteForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
@@ -1932,37 +2254,36 @@ function calculerTotalVente() {
 function initVenteForm() {
   document.getElementById('venteQuantite').addEventListener('input', calculerTotalVente);
   document.getElementById('ventePrix').addEventListener('input', calculerTotalVente);
-  document.getElementById('formVente').addEventListener('submit', e => {
+  document.getElementById('formVente').addEventListener('submit', async e => {
     e.preventDefault();
-    enregistrerVente();
+    const client = clients.find(c => c.id === venteState.clientId);
+    if (!client || !venteState.produit) { toast('Sélection incomplète', 'error'); return; }
+    const quantite = parseFloat(document.getElementById('venteQuantite').value);
+    const prix = parseFloat(document.getElementById('ventePrix').value);
+    const dateVente = document.getElementById('venteDate').value;
+    if (!quantite || quantite <= 0 || !prix || prix <= 0 || !dateVente) { toast('Vérifiez les champs', 'error'); return; }
+
+    const newVente = {
+      id: 'S' + Date.now(),
+      clientId: client.id, clientNom: client.nom,
+      famille: venteState.famille,
+      produit: venteState.produit,
+      quantite: quantite,
+      unite: document.getElementById('venteUnite').value,
+      prixUnitaire: prix,
+      montant: quantite * prix,
+      uid: currentUser ? currentUser.uid : null,
+      commercial: currentUser ? (currentUser.displayName || currentUser.email) : null,
+      date: dateVente + 'T' + new Date().toTimeString().slice(0, 8)
+    };
+    try {
+      await fb.set(fb.ref(fb.db, 'ventes/' + newVente.id), newVente);
+      toast('Vente enregistrée');
+      resetVenteForm();
+    } catch (e) {
+      toast('Erreur', 'error');
+    }
   });
-}
-
-function enregistrerVente() {
-  const client = clients.find(c => c.id === venteState.clientId);
-  if (!client || !venteState.produit) { toast('Sélection incomplète', 'error'); return; }
-
-  const quantite = parseFloat(document.getElementById('venteQuantite').value);
-  const prix = parseFloat(document.getElementById('ventePrix').value);
-  const dateVente = document.getElementById('venteDate').value;
-
-  if (!quantite || quantite <= 0 || !prix || prix <= 0 || !dateVente) { toast('Vérifiez les champs', 'error'); return; }
-
-  ventes.push({
-    id: 'S' + Date.now(),
-    clientId: client.id, clientNom: client.nom,
-    famille: venteState.famille,
-    produit: venteState.produit,
-    quantite: quantite,
-    unite: document.getElementById('venteUnite').value,
-    prixUnitaire: prix,
-    montant: quantite * prix,
-    date: dateVente + 'T' + new Date().toTimeString().slice(0, 8)
-  });
-
-  sauvegarder();
-  toast('Vente enregistrée');
-  resetVenteForm();
 }
 
 /* ==================== CLIENTS ==================== */
@@ -1992,71 +2313,49 @@ function renderClientsGestion() {
 function ajouterClient(nom) {
   nom = nom.trim();
   if (!nom || clients.some(c => normaliser(c.nom) === normaliser(nom))) { toast('Nom invalide ou existant', 'error'); return false; }
-
-  clients.push({ id: 'CLT' + Math.floor(1000 + Math.random() * 9000), nom });
-  sauvegarder();
-  renderClientsGestion();
-  toast('Client ajouté');
+  const id = 'CLT' + Math.floor(1000 + Math.random() * 9000);
+  fb.set(fb.ref(fb.db, 'clients/' + id), { id, nom }).then(() => {
+    toast('Client ajouté');
+  }).catch(() => toast('Erreur', 'error'));
   return true;
 }
 
 function modifierClient(id, nouveauNom) {
-  const client = clients.find(c => c.id === id);
-  if (!client || !nouveauNom.trim()) return false;
-
-  client.nom = nouveauNom.trim();
-  visites.forEach(v => { if (v.clientId === id) v.clientNom = nouveauNom.trim(); });
-  ventes.forEach(v => { if (v.clientId === id) v.clientNom = nouveauNom.trim(); });
-  contacts.forEach(c => { if (c.clientId === id) c.clientNom = nouveauNom.trim(); });
-  demandes.forEach(d => { if (d.clientId === id) d.clientNom = nouveauNom.trim(); });
-
-  sauvegarder();
-  renderClientsGestion();
-  toast('Client modifié');
+  if (!nouveauNom.trim()) return false;
+  fb.update(fb.ref(fb.db, 'clients/' + id), { nom: nouveauNom.trim() }).then(() => {
+    toast('Client modifié');
+  }).catch(() => toast('Erreur', 'error'));
   return true;
 }
 
 function supprimerClient(id) {
   const client = clients.find(c => c.id === id);
   if (!client) return;
-
   ouvrirModale({
     titre: 'Supprimer le client',
-    corps: `<p style="color:var(--text-primary); font-size:1rem;">Voulez-vous vraiment supprimer <strong>${echapperHTML(client.nom)}</strong> ainsi que tout son historique (visites, ventes, contacts, demandes) ? Cette action est irréversible.</p>`,
+    corps: `<p style="color:var(--text-primary); font-size:1rem;">Voulez-vous vraiment supprimer <strong>${echapperHTML(client.nom)}</strong> ? Cette action est irréversible.</p>`,
     footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button>
              <button class="btn btn-danger" id="modalConfirmerSuppr">🗑️ Supprimer</button>`
   });
-
   document.getElementById('modalAnnuler').addEventListener('click', fermerModale);
-  document.getElementById('modalConfirmerSuppr').addEventListener('click', () => {
-    clients = clients.filter(c => c.id !== id);
-    visites = visites.filter(v => v.clientId !== id);
-    ventes  = ventes.filter(v => v.clientId !== id);
-    contacts = contacts.filter(c => c.clientId !== id);
-    demandes = demandes.filter(d => d.clientId !== id);
-    sauvegarder();
-    fermerModale();
-    renderClientsGestion();
-    toast('Client supprimé');
+  document.getElementById('modalConfirmerSuppr').addEventListener('click', async () => {
+    try {
+      await fb.remove(fb.ref(fb.db, 'clients/' + id));
+      fermerModale();
+      toast('Client supprimé');
+    } catch (e) { toast('Erreur', 'error'); }
   });
 }
 
 function ouvrirModaleModifierClient(id) {
   const client = clients.find(c => c.id === id);
   if (!client) return;
-
   ouvrirModale({
     titre: 'Modifier le client',
-    corps: `
-      <div class="form-group">
-        <label>Nom du client</label>
-        <input type="text" id="modifClientNom" value="${echapperHTML(client.nom)}">
-      </div>
-    `,
+    corps: `<div class="form-group"><label>Nom du client</label><input type="text" id="modifClientNom" value="${echapperHTML(client.nom)}"></div>`,
     footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button>
              <button class="btn btn-primary" id="modalValiderModif">✓ Enregistrer</button>`
   });
-
   document.getElementById('modalAnnuler').addEventListener('click', fermerModale);
   document.getElementById('modalValiderModif').addEventListener('click', () => {
     if (modifierClient(id, document.getElementById('modifClientNom').value)) fermerModale();
@@ -2070,11 +2369,9 @@ function ouvrirModale({ titre, corps, footer }) {
   document.getElementById('modalFooter').innerHTML = footer || '';
   document.getElementById('modalOverlay').classList.add('open');
 }
-
 function fermerModale() {
   document.getElementById('modalOverlay').classList.remove('open');
 }
-
 function initModale() {
   document.getElementById('modalClose').addEventListener('click', fermerModale);
   document.getElementById('modalOverlay').addEventListener('click', e => {
@@ -2101,19 +2398,16 @@ function exportCSV() {
 document.getElementById('btnExportVisitesPDF').addEventListener('click', () => {
   const filtreDate = document.getElementById('filtreDateVisites').value;
   let liste = visites.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
-
   if (filtreDate) {
     liste = liste.filter(v => v.date && v.date.slice(0, 10) === filtreDate);
     document.getElementById('pdf-client').textContent = `Date: ${formatDate(filtreDate)}`;
   } else {
     document.getElementById('pdf-client').textContent = 'Toutes les visites';
   }
-
   if (!liste.length) { toast('Aucune visite à exporter', 'error'); return; }
 
   document.getElementById('pdf-type').textContent = 'Rapport des Visites';
-  document.getElementById('pdf-date').textContent = formatDateHeure(maintenant());
-
+  document.getElementById('pdf-date').textContent = formatDateHeure(new Date().toISOString());
   document.getElementById('pdf-table').innerHTML = `
     <thead><tr><th>Client</th><th>Date et Heure</th></tr></thead>
     <tbody>${liste.map(v => `<tr><td>${echapperHTML(v.clientNom)}</td><td>${formatDateHeure(v.date)}</td></tr>`).join('')}</tbody>
@@ -2187,17 +2481,54 @@ function initVentesRecherche() {
   document.getElementById('searchVenteClient').addEventListener('input', renderClientsVente);
 }
 
-function init() {
-  initTheme();
-  chargerDonnees();
-  initNavigation(); initModale(); initVisitesFiltres();
-  initContactsFiltres(); initDemandesFiltres(); initTabs();
-  initProduitsFiltres();
-  initVenteForm(); initClients(); initVentesRecherche();
-  afficherPage('accueil');
+function setupAuthStateListener() {
+  fb.onAuthStateChanged(fb.auth, user => {
+    if (user) {
+      currentUser = user;
+      hideLogin();
+      document.getElementById('heroUser').textContent = '👤 ' + (user.displayName || user.email);
+      // Démarre les listeners temps réel
+      setupFirebaseListeners();
+      afficherPage('accueil');
+    } else {
+      currentUser = null;
+      unsubscribers.forEach(fn => { try { fn(); } catch(e){} });
+      unsubscribers = [];
+      showLogin();
+    }
+  });
 }
 
-document.addEventListener('DOMContentLoaded', init);
+function bootApp() {
+  initTheme();
+  initLoginTabs();
+  initLoginForms();
+  initNavigation();
+  initModale();
+  initVisitesFiltres();
+  initContactsFiltres();
+  initDemandesFiltres();
+  initTabs();
+  initProduitsFiltres();
+  initVenteForm();
+  initClients();
+  initVentesRecherche();
+  setupAuthStateListener();
+}
+
+// Attend que le module Firebase soit prêt
+function waitForFirebase() {
+  if (window.__tam) {
+    fb = window.__tam.fb;
+    fb.auth = window.__tam.auth;
+    fb.db = window.__tam.db;
+    bootApp();
+  } else {
+    setTimeout(waitForFirebase, 50);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', waitForFirebase);
 </script>
 </body>
 </html>
