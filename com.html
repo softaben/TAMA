@@ -1149,40 +1149,6 @@ const INVENTAIRE = [
   ]}
 ];
 
-const CLIENTS_DEFAUT = [
-  { id: 'CLT0234', nom: 'DOMAINE SALAH' }, { id: 'CLT0151', nom: 'AFNANE PRIME' },
-  { id: 'CLT0178', nom: 'TOULOUT ABDERRAHIM' }, { id: 'CLT0153', nom: 'FRESHBROTHERS' },
-  { id: 'CLT0182', nom: 'OUGRAICH LAHCEN' }, { id: 'CLT0116', nom: 'AGRI-ERROUIDA' },
-  { id: 'CLT0146', nom: 'COOPERATIVE SAFAA AGRI' }, { id: 'CLT0158', nom: 'DOMAINE BALLAT TAGOT' },
-  { id: 'CLT0243', nom: 'BASSATINE PRIM' }, { id: 'CLT0173', nom: 'DOMAINE L\'EST' },
-  { id: 'CLT0074', nom: 'BRAHIM HEMMAD' }, { id: 'CLT0117', nom: 'AGYAD AGRICULTURE SARL' },
-  { id: 'CLT0170', nom: 'STE ESOMA' }, { id: 'CLT0101', nom: 'AFRICA TRAVAUX AGRICOLES' },
-  { id: 'CLT0237', nom: 'JAOUDA GREEN' }, { id: 'CLT0239', nom: 'SOUSS BERRIES' },
-  { id: 'CLT0238', nom: 'GREEN BENZ GOLD' }, { id: 'CLT0154', nom: 'DOMAINE BOUANAS' },
-  { id: 'CLT0207', nom: 'LB INNOV SARL' }, { id: 'CLT0227', nom: 'DOMAINE AFOULKI' },
-  { id: 'CLT0232', nom: 'GOLDEN PLANT' }, { id: 'CLT0247', nom: 'LOUFANI HASSAN' },
-  { id: 'CLT0240', nom: 'ABDESLAM HAJJAJ' }, { id: 'CLT0184', nom: 'TOUZANI AGRICULTURE' },
-  { id: 'CLT0250', nom: 'ANNAKHIL FERME' }, { id: 'CLT0245', nom: 'AGRI KOUR' },
-  { id: 'CLT0248', nom: 'TBH AGRICOLE' }, { id: 'CLT0215', nom: 'VERGENAIM AGRI' },
-  { id: 'CLT0032', nom: 'BOUMALEK ABDELKBIR' }, { id: 'CLT0122', nom: 'MOHAMMED ESSADKAOUI' },
-  { id: 'CLT0257', nom: 'PREMIUM HARVEST' }, { id: 'CLT0262', nom: 'DOMAINE LB FRESH' },
-  { id: 'CLT0246', nom: 'KARAM GREEN AGRI' }, { id: 'CLT0256', nom: 'MUSTAPHA AIT GOUZAL' },
-  { id: 'CLT0214', nom: 'MAKAREM AGRICOLE REP BEN SALAH' }, { id: 'CLT0259', nom: 'ANSAR PRIM' },
-  { id: 'CLT0260', nom: 'Ste ANSAR PRIM SARL' }, { id: 'CLT0261', nom: 'KAMABRO SARL' },
-  { id: 'CLT0213', nom: 'PEPPER WORLD' }, { id: 'CLT0200', nom: 'BACHIR ZYANE' },
-  { id: 'CLT0242', nom: 'HAJ OUAADI MOHAMED' }, { id: 'CLT0263', nom: 'SAID OUTAIBI' },
-  { id: 'CLT0220', nom: 'AHMED AHFAY' }, { id: 'CLT0187', nom: 'AIT GOUZAL AHMED' },
-  { id: 'CLT0219', nom: 'SOLUTION AGRICOLE DU SOUSS' }, { id: 'CLT0251', nom: 'ABDERRAHIM GOUSKAR' },
-  { id: 'CLT0208', nom: 'REHIL AGRICOLE SARL AU' }, { id: 'CLT0268', nom: 'ABDELKBIR EL HIF' },
-  { id: 'CLT0270', nom: 'LAHSEN OUAADDI' }, { id: 'CLT0271', nom: 'DOMAINE AYOUR' },
-  { id: 'CLT0272', nom: 'FAST TRAVAUX' }, { id: 'CLT0273', nom: 'GREEN SABOR' },
-  { id: 'CLT0276', nom: 'BELAARIBI SAID' }, { id: 'CLT0183', nom: 'RACHID LOUFANI' },
-  { id: 'CLT0230', nom: 'OULHINTE ABDELLAH' }, { id: 'CLT0265', nom: 'SAFAR PRIM' },
-  { id: 'CLT0186', nom: 'OUBAYROUK RACHID' }, { id: 'CLT0241', nom: 'FADILI AZZEDINE 2' },
-  { id: 'CLT0222', nom: 'DOMAINE OUBLAID' }, { id: 'CLT0223', nom: 'AGROPOLE' },
-  { id: 'CLT0174', nom: 'HICHAM MORTADI' }
-];
-
 let clients = [], visites = [], ventes = [], contacts = [], demandes = [];
 let venteState = { clientId: null, famille: null, produit: null };
 let currentPage = 'accueil';
@@ -1307,15 +1273,14 @@ async function doSignup(name, email, password) {
     setLoginLoading(true);
     const cred = await fb.createUserWithEmailAndPassword(fb.auth, email, password);
     await fb.updateProfile(cred.user, { displayName: name });
+    // Crée le profil utilisateur — SANS clients (0 client au départ)
     await fb.set(fb.ref(fb.db, 'users/' + cred.user.uid), {
       uid: cred.user.uid,
       nom: name,
       email: email,
       createdAt: Date.now()
     });
-    // Initialise la liste de clients personnelle du nouveau commercial
-    // avec les clients par défaut
-    await initialiserClientsParDefaut(cred.user.uid);
+    // Pas d'initialisation de clients : nouvel utilisateur démarre à 0 client
   } catch (e) {
     setLoginLoading(false);
     let msg = 'Erreur lors de la création';
@@ -1324,16 +1289,6 @@ async function doSignup(name, email, password) {
     else if (e.code === 'auth/weak-password') msg = 'Mot de passe trop faible (min. 6 caractères)';
     else msg = e.message || msg;
     showLoginError(msg);
-  }
-}
-
-async function initialiserClientsParDefaut(uid) {
-  const clientsRef = fb.ref(fb.db, 'users/' + uid + '/clients');
-  const snap = await fb.get(clientsRef);
-  if (!snap.exists()) {
-    const obj = {};
-    CLIENTS_DEFAUT.forEach(c => { obj[c.id] = c; });
-    await fb.set(clientsRef, obj);
   }
 }
 
@@ -1364,7 +1319,7 @@ function initLoginForms() {
   });
 }
 
-/* ==================== FIREBASE SYNC (tout est privé par commercial) ==================== */
+/* ==================== FIREBASE SYNC ==================== */
 function setupFirebaseListeners() {
   unsubscribers.forEach(fn => { try { fn(); } catch(e){} });
   unsubscribers = [];
@@ -1372,16 +1327,10 @@ function setupFirebaseListeners() {
   const uid = currentUser.uid;
   const base = 'users/' + uid;
 
-  // CLIENTS — PRIVÉS (sous users/{uid}/clients)
+  // CLIENTS — PRIVÉS (0 client au départ pour les nouveaux utilisateurs)
   const unsubClients = fb.onValue(fb.ref(fb.db, base + '/clients'), snap => {
     const data = snap.val() || {};
-    const arr = Object.values(data).map(c => ({ id: c.id, nom: c.nom }));
-    if (arr.length === 0) {
-      // Initialise une seule fois avec les clients par défaut
-      initialiserClientsParDefaut(uid);
-    } else {
-      clients = arr.sort((a, b) => a.nom.localeCompare(b.nom));
-    }
+    clients = Object.values(data).sort((a, b) => a.nom.localeCompare(b.nom));
     renderCurrentPage();
   });
   unsubscribers.push(unsubClients);
@@ -1482,7 +1431,10 @@ function renderVisites() {
     liste = liste.filter(c => idsVisitesDate.has(c.id));
   }
 
-  if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucun client.</p>'; return; }
+  if (!liste.length) { 
+    container.innerHTML = '<p class="hist-empty">Aucun client. Ajoutez-en depuis « Gérer les clients ».</p>'; 
+    return; 
+  }
 
   container.innerHTML = liste.map(c => {
     const visitesJour = visitesDuJour(c.id).length;
@@ -1665,6 +1617,12 @@ function supprimerDemande(demandeId) {
 }
 
 function ouvrirModaleNouvelleDemande() {
+  if (!clients.length) {
+    toast('Ajoutez d\'abord un client', 'error');
+    afficherPage('clients');
+    return;
+  }
+
   const optionsClients = clients.slice().sort((a,b) => a.nom.localeCompare(b.nom))
     .map(c => `<option value="${c.id}">${echapperHTML(c.nom)} (${echapperHTML(c.id)})</option>`).join('');
 
@@ -1764,6 +1722,12 @@ function renderContacts() {
 }
 
 function ouvrirModaleAjouterContact() {
+  if (!clients.length) {
+    toast('Ajoutez d\'abord un client', 'error');
+    afficherPage('clients');
+    return;
+  }
+
   const options = clients.slice().sort((a,b) => a.nom.localeCompare(b.nom))
     .map(c => `<option value="${c.id}">${echapperHTML(c.nom)} (${echapperHTML(c.id)})</option>`).join('');
 
@@ -1904,7 +1868,10 @@ function renderClientsVente() {
   let liste = clients.slice().sort((a, b) => a.nom.localeCompare(b.nom));
   if (search) liste = liste.filter(c => normaliser(c.nom).includes(search));
 
-  if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucun client.</p>'; return; }
+  if (!liste.length) { 
+    container.innerHTML = '<p class="hist-empty">Aucun client. Ajoutez-en depuis « Gérer les clients ».</p>'; 
+    return; 
+  }
 
   container.innerHTML = liste.map(c => `
     <div class="client-vente-item ${venteState.clientId === c.id ? 'selected' : ''}" data-client-vente="${c.id}">
@@ -2036,14 +2003,17 @@ function initVenteForm() {
   });
 }
 
-/* ==================== CLIENTS (privés) ==================== */
+/* ==================== CLIENTS (privés — 0 client au départ) ==================== */
 function renderClientsGestion() {
   const search = normaliser(document.getElementById('searchClients').value.trim());
   const container = document.getElementById('listeClientsGestion');
   let liste = clients.slice().sort((a, b) => a.nom.localeCompare(b.nom));
   if (search) liste = liste.filter(c => normaliser(c.nom).includes(search));
 
-  if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucun client.</p>'; return; }
+  if (!liste.length) { 
+    container.innerHTML = '<p class="hist-empty">Aucun client pour le moment. Cliquez sur « ➕ Ajouter un client » pour commencer.</p>'; 
+    return; 
+  }
 
   container.innerHTML = liste.map(c => `
     <div class="client-card">
@@ -2062,9 +2032,12 @@ function renderClientsGestion() {
 
 function ajouterClient(nom) {
   nom = nom.trim();
-  if (!nom || clients.some(c => normaliser(c.nom) === normaliser(nom))) { toast('Nom invalide ou existant', 'error'); return false; }
+  if (!nom) { toast('Nom invalide', 'error'); return false; }
+  if (clients.some(c => normaliser(c.nom) === normaliser(nom))) { 
+    toast('Ce client existe déjà', 'error'); 
+    return false; 
+  }
   const id = 'CLT' + Math.floor(1000 + Math.random() * 9000);
-  // Sous users/{uid}/clients → données privées
   fb.set(fb.ref(fb.db, 'users/' + currentUser.uid + '/clients/' + id), { id, nom }).then(() => {
     toast('Client ajouté');
   }).catch(() => toast('Erreur', 'error'));
@@ -2213,7 +2186,7 @@ function initClients() {
   document.getElementById('btnAjouterClient').addEventListener('click', () => {
     ouvrirModale({
       titre: 'Nouveau client',
-      corps: `<div class="form-group"><label>Nom du client</label><input type="text" id="nouveauClientNom" placeholder="Ex: Ferme Durand"></div>`,
+      corps: `<div class="form-group"><label>Nom du client</label><input type="text" id="nouveauClientNom" placeholder="Ex: Ferme Durand" autofocus></div>`,
       footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button><button class="btn btn-primary" id="modalAjouter">✓ Ajouter</button>`
     });
     document.getElementById('modalAnnuler').addEventListener('click', fermerModale);
