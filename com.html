@@ -223,7 +223,7 @@ h3 {
   text-align: center;
 }
 .hero h2 { font-size: 1.8rem; margin-bottom: 8px; }
-.hero p { font-size: 1rem; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5; }
+.hero p { font-size: 1rem; color: var(--text-secondary); margin-bottom: 0; line-height: 1.5; }
 
 .menu-grid {
   display: grid;
@@ -336,6 +336,10 @@ h3 {
   border-radius: 6px;
   font-size: 0.72rem; font-weight: 700;
 }
+.visite-badge.multi {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
 
 /* ==================== HISTORIQUE ==================== */
 .historique-scroll {
@@ -381,6 +385,35 @@ h3 {
 .client-vente-item:last-child { border-bottom: none; }
 .client-vente-item:active { background: var(--bg-hover); }
 .client-vente-item.selected { background: var(--accent-bg); color: var(--accent); font-weight: 700; }
+
+/* Familles pour la vente */
+.familles-vente-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px; margin-top: 10px;
+}
+.famille-vente-btn {
+  background: var(--bg-app);
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 14px 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  min-height: 64px;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1.35;
+  transition: all 0.12s; cursor: pointer;
+  gap: 6px;
+}
+.famille-vente-btn:active { background: var(--bg-hover); }
+.famille-vente-btn.selected { background: var(--accent-bg); color: var(--accent); border-color: var(--accent); font-weight: 700; }
+.famille-vente-btn .fam-count {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+.famille-vente-btn.selected .fam-count { color: var(--accent); }
 
 .produits-grid {
   display: grid; grid-template-columns: repeat(2, 1fr);
@@ -786,17 +819,29 @@ h3 {
   <section id="page-ventes" class="page">
     <h2>💰 Nouvelle vente</h2>
     <div class="vente-layout">
+
+      <!-- Étape 1 : Client -->
       <div class="vente-clients">
         <h3>1️⃣ Choisir le client</h3>
         <input type="text" id="searchVenteClient" placeholder="🔍 Rechercher…" class="input-search">
         <div id="listeClientsVente" class="liste-clients-vente"></div>
       </div>
+
+      <!-- Étape 2 : Famille -->
+      <div class="vente-produits" id="venteFamilles" style="display:none;">
+        <h3>2️⃣ Choisir la famille</h3>
+        <div class="familles-vente-grid" id="famillesGrid"></div>
+      </div>
+
+      <!-- Étape 3 : Produit -->
       <div class="vente-produits" id="venteProduits" style="display:none;">
-        <h3>2️⃣ Choisir le produit</h3>
+        <h3>3️⃣ Choisir le produit</h3>
         <div class="produits-grid" id="produitsGrid"></div>
       </div>
+
+      <!-- Étape 4 : Détails -->
       <div class="vente-form" id="venteForm" style="display:none;">
-        <h3>3️⃣ Détails de la vente</h3>
+        <h3>4️⃣ Détails de la vente</h3>
         <form id="formVente">
           <div class="form-group">
             <label>Produit sélectionné</label>
@@ -906,7 +951,7 @@ const STORAGE_KEYS = {
   THEME: 'tam_theme_v1'
 };
 
-/* ==================== INVENTAIRE (familles + produits) ==================== */
+/* ==================== INVENTAIRE ==================== */
 const INVENTAIRE = [
   { famille: 'Câbles & Ficelles', produits: [
     { ref: 'CABL00015', nom: 'FICELLE NOIR 1000', qte: 1660, si: 970 },
@@ -957,8 +1002,6 @@ const INVENTAIRE = [
   ]}
 ];
 
-const PRODUITS = INVENTAIRE.flatMap(f => f.produits.map(p => p.nom));
-
 const CLIENTS_INITIAUX = [
   { id: 'CLT0234', nom: 'DOMAINE SALAH' }, { id: 'CLT0151', nom: 'AFNANE PRIME' },
   { id: 'CLT0178', nom: 'TOULOUT ABDERRAHIM' }, { id: 'CLT0153', nom: 'FRESHBROTHERS' },
@@ -994,7 +1037,7 @@ const CLIENTS_INITIAUX = [
 ];
 
 let clients = [], visites = [], ventes = [], contacts = [];
-let venteState = { clientId: null, produit: null };
+let venteState = { clientId: null, famille: null, produit: null };
 let currentPage = 'accueil';
 let famillesOuvertes = {};
 
@@ -1112,8 +1155,119 @@ function afficherPage(pageId) {
   if (pageId === 'clients')   { renderClientsGestion(); }
 }
 
-function estVisiteAujourdhui(clientId) {
-  return visites.some(v => v.clientId === clientId && v.date && v.date.slice(0, 10) === dateDuJour());
+/* ==================== VISITES ==================== */
+function visitesDuJour(clientId) {
+  return visites.filter(v => v.clientId === clientId && v.date && v.date.slice(0, 10) === dateDuJour());
+}
+
+function renderVisites() {
+  const search = normaliser(document.getElementById('searchVisites').value.trim());
+  const filtreDate = document.getElementById('filtreDateVisites').value;
+  const container = document.getElementById('listeVisites');
+
+  let liste = clients.slice().sort((a, b) => a.nom.localeCompare(b.nom));
+  if (search) liste = liste.filter(c => normaliser(c.nom).includes(search));
+
+  if (filtreDate) {
+    const idsVisitesDate = new Set(visites.filter(v => v.date && v.date.slice(0, 10) === filtreDate).map(v => v.clientId));
+    liste = liste.filter(c => idsVisitesDate.has(c.id));
+  }
+
+  if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucun client.</p>'; return; }
+
+  container.innerHTML = liste.map(c => {
+    const visitesJour = visitesDuJour(c.id).length;
+    const dernieres = visites.filter(v => v.clientId === c.id).sort((a, b) => new Date(b.date) - new Date(a.date));
+    const derniere = dernieres[0];
+
+    let badge = '';
+    if (visitesJour === 1) badge = '<span class="visite-badge">✓ Visitée</span>';
+    else if (visitesJour > 1) badge = `<span class="visite-badge multi">✓ ${visitesJour}× aujourd'hui</span>`;
+
+    return `
+      <div class="client-card ${visitesJour > 0 ? 'visite' : ''}">
+        <div class="client-name">
+          <span>${echapperHTML(c.nom)}</span>
+          ${badge}
+        </div>
+        <div class="client-id">${echapperHTML(c.id)}</div>
+        <div class="client-meta">${derniere ? 'Dernière : ' + formatDateHeure(derniere.date) : 'Aucune visite'}</div>
+        <div class="client-actions">
+          <button class="btn btn-secondary btn-sm" data-visite="${c.id}">
+            📍 ${visitesJour > 0 ? 'Nouvelle visite' : 'Marquer visite'}
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.querySelectorAll('[data-visite]').forEach(btn => {
+    btn.addEventListener('click', () => enregistrerVisite(btn.dataset.visite));
+  });
+}
+
+function enregistrerVisite(clientId) {
+  const client = clients.find(c => c.id === clientId);
+  if (!client) return;
+
+  const visitesJour = visitesDuJour(clientId).length;
+  const infoSup = visitesJour > 0 
+    ? `<p style="font-size:0.85rem; color:var(--accent); padding:10px 14px; background:var(--accent-bg); border-radius:8px; display:inline-block; margin-top:8px;">
+        ℹ️ Déjà ${visitesJour} visite${visitesJour > 1 ? 's' : ''} aujourd'hui
+      </p>` 
+    : '';
+
+  ouvrirModale({
+    titre: visitesJour > 0 ? 'Nouvelle visite' : 'Confirmer la visite',
+    corps: `
+      <div style="padding: 4px 0;">
+        <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:16px;">Voulez-vous enregistrer une visite pour :</p>
+        <p style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin-bottom:6px;">
+          ${echapperHTML(client.nom)}
+        </p>
+        <p style="font-size:0.78rem; color:var(--text-tertiary); font-family:'SF Mono',monospace; letter-spacing:0.3px; margin-bottom:16px;">${echapperHTML(client.id)}</p>
+        <p style="font-size:0.9rem; color:var(--text-secondary); padding:10px 14px; background:var(--bg-sidebar); border-radius:8px; display:inline-block;">
+          📅 ${new Date().toLocaleDateString('fr-FR')} · ${new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+        </p>
+        ${infoSup}
+      </div>
+    `,
+    footer: `
+      <button class="btn btn-secondary" id="modalAnnulerVisite">Annuler</button>
+      <button class="btn btn-primary" id="modalConfirmerVisite">✓ Confirmer</button>
+    `
+  });
+
+  document.getElementById('modalAnnulerVisite').addEventListener('click', fermerModale);
+  document.getElementById('modalConfirmerVisite').addEventListener('click', () => {
+    visites.push({
+      id: 'V' + Date.now(),
+      clientId: client.id,
+      clientNom: client.nom,
+      date: maintenant()
+    });
+    sauvegarder();
+    fermerModale();
+    renderVisites();
+    renderHistoriqueVisites();
+    toast('Visite enregistrée');
+  });
+}
+
+function renderHistoriqueVisites() {
+  const container = document.getElementById('historiqueVisites');
+  const filtreDate = document.getElementById('filtreDateVisites').value;
+  let liste = visites.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+  if (filtreDate) liste = liste.filter(v => v.date && v.date.slice(0, 10) === filtreDate);
+
+  if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucune visite enregistrée.</p>'; return; }
+
+  container.innerHTML = liste.map(v => `
+    <div class="hist-item">
+      <span class="hist-label">${echapperHTML(v.clientNom)}</span>
+      <span class="hist-date">${formatDateHeure(v.date)}</span>
+    </div>
+  `).join('');
 }
 
 /* ==================== PRODUITS / INVENTAIRE ==================== */
@@ -1180,105 +1334,6 @@ function renderProduits() {
       body.classList.toggle('collapsed');
     });
   });
-}
-
-/* ==================== VISITES ==================== */
-function renderVisites() {
-  const search = normaliser(document.getElementById('searchVisites').value.trim());
-  const filtreDate = document.getElementById('filtreDateVisites').value;
-  const container = document.getElementById('listeVisites');
-
-  let liste = clients.slice().sort((a, b) => a.nom.localeCompare(b.nom));
-  if (search) liste = liste.filter(c => normaliser(c.nom).includes(search));
-
-  if (filtreDate) {
-    const idsVisitesDate = new Set(visites.filter(v => v.date && v.date.slice(0, 10) === filtreDate).map(v => v.clientId));
-    liste = liste.filter(c => idsVisitesDate.has(c.id));
-  }
-
-  if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucun client.</p>'; return; }
-
-  container.innerHTML = liste.map(c => {
-    const visiteAujourdhui = estVisiteAujourdhui(c.id);
-    const dernieres = visites.filter(v => v.clientId === c.id).sort((a, b) => new Date(b.date) - new Date(a.date));
-    const derniere = dernieres[0];
-
-    return `
-      <div class="client-card ${visiteAujourdhui ? 'visite' : ''}">
-        <div class="client-name">
-          <span>${echapperHTML(c.nom)}</span>
-          ${visiteAujourdhui ? '<span class="visite-badge">✓ Visitée</span>' : ''}
-        </div>
-        <div class="client-id">${echapperHTML(c.id)}</div>
-        <div class="client-meta">${derniere ? 'Dernière : ' + formatDateHeure(derniere.date) : 'Aucune visite'}</div>
-        <div class="client-actions">
-          <button class="btn btn-secondary btn-sm" data-visite="${c.id}" ${visiteAujourdhui ? 'disabled' : ''}>
-            ${visiteAujourdhui ? '✓ Déjà visité' : '📍 Marquer visite'}
-          </button>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  container.querySelectorAll('[data-visite]').forEach(btn => {
-    btn.addEventListener('click', () => enregistrerVisite(btn.dataset.visite));
-  });
-}
-
-function enregistrerVisite(clientId) {
-  const client = clients.find(c => c.id === clientId);
-  if (!client || estVisiteAujourdhui(clientId)) return;
-
-  ouvrirModale({
-    titre: 'Confirmer la visite',
-    corps: `
-      <div style="padding: 4px 0;">
-        <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:16px;">Voulez-vous confirmer la visite pour :</p>
-        <p style="font-size:1.15rem; font-weight:800; color:var(--text-primary); margin-bottom:6px;">
-          ${echapperHTML(client.nom)}
-        </p>
-        <p style="font-size:0.78rem; color:var(--text-tertiary); font-family:'SF Mono',monospace; letter-spacing:0.3px; margin-bottom:18px;">${echapperHTML(client.id)}</p>
-        <p style="font-size:0.9rem; color:var(--text-secondary); padding:10px 14px; background:var(--bg-sidebar); border-radius:8px; display:inline-block;">
-          📅 ${new Date().toLocaleDateString('fr-FR')} · ${new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
-        </p>
-      </div>
-    `,
-    footer: `
-      <button class="btn btn-secondary" id="modalAnnulerVisite">Annuler</button>
-      <button class="btn btn-primary" id="modalConfirmerVisite">✓ Confirmer</button>
-    `
-  });
-
-  document.getElementById('modalAnnulerVisite').addEventListener('click', fermerModale);
-  document.getElementById('modalConfirmerVisite').addEventListener('click', () => {
-    visites.push({
-      id: 'V' + Date.now(),
-      clientId: client.id,
-      clientNom: client.nom,
-      date: maintenant()
-    });
-    sauvegarder();
-    fermerModale();
-    renderVisites();
-    renderHistoriqueVisites();
-    toast('Visite confirmée');
-  });
-}
-
-function renderHistoriqueVisites() {
-  const container = document.getElementById('historiqueVisites');
-  const filtreDate = document.getElementById('filtreDateVisites').value;
-  let liste = visites.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
-  if (filtreDate) liste = liste.filter(v => v.date && v.date.slice(0, 10) === filtreDate);
-
-  if (!liste.length) { container.innerHTML = '<p class="hist-empty">Aucune visite enregistrée.</p>'; return; }
-
-  container.innerHTML = liste.map(v => `
-    <div class="hist-item">
-      <span class="hist-label">${echapperHTML(v.clientNom)}</span>
-      <span class="hist-date">${formatDateHeure(v.date)}</span>
-    </div>
-  `).join('');
 }
 
 /* ==================== CONTACTS ==================== */
@@ -1425,7 +1480,6 @@ function supprimerContact(contactId) {
   });
 }
 
-/* ==================== IMPRESSION RAPPORT CONTACTS ==================== */
 function imprimerRapportContacts() {
   const search = normaliser(document.getElementById('searchContacts').value.trim());
   const filtreDate = document.getElementById('filtreDateContacts').value;
@@ -1488,21 +1542,56 @@ function renderClientsVente() {
 
 function selectionnerClientVente(clientId) {
   venteState.clientId = clientId;
+  venteState.famille = null;
   venteState.produit = null;
+
   document.querySelectorAll('#listeClientsVente .client-vente-item').forEach(el => {
     el.classList.toggle('selected', el.dataset.clientVente === clientId);
   });
-  document.getElementById('venteProduits').style.display = 'block';
-  renderProduitsVente();
+
+  document.getElementById('venteFamilles').style.display = 'block';
+  document.getElementById('venteProduits').style.display = 'none';
   document.getElementById('venteForm').style.display = 'none';
+  renderFamillesVente();
+  document.getElementById('venteFamilles').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function renderFamillesVente() {
+  const grid = document.getElementById('famillesGrid');
+  grid.innerHTML = INVENTAIRE.map(f => `
+    <button type="button" class="famille-vente-btn ${venteState.famille === f.famille ? 'selected' : ''}" data-famille-vente="${echapperHTML(f.famille)}">
+      <span>${echapperHTML(f.famille)}</span>
+      <span class="fam-count">${f.produits.length}</span>
+    </button>
+  `).join('');
+
+  grid.querySelectorAll('[data-famille-vente]').forEach(btn => {
+    btn.addEventListener('click', () => selectionnerFamilleVente(btn.dataset.familleVente));
+  });
+}
+
+function selectionnerFamilleVente(famille) {
+  venteState.famille = famille;
+  venteState.produit = null;
+
+  document.querySelectorAll('.famille-vente-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.familleVente === famille);
+  });
+
+  const familleObj = INVENTAIRE.find(f => f.famille === famille);
+  if (!familleObj) return;
+
+  document.getElementById('venteProduits').style.display = 'block';
+  document.getElementById('venteForm').style.display = 'none';
+  renderProduitsVente(familleObj.produits);
   document.getElementById('venteProduits').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-function renderProduitsVente() {
+function renderProduitsVente(produits) {
   const grid = document.getElementById('produitsGrid');
-  grid.innerHTML = PRODUITS.map(p => `
-    <button type="button" class="produit-btn ${venteState.produit === p ? 'selected' : ''}" data-produit="${echapperHTML(p)}">
-      ${echapperHTML(p)}
+  grid.innerHTML = produits.map(p => `
+    <button type="button" class="produit-btn ${venteState.produit === p.nom ? 'selected' : ''}" data-produit="${echapperHTML(p.nom)}">
+      ${echapperHTML(p.nom)}
     </button>
   `).join('');
 
@@ -1531,7 +1620,9 @@ function selectionnerProduit(produit) {
 }
 
 function resetVenteForm() {
+  venteState.famille = null;
   venteState.produit = null;
+  document.getElementById('venteFamilles').style.display = 'none';
   document.getElementById('venteProduits').style.display = 'none';
   document.getElementById('venteForm').style.display = 'none';
 }
@@ -1564,6 +1655,7 @@ function enregistrerVente() {
   ventes.push({
     id: 'S' + Date.now(),
     clientId: client.id, clientNom: client.nom,
+    famille: venteState.famille,
     produit: venteState.produit,
     quantite: quantite,
     unite: document.getElementById('venteUnite').value,
@@ -1694,10 +1786,10 @@ function initModale() {
 
 /* ==================== EXPORT CSV ==================== */
 function exportCSV() {
-  let csv = '\uFEFFTYPE;CLIENT;PRODUIT;QTE;UNITE;PRIX;MONTANT;DATE\n';
-  ventes.forEach(v => { csv += `VENTE;${v.clientNom};${v.produit};${v.quantite};${v.unite};${v.prixUnitaire};${v.montant};${v.date}\n`; });
-  visites.forEach(v => { csv += `VISITE;${v.clientNom};;;;;;${v.date}\n`; });
-  contacts.forEach(c => { csv += `CONTACT;${c.clientNom};;;;;;${c.date} - ${c.note}\n`; });
+  let csv = '\uFEFFTYPE;CLIENT;FAMILLE;PRODUIT;QTE;UNITE;PRIX;MONTANT;DATE\n';
+  ventes.forEach(v => { csv += `VENTE;${v.clientNom};${v.famille || ''};${v.produit};${v.quantite};${v.unite};${v.prixUnitaire};${v.montant};${v.date}\n`; });
+  visites.forEach(v => { csv += `VISITE;${v.clientNom};;;;;;;${v.date}\n`; });
+  contacts.forEach(c => { csv += `CONTACT;${c.clientNom};;;;;;;;${c.date} - ${c.note}\n`; });
 
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
   const a = document.createElement('a');
