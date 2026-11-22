@@ -749,25 +749,14 @@ h3 {
   font-size: 0.72rem; color: var(--text-tertiary);
   font-family: 'SF Mono', 'Courier New', monospace;
 }
-.demande-item .demande-produit {
-  font-size: 0.88rem; font-weight: 600;
-  color: var(--accent);
+.demande-item .demande-message {
+  font-size: 0.92rem; color: var(--text-primary);
   background: var(--accent-bg);
-  padding: 6px 10px; border-radius: var(--radius-sm);
-  margin-top: 4px;
-}
-.demande-item .demande-details {
-  display: flex; flex-wrap: wrap; gap: 6px 14px;
-  font-size: 0.8rem; color: var(--text-secondary);
-  margin-top: 4px;
-}
-.demande-item .demande-note {
-  font-size: 0.86rem; color: var(--text-secondary);
-  background: var(--bg-sidebar);
-  padding: 10px 12px; border-radius: var(--radius-sm);
+  padding: 12px 14px; border-radius: var(--radius-sm);
   margin-top: 6px;
   white-space: pre-wrap; word-break: break-word;
-  line-height: 1.5;
+  line-height: 1.55;
+  border-left: 3px solid var(--accent);
 }
 .demande-item .demande-actions {
   display: flex; gap: 8px; margin-top: 10px;
@@ -779,108 +768,6 @@ h3 {
 }
 .statut-en-attente { background: var(--accent-bg); color: var(--accent); }
 .statut-traite { background: var(--green-bg); color: var(--green); }
-
-.famille-section {
-  margin-bottom: 16px;
-}
-.famille-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px;
-  background: var(--bg-sidebar);
-  border: 1.5px solid var(--border-light);
-  border-radius: var(--radius-md);
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--text-primary);
-  cursor: pointer;
-  user-select: none;
-  transition: background 0.12s;
-}
-.famille-header:active { background: var(--bg-hover); }
-.famille-header.open { border-radius: var(--radius-md) var(--radius-md) 0 0; }
-.famille-header .famille-count {
-  font-size: 0.78rem;
-  color: var(--text-tertiary);
-  font-weight: 600;
-  background: var(--bg-app);
-  padding: 2px 10px;
-  border-radius: 10px;
-}
-.famille-header .chevron {
-  transition: transform 0.2s;
-  font-size: 0.8rem;
-  color: var(--text-tertiary);
-  margin-left: 4px;
-}
-.famille-header.open .chevron { transform: rotate(180deg); }
-.famille-body {
-  border: 1.5px solid var(--border-light);
-  border-top: none;
-  border-radius: 0 0 var(--radius-md) var(--radius-md);
-  overflow: hidden;
-  background: var(--bg-app);
-}
-.famille-body.collapsed { display: none; }
-
-.produit-item {
-  display: flex; flex-direction: column; gap: 4px;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border-light);
-  font-size: 0.9rem;
-}
-.produit-item:last-child { border-bottom: none; }
-.produit-item .produit-nom {
-  font-weight: 600; color: var(--text-primary);
-  font-size: 0.92rem;
-  line-height: 1.4;
-}
-.produit-item .produit-details {
-  display: flex; flex-wrap: wrap; gap: 6px 14px;
-  font-size: 0.78rem;
-  color: var(--text-secondary);
-  margin-top: 4px;
-  align-items: center;
-}
-.produit-item .produit-ref {
-  font-family: 'SF Mono', 'Courier New', monospace;
-  font-size: 0.72rem;
-  color: var(--text-tertiary);
-  letter-spacing: 0.2px;
-}
-.badge-stock {
-  padding: 2px 10px;
-  border-radius: 6px;
-  font-size: 0.72rem;
-  font-weight: 700;
-}
-.badge-ok { background: var(--green-bg); color: var(--green); }
-.badge-zero { background: var(--bg-hover); color: var(--text-tertiary); }
-.badge-neg { background: var(--red-bg); color: var(--red); }
-
-.tabs {
-  display: flex; gap: 6px;
-  background: var(--bg-sidebar);
-  padding: 4px;
-  border-radius: var(--radius-md);
-  margin-bottom: 16px;
-}
-.tab-btn {
-  flex: 1;
-  background: transparent;
-  border: none;
-  padding: 10px 8px;
-  border-radius: var(--radius-sm);
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.12s;
-}
-.tab-btn.active {
-  background: var(--bg-app);
-  color: var(--text-primary);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-}
 
 /* ==================== PRINT ==================== */
 @media print {
@@ -921,7 +808,6 @@ h3 {
     <div class="login-error" id="loginError"></div>
     <div class="login-loading" id="loginLoading">⏳ Chargement…</div>
 
-    <!-- Formulaire Connexion -->
     <form class="login-form" id="formSignin">
       <div class="form-group">
         <label>Email ou nom d'utilisateur</label>
@@ -934,7 +820,6 @@ h3 {
       <button type="submit" class="btn btn-primary btn-block" style="margin-top:8px;">Se connecter</button>
     </form>
 
-    <!-- Formulaire Inscription -->
     <form class="login-form" id="formSignup" style="display:none;">
       <div class="form-group">
         <label>Nom complet</label>
@@ -1047,26 +932,12 @@ h3 {
   <!-- DEMANDES SPÉCIALES -->
   <section id="page-demandes" class="page">
     <h2>📝 Demandes spéciales</h2>
-    <div class="tabs">
-      <button class="tab-btn active" data-tab="demandes">📋 Mes demandes</button>
-      <button class="tab-btn" data-tab="catalogue">📦 Catalogue</button>
+    <div class="toolbar">
+      <input type="text" id="searchDemandes" placeholder="🔍 Rechercher une demande…" class="input-search">
+      <input type="date" id="filtreDateDemandes" class="input-date">
+      <button class="btn btn-primary" id="btnNouvelleDemande">➕ Nouvelle demande</button>
     </div>
-
-    <div id="tab-demandes">
-      <div class="toolbar">
-        <input type="text" id="searchDemandes" placeholder="🔍 Rechercher une demande…" class="input-search">
-        <input type="date" id="filtreDateDemandes" class="input-date">
-        <button class="btn btn-primary" id="btnNouvelleDemande">➕ Nouvelle demande</button>
-      </div>
-      <div id="listeDemandes" class="demande-list"></div>
-    </div>
-
-    <div id="tab-catalogue" style="display:none;">
-      <div class="toolbar">
-        <input type="text" id="searchProduits" placeholder="🔍 Rechercher un produit…" class="input-search">
-      </div>
-      <div id="listeProduits"></div>
-    </div>
+    <div id="listeDemandes" class="demande-list"></div>
   </section>
 
   <!-- VENTES -->
@@ -1216,7 +1087,6 @@ try { getAnalytics(firebaseApp); } catch(e) { console.warn('Analytics indisponib
 const auth = getAuth(firebaseApp);
 const db = getDatabase(firebaseApp);
 
-// Expose pour le script principal
 window.__tam = { auth, db, fb: {
   ref, onValue, set, push, remove, update, serverTimestamp, get,
   signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut,
@@ -1317,9 +1187,8 @@ let clients = [], visites = [], ventes = [], contacts = [], demandes = [];
 let venteState = { clientId: null, famille: null, produit: null };
 let currentPage = 'accueil';
 let famillesOuvertes = {};
-let currentTab = 'demandes';
 let currentUser = null;
-let fb = null; // Firebase helpers
+let fb = null;
 let unsubscribers = [];
 
 /* ==================== THÈME ==================== */
@@ -1406,11 +1275,9 @@ function initLoginTabs() {
   });
 }
 
-/* Convertit un "username" en email fictif si ce n'est pas un email */
 function identifiantVersEmail(id) {
   id = id.trim();
   if (id.includes('@')) return id;
-  // Username -> email synthétique
   return id.toLowerCase().replace(/[^a-z0-9._-]/g, '') + '@tam-agricole.local';
 }
 
@@ -1419,7 +1286,6 @@ async function doSignin(emailOrUser, password) {
   try {
     setLoginLoading(true);
     await fb.signInWithEmailAndPassword(fb.auth, email, password);
-    // L'écouteur onAuthStateChanged prendra le relais
   } catch (e) {
     setLoginLoading(false);
     let msg = 'Erreur de connexion';
@@ -1440,7 +1306,6 @@ async function doSignup(name, email, password) {
   try {
     setLoginLoading(true);
     const cred = await fb.createUserWithEmailAndPassword(fb.auth, email, password);
-    // Enregistre le nom d'affichage + profil dans la Realtime DB
     await fb.updateProfile(cred.user, { displayName: name });
     await fb.set(fb.ref(fb.db, 'users/' + cred.user.uid), {
       uid: cred.user.uid,
@@ -1488,16 +1353,13 @@ function initLoginForms() {
 
 /* ==================== FIREBASE SYNC ==================== */
 function setupFirebaseListeners() {
-  // Arrête les anciens listeners
   unsubscribers.forEach(fn => { try { fn(); } catch(e){} });
   unsubscribers = [];
 
-  // Clients
   const unsubClients = fb.onValue(fb.ref(fb.db, 'clients'), snap => {
     const data = snap.val() || {};
     const arr = Object.values(data).map(c => ({ id: c.id, nom: c.nom }));
     if (arr.length === 0) {
-      // Initialise avec les clients par défaut (une seule fois)
       const initRef = fb.ref(fb.db, 'clients');
       fb.get(initRef).then(s => {
         if (!s.exists()) {
@@ -1513,7 +1375,6 @@ function setupFirebaseListeners() {
   });
   unsubscribers.push(unsubClients);
 
-  // Visites
   const unsubVisites = fb.onValue(fb.ref(fb.db, 'visites'), snap => {
     const data = snap.val() || {};
     visites = Object.values(data);
@@ -1521,14 +1382,12 @@ function setupFirebaseListeners() {
   });
   unsubscribers.push(unsubVisites);
 
-  // Ventes
   const unsubVentes = fb.onValue(fb.ref(fb.db, 'ventes'), snap => {
     const data = snap.val() || {};
     ventes = Object.values(data);
   });
   unsubscribers.push(unsubVentes);
 
-  // Contacts
   const unsubContacts = fb.onValue(fb.ref(fb.db, 'contacts'), snap => {
     const data = snap.val() || {};
     contacts = Object.values(data);
@@ -1536,7 +1395,6 @@ function setupFirebaseListeners() {
   });
   unsubscribers.push(unsubContacts);
 
-  // Demandes (uniquement celles du commercial connecté)
   if (currentUser) {
     const unsubDemandes = fb.onValue(fb.ref(fb.db, 'demandes'), snap => {
       const data = snap.val() || {};
@@ -1548,10 +1406,9 @@ function setupFirebaseListeners() {
 }
 
 function renderCurrentPage() {
-  if (currentPage === 'accueil') { /* rien à re-render */ }
-  else if (currentPage === 'visites') { renderVisites(); renderHistoriqueVisites(); }
+  if (currentPage === 'visites') { renderVisites(); renderHistoriqueVisites(); }
   else if (currentPage === 'contacts') { renderContacts(); }
-  else if (currentPage === 'demandes') { if (currentTab === 'demandes') renderDemandes(); else renderProduits(); }
+  else if (currentPage === 'demandes') { renderDemandes(); }
   else if (currentPage === 'ventes') { renderClientsVente(); }
   else if (currentPage === 'clients') { renderClientsGestion(); }
 }
@@ -1589,7 +1446,7 @@ function afficherPage(pageId) {
 
   if (pageId === 'visites')   { renderVisites(); renderHistoriqueVisites(); }
   if (pageId === 'contacts')  { renderContacts(); }
-  if (pageId === 'demandes')  { switcherTab(currentTab); }
+  if (pageId === 'demandes')  { renderDemandes(); }
   if (pageId === 'ventes')    { renderClientsVente(); resetVenteForm(); }
   if (pageId === 'clients')   { renderClientsGestion(); }
 }
@@ -1713,22 +1570,7 @@ function renderHistoriqueVisites() {
   `).join('');
 }
 
-/* ==================== DEMANDES SPÉCIALES ==================== */
-function switcherTab(tab) {
-  currentTab = tab;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-  document.getElementById('tab-demandes').style.display = tab === 'demandes' ? 'block' : 'none';
-  document.getElementById('tab-catalogue').style.display = tab === 'catalogue' ? 'block' : 'none';
-  if (tab === 'demandes') renderDemandes();
-  if (tab === 'catalogue') renderProduits();
-}
-
-function initTabs() {
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => switcherTab(btn.dataset.tab));
-  });
-}
-
+/* ==================== DEMANDES SPÉCIALES (message libre) ==================== */
 function renderDemandes() {
   const search = normaliser(document.getElementById('searchDemandes').value.trim());
   const filtreDate = document.getElementById('filtreDateDemandes').value;
@@ -1737,8 +1579,7 @@ function renderDemandes() {
   let liste = demandes.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
   if (search) liste = liste.filter(d => 
     normaliser(d.clientNom).includes(search) || 
-    normaliser(d.produit).includes(search) ||
-    normaliser(d.note).includes(search)
+    normaliser(d.message).includes(search)
   );
   if (filtreDate) liste = liste.filter(d => d.date && d.date.slice(0, 10) === filtreDate);
 
@@ -1757,11 +1598,7 @@ function renderDemandes() {
           <span class="demande-statut ${statutClass}">${statutLabel}</span>
         </div>
         <div class="demande-date">${formatDateHeure(d.date)}</div>
-        <div class="demande-produit">📦 ${echapperHTML(d.produit)}</div>
-        <div class="demande-details">
-          <span><strong>Quantité:</strong> ${formatNombre(d.quantite)} ${echapperHTML(d.unite)}</span>
-        </div>
-        ${d.note ? `<div class="demande-note">${echapperHTML(d.note)}</div>` : ''}
+        <div class="demande-message">💬 ${echapperHTML(d.message)}</div>
         <div class="demande-actions">
           <button class="btn btn-secondary btn-sm" data-toggle-statut="${d.id}">
             ${d.statut === 'traite' ? '↩️ Remettre en attente' : '✓ Marquer traitée'}
@@ -1818,64 +1655,32 @@ function ouvrirModaleNouvelleDemande() {
   const optionsClients = clients.slice().sort((a,b) => a.nom.localeCompare(b.nom))
     .map(c => `<option value="${c.id}">${echapperHTML(c.nom)} (${echapperHTML(c.id)})</option>`).join('');
 
-  let optionsProduits = '<option value="">— Sélectionner un produit —</option>';
-  INVENTAIRE.forEach(f => {
-    optionsProduits += `<optgroup label="${echapperHTML(f.famille)}">`;
-    f.produits.forEach(p => {
-      optionsProduits += `<option value="${echapperHTML(p.nom)}" data-famille="${echapperHTML(f.famille)}">${echapperHTML(p.nom)}</option>`;
-    });
-    optionsProduits += '</optgroup>';
-  });
-
   ouvrirModale({
-    titre: '📝 Nouvelle demande spéciale',
+    titre: '📝 Nouvelle demande',
     corps: `
       <div class="form-group">
         <label>Client</label>
         <select id="demandeClientSelect">${optionsClients}</select>
       </div>
       <div class="form-group">
-        <label>Produit</label>
-        <select id="demandeProduitSelect">${optionsProduits}</select>
-      </div>
-      <div class="form-group">
-        <label>Quantité</label>
-        <div style="display:flex; gap:8px;">
-          <input type="number" id="demandeQuantite" min="0.01" step="0.01" inputmode="decimal" placeholder="0" style="flex:2;">
-          <select id="demandeUnite" style="flex:1;">
-            <option value="kg">kg</option>
-            <option value="ML">ML</option>
-            <option value="M²">M²</option>
-            <option value="Packet">Packet</option>
-            <option value="unité">unité</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Note / Détails (optionnel)</label>
-        <textarea id="demandeNote" rows="3" placeholder="Ex: Livraison urgente avant vendredi…" style="resize:vertical;"></textarea>
+        <label>Votre message</label>
+        <textarea id="demandeMessage" rows="6" placeholder="Ex: Le client demande un produit qui n'est pas en stock : 200 m² de filet anti-thrips 4×100. Livraison urgente avant vendredi." style="resize:vertical; min-height:140px;"></textarea>
       </div>
     `,
     footer: `
       <button class="btn btn-secondary" id="modalAnnulerDemande">Annuler</button>
-      <button class="btn btn-primary" id="modalValiderDemande">✓ Enregistrer</button>
+      <button class="btn btn-primary" id="modalValiderDemande">✓ Envoyer</button>
     `
   });
 
   document.getElementById('modalAnnulerDemande').addEventListener('click', fermerModale);
   document.getElementById('modalValiderDemande').addEventListener('click', async () => {
     const clientId = document.getElementById('demandeClientSelect').value;
-    const produitSelect = document.getElementById('demandeProduitSelect');
-    const produit = produitSelect.value;
-    const famille = produitSelect.options[produitSelect.selectedIndex]?.dataset?.famille || '';
-    const quantite = parseFloat(document.getElementById('demandeQuantite').value);
-    const unite = document.getElementById('demandeUnite').value;
-    const note = document.getElementById('demandeNote').value.trim();
+    const message = document.getElementById('demandeMessage').value.trim();
     const client = clients.find(c => c.id === clientId);
 
     if (!client) { toast('Sélectionnez un client', 'error'); return; }
-    if (!produit) { toast('Sélectionnez un produit', 'error'); return; }
-    if (!quantite || quantite <= 0) { toast('Quantité invalide', 'error'); return; }
+    if (!message) { toast('Écrivez votre message', 'error'); return; }
 
     const newDemande = {
       id: 'D' + Date.now(),
@@ -1884,11 +1689,7 @@ function ouvrirModaleNouvelleDemande() {
       commercialEmail: currentUser.email,
       clientId: client.id,
       clientNom: client.nom,
-      produit: produit,
-      famille: famille,
-      quantite: quantite,
-      unite: unite,
-      note: note,
+      message: message,
       statut: 'en_attente',
       date: new Date().toISOString()
     };
@@ -1896,74 +1697,10 @@ function ouvrirModaleNouvelleDemande() {
     try {
       await fb.set(fb.ref(fb.db, 'demandes/' + newDemande.id), newDemande);
       fermerModale();
-      switcherTab('demandes');
       toast('Demande envoyée');
     } catch (e) {
       toast('Erreur d\'envoi', 'error');
     }
-  });
-}
-
-/* ==================== PRODUITS / CATALOGUE ==================== */
-function renderProduits() {
-  const container = document.getElementById('listeProduits');
-  const search = normaliser(document.getElementById('searchProduits').value.trim());
-
-  let famillesFiltrees = INVENTAIRE.map(f => {
-    if (!search) return f;
-    const produits = f.produits.filter(p =>
-      normaliser(p.nom).includes(search) || normaliser(p.ref).includes(search)
-    );
-    return { famille: f.famille, produits };
-  }).filter(f => f.produits.length > 0);
-
-  if (!famillesFiltrees.length) {
-    container.innerHTML = '<p class="hist-empty">Aucun produit trouvé.</p>';
-    return;
-  }
-  if (search) famillesFiltrees.forEach(f => famillesOuvertes[f.famille] = true);
-
-  container.innerHTML = famillesFiltrees.map(f => {
-    const ouvert = famillesOuvertes[f.famille] !== false;
-    const nb = f.produits.length;
-    return `
-      <div class="famille-section">
-        <div class="famille-header ${ouvert ? 'open' : ''}" data-famille="${echapperHTML(f.famille)}">
-          <span>${echapperHTML(f.famille)}</span>
-          <span style="display:flex; align-items:center; gap:8px;">
-            <span class="famille-count">${nb}</span>
-            <span class="chevron">▼</span>
-          </span>
-        </div>
-        <div class="famille-body ${ouvert ? '' : 'collapsed'}">
-          ${f.produits.map(p => {
-            const statut = p.qte === null ? 'Inconnu' : (p.qte < 0 ? 'Négatif' : (p.qte === 0 ? 'Zéro' : 'OK'));
-            const badgeClass = statut === 'OK' ? 'badge-ok' : (statut === 'Négatif' ? 'badge-neg' : 'badge-zero');
-            return `
-              <div class="produit-item">
-                <div class="produit-nom">${echapperHTML(p.nom)}</div>
-                <div class="produit-details">
-                  ${p.ref ? `<span class="produit-ref">${echapperHTML(p.ref)}</span>` : ''}
-                  <span>Stock: <strong>${formatNombre(p.qte)}</strong></span>
-                  <span>S.I: ${formatNombre(p.si)}</span>
-                  <span class="badge-stock ${badgeClass}">${statut}</span>
-                </div>
-              </div>
-            `;
-          }).join('')}
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  container.querySelectorAll('.famille-header').forEach(h => {
-    h.addEventListener('click', () => {
-      const fam = h.dataset.famille;
-      famillesOuvertes[fam] = famillesOuvertes[fam] === false ? true : false;
-      const body = h.nextElementSibling;
-      h.classList.toggle('open');
-      body.classList.toggle('collapsed');
-    });
   });
 }
 
@@ -2385,7 +2122,7 @@ function exportCSV() {
   ventes.forEach(v => { csv += `VENTE;${v.clientNom};${v.famille || ''};${v.produit};${v.quantite};${v.unite};${v.prixUnitaire};${v.montant};${v.date}\n`; });
   visites.forEach(v => { csv += `VISITE;${v.clientNom};;;;;;;${v.date}\n`; });
   contacts.forEach(c => { csv += `CONTACT;${c.clientNom};;;;;;;;${c.date} - ${c.note}\n`; });
-  demandes.forEach(d => { csv += `DEMANDE;${d.clientNom};${d.famille || ''};${d.produit};${d.quantite};${d.unite};;;${d.date} - ${d.note} [${d.statut}]\n`; });
+  demandes.forEach(d => { csv += `DEMANDE;${d.clientNom};;;;;;;;${d.date} - ${d.message} [${d.statut}]\n`; });
 
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
   const a = document.createElement('a');
@@ -2457,10 +2194,6 @@ function initDemandesFiltres() {
   document.getElementById('btnNouvelleDemande').addEventListener('click', ouvrirModaleNouvelleDemande);
 }
 
-function initProduitsFiltres() {
-  document.getElementById('searchProduits').addEventListener('input', renderProduits);
-}
-
 function initClients() {
   document.getElementById('searchClients').addEventListener('input', renderClientsGestion);
   document.getElementById('btnAjouterClient').addEventListener('click', () => {
@@ -2487,7 +2220,6 @@ function setupAuthStateListener() {
       currentUser = user;
       hideLogin();
       document.getElementById('heroUser').textContent = '👤 ' + (user.displayName || user.email);
-      // Démarre les listeners temps réel
       setupFirebaseListeners();
       afficherPage('accueil');
     } else {
@@ -2508,15 +2240,12 @@ function bootApp() {
   initVisitesFiltres();
   initContactsFiltres();
   initDemandesFiltres();
-  initTabs();
-  initProduitsFiltres();
   initVenteForm();
   initClients();
   initVentesRecherche();
   setupAuthStateListener();
 }
 
-// Attend que le module Firebase soit prêt
 function waitForFirebase() {
   if (window.__tam) {
     fb = window.__tam.fb;
