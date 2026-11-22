@@ -618,7 +618,64 @@ h3 {
 }
 .contact-item .contact-actions .btn { flex: 1; }
 
-/* ==================== PRODUITS / INVENTAIRE ==================== */
+/* ==================== DEMANDES SPÉCIALES ==================== */
+.demande-list {
+  display: flex; flex-direction: column;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg-app);
+  margin-top: 16px;
+}
+.demande-item {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex; flex-direction: column; gap: 5px;
+}
+.demande-item:last-child { border-bottom: none; }
+.demande-item .demande-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 8px;
+}
+.demande-item .demande-client {
+  font-weight: 700; font-size: 1rem;
+  color: var(--text-primary);
+}
+.demande-item .demande-date {
+  font-size: 0.72rem; color: var(--text-tertiary);
+  font-family: 'SF Mono', 'Courier New', monospace;
+}
+.demande-item .demande-produit {
+  font-size: 0.88rem; font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-bg);
+  padding: 6px 10px; border-radius: var(--radius-sm);
+  margin-top: 4px;
+}
+.demande-item .demande-details {
+  display: flex; flex-wrap: wrap; gap: 6px 14px;
+  font-size: 0.8rem; color: var(--text-secondary);
+  margin-top: 4px;
+}
+.demande-item .demande-note {
+  font-size: 0.86rem; color: var(--text-secondary);
+  background: var(--bg-sidebar);
+  padding: 10px 12px; border-radius: var(--radius-sm);
+  margin-top: 6px;
+  white-space: pre-wrap; word-break: break-word;
+  line-height: 1.5;
+}
+.demande-item .demande-actions {
+  display: flex; gap: 8px; margin-top: 10px;
+}
+.demande-item .demande-actions .btn { flex: 1; }
+.demande-statut {
+  padding: 3px 10px; border-radius: 6px;
+  font-size: 0.7rem; font-weight: 700;
+}
+.statut-en-attente { background: var(--accent-bg); color: var(--accent); }
+.statut-traite { background: var(--green-bg); color: var(--green); }
+
 .famille-section {
   margin-bottom: 16px;
 }
@@ -696,6 +753,31 @@ h3 {
 .badge-zero { background: var(--bg-hover); color: var(--text-tertiary); }
 .badge-neg { background: var(--red-bg); color: var(--red); }
 
+.tabs {
+  display: flex; gap: 6px;
+  background: var(--bg-sidebar);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+}
+.tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 10px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.tab-btn.active {
+  background: var(--bg-app);
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
 /* ==================== PRINT ==================== */
 @media print {
   body * { visibility: hidden; }
@@ -761,10 +843,10 @@ h3 {
         <div class="menu-label">Contactés</div>
         <div class="menu-sub">Appels téléphoniques</div>
       </div>
-      <div class="menu-card" data-page="produits">
-        <div class="menu-emoji">📦</div>
-        <div class="menu-label">طلبات خاصة</div>
-        <div class="menu-sub">Commandes spéciales</div>
+      <div class="menu-card" data-page="demandes">
+        <div class="menu-emoji">📝</div>
+        <div class="menu-label">Demandes spéciales</div>
+        <div class="menu-sub">Commandes commerciales</div>
       </div>
       <div class="menu-card" data-page="clients" style="grid-column: 1 / -1;">
         <div class="menu-emoji">👤</div>
@@ -805,13 +887,31 @@ h3 {
     <div id="listeContacts" class="contact-list"></div>
   </section>
 
-  <!-- PRODUITS / طلبات خاصة -->
-  <section id="page-produits" class="page">
-    <h2>📦 طلبات خاصة</h2>
-    <div class="toolbar">
-      <input type="text" id="searchProduits" placeholder="🔍 Rechercher un produit…" class="input-search">
+  <!-- DEMANDES SPÉCIALES -->
+  <section id="page-demandes" class="page">
+    <h2>📝 Demandes spéciales</h2>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="demandes">📋 Demandes</button>
+      <button class="tab-btn" data-tab="catalogue">📦 Catalogue</button>
     </div>
-    <div id="listeProduits"></div>
+
+    <!-- Onglet Demandes -->
+    <div id="tab-demandes">
+      <div class="toolbar">
+        <input type="text" id="searchDemandes" placeholder="🔍 Rechercher une demande…" class="input-search">
+        <input type="date" id="filtreDateDemandes" class="input-date">
+        <button class="btn btn-primary" id="btnNouvelleDemande">➕ Nouvelle demande</button>
+      </div>
+      <div id="listeDemandes" class="demande-list"></div>
+    </div>
+
+    <!-- Onglet Catalogue -->
+    <div id="tab-catalogue" style="display:none;">
+      <div class="toolbar">
+        <input type="text" id="searchProduits" placeholder="🔍 Rechercher un produit…" class="input-search">
+      </div>
+      <div id="listeProduits"></div>
+    </div>
   </section>
 
   <!-- VENTES -->
@@ -903,9 +1003,9 @@ h3 {
     <svg viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
     Contactés
   </button>
-  <button class="nav-btn" data-page="produits">
-    <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 12 7.4l3.38 4.6L17 10.83 14.92 8H20v6z"/></svg>
-    طلبات خاصة
+  <button class="nav-btn" data-page="demandes">
+    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+    Demandes
   </button>
 </nav>
 
@@ -943,6 +1043,7 @@ const STORAGE_KEYS = {
   VISITES: 'tam_visites_v3', 
   VENTES: 'tam_ventes_v3', 
   CONTACTS: 'tam_contacts_v1',
+  DEMANDES: 'tam_demandes_v1',
   THEME: 'tam_theme_v1'
 };
 
@@ -1030,10 +1131,11 @@ const CLIENTS_INITIAUX = [
   { id: 'CLT0174', nom: 'HICHAM MORTADI' }
 ];
 
-let clients = [], visites = [], ventes = [], contacts = [];
+let clients = [], visites = [], ventes = [], contacts = [], demandes = [];
 let venteState = { clientId: null, famille: null, produit: null };
 let currentPage = 'accueil';
 let famillesOuvertes = {};
+let currentTab = 'demandes';
 
 /* ==================== THÈME ==================== */
 function appliquerTheme(theme) {
@@ -1098,9 +1200,10 @@ function chargerDonnees() {
     visites = JSON.parse(localStorage.getItem(STORAGE_KEYS.VISITES)) || [];
     ventes  = JSON.parse(localStorage.getItem(STORAGE_KEYS.VENTES))  || [];
     contacts = JSON.parse(localStorage.getItem(STORAGE_KEYS.CONTACTS)) || [];
+    demandes = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEMANDES)) || [];
     if (!localStorage.getItem(STORAGE_KEYS.CLIENTS)) sauvegarder();
   } catch (e) {
-    clients = [...CLIENTS_INITIAUX]; visites = []; ventes = []; contacts = [];
+    clients = [...CLIENTS_INITIAUX]; visites = []; ventes = []; contacts = []; demandes = [];
   }
 }
 
@@ -1109,6 +1212,7 @@ function sauvegarder() {
   localStorage.setItem(STORAGE_KEYS.VISITES, JSON.stringify(visites));
   localStorage.setItem(STORAGE_KEYS.VENTES, JSON.stringify(ventes));
   localStorage.setItem(STORAGE_KEYS.CONTACTS, JSON.stringify(contacts));
+  localStorage.setItem(STORAGE_KEYS.DEMANDES, JSON.stringify(demandes));
 }
 
 /* ==================== NAVIGATION ==================== */
@@ -1144,7 +1248,9 @@ function afficherPage(pageId) {
 
   if (pageId === 'visites')   { renderVisites(); renderHistoriqueVisites(); }
   if (pageId === 'contacts')  { renderContacts(); }
-  if (pageId === 'produits')  { renderProduits(); }
+  if (pageId === 'demandes')  { 
+    switcherTab(currentTab); 
+  }
   if (pageId === 'ventes')    { renderClientsVente(); resetVenteForm(); }
   if (pageId === 'clients')   { renderClientsGestion(); }
 }
@@ -1264,7 +1370,203 @@ function renderHistoriqueVisites() {
   `).join('');
 }
 
-/* ==================== PRODUITS / طلبات خاصة ==================== */
+/* ==================== DEMANDES SPÉCIALES ==================== */
+function switcherTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.getElementById('tab-demandes').style.display = tab === 'demandes' ? 'block' : 'none';
+  document.getElementById('tab-catalogue').style.display = tab === 'catalogue' ? 'block' : 'none';
+  
+  if (tab === 'demandes') renderDemandes();
+  if (tab === 'catalogue') renderProduits();
+}
+
+function initTabs() {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => switcherTab(btn.dataset.tab));
+  });
+}
+
+function renderDemandes() {
+  const search = normaliser(document.getElementById('searchDemandes').value.trim());
+  const filtreDate = document.getElementById('filtreDateDemandes').value;
+  const container = document.getElementById('listeDemandes');
+
+  let liste = demandes.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+  if (search) liste = liste.filter(d => 
+    normaliser(d.clientNom).includes(search) || 
+    normaliser(d.produit).includes(search) ||
+    normaliser(d.note).includes(search)
+  );
+  if (filtreDate) liste = liste.filter(d => d.date && d.date.slice(0, 10) === filtreDate);
+
+  if (!liste.length) {
+    container.innerHTML = '<p class="hist-empty">Aucune demande enregistrée. Cliquez sur « Nouvelle demande ».</p>';
+    return;
+  }
+
+  container.innerHTML = liste.map(d => {
+    const statutClass = d.statut === 'traite' ? 'statut-traite' : 'statut-en-attente';
+    const statutLabel = d.statut === 'traite' ? '✓ Traitée' : '⏳ En attente';
+    return `
+      <div class="demande-item">
+        <div class="demande-header">
+          <span class="demande-client">${echapperHTML(d.clientNom)}</span>
+          <span class="demande-statut ${statutClass}">${statutLabel}</span>
+        </div>
+        <div class="demande-date">${formatDateHeure(d.date)}</div>
+        <div class="demande-produit">📦 ${echapperHTML(d.produit)}</div>
+        <div class="demande-details">
+          <span><strong>Quantité:</strong> ${formatNombre(d.quantite)} ${echapperHTML(d.unite)}</span>
+          ${d.commercial ? `<span><strong>Commercial:</strong> ${echapperHTML(d.commercial)}</span>` : ''}
+        </div>
+        ${d.note ? `<div class="demande-note">${echapperHTML(d.note)}</div>` : ''}
+        <div class="demande-actions">
+          <button class="btn btn-secondary btn-sm" data-toggle-statut="${d.id}">
+            ${d.statut === 'traite' ? '↩️ Remettre en attente' : '✓ Marquer traitée'}
+          </button>
+          <button class="btn btn-danger btn-sm" data-supprimer-demande="${d.id}">🗑️ Supprimer</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.querySelectorAll('[data-toggle-statut]').forEach(btn => {
+    btn.addEventListener('click', () => toggleStatutDemande(btn.dataset.toggleStatut));
+  });
+  container.querySelectorAll('[data-supprimer-demande]').forEach(btn => {
+    btn.addEventListener('click', () => supprimerDemande(btn.dataset.supprimerDemande));
+  });
+}
+
+function toggleStatutDemande(demandeId) {
+  const d = demandes.find(x => x.id === demandeId);
+  if (!d) return;
+  d.statut = d.statut === 'traite' ? 'en_attente' : 'traite';
+  sauvegarder();
+  renderDemandes();
+  toast(d.statut === 'traite' ? 'Demande traitée' : 'Remise en attente');
+}
+
+function supprimerDemande(demandeId) {
+  const d = demandes.find(x => x.id === demandeId);
+  if (!d) return;
+
+  ouvrirModale({
+    titre: 'Supprimer la demande',
+    corps: `<p style="color:var(--text-primary); font-size:1rem;">Voulez-vous vraiment supprimer cette demande ?</p>`,
+    footer: `
+      <button class="btn btn-secondary" id="modalAnnulerSupprDemande">Annuler</button>
+      <button class="btn btn-danger" id="modalConfirmerSupprDemande">🗑️ Supprimer</button>
+    `
+  });
+
+  document.getElementById('modalAnnulerSupprDemande').addEventListener('click', fermerModale);
+  document.getElementById('modalConfirmerSupprDemande').addEventListener('click', () => {
+    demandes = demandes.filter(x => x.id !== demandeId);
+    sauvegarder();
+    fermerModale();
+    renderDemandes();
+    toast('Demande supprimée');
+  });
+}
+
+function ouvrirModaleNouvelleDemande() {
+  // Options clients
+  const optionsClients = clients.slice().sort((a,b) => a.nom.localeCompare(b.nom))
+    .map(c => `<option value="${c.id}">${echapperHTML(c.nom)} (${echapperHTML(c.id)})</option>`).join('');
+
+  // Options produits (tous, groupés par famille)
+  let optionsProduits = '<option value="">— Sélectionner un produit —</option>';
+  INVENTAIRE.forEach(f => {
+    optionsProduits += `<optgroup label="${echapperHTML(f.famille)}">`;
+    f.produits.forEach(p => {
+      optionsProduits += `<option value="${echapperHTML(p.nom)}" data-famille="${echapperHTML(f.famille)}">${echapperHTML(p.nom)}</option>`;
+    });
+    optionsProduits += '</optgroup>';
+  });
+
+  ouvrirModale({
+    titre: '📝 Nouvelle demande spéciale',
+    corps: `
+      <div class="form-group">
+        <label>Commercial</label>
+        <input type="text" id="demandeCommercial" placeholder="Votre nom">
+      </div>
+      <div class="form-group">
+        <label>Client</label>
+        <select id="demandeClientSelect">${optionsClients}</select>
+      </div>
+      <div class="form-group">
+        <label>Produit</label>
+        <select id="demandeProduitSelect">${optionsProduits}</select>
+      </div>
+      <div class="form-group">
+        <label>Quantité</label>
+        <div style="display:flex; gap:8px;">
+          <input type="number" id="demandeQuantite" min="0.01" step="0.01" inputmode="decimal" placeholder="0" style="flex:2;">
+          <select id="demandeUnite" style="flex:1;">
+            <option value="kg">kg</option>
+            <option value="ML">ML</option>
+            <option value="M²">M²</option>
+            <option value="Packet">Packet</option>
+            <option value="unité">unité</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Note / Détails (optionnel)</label>
+        <textarea id="demandeNote" rows="3" placeholder="Ex: Livraison urgente avant vendredi…" style="resize:vertical;"></textarea>
+      </div>
+    `,
+    footer: `
+      <button class="btn btn-secondary" id="modalAnnulerDemande">Annuler</button>
+      <button class="btn btn-primary" id="modalValiderDemande">✓ Enregistrer</button>
+    `
+  });
+
+  document.getElementById('modalAnnulerDemande').addEventListener('click', fermerModale);
+  document.getElementById('modalValiderDemande').addEventListener('click', () => {
+    const commercial = document.getElementById('demandeCommercial').value.trim();
+    const clientId = document.getElementById('demandeClientSelect').value;
+    const produitSelect = document.getElementById('demandeProduitSelect');
+    const produit = produitSelect.value;
+    const famille = produitSelect.options[produitSelect.selectedIndex]?.dataset?.famille || '';
+    const quantite = parseFloat(document.getElementById('demandeQuantite').value);
+    const unite = document.getElementById('demandeUnite').value;
+    const note = document.getElementById('demandeNote').value.trim();
+
+    const client = clients.find(c => c.id === clientId);
+
+    if (!commercial) { toast('Indiquez votre nom', 'error'); return; }
+    if (!client) { toast('Sélectionnez un client', 'error'); return; }
+    if (!produit) { toast('Sélectionnez un produit', 'error'); return; }
+    if (!quantite || quantite <= 0) { toast('Quantité invalide', 'error'); return; }
+
+    demandes.push({
+      id: 'D' + Date.now(),
+      commercial: commercial,
+      clientId: client.id,
+      clientNom: client.nom,
+      produit: produit,
+      famille: famille,
+      quantite: quantite,
+      unite: unite,
+      note: note,
+      statut: 'en_attente',
+      date: maintenant()
+    });
+
+    sauvegarder();
+    fermerModale();
+    switcherTab('demandes');
+    toast('Demande enregistrée');
+  });
+
+  setTimeout(() => document.getElementById('demandeCommercial').focus(), 300);
+}
+
+/* ==================== PRODUITS / CATALOGUE ==================== */
 function renderProduits() {
   const container = document.getElementById('listeProduits');
   const search = normaliser(document.getElementById('searchProduits').value.trim());
@@ -1706,6 +2008,7 @@ function modifierClient(id, nouveauNom) {
   visites.forEach(v => { if (v.clientId === id) v.clientNom = nouveauNom.trim(); });
   ventes.forEach(v => { if (v.clientId === id) v.clientNom = nouveauNom.trim(); });
   contacts.forEach(c => { if (c.clientId === id) c.clientNom = nouveauNom.trim(); });
+  demandes.forEach(d => { if (d.clientId === id) d.clientNom = nouveauNom.trim(); });
 
   sauvegarder();
   renderClientsGestion();
@@ -1719,7 +2022,7 @@ function supprimerClient(id) {
 
   ouvrirModale({
     titre: 'Supprimer le client',
-    corps: `<p style="color:var(--text-primary); font-size:1rem;">Voulez-vous vraiment supprimer <strong>${echapperHTML(client.nom)}</strong> ainsi que tout son historique (visites, ventes, contacts) ? Cette action est irréversible.</p>`,
+    corps: `<p style="color:var(--text-primary); font-size:1rem;">Voulez-vous vraiment supprimer <strong>${echapperHTML(client.nom)}</strong> ainsi que tout son historique (visites, ventes, contacts, demandes) ? Cette action est irréversible.</p>`,
     footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button>
              <button class="btn btn-danger" id="modalConfirmerSuppr">🗑️ Supprimer</button>`
   });
@@ -1730,6 +2033,7 @@ function supprimerClient(id) {
     visites = visites.filter(v => v.clientId !== id);
     ventes  = ventes.filter(v => v.clientId !== id);
     contacts = contacts.filter(c => c.clientId !== id);
+    demandes = demandes.filter(d => d.clientId !== id);
     sauvegarder();
     fermerModale();
     renderClientsGestion();
@@ -1784,6 +2088,7 @@ function exportCSV() {
   ventes.forEach(v => { csv += `VENTE;${v.clientNom};${v.famille || ''};${v.produit};${v.quantite};${v.unite};${v.prixUnitaire};${v.montant};${v.date}\n`; });
   visites.forEach(v => { csv += `VISITE;${v.clientNom};;;;;;;${v.date}\n`; });
   contacts.forEach(c => { csv += `CONTACT;${c.clientNom};;;;;;;;${c.date} - ${c.note}\n`; });
+  demandes.forEach(d => { csv += `DEMANDE;${d.clientNom};${d.famille || ''};${d.produit};${d.quantite};${d.unite};;;${d.date} - ${d.note} [${d.statut}]\n`; });
 
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
   const a = document.createElement('a');
@@ -1852,6 +2157,12 @@ function initContactsFiltres() {
   document.getElementById('btnPrintContacts').addEventListener('click', imprimerRapportContacts);
 }
 
+function initDemandesFiltres() {
+  document.getElementById('searchDemandes').addEventListener('input', renderDemandes);
+  document.getElementById('filtreDateDemandes').addEventListener('change', renderDemandes);
+  document.getElementById('btnNouvelleDemande').addEventListener('click', ouvrirModaleNouvelleDemande);
+}
+
 function initProduitsFiltres() {
   document.getElementById('searchProduits').addEventListener('input', renderProduits);
 }
@@ -1880,7 +2191,8 @@ function init() {
   initTheme();
   chargerDonnees();
   initNavigation(); initModale(); initVisitesFiltres();
-  initContactsFiltres(); initProduitsFiltres();
+  initContactsFiltres(); initDemandesFiltres(); initTabs();
+  initProduitsFiltres();
   initVenteForm(); initClients(); initVentesRecherche();
   afficherPage('accueil');
 }
