@@ -19,7 +19,6 @@
 }
 
 :root {
-  /* 🎨 Notion-inspired palette */
   --bg-app: #ffffff;
   --bg-sidebar: #f7f6f3;
   --bg-hover: #f1f0ee;
@@ -76,14 +75,50 @@ html, body {
   border-bottom: 1px solid var(--border-light);
 }
 .header-container {
-  width: 100%; padding: 0 16px;
-  display: flex; align-items: center; justify-content: flex-start;
+  width: 100%; padding: 0 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
 }
+
+/* ← Bouton retour */
+.btn-back {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background 0.12s;
+  flex-shrink: 0;
+  padding: 0;
+}
+.btn-back:hover { background: var(--bg-hover); }
+.btn-back:active { background: var(--bg-active); }
+.btn-back svg {
+  width: 20px; height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.btn-back.visible { display: flex; }
+
+/* Logo */
 .logo {
   display: flex; align-items: center; gap: 8px;
   font-size: 0.9rem; font-weight: 600;
   color: var(--text-primary);
   letter-spacing: -0.1px;
+  flex: 1;
+  justify-content: flex-start;
+  transition: opacity 0.2s;
+}
+.logo.with-back {
+  justify-content: center;
 }
 .logo-icon {
   width: 26px; height: 26px;
@@ -93,7 +128,16 @@ html, body {
   border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 700;
+  flex-shrink: 0;
 }
+
+/* Espace réservé à droite (équilibre visuel) */
+.header-spacer {
+  width: 36px; height: 36px;
+  flex-shrink: 0;
+  visibility: hidden;
+}
+.header-spacer.visible { visibility: visible; }
 
 /* ==================== MAIN ==================== */
 .app-main {
@@ -541,7 +585,7 @@ h3 {
   font-size: 11px; color: #9b9a97;
 }
 
-/* ==================== DARK MODE (Notion dark) ==================== */
+/* ==================== DARK MODE ==================== */
 @media (prefers-color-scheme: dark) {
   :root {
     --bg-app: #191919;
@@ -573,18 +617,25 @@ h3 {
 </head>
 <body>
 
+<!-- ========== HEADER avec bouton retour ========== -->
 <header class="app-header">
   <div class="header-container">
-    <div class="logo">
+    <button class="btn-back" id="btnBack" aria-label="Retour">
+      <svg viewBox="0 0 24 24">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+    <div class="logo" id="logoHeader">
       <span class="logo-icon">T</span>
       TAM AGRICOLE
     </div>
+    <div class="header-spacer" id="headerSpacer"></div>
   </div>
 </header>
 
 <main class="app-main">
 
-  <!-- ACCUEIL (sans stats) -->
+  <!-- ACCUEIL -->
   <section id="page-accueil" class="page active">
     <div class="hero">
       <h2>Bienvenue</h2>
@@ -667,683 +718,14 @@ h3 {
   <section id="page-clients" class="page">
     <h2>Clients</h2>
     <div class="toolbar">
-      <input type="text" id="searchClients" placeholder="R: border-color .2s, box-shadow .2s;
-  -webkit-appearance: none;
-  appearance: none;
-  font-weight: 500;
-}
-
-.input-search:focus, .input-date:focus, .input-select:focus,
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-  border-color: var(--vert-500);
-  box-shadow: 0 0 0 4px rgba(76,175,80,.15);
-}
-
-.input-select, .form-group select {
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='3'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 16px center;
-  padding-right: 40px;
-}
-
-.input-search {
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round'%3e%3ccircle cx='11' cy='11' r='7'/%3e%3cpath d='m21 21-4.35-4.35'/%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: 16px center;
-  padding-left: 46px;
-}
-
-.toolbar .btn { width: 100%; margin-bottom: 2px; }
-
-/* ================================================================
-   CLIENT CARDS
-   ================================================================ */
-.liste-clients {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.client-card {
-  background: var(--blanc);
-  border-radius: var(--r-lg);
-  padding: 16px;
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  border: 1px solid var(--ink-100);
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.client-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; bottom: 0;
-  width: 4px;
-  background: var(--ink-300);
-}
-
-.client-card.visite {
-  background: linear-gradient(135deg, var(--vert-50), var(--blanc));
-  border-color: var(--vert-300);
-}
-
-.client-card.visite::before {
-  background: linear-gradient(180deg, var(--vert-500), var(--vert-700));
-}
-
-.client-card .client-name {
-  font-weight: 700;
-  font-size: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 10px;
-  color: var(--ink-900);
-  letter-spacing: -0.2px;
-}
-
-.client-card .client-id {
-  font-size: 0.75rem;
-  color: var(--ink-500);
-  font-weight: 600;
-  font-family: 'SF Mono', 'Courier New', monospace;
-  letter-spacing: 0.5px;
-}
-
-.client-card .client-meta {
-  font-size: 0.82rem;
-  color: var(--ink-500);
-  font-weight: 500;
-}
-
-.client-card .client-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.client-card .client-actions .btn { flex: 1; }
-
-.visite-badge {
-  background: linear-gradient(135deg, var(--vert-500), var(--vert-600));
-  color: var(--blanc);
-  padding: 4px 10px;
-  border-radius: var(--r-full);
-  font-size: 0.7rem;
-  font-weight: 700;
-  box-shadow: 0 2px 6px rgba(76,175,80,.3);
-  letter-spacing: 0.3px;
-}
-
-/* ================================================================
-   HISTORIQUE
-   ================================================================ */
-.historique-scroll {
-  background: var(--blanc);
-  border-radius: var(--r-lg);
-  box-shadow: var(--shadow-sm);
-  padding: 4px;
-  margin-bottom: 16px;
-  border: 1px solid var(--ink-100);
-  overflow: hidden;
-}
-
-.hist-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--ink-100);
-  font-size: 0.88rem;
-}
-.hist-item:last-child { border-bottom: none; }
-
-.hist-item .hist-date {
-  color: var(--ink-500);
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.hist-item .hist-label {
-  font-weight: 700;
-  color: var(--vert-800);
-}
-
-.hist-empty {
-  text-align: center;
-  color: var(--ink-400);
-  padding: 28px 16px;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-/* ================================================================
-   VENTES
-   ================================================================ */
-.vente-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.vente-clients, .vente-produits, .vente-form {
-  background: var(--blanc);
-  border-radius: var(--r-lg);
-  padding: 16px;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--ink-100);
-}
-
-.liste-clients-vente {
-  max-height: 220px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  border: 1.5px solid var(--ink-200);
-  border-radius: var(--r-md);
-  margin-top: 10px;
-  background: var(--ink-50);
-}
-
-.client-vente-item {
-  padding: 13px 14px;
-  cursor: pointer;
-  border-bottom: 1px solid var(--ink-100);
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: background .2s;
-}
-.client-vente-item:last-child { border-bottom: none; }
-.client-vente-item:active { background: var(--ink-100); }
-.client-vente-item.selected {
-  background: linear-gradient(135deg, var(--vert-600), var(--vert-500));
-  color: var(--blanc);
-  font-weight: 700;
-}
-
-.produits-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  max-height: 280px;
-  overflow-y: auto;
-  margin-top: 10px;
-  padding: 4px;
-}
-
-.produit-btn {
-  background: var(--vert-50);
-  border: 1.5px solid var(--vert-300);
-  border-radius: var(--r-md);
-  padding: 12px 8px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--vert-800);
-  text-align: center;
-  min-height: 72px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1.3;
-  transition: all .2s;
-  cursor: pointer;
-}
-.produit-btn:active { transform: scale(0.97); }
-.produit-btn.selected {
-  background: linear-gradient(135deg, var(--vert-700), var(--vert-500));
-  color: var(--blanc);
-  border-color: var(--vert-800);
-  box-shadow: 0 4px 12px rgba(46,125,50,.3);
-}
-
-/* ================================================================
-   FORMS
-   ================================================================ */
-.form-group { margin-bottom: 14px; }
-
-.form-group label {
-  display: block;
-  font-size: 0.8rem;
-  font-weight: 700;
-  margin-bottom: 6px;
-  color: var(--ink-700);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-}
-
-.form-group input[readonly] {
-  background: var(--ink-100);
-  font-weight: 600;
-  color: var(--ink-700);
-}
-
-.total-field {
-  background: linear-gradient(135deg, var(--vert-50), var(--vert-100)) !important;
-  color: var(--vert-800) !important;
-  font-weight: 800 !important;
-  font-size: 1.05rem !important;
-  border-color: var(--vert-300) !important;
-}
-
-/* ================================================================
-   DASHBOARD
-   ================================================================ */
-.dashboard-stats {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.stat-card {
-  background: var(--blanc);
-  border-radius: var(--r-lg);
-  padding: 18px 14px;
-  box-shadow: var(--shadow-sm);
-  text-align: center;
-  border: 1px solid var(--ink-100);
-  position: relative;
-  overflow: hidden;
-}
-
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--vert-500), var(--vert-300));
-}
-
-.stat-card .stat-value {
-  font-size: 1.55rem;
-  font-weight: 800;
-  color: var(--vert-800);
-  letter-spacing: -0.5px;
-  line-height: 1.1;
-}
-
-.stat-card .stat-label {
-  font-size: 0.72rem;
-  color: var(--ink-500);
-  margin-top: 6px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.dashboard-historiques {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-/* ================================================================
-   BOTTOM NAVIGATION (iOS style)
-   ================================================================ */
-.main-nav {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  height: calc(var(--nav-h) + var(--safe-bottom));
-  padding-bottom: var(--safe-bottom);
-  background: rgba(255,255,255,.92);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-top: 1px solid rgba(0,0,0,.06);
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 200;
-  padding-left: var(--safe-left);
-  padding-right: var(--safe-right);
-}
-
-.nav-btn {
-  background: none;
-  border: none;
-  color: var(--ink-500);
-  font-size: 0.68rem;
-  font-weight: 600;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  flex: 1;
-  cursor: pointer;
-  padding: 8px 4px;
-  transition: color .2s, transform .15s;
-  letter-spacing: 0.2px;
-}
-
-.nav-btn:active { transform: scale(0.92); }
-
-.nav-btn.active {
-  color: var(--vert-700);
-  font-weight: 700;
-}
-
-.nav-btn.active svg {
-  filter: drop-shadow(0 2px 6px rgba(46,125,50,.35));
-}
-
-.nav-btn svg {
-  width: 24px;
-  height: 24px;
-  fill: currentColor;
-  transition: transform .2s;
-}
-
-/* ================================================================
-   MODAL / BOTTOM SHEET
-   ================================================================ */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(15,23,42,.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: 1000;
-  align-items: flex-end;
-  padding: 0;
-  animation: fadeIn .25s;
-}
-
-.modal-overlay.open { display: flex; }
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.modal {
-  background: var(--blanc);
-  border-radius: var(--r-xl) var(--r-xl) 0 0;
-  width: 100%;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  animation: slideUp .35s cubic-bezier(.32,.72,0,1);
-  padding-bottom: var(--safe-bottom);
-  box-shadow: 0 -10px 40px rgba(0,0,0,.2);
-}
-
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 20px 12px;
-  border-bottom: 1px solid var(--ink-100);
-  position: relative;
-}
-
-.modal-header::before {
-  content: '';
-  position: absolute;
-  top: 8px; left: 50%;
-  transform: translateX(-50%);
-  width: 40px; height: 4px;
-  background: var(--ink-300);
-  border-radius: var(--r-full);
-}
-
-.modal-header h3 {
-  color: var(--ink-900);
-  margin: 8px 0 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  text-transform: none;
-  letter-spacing: -0.2px;
-  opacity: 1;
-}
-
-.modal-close {
-  background: var(--ink-100);
-  border: none;
-  color: var(--ink-700);
-  font-size: 1rem;
-  padding: 0;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  margin-top: 8px;
-  transition: background .2s;
-  font-weight: 700;
-}
-.modal-close:active { background: var(--ink-200); }
-
-.modal-body {
-  padding: 20px;
-  overflow-y: auto;
-  flex: 1;
-}
-
-.modal-footer {
-  padding: 16px 20px;
-  display: flex;
-  gap: 10px;
-  border-top: 1px solid var(--ink-100);
-}
-
-.modal-footer .btn { flex: 1; }
-
-/* ================================================================
-   TOAST (iOS style)
-   ================================================================ */
-.toast {
-  position: fixed;
-  top: calc(var(--safe-top) + var(--header-h) + 16px);
-  left: 50%;
-  transform: translateX(-50%) translateY(-20px);
-  background: var(--ink-900);
-  color: var(--blanc);
-  padding: 14px 22px;
-  border-radius: var(--r-full);
-  font-size: 0.92rem;
-  font-weight: 600;
-  box-shadow: var(--shadow-xl);
-  z-index: 9999;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .3s, transform .3s;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  max-width: 90vw;
-  white-space: nowrap;
-}
-
-.toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-.toast.error { background: linear-gradient(135deg, #b91c1c, #dc2626); }
-
-/* ================================================================
-   PDF TEMPLATE
-   ================================================================ */
-#pdf-template {
-  display: none;
-  padding: 20px;
-  color: #000;
-  background: #fff;
-  font-family: Arial, sans-serif;
-}
-#pdf-template h1 { text-align: center; color: #2e7d32; border-bottom: 2px solid #2e7d32; padding-bottom: 10px; margin-bottom: 20px; }
-#pdf-template .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
-#pdf-template table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
-#pdf-template th, #pdf-template td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-#pdf-template th { background-color: #f5f5f5; color: #333; }
-#pdf-template .footer { margin-top: 40px; text-align: center; font-size: 11px; color: #777; }
-
-/* ================================================================
-   DARK MODE (auto)
-   ================================================================ */
-@media (prefers-color-scheme: dark) {
-  html, body { background: #0f172a; color: #f1f5f9; }
-  .client-card, .historique-scroll, .quick-stat-card, .stat-card,
-  .vente-clients, .vente-produits, .vente-form, .modal {
-    background: #1e293b;
-    border-color: #334155;
-    color: #f1f5f9;
-  }
-  .input-search, .input-date, .input-select, .form-group input, .form-group select, .form-group textarea {
-    background: #1e293b;
-    border-color: #334155;
-    color: #f1f5f9;
-  }
-  .main-nav { background: rgba(30,41,59,.92); border-color: rgba(255,255,255,.06); }
-  .modal-header { border-color: #334155; }
-  .modal-footer { border-color: #334155; }
-  h2 { color: var(--vert-300); }
-  .client-card .client-name { color: #f1f5f9; }
-  .client-card.visite { background: linear-gradient(135deg, #1a3a1e, #1e293b); }
-}
-</style>
-</head>
-<body>
-
-<!-- HEADER -->
-<header class="app-header">
-  <div class="header-container">
-    <div class="logo">
-      <span class="logo-icon">🌱</span>
-      TAM AGRICOLE
-    </div>
-  </div>
-</header>
-
-<!-- MAIN -->
-<main class="app-main">
-  
-  <!-- ACCUEIL -->
-  <section id="page-accueil" class="page active">
-    <div class="hero">
-      <h2>Bienvenue</h2>
-      <p>Gérez vos visites et ventes</p>
-      <div class="hero-buttons">
-        <button class="btn btn-large" data-page="visites">👥 VISITES</button>
-        <button class="btn btn-large" data-page="ventes">💰 VENTES</button>
-      </div>
-    </div>
-    <div class="quick-stats" id="quickStats"></div>
-  </section>
-
-  <!-- VISITES -->
-  <section id="page-visites" class="page">
-    <h2>👥 Visites</h2>
-    <div class="toolbar">
-      <input type="text" id="searchVisites" placeholder="Rechercher un client…" class="input-search">
-      <input type="date" id="filtreDateVisites" class="input-date">
-      <button class="btn btn-secondary btn-sm" id="resetFiltreVisites">Réinitialiser</button>
-      <button class="btn btn-success btn-sm" id="btnExportVisitesCSV">📤 CSV</button>
-      <button class="btn btn-primary btn-sm" id="btnExportVisitesPDF">📄 Exporter PDF</button>
-    </div>
-    <div id="listeVisites" class="liste-clients"></div>
-    <h3>📅 Historique</h3>
-    <div class="historique-scroll" id="historiqueVisites"></div>
-  </section>
-
-  <!-- VENTES -->
-  <section id="page-ventes" class="page">
-    <h2>💰 Ventes</h2>
-    <div class="vente-layout">
-      <div class="vente-clients">
-        <h3>1. Client</h3>
-        <input type="text" id="searchVenteClient" placeholder="Rechercher…" class="input-search">
-        <div id="listeClientsVente" class="liste-clients-vente"></div>
-      </div>
-      <div class="vente-produits" id="venteProduits" style="display:none;">
-        <h3>2. Produit</h3>
-        <div class="produits-grid" id="produitsGrid"></div>
-      </div>
-      <div class="vente-form" id="venteForm" style="display:none;">
-        <h3>3. Détails</h3>
-        <form id="formVente">
-          <div class="form-group">
-            <label>Produit</label>
-            <input type="text" id="venteProduit" readonly>
-          </div>
-          <div class="form-group">
-            <label>Quantité</label>
-            <input type="number" id="venteQuantite" min="0.01" step="0.01" inputmode="decimal" required>
-          </div>
-          <div class="form-group">
-            <label>Unité</label>
-            <select id="venteUnite">
-              <option value="kg">kg</option>
-              <option value="ML">ML</option>
-              <option value="M²">M²</option>
-              <option value="Packet">Packet</option>
-              <option value="unité">unité</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Prix unitaire (DH)</label>
-            <input type="number" id="ventePrix" min="0" step="0.01" inputmode="decimal" required>
-          </div>
-          <div class="form-group">
-            <label>Montant total</label>
-            <input type="text" id="venteTotal" readonly class="total-field">
-          </div>
-          <div class="form-group">
-            <label>Date</label>
-            <input type="date" id="venteDate" required>
-          </div>
-          <button type="submit" class="btn btn-success btn-block">✅ ENREGISTRER LA VENTE</button>
-        </form>
-      </div>
-    </div>
-  </section>
-
-  <!-- CLIENTS -->
-  <section id="page-clients" class="page">
-    <h2>📋 Clients</h2>
-    <div class="toolbar">
       <input type="text" id="searchClients" placeholder="Rechercher…" class="input-search">
-      <button class="btn btn-primary" id="btnAjouterClient">➕ Ajouter</button>
+      <button class="btn btn-primary" id="btnAjouterClient">+ Ajouter</button>
     </div>
     <div id="listeClientsGestion" class="liste-clients"></div>
   </section>
-
-  <!-- DASHBOARD -->
-  <section id="page-dashboard" class="page">
-    <h2>📊 Statistiques</h2>
-    <div class="dashboard-stats" id="dashboardStats"></div>
-    <div class="toolbar">
-      <input type="date" id="dashFiltreDate" class="input-date">
-      <select id="dashFiltreClient" class="input-select">
-        <option value="">Tous les clients</option>
-      </select>
-      <button class="btn btn-secondary btn-sm" id="resetDashFiltres">Réinitialiser</button>
-    </div>
-    <div class="dashboard-historiques">
-      <div>
-        <h3>📅 Ventes récentes</h3>
-        <div class="historique-scroll" id="histVentes"></div>
-      </div>
-      <div>
-        <h3>👥 Visites récentes</h3>
-        <div class="historique-scroll" id="histVisites"></div>
-      </div>
-    </div>
-  </section>
 </main>
 
-<!-- NAVIGATION -->
+<!-- NAV -->
 <nav class="main-nav">
   <button class="nav-btn active" data-page="accueil">
     <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -1361,10 +743,6 @@ h3 {
     <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
     Clients
   </button>
-  <button class="nav-btn" data-page="dashboard">
-    <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
-    Stats
-  </button>
 </nav>
 
 <!-- MODAL -->
@@ -1379,7 +757,6 @@ h3 {
   </div>
 </div>
 
-<!-- TOAST -->
 <div id="toast" class="toast"></div>
 
 <!-- PDF TEMPLATE -->
@@ -1393,13 +770,10 @@ h3 {
     <span><strong>Client / Filtre:</strong> <span id="pdf-client">Tous</span></span>
   </div>
   <table id="pdf-table"></table>
-  <div class="footer">Généré par l'application TAM AGRICOLE - Gestion Commerciale</div>
+  <div class="footer">Généré par TAM AGRICOLE – Gestion Commerciale</div>
 </div>
 
 <script>
-/* ================================================================
-   JAVASCRIPT (identique à votre version + modale de confirmation visite)
-   ================================================================ */
 const STORAGE_KEYS = { CLIENTS: 'tam_clients_v3', VISITES: 'tam_visites_v3', VENTES: 'tam_ventes_v3' };
 
 const PRODUITS = [
@@ -1453,10 +827,14 @@ const CLIENTS_INITIAUX = [
 
 let clients = [], visites = [], ventes = [];
 let venteState = { clientId: null, produit: null };
-let dashFiltres = { date: '', clientId: '' };
+let currentPage = 'accueil';
 
 function maintenant() { return new Date().toISOString(); }
-function formatDateHeure(iso) { return iso ? new Date(iso).toLocaleDateString('fr-FR') + ' ' + new Date(iso).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : ''; }
+function formatDateHeure(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+}
 function formatDate(iso) { return iso ? new Date(iso).toLocaleDateString('fr-FR') : ''; }
 function dateDuJour() { return new Date().toISOString().slice(0, 10); }
 function formatMontant(n) { return new Intl.NumberFormat('fr-FR').format(n) + ' DH'; }
@@ -1465,11 +843,11 @@ function echapperHTML(str) { const div = document.createElement('div'); div.text
 
 function toast(message, type = 'success') {
   const el = document.getElementById('toast');
-  const icon = type === 'error' ? '❌' : '✅';
-  el.innerHTML = `<span>${message}</span><span style="font-size:1.1em;">${icon}</span>`;
+  const icon = type === 'error' ? '✕' : '✓';
+  el.innerHTML = `<span>${icon}</span><span>${message}</span>`;
   el.className = 'toast show' + (type === 'error' ? ' error' : '');
   clearTimeout(el._timer);
-  el._timer = setTimeout(() => { el.className = 'toast'; }, 2800);
+  el._timer = setTimeout(() => { el.className = 'toast'; }, 2400);
 }
 
 function chargerDonnees() {
@@ -1477,7 +855,7 @@ function chargerDonnees() {
     clients = JSON.parse(localStorage.getItem(STORAGE_KEYS.CLIENTS)) || [...CLIENTS_INITIAUX];
     visites = JSON.parse(localStorage.getItem(STORAGE_KEYS.VISITES)) || [];
     ventes  = JSON.parse(localStorage.getItem(STORAGE_KEYS.VENTES))  || [];
-    if(!localStorage.getItem(STORAGE_KEYS.CLIENTS)) sauvegarder();
+    if (!localStorage.getItem(STORAGE_KEYS.CLIENTS)) sauvegarder();
   } catch (e) {
     clients = [...CLIENTS_INITIAUX]; visites = []; ventes = [];
   }
@@ -1489,6 +867,7 @@ function sauvegarder() {
   localStorage.setItem(STORAGE_KEYS.VENTES, JSON.stringify(ventes));
 }
 
+/* ==================== NAVIGATION ==================== */
 function initNavigation() {
   document.querySelectorAll('[data-page]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1497,40 +876,47 @@ function initNavigation() {
       afficherPage(page);
     });
   });
+
+  // Bouton retour
+  document.getElementById('btnBack').addEventListener('click', () => {
+    afficherPage('accueil');
+  });
 }
 
 function afficherPage(pageId) {
+  currentPage = pageId;
+
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const page = document.getElementById('page-' + pageId);
   if (page) page.classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
   document.querySelector('.app-main').scrollTop = 0;
 
-  if (pageId === 'visites')    { renderVisites(); renderHistoriqueVisites(); }
-  if (pageId === 'ventes')     { renderClientsVente(); resetVenteForm(); }
-  if (pageId === 'clients')    { renderClientsGestion(); }
-  if (pageId === 'dashboard')  { renderDashboard(); }
-  if (pageId === 'accueil')    { renderQuickStats(); }
-}
+  // Mise à jour du bouton retour
+  const btnBack = document.getElementById('btnBack');
+  const logo = document.getElementById('logoHeader');
+  const spacer = document.getElementById('headerSpacer');
 
-function renderQuickStats() {
-  const today = dateDuJour();
-  const visitesJour = visites.filter(v => v.date && v.date.slice(0, 10) === today).length;
-  const ventesJour = ventes.filter(v => v.date && v.date.slice(0, 10) === today).length;
-  const ca = ventes.reduce((s, v) => s + (Number(v.montant) || 0), 0);
+  if (pageId === 'accueil') {
+    btnBack.classList.remove('visible');
+    logo.classList.remove('with-back');
+    spacer.classList.remove('visible');
+  } else {
+    btnBack.classList.add('visible');
+    logo.classList.add('with-back');
+    spacer.classList.add('visible');
+  }
 
-  document.getElementById('quickStats').innerHTML = `
-    <div class="quick-stat-card"><div class="qs-value">${clients.length}</div><div class="qs-label">Clients</div></div>
-    <div class="quick-stat-card"><div class="qs-value">${visitesJour}</div><div class="qs-label">Visites auj.</div></div>
-    <div class="quick-stat-card"><div class="qs-value">${ventesJour}</div><div class="qs-label">Ventes auj.</div></div>
-    <div class="quick-stat-card"><div class="qs-value">${formatMontant(ca)}</div><div class="qs-label">CA Total</div></div>
-  `;
+  if (pageId === 'visites')   { renderVisites(); renderHistoriqueVisites(); }
+  if (pageId === 'ventes')    { renderClientsVente(); resetVenteForm(); }
+  if (pageId === 'clients')   { renderClientsGestion(); }
 }
 
 function estVisiteAujourdhui(clientId) {
   return visites.some(v => v.clientId === clientId && v.date && v.date.slice(0, 10) === dateDuJour());
 }
 
+/* ==================== VISITES ==================== */
 function renderVisites() {
   const search = normaliser(document.getElementById('searchVisites').value.trim());
   const filtreDate = document.getElementById('filtreDateVisites').value;
@@ -1555,13 +941,13 @@ function renderVisites() {
       <div class="client-card ${visiteAujourdhui ? 'visite' : ''}">
         <div class="client-name">
           <span>${echapperHTML(c.nom)}</span>
-          ${visiteAujourdhui ? '<span class="visite-badge">✓ VISITÉ</span>' : ''}
+          ${visiteAujourdhui ? '<span class="visite-badge">✓ Visitée</span>' : ''}
         </div>
-        <div class="client-id">ID : ${echapperHTML(c.id)}</div>
-        <div class="client-meta">${derniere ? 'Dernière visite : ' + formatDateHeure(derniere.date) : 'Aucune visite enregistrée'}</div>
+        <div class="client-id">${echapperHTML(c.id)}</div>
+        <div class="client-meta">${derniere ? 'Dernière : ' + formatDateHeure(derniere.date) : 'Aucune visite'}</div>
         <div class="client-actions">
-          <button class="btn btn-success btn-sm" data-visite="${c.id}" ${visiteAujourdhui ? 'disabled' : ''}>
-            ${visiteAujourdhui ? '✓ Déjà visité' : '✔ Marquer visite'}
+          <button class="btn btn-secondary btn-sm" data-visite="${c.id}" ${visiteAujourdhui ? 'disabled' : ''}>
+            ${visiteAujourdhui ? 'Déjà visité' : 'Marquer visite'}
           </button>
         </div>
       </div>
@@ -1573,9 +959,7 @@ function renderVisites() {
   });
 }
 
-/* ============================================================
-   ✅ CONFIRMATION AVANT D'ENREGISTRER LA VISITE
-   ============================================================ */
+/* ==================== CONFIRMATION VISITE ==================== */
 function enregistrerVisite(clientId) {
   const client = clients.find(c => c.id === clientId);
   if (!client || estVisiteAujourdhui(clientId)) return;
@@ -1583,23 +967,20 @@ function enregistrerVisite(clientId) {
   ouvrirModale({
     titre: 'Confirmer la visite',
     corps: `
-      <div style="text-align:center; padding: 0.5rem 0;">
-        <div style="width:64px; height:64px; margin:0 auto 16px; background:linear-gradient(135deg,#e8f5e9,#c8e6c9); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.8rem;">✓</div>
-        <p style="font-size:0.95rem; color:var(--ink-500); margin-bottom:12px; font-weight:500;">Voulez-vous confirmer la visite pour :</p>
-        <p style="font-size:1.15rem; font-weight:800; color:var(--vert-800); margin-bottom:6px; letter-spacing:-0.3px;">
+      <div style="padding: 4px 0;">
+        <p style="font-size:0.86rem; color:var(--text-secondary); margin-bottom:14px;">Voulez-vous confirmer la visite pour :</p>
+        <p style="font-size:1.05rem; font-weight:600; color:var(--text-primary); margin-bottom:4px;">
           ${echapperHTML(client.nom)}
         </p>
-        <p style="font-size:0.78rem; color:var(--ink-500); font-weight:600; font-family:'SF Mono',monospace; letter-spacing:0.5px;">ID : ${echapperHTML(client.id)}</p>
-        <div style="margin-top:16px; padding:10px 14px; background:var(--ink-50); border-radius:var(--r-md); display:inline-block;">
-          <p style="font-size:0.85rem; color:var(--ink-700); font-weight:600;">
-            📅 ${new Date().toLocaleDateString('fr-FR')} · ${new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
-          </p>
-        </div>
+        <p style="font-size:0.74rem; color:var(--text-tertiary); font-family:'SF Mono',monospace; letter-spacing:0.3px; margin-bottom:16px;">${echapperHTML(client.id)}</p>
+        <p style="font-size:0.82rem; color:var(--text-secondary); padding:8px 12px; background:var(--bg-sidebar); border-radius:6px; display:inline-block;">
+          ${new Date().toLocaleDateString('fr-FR')} · ${new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+        </p>
       </div>
     `,
     footer: `
       <button class="btn btn-secondary" id="modalAnnulerVisite">Annuler</button>
-      <button class="btn btn-success" id="modalConfirmerVisite">✓ Confirmer</button>
+      <button class="btn btn-primary" id="modalConfirmerVisite">Confirmer la visite</button>
     `
   });
 
@@ -1615,8 +996,7 @@ function enregistrerVisite(clientId) {
     fermerModale();
     renderVisites();
     renderHistoriqueVisites();
-    renderQuickStats();
-    toast(`Visite confirmée`);
+    toast('Visite confirmée');
   });
 }
 
@@ -1636,6 +1016,7 @@ function renderHistoriqueVisites() {
   `).join('');
 }
 
+/* ==================== VENTES ==================== */
 function renderClientsVente() {
   const search = normaliser(document.getElementById('searchVenteClient').value.trim());
   const container = document.getElementById('listeClientsVente');
@@ -1646,7 +1027,7 @@ function renderClientsVente() {
 
   container.innerHTML = liste.map(c => `
     <div class="client-vente-item ${venteState.clientId === c.id ? 'selected' : ''}" data-client-vente="${c.id}">
-      ${echapperHTML(c.nom)} <span style="font-size:.72rem;opacity:.7;">(${echapperHTML(c.id)})</span>
+      ${echapperHTML(c.nom)} <span style="font-size:.7rem;color:var(--text-tertiary);">${echapperHTML(c.id)}</span>
     </div>
   `).join('');
 
@@ -1690,7 +1071,7 @@ function selectionnerProduit(produit) {
   document.getElementById('venteQuantite').value = '';
   document.getElementById('ventePrix').value = '';
   document.getElementById('venteTotal').value = '';
-  
+
   if (produit.includes('FILET') || produit.includes('OMBRIERE')) document.getElementById('venteUnite').value = 'M²';
   else if (produit.includes('AQUATAPE') || produit.includes('AQUADROP') || produit.includes('CINTAPE')) document.getElementById('venteUnite').value = 'ML';
   else if (produit.includes('FER') || produit.includes('CABLE') || produit.includes('PERLHUMS') || produit.includes('POWHUMUS')) document.getElementById('venteUnite').value = 'kg';
@@ -1742,11 +1123,11 @@ function enregistrerVente() {
   });
 
   sauvegarder();
-  toast(`Vente enregistrée`);
+  toast('Vente enregistrée');
   resetVenteForm();
-  renderQuickStats();
 }
 
+/* ==================== CLIENTS ==================== */
 function renderClientsGestion() {
   const search = normaliser(document.getElementById('searchClients').value.trim());
   const container = document.getElementById('listeClientsGestion');
@@ -1758,10 +1139,10 @@ function renderClientsGestion() {
   container.innerHTML = liste.map(c => `
     <div class="client-card">
       <div class="client-name"><span>${echapperHTML(c.nom)}</span></div>
-      <div class="client-id">ID : ${echapperHTML(c.id)}</div>
+      <div class="client-id">${echapperHTML(c.id)}</div>
       <div class="client-actions">
-        <button class="btn btn-secondary btn-sm" data-modifier="${c.id}">✏️ Modifier</button>
-        <button class="btn btn-danger btn-sm" data-supprimer="${c.id}">🗑️ Supprimer</button>
+        <button class="btn btn-secondary btn-sm" data-modifier="${c.id}">Modifier</button>
+        <button class="btn btn-danger btn-sm" data-supprimer="${c.id}">Supprimer</button>
       </div>
     </div>
   `).join('');
@@ -1776,8 +1157,8 @@ function ajouterClient(nom) {
 
   clients.push({ id: 'CLT' + Math.floor(1000 + Math.random() * 9000), nom });
   sauvegarder();
-  renderClientsGestion(); renderQuickStats();
-  toast(`Client ajouté`);
+  renderClientsGestion();
+  toast('Client ajouté');
   return true;
 }
 
@@ -1790,8 +1171,8 @@ function modifierClient(id, nouveauNom) {
   ventes.forEach(v => { if (v.clientId === id) v.clientNom = nouveauNom.trim(); });
 
   sauvegarder();
-  renderClientsGestion(); renderVisites(); renderHistoriqueVisites(); renderDashboard();
-  toast(`Client modifié`);
+  renderClientsGestion();
+  toast('Client modifié');
   return true;
 }
 
@@ -1801,7 +1182,7 @@ function supprimerClient(id) {
 
   ouvrirModale({
     titre: 'Supprimer le client',
-    corps: `<p style="font-size:0.95rem; line-height:1.5;">Voulez-vous vraiment supprimer <strong>${echapperHTML(client.nom)}</strong> ainsi que tout son historique de visites et ventes ? Cette action est irréversible.</p>`,
+    corps: `<p style="color:var(--text-primary);">Voulez-vous vraiment supprimer <strong>${echapperHTML(client.nom)}</strong> ainsi que tout son historique de visites et ventes ? Cette action est irréversible.</p>`,
     footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button>
              <button class="btn btn-danger" id="modalConfirmerSuppr">Supprimer</button>`
   });
@@ -1812,7 +1193,8 @@ function supprimerClient(id) {
     visites = visites.filter(v => v.clientId !== id);
     ventes  = ventes.filter(v => v.clientId !== id);
     sauvegarder();
-    fermerModale(); renderClientsGestion(); renderVisites(); renderQuickStats(); renderDashboard();
+    fermerModale();
+    renderClientsGestion();
     toast('Client supprimé');
   });
 }
@@ -1830,7 +1212,7 @@ function ouvrirModaleModifierClient(id) {
       </div>
     `,
     footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button>
-             <button class="btn btn-success" id="modalValiderModif">Enregistrer</button>`
+             <button class="btn btn-primary" id="modalValiderModif">Enregistrer</button>`
   });
 
   document.getElementById('modalAnnuler').addEventListener('click', fermerModale);
@@ -1839,58 +1221,7 @@ function ouvrirModaleModifierClient(id) {
   });
 }
 
-function renderDashboard() {
-  const selectClient = document.getElementById('dashFiltreClient');
-  selectClient.innerHTML = '<option value="">Tous les clients</option>' +
-    clients.slice().sort((a, b) => a.nom.localeCompare(b.nom)).map(c => `<option value="${echapperHTML(c.id)}">${echapperHTML(c.nom)}</option>`).join('');
-
-  selectClient.value = dashFiltres.clientId || '';
-  document.getElementById('dashFiltreDate').value = dashFiltres.date || '';
-
-  let ventesFiltrees = ventes.slice();
-  let visitesFiltrees = visites.slice();
-
-  if (dashFiltres.clientId) {
-    ventesFiltrees = ventesFiltrees.filter(v => v.clientId === dashFiltres.clientId);
-    visitesFiltrees = visitesFiltrees.filter(v => v.clientId === dashFiltres.clientId);
-  }
-  if (dashFiltres.date) {
-    ventesFiltrees = ventesFiltrees.filter(v => v.date && v.date.slice(0, 10) === dashFiltres.date);
-    visitesFiltrees = visitesFiltrees.filter(v => v.date && v.date.slice(0, 10) === dashFiltres.date);
-  }
-
-  document.getElementById('dashboardStats').innerHTML = `
-    <div class="stat-card"><div class="stat-value">${clients.length}</div><div class="stat-label">Clients</div></div>
-    <div class="stat-card"><div class="stat-value">${visitesFiltrees.length}</div><div class="stat-label">Visites</div></div>
-    <div class="stat-card"><div class="stat-value">${ventesFiltrees.length}</div><div class="stat-label">Ventes</div></div>
-    <div class="stat-card"><div class="stat-value">${formatMontant(ventesFiltrees.reduce((s, v) => s + v.montant, 0))}</div><div class="stat-label">CA</div></div>
-  `;
-
-  document.getElementById('histVentes').innerHTML = ventesFiltrees.sort((a, b) => new Date(b.date) - new Date(a.date)).map(v => `
-    <div class="hist-item">
-      <span class="hist-label">${echapperHTML(v.clientNom)}</span>
-      <span style="font-size:0.82rem; color:var(--ink-600);">${echapperHTML(v.produit)} (${v.quantite} ${v.unite})</span>
-      <span style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-top:4px;">
-        <span><strong style="color:var(--vert-800);">${formatMontant(v.montant)}</strong> <span class="hist-date">· ${formatDate(v.date)}</span></span>
-        <button class="btn btn-primary btn-sm" onclick="exportVentePDF('${v.id}')" style="min-height: 32px; padding: 0 12px; font-size: 0.72rem;">📄 PDF</button>
-      </span>
-    </div>
-  `).join('') || '<p class="hist-empty">Aucune vente.</p>';
-
-  document.getElementById('histVisites').innerHTML = visitesFiltrees.sort((a, b) => new Date(b.date) - new Date(a.date)).map(v => `
-    <div class="hist-item">
-      <span class="hist-label">${echapperHTML(v.clientNom)}</span>
-      <span class="hist-date">${formatDateHeure(v.date)}</span>
-    </div>
-  `).join('') || '<p class="hist-empty">Aucune visite.</p>';
-}
-
-function initDashboardFiltres() {
-  document.getElementById('dashFiltreDate').addEventListener('change', e => { dashFiltres.date = e.target.value; renderDashboard(); });
-  document.getElementById('dashFiltreClient').addEventListener('change', e => { dashFiltres.clientId = e.target.value; renderDashboard(); });
-  document.getElementById('resetDashFiltres').addEventListener('click', () => { dashFiltres = { date: '', clientId: '' }; renderDashboard(); });
-}
-
+/* ==================== MODAL ==================== */
 function ouvrirModale({ titre, corps, footer }) {
   document.getElementById('modalTitle').innerHTML = titre || '';
   document.getElementById('modalBody').innerHTML = corps || '';
@@ -1909,11 +1240,12 @@ function initModale() {
   });
 }
 
+/* ==================== EXPORT ==================== */
 function exportCSV() {
   let csv = '\uFEFFTYPE;CLIENT;PRODUIT;QTE;UNITE;PRIX;MONTANT;DATE\n';
   ventes.forEach(v => { csv += `VENTE;${v.clientNom};${v.produit};${v.quantite};${v.unite};${v.prixUnitaire};${v.montant};${v.date}\n`; });
   visites.forEach(v => { csv += `VISITE;${v.clientNom};;;;;;${v.date}\n`; });
-  
+
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob); a.download = `tam_export_${dateDuJour()}.csv`;
@@ -1921,40 +1253,10 @@ function exportCSV() {
   toast('Export CSV réussi');
 }
 
-window.exportVentePDF = function(venteId) {
-  const vente = ventes.find(v => v.id === venteId);
-  if (!vente) return;
-
-  document.getElementById('pdf-type').textContent = 'Fiche de Vente';
-  document.getElementById('pdf-date').textContent = formatDateHeure(maintenant());
-  document.getElementById('pdf-client').textContent = vente.clientNom;
-
-  document.getElementById('pdf-table').innerHTML = `
-    <thead><tr><th>Produit</th><th>Quantité</th><th>Unité</th><th>Prix Unitaire</th><th>Total</th><th>Date</th></tr></thead>
-    <tbody><tr>
-      <td>${echapperHTML(vente.produit)}</td><td>${vente.quantite}</td><td>${vente.unite}</td>
-      <td>${formatMontant(vente.prixUnitaire)}</td><td><strong>${formatMontant(vente.montant)}</strong></td><td>${formatDate(vente.date)}</td>
-    </tr></tbody>
-  `;
-
-  const element = document.getElementById('pdf-template');
-  element.style.display = 'block';
-  html2pdf().set({
-    margin: 10,
-    filename: `Vente_${vente.clientNom.replace(/[^a-zA-Z0-9]/g, '_')}_${formatDate(vente.date).replace(/\//g, '-')}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  }).from(element).save().then(() => {
-    element.style.display = 'none';
-    toast('PDF téléchargé');
-  });
-};
-
 document.getElementById('btnExportVisitesPDF').addEventListener('click', () => {
   const filtreDate = document.getElementById('filtreDateVisites').value;
   let liste = visites.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
-  
+
   if (filtreDate) {
     liste = liste.filter(v => v.date && v.date.slice(0, 10) === filtreDate);
     document.getElementById('pdf-client').textContent = `Date: ${formatDate(filtreDate)}`;
@@ -1986,12 +1288,15 @@ document.getElementById('btnExportVisitesPDF').addEventListener('click', () => {
   });
 });
 
+/* ==================== INIT ==================== */
 function initVisitesFiltres() {
   document.getElementById('searchVisites').addEventListener('input', renderVisites);
   document.getElementById('filtreDateVisites').addEventListener('change', () => { renderVisites(); renderHistoriqueVisites(); });
   document.getElementById('resetFiltreVisites').addEventListener('click', () => {
-    document.getElementById('searchVisites').value = ''; document.getElementById('filtreDateVisites').value = '';
-    renderVisites(); renderHistoriqueVisites();
+    document.getElementById('searchVisites').value = '';
+    document.getElementById('filtreDateVisites').value = '';
+    renderVisites();
+    renderHistoriqueVisites();
   });
   document.getElementById('btnExportVisitesCSV').addEventListener('click', exportCSV);
 }
@@ -2002,7 +1307,7 @@ function initClients() {
     ouvrirModale({
       titre: 'Nouveau client',
       corps: `<div class="form-group"><label>Nom du client</label><input type="text" id="nouveauClientNom" placeholder="Ex: Ferme Durand"></div>`,
-      footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button><button class="btn btn-success" id="modalAjouter">Ajouter</button>`
+      footer: `<button class="btn btn-secondary" id="modalAnnuler">Annuler</button><button class="btn btn-primary" id="modalAjouter">Ajouter</button>`
     });
     document.getElementById('modalAnnuler').addEventListener('click', fermerModale);
     document.getElementById('modalAjouter').addEventListener('click', () => {
@@ -2019,8 +1324,8 @@ function initVentesRecherche() {
 function init() {
   chargerDonnees();
   initNavigation(); initModale(); initVisitesFiltres();
-  initVenteForm(); initClients(); initVentesRecherche(); initDashboardFiltres();
-  afficherPage('accueil'); renderQuickStats(); renderDashboard();
+  initVenteForm(); initClients(); initVentesRecherche();
+  afficherPage('accueil');
 }
 
 document.addEventListener('DOMContentLoaded', init);
